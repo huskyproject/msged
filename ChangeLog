@@ -1,3 +1,25 @@
+2001-06-03 Sunday 01:12  tobi
+
+	* doc/: whatsnew.txt (1.67), manual/msged.texi (1.53): doc about
+	jam
+
+2001-06-03 Sunday 01:07  tobi
+
+	* config.c (1.43): disable jam for too old smapi
+
+2001-06-03 Sunday 01:07  tobi
+
+	* date.h (1.3): removed cr
+
+2001-06-02 Saturday 23:57  tobi
+
+	* date.c (1.5), date.h (1.2), template.c (1.4), doc/sample.tpl
+	(1.2), doc/whatsnew.txt (1.66): @o and @w features in template file
+
+2001-06-02 Saturday 23:57  tobi
+
+	* filedlg.c (1.12): removed cr
+
 2001-05-25 Friday 08:33  tobi
 
 	* makefile.lnx (1.22): fixed lnx makefile
