@@ -4,8 +4,6 @@ TODO-List for Msged
 Category 1: Will certainly be implemented until next release
 ============================================================
 
-- Fix: Sascha reports crashes when resizing terminal window
-
 Category 2: Might be implemented, but volunteers are always very welcome!
 =========================================================================
 
