@@ -1159,6 +1159,32 @@ unsigned int TTGetKey(void)
                         goto skip;
                     }
                     break;
+                case '7':
+                    block_console(0,2);
+                    ch = getkey();
+                    block_console(0,0);
+                    switch (ch)
+                    {
+                    case '~':
+                        ch = Key_Home; /* rxvt Home ... */
+                        break;
+                    default:
+                        goto skip;
+                    }
+                    break;
+                case '8':
+                    block_console(0,2);
+                    ch = getkey();
+                    block_console(0,0);
+                    switch (ch)
+                    {
+                    case '~':
+                        ch = Key_End; /* rxvt End ... */
+                        break;
+                    default:
+                        goto skip;
+                    }
+                    break;
                 case EOF:
                     clearerr(stdin);
                     ch = 0x1b;

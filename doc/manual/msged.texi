@@ -4218,6 +4218,7 @@ Most of the information of this chapter applies to all supported platfroms
 @menu
 * Preparations::                Obtaining and unpacking the files.
 * Configuring::                 Selecting the proper Makefile.
+* Path Names::                  Specifying the location of the config file.
 * Building the Executables::    Invoking the compiler.
 * Building the other Files::    Compiling the manual and help files.
 * Installing::                  Installing the files you have created.
@@ -4271,7 +4272,7 @@ while on Unix, it would look like this:
 ~/smapi $ unzip ~/downloads/smapiss.zip
 @end example
 
-@node Configuring, Building the Executables, Preparations, Compiling
+@node Configuring, Path Names, Preparations, Compiling
 @section Configuring - Selecting the proper Makefile for your Compiler
 @value{MSGED} does not provide a @code{configure} skript. It rather provides
 a set of different makefiles. You ``configure'' the source code by simply
@@ -4338,7 +4339,30 @@ If you are annoyed by the executable generated with @file{makefile.unx}
 annouces itself as @samp{MsgEd/UNX} rather than @samp{MsgEd/LNX}, you can
 edit the @code{UNAME} preprocessor define in @file{makefile.unx}.
 
-@node Building the Executables, Building the other Files, Configuring, Compiling
+@node Path Names, Building the Executables, Configuring, Compiling
+@section Selecting Path Names
+Msged has to know where to find its primary configuration file and the
+character set translation files. You must tell this at compile time (the
+location of all other configuration files can then be configured in the
+primary configuration file). The following paths are selected per default:
+
+@example
+What file               DOS/WIN/OS2     UNIX
+=========================================================
+Configuration file      msged.cfg       ~/.msged
+Charset Input Map       readmaps.dat    ~/.msged.readmaps
+Charset Output Map      writmaps.dat    ~/.msged.writmaps
+@end example
+
+On Non-Unix systems, you normally do not need to change the default (which
+is finding everything in the current directoy). On Unix, you might want to
+change the locations if you are administrater and want to provide a
+system-wide default configuration (that can then include files in the user
+home directory if necessary). You can do this by redefining variables in the
+Makefile. Just have a look at the first three lines of @file{makefile.unx}
+to see how it works.
+
+@node Building the Executables, Building the other Files, Path Names, Compiling
 @section Building the Executables
 Now that you have done all necessary preparations, compilation is easy:
 
