@@ -124,16 +124,16 @@ msghelp.dat: msghelp.src
 	.$(DIRSEP)$(TARGET) -hc msghelp.src msghelp.dat
 
 clean:
-	-$(RM) *$(OBJ)
-	-$(RM) *~
+	-$(RM) $(RMOPT) *$(OBJ)
+	-$(RM) $(RMOPT) *~
 	(cd maps && $(MAKE) -f makefile.husky clean)
 	(cd doc && cd manual && $(MAKE) -f makefile.husky clean)
 
 
 distclean: clean
-	-$(RM) $(TARGET)
-	-$(RM) msghelp.dat
-	-$(RM) testcons$(EXE)
+	-$(RM) $(RMOPT) $(TARGET)
+	-$(RM) $(RMOPT) msghelp.dat
+	-$(RM) $(RMOPT) testcons$(EXE)
 	(cd maps && $(MAKE) -f makefile.husky distclean)
 	(cd doc && cd manual && $(MAKE) -f makefile.husky distclean)
 
@@ -161,9 +161,9 @@ install: $(TARGET) msghelp.dat
 endif
 
 uninstall:
-	-$(RM) $(BINDIR)$(DIRSEP)$(TARGET) 
-	-$(RM) $(BINDIR)$(DIRSEP)testcons$(EXE) $(BINDIR)
-	-$(RM) $(CFGDIR)$(DIRSEP)msghelp.dat
+	-$(RM) $(RMOPT) $(BINDIR)$(DIRSEP)$(TARGET) 
+	-$(RM) $(RMOPT) $(BINDIR)$(DIRSEP)testcons$(EXE) $(BINDIR)
+	-$(RM) $(RMOPT) $(CFGDIR)$(DIRSEP)msghelp.dat
 	(cd maps && $(MAKE) -f makefile.husky uninstall)
 	(cd doc && cd manual && $(MAKE) -f makefile.husky uninstall)
 
