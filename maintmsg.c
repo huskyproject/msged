@@ -209,13 +209,16 @@ void redirect_msg(void)
         return;
     }
 
+    if (message != NULL)
+    {
+        dispose(message);
+    }
+
+    read_verbatim = 1;
+    message = readmsg(CurArea.current);
     if (message == NULL)
     {
-        message = readmsg(CurArea.current);
-        if (message == NULL)
-        {
-            return;
-        }
+        return;
     }
 
     oldm = duplicatemsg(message);
@@ -283,13 +286,17 @@ void copy_msg(void)
         return;
     }
 
+    if (message != NULL)
+    {
+        dispose(message);
+    }
+    
+    read_verbatim = 1;
+    message = readmsg(CurArea.current);
+
     if (message == NULL)
     {
-        message = readmsg(CurArea.current);
-        if (message == NULL)
-        {
-            return;
-        }
+        return;
     }
 
     m = message;
@@ -344,13 +351,18 @@ void move_msg(void)
         return;
     }
 
+    if (message != NULL)
+    {
+        dispose(message);
+        message = NULL;
+    }
+    
+    read_verbatim = 1;
+    message = readmsg(CurArea.current);
+
     if (message == NULL)
     {
-        message = readmsg(CurArea.current);
-        if (message == NULL)
-        {
-            return;
-        }
+        return;
     }
 
     m = message;      /* save the msg so we can write it */

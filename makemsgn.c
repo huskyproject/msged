@@ -969,7 +969,11 @@ static void GetAddress(ADDRESS * addr, char *from, char *subj)
 {
     char *name, *str;
 
-/*    do_lookup = (CurArea.netmail) ? 1 : 0; */
+    if (do_lookup && (!CurArea.netmail))
+    {
+        do_lookup = FALSE;
+    }
+    
     name = addr_lookup(from, addr);
 
     /* Check for an Alias subject. */

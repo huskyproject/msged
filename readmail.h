@@ -19,4 +19,11 @@ void checkrcvd(msg * m, unsigned long n);
 void GetOrigin(char *origin);
 unsigned long sec_time(void);
 LINE *InsertAfter(LINE * l, char *text);
+
+extern int read_verbatim;  /* If this is turned on, the next call to
+                              readmsg will NOT strip any kludge lines
+                              and will NOT do charset translation. 
+                              readmsg automatically resets this
+                              variable to zero. */
+
 #endif

@@ -74,7 +74,9 @@ int bdos(int func, unsigned reg_dx, unsigned char reg_al);
 static void deleteCrapLine(LINE * crap);
 static int is_sameaddr(ADDRESS * msg);
 
-extern int set_rcvd;  /* located in msged.c */
+extern int set_rcvd;      /* located in msged.c */
+
+int read_verbatim = 0;    /* see readmail.h for explanation */
 
 #ifdef OS2
 static unsigned long setDefaultDisk(unsigned short x);
@@ -157,6 +159,7 @@ msg *readmsg(unsigned long n)
     m = MsgReadHeader(n, RD_ALL);
     if (m == NULL)
     {
+        read_verbatim = 0;
         return NULL;
     }
 
@@ -169,7 +172,7 @@ msg *readmsg(unsigned long n)
     {
         if (*text == '\n' || *text == '\0' || !stricmp(text, "Lines:"))
         {
-            if (lastwasfromto && (!SW->shownotes))
+            if (lastwasfromto && (!SW->shownotes) && (!read_verbatim))
             {
                  release(text); /* skip the blank line after from: / to: */
                  lastwasfromto = 0;
@@ -265,7 +268,8 @@ msg *readmsg(unsigned long n)
                 if (strncmp(text + 1, "EOT:", 4) == 0)
                 {
                     goteot = 1;
-                    if (gotsot && !(SW->showseenbys || SW->shownotes))
+                    if (gotsot && !(SW->showseenbys ||
+                                    SW->shownotes   || read_verbatim))
                     {
                         m->soteot = 1;
                     }
@@ -372,7 +376,7 @@ msg *readmsg(unsigned long n)
                 break;
             }
 
-            if (!SW->shownotes)
+            if ((!SW->shownotes) && (!read_verbatim))
             {
                 release(text);
                 continue;
@@ -382,14 +386,16 @@ msg *readmsg(unsigned long n)
         if (*text == 'S')
         {
             if (strncmp(text, "SEEN-BY:", 8) == 0 &&
-              !(SW->showseenbys || SW->shownotes) && (!gotsot || goteot))
+                !(SW->showseenbys || SW->shownotes || read_verbatim) &&
+                (!gotsot || goteot))
             {
                 release(text);
                 continue;
             }
         }
 
-        if (goteot && *text == '\n' && !(SW->showseenbys || SW->shownotes))
+        if (goteot && *text == '\n' &&
+            !(SW->showseenbys || SW->shownotes || read_verbatim))
         {
             release(text);
             continue;
@@ -453,14 +459,15 @@ msg *readmsg(unsigned long n)
         }
 
         if (strncmp(text, "---", 3) == 0 && strncmp(text, "----", 4) != 0 &&
-          !(SW->showtearlines || SW->shownotes) && (!gotsot || goteot))
+          !(SW->showtearlines || SW->shownotes || read_verbatim) &&
+            (!gotsot || goteot))
         {
             release(text);
             continue;
         }
 
         if (strncmp(text, " * Origin:", 10) == 0 &&
-          !(SW->showorigins || SW->shownotes) &&
+          !(SW->showorigins || SW->shownotes || read_verbatim) &&
           (!gotsot || goteot))
         {
             release(text);
@@ -496,7 +503,7 @@ msg *readmsg(unsigned long n)
                     release (m->isto);
                     m->isto = cpname;
                     lastwasfromto = 1;
-                    if (!SW->shownotes)
+                    if (!(SW->shownotes || read_verbatim))
                     {
                         release(text);
                         continue;
@@ -535,7 +542,7 @@ msg *readmsg(unsigned long n)
                 release(m->from.domain);
                 m->from.domain = cpdomain;
                 lastwasfromto = 1;
-                if (!SW->shownotes)
+                if (!(SW->shownotes || read_verbatim))
                 {
                     release(text);
                     continue;
@@ -543,7 +550,7 @@ msg *readmsg(unsigned long n)
             }
         }
 
-        if (*text != '\01' || SW->shownotes)
+        if (*text != '\01' || SW->shownotes || read_verbatim)
         {
             if (l == NULL)
             {
@@ -565,7 +572,13 @@ msg *readmsg(unsigned long n)
             }
 
             l->block = 0;
-            l->text = translate_text(text, ltable); /* CHRS translation */
+            if (!read_verbatim)
+            {   /* character set translation: import to local  charset */
+                l->text = translate_text(text, ltable);
+            } else
+            {
+                l->text = xstrdup(text);
+            }
             release(text); text = l->text;
             l->hide = (*text == '\01');
 
@@ -614,6 +627,7 @@ msg *readmsg(unsigned long n)
         checkrcvd(m, n);
     }
 
+    read_verbatim = 0;
     return m;
 }
 
