@@ -1,3 +1,7 @@
+2002-07-17 Wednesday 23:06  tobi
+
+	* Makefile (1.17): Fixes for MacOS X
+
 2002-06-26 Wednesday 21:36  stas
 
 	* makefile.be (1.1): Generic Legacy Makefile for BeOS systems by
