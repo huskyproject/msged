@@ -12,11 +12,6 @@ Category 1: Will certainly be implemented until next release
 
 - Fix: Sascha reports crashes when resizing terminal window
 
-- Jam support. Necessary fixes:
-  fix smapi gethighmsg function
-  spontaneous assertion failed when writing mail
-  PATH does not display, at least with stable smapi
-
 Category 2: Might be implemented, but volunteers are always very welcome!
 =========================================================================
 
@@ -25,7 +20,7 @@ Category 2: Might be implemented, but volunteers are always very welcome!
 - Show FTN header even when in e-mail mode if user wishes so.
 
 - different Quote templates for different area groups (for quoting with ">"
-  in gated newsgroups, but with "TE>" in fido echos)  
+  in gated newsgroups, but with "TE>" in fido echos)
 
 - Background attribute "transparent", for the new kconsole feature
   (background images). Patch that has already been submitted is not nice,
@@ -53,6 +48,9 @@ Category 2: Might be implemented, but volunteers are always very welcome!
   mode, Msged can be used as a mail reader in a BBS, possibly running
   "setgid fido", even when the SMAPI does not have security features built
   in.
+
+- Fix internal editor, enable it to reformat quotes properly, with special
+  regards to quoting and internet gateways (quotelinewidth and so on).
 
 Category 3: Will only be included if volunteers send patches
 ============================================================
