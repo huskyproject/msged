@@ -860,7 +860,8 @@ static void insert_char(char ch)
     int slen, wlen;
 
 #ifdef UNIX /* entering these characters would cause problems on Unix */
-    if (ch < 32 || (ch >= 128 && ch < (128 + 32)))
+    if ((unsigned char)ch < 32 ||
+        ((unsigned char)ch >= 128 && (unsigned char)ch < (128 + 32)))
     {
         return;
     }
