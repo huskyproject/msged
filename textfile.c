@@ -365,9 +365,9 @@ void writetxt(void)
         fp = fopen(fn + 1, "a");
     }
 #ifdef HAVE_POPEN
-    else if (*fn == '|')
+    else if ((*fn == '|') || ((*fn == '?') && (*(fn + 1) == '|')))
     {
-        fp = popen(fn + 1, "w");
+        fp = popen(fn + ((*fn == '?') ? 2 : 1), "w");
         use_pclose = 1;
     }
 #endif    
