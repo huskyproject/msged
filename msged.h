@@ -49,10 +49,10 @@
 #define SQUISH    0x02
 
 /* #define AREASBBS   0x00 */   /* area file types */
-   #define FASTECHO   0x01          
+#define FASTECHO   0x01          
 /* #define SQUISH     0x02 */
-   #define GECHO      0x03
-   #define FIDOCONFIG 0x04
+#define GECHO      0x03
+#define FIDOCONFIG 0x04
 
 #define USENET    0x01
 #define FIDONET   0x02

@@ -110,12 +110,15 @@ typedef struct _term
 }
 TERM;
 
-#ifdef _AIX     /* prevent a name clash with term.h */
+#ifdef UNIX     /* prevent a name clash with term.h */
 #define term msged_term
 #endif
 
 
 #ifndef TERMDEF
+#ifdef UNIX
+volatile
+#endif
 extern TERM term;
 #endif
 
