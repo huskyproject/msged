@@ -4,9 +4,9 @@ include ../huskymak.cfg
 CC=	gcc
 
 ifeq ($(DEBUG), 1)
-  CFLAGS=	-Wall -I$(INCDIR) -ggdb
+  CFLAGS=	-Wall -I$(INCDIR) -I../smapi -ggdb
 else
-  CFLAGS=	-Wall -I$(INCDIR) -s
+  CFLAGS=	-Wall -I$(INCDIR) -I../smapi -s
 endif
 
 CDEFS=	-DUNIX -DUSE_MSGAPI -DUSE_FIDOCONFIG -DUNAME=\"LNX\"
@@ -60,6 +60,7 @@ objs=   addr.o     \
 	quick.o    \
 	quote.o    \
 	readmail.o \
+        readtc.o   \
 	screen.o   \
 	strextra.o \
 	system.o   \
