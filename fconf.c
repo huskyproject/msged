@@ -1,5 +1,5 @@
 /*
- *  fconf.C
+ *  fconf.c
  *
  *  Written on 08-Jan-98 by Tobias Ernst.
  *  Released to the public domain.
@@ -9,10 +9,14 @@
 
 #ifdef USE_FIDOCONFIG
 #include "fidoconfig.h"
+#else
+#include <stdlib.h>
+#include <stdio.h>
 #endif
 
 #include <time.h>
 #include <string.h>
+#include "version.h"
 #include "addr.h"
 #include "areas.h"
 #include "nedit.h"

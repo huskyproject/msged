@@ -1192,19 +1192,19 @@ void AddArea(AREA * a)
     if (a->msgtype != QUICK)
     {
         converted_path = xmalloc((l = strlen(a->path)) + 5);
-        memcpy(converted_path, a->path, l);
+        memcpy(converted_path, a->path, l + 1);
         if (a->msgtype == SQUISH)  
         {
             /* we add the .sqd temporarily so that the case
                adaption on Unix works correctly, because it can
                only work if an existing file is referenced */
             strcpy(converted_path + l, ".sqd");
-            kill_trail_slash(converted_path);
-            converted_path = pathcvt(converted_path);
-            if (a->msgtype == SQUISH && (l=strlen(converted_path)) > 4)
-            {
-                 converted_path[l - 4] = '\0';
-            }
+        }
+        kill_trail_slash(converted_path);
+        converted_path = pathcvt(converted_path);
+        if (a->msgtype == SQUISH && (l=strlen(converted_path)) > 4)
+        {
+            converted_path[l - 4] = '\0';
         }
     }
     else

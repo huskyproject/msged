@@ -121,7 +121,7 @@ void dir_findclose(struct _dta *dta);
 #ifdef UNIX
 void adaptcase(char *filename);
 #else
-#define adaptacse(x) (x)
+#define adaptcase(x) ((void)(x))
 #endif
 
 #define DIRUTE_NONE 1
