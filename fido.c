@@ -26,6 +26,7 @@
 #include <time.h>
 #include <errno.h>
 #include <smapi/msgapi.h>
+#include <assert.h>
 #include "addr.h"
 #include "nedit.h"
 #include "msged.h"
@@ -295,7 +296,7 @@ int FidoMsgWriteHeader(msg * m, int type)
         size_t len_from;
         len_from = strlen(m->isfrom);
         memcpy(msghead.from, m->isfrom, min(sizeof msghead.from, len_from));
-        msghead.from[sizeof(msgedhead.from) - 1] = '\0';
+        msghead.from[sizeof(msghead.from) - 1] = '\0';
     }
     else
     {
@@ -307,7 +308,7 @@ int FidoMsgWriteHeader(msg * m, int type)
         size_t len_to;
         len_to = strlen(m->isto);
         memcpy(msghead.to, m->isto, min(sizeof msghead.to, len_to));
-        msghead.to[sizeof(msgedhead.to) - 1] = '\0';
+        msghead.to[sizeof(msghead.to) - 1] = '\0';
     }
     else
     {
@@ -629,7 +630,7 @@ long FidoMsgAreaOpen(AREA * a)
     static char path[PATHLEN];
     short int c = 10, l;
     unsigned long msgnum;
-    unsigned char shorbuf[2];
+    unsigned char shortbuf[2];
 
     sprintf(path, "%s/*.msg", a->path);
     a->last = a->first = 1;
