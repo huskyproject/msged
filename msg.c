@@ -94,9 +94,11 @@ long SquishMsgAreaOpen(AREA * a)
 
     if (Ahandle != NULL)
     {
-#ifndef NO_SQUISH_LOCKING
-        MsgUnlock(Ahandle);
-#endif
+        if (SW->squish_lock)
+        {
+            MsgUnlock(Ahandle);
+        }
+
         if (MsgCloseArea(Ahandle) == -1)
         {
             return 0;
@@ -109,14 +111,15 @@ long SquishMsgAreaOpen(AREA * a)
         return 0;
     }
 
-#ifndef NO_SQUISH_LOCKING
-    if (MsgLock(Ahandle) == -1)  /* Lock failed - return */
+    if (SW->squish_lock)
     {
-        MsgCloseArea(Ahandle);
-        Ahandle = NULL;
-        return 0;
+        if (MsgLock(Ahandle) == -1)  /* Lock failed - return */
+        {
+            MsgCloseArea(Ahandle);
+            Ahandle = NULL;
+            return 0;
+        }
     }
-#endif
 
     sprintf(work, "%s.sql", a->path);
     sql = sopen(work, O_BINARY | O_RDONLY, SH_DENYNO, S_IWRITE | S_IREAD);
@@ -891,9 +894,10 @@ int SquishMsgAreaClose(void)
         return TRUE;
     }
 
-#ifndef NO_SQUISH_LOCKING
-    MsgUnlock(Ahandle);
-#endif
+    if (SW->squish_lock)
+    {
+        MsgUnlock(Ahandle);
+    }
 
     if (MsgCloseArea(Ahandle) == -1)
     {
