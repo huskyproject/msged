@@ -1,0 +1,69 @@
+CC=	gcc
+CFLAGS= -O3
+CDEFS=	-DUNIX -DUSE_MSGAPI -DUSE_FIDOCONFIG
+COPT=
+LIBDIR=	-L../fidoconfig -L../smapi
+INCLDIR=	-I../fidoconfig -I../smapi
+LIBRARIES=	-lfidoconfig -lsmapisun
+
+TARGET=	msged
+MSGAPI=	smapisun
+
+objs=	addr.o     \
+	ansi.o     \
+	areas.o    \
+	bmg.o      \
+	charset.o  \
+	config.o   \
+	control.o  \
+	date.o     \
+	dialogs.o  \
+	dirute.o   \
+	dlgbox.o   \
+	dlist.o    \
+	echotoss.o \
+	environ.o  \
+	fconf.o    \
+	fecfg145.o \
+	fido.o     \
+	freq.o     \
+	gestr120.o \
+	getopts.o  \
+	help.o     \
+	helpcmp.o  \
+	helpinfo.o \
+	init.o     \
+	keycode.o  \
+	list.o     \
+	maintmsg.o \
+	makemsgn.o \
+	memextra.o \
+	menu.o     \
+	misc.o     \
+	mnu.o      \
+	msg.o      \
+	msged.o    \
+	mxbt.o     \
+	normalc.o  \
+	nshow.o    \
+	quick.o    \
+	quote.o    \
+	readmail.o \
+	screen.o   \
+	strextra.o \
+	system.o   \
+	template.o \
+	textfile.o \
+	userlist.o \
+	vsev.o     \
+	vsevops.o  \
+	win.o      \
+	wrap.o
+
+# Thunderbirds are go!
+
+.c.o:
+	$(CC) $(COPT) $(CFLAGS) $(CDEFS) $(INCLDIR) -c $<
+
+$(TARGET): $(objs)
+	$(CC) $(COPT) -o $(TARGET) $(objs) $(LIBDIR) $(LIBRARIES)
