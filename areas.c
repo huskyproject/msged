@@ -23,6 +23,7 @@
 #include "specch.h"
 #include "keys.h"
 #include "unused.h"
+#include "help.h"
 #include "version.h"
 #include "strextra.h"
 #include "areas.h"
@@ -281,6 +282,14 @@ static int AreaBox(char **Itms, int y1, int y2, int len, int def, WND * hPrev, W
                 SelShowPage(Itms, y1, y2, len, Top, Norm, indent);
                 SelShowItem(Itms[currItem], curY, len, Sel, indent);
                 memset(find, '\0', sizeof find);
+                break;
+
+            case Key_A_H:
+            case Key_F1:
+                if (ST->helpfile != NULL)
+                {
+                    DoHelp(3);
+                }
                 break;
 
             case Key_End:
