@@ -59,7 +59,7 @@ static struct _stamp *timeTToStamp(time_t);
 static struct _minf minf;
 extern word _stdc msgapierr;
 
-static MSG *Ahandle = NULL;     /* area handle */
+static MSGA *Ahandle = NULL;     /* area handle */
 static MSGH *mh = NULL;         /* message handle */
 static XMSG xmsg;               /* squish message header */
 
