@@ -76,6 +76,7 @@ struct _dta
 
 #elif defined(__WATCOMC__)
 
+#include <stdio.h>             /* FILENAME_MAX */
 #include <direct.h>
 
 struct _dta
