@@ -90,8 +90,8 @@ the keyboard to suit your preferences.
 @menu
 * Arealist Keystrokes::         Keystroke combinations in the Arealist Screen
 * Reader Keystrokes::           Keystroke combinations in message reading mode
-* Editor Keystrokes::           
-* Redefining the Keyboard::     
+* Editor Keystrokes::           Keystrokes in the internal message editor
+* Redefining the Keyboard::     How to redefine the keyboard layout
 @end menu
 
 @node Arealist Keystrokes, Reader Keystrokes, Keyboard Reference, Keyboard Reference
@@ -389,23 +389,174 @@ Leave the message reading mode. Returns to the arealist screen.
 @end table
 
 @node Editor Keystrokes, Redefining the Keyboard, Reader Keystrokes, Keyboard Reference
-@section Keyboard Commands and in the internal Message Editor
-@value{MSGED} has a bulit in message editor. It is suggested that before you
-start using an external editor for writing messages, you should at first try
-the internal message editor, because it is best suited to compose FTN-style
-messages. The internal message is highly configurable, so you should be able
-to use the internal message editor with the same keyboard setup like your
-preferred external text editor.
+@section Keyboard Commands and the internal Message Editor
+@value{MSGED} has a bulit in message editor. It is suggested that, before you
+start using an external editor for writing messages, you should at least try
+to use the internal message editor, because it is best suited for composing
+FTN-style messages. The internal message editor is highly configurable, so you
+should be able to use the internal message editor with the same keyboard
+setup as your preferred external text editor.
 
 In the following, you will be shown a complete list of available message
-editor functions. These functions are pre-bound to senseful keystrokes, which
+editor functions. These functions are pre-bound to sensible keystrokes, which
 are also listed in the following table. Each message editor function has a
 unique name, and using this name, you can bind this function to any keystroke
 that you might estimate to be adequate. Instructions on how to do this will
 be given in the following section (@pxref{Redefining the Keyboard,,Redefining
 the Keyboard bindings}).
 
-THE LIST WITH EDITOR KEYSTROKES IS STILL MISSING. FIXME!
+@menu
+* Cursor Movement::             
+* Killing Text::                
+* Text Block Commands::         
+* Misc. Editor Commands::       
+@end menu
+
+@node Cursor Movement, Killing Text, Editor Keystrokes, Editor Keystrokes
+@subsection Editor Functions for Moving the Cursor
+
+@table @asis
+@item Functions: @code{left}, @code{right}, @code{up}, @code{down}
+@keindex left
+@keindex right
+@keindex up
+@keindex down
+These functions are pre-bound to the cursor keys and move the cursor left,
+right, up or down by one line.
+
+@item Functions: @code{wordleft}, @code{wordright}
+@keindex wordleft
+@keindex wordright
+These functions are pre-bound to @kbd{@key{Ctrl}-@key{Left}} and
+@kbd{@key{Ctrl}-@key{Right}} and move the cursor to the beginning of the
+previous or the beginning of the next word respectively.
+
+@item Functions: @code{pgup}, @code{pgdn}
+@keindex pgup
+@keindex pgdn
+These functions are pre-bound to the @key{PgUp} and @key{PgDn} (or on some
+Unix boxes, @key{Prev} and @key{Next}) keys and scroll the text up or down by
+one page and place the cursor accordingly.
+
+@item Functions: @code{gobol}, @code{goeol}
+@keindex gobol
+@keindex goeol
+These functions are pre-bound to the @key{HOME} and @key{END} keys and move
+the cursor to the beginning or end of the current line.
+
+@item Functions: @code{top}, @code{bottom}
+@keindex top
+@keindex bottom
+These functions are pre-bound to the @kbd{@key{Ctrl}-@key{PgUp}} and
+@kbd{@key{Ctrl}-@code{PgDn}} keys and move the cursor to the top or bottom
+line of the current screen.
+
+@item Functions: @code{first}, @code{last}
+@keindex first
+@keindex last
+These functions are pre-bound to the @kbd{@key{Ctrl}-@key{Home}} and
+@kbd{@key{Ctrl}-@code{End}} keys and move the cursor to the very first or
+very last line of the mail that is currently being edited.
+
+@item Function: @code{tab}, pre-bound to: @key{Tab}
+@keindex tab
+This function move the cursor to the next tabulator position by inserting
+whitespace characters (@emph{not} tabulator characters!) into the mail. The distance
+between tabulator postitions can be adjusted with the @code{TabSize} keyword
+in the configuration file (@pxref{Tabsize,,The @code{TabSize} Keyword}).
+
+@item Function: @code{newline}, pre-bound to: @key{Enter}, @key{RET}
+This function inserts a @emph{hard} carriage return and places the cursor to
+the beginning of the next line. Note: Normally, hard carriage returns are
+only inserted as paragraph delimiters or when posting formatted tables in
+fidonet. For normal message text, you should @emph{not} press @key{Enter}
+near the end of the line, but you should type a continous text (and leave the
+wrapping to @value{MSGED}) and only press @key{Enter} once or twice at the
+end of a paragraph. This will allow the receivers of your message to format
+the message in a way that nicely fits their screen widths (not everybody is
+using 80 column terminals!).
+@end table
+
+@node Killing Text, Text Block Commands, Cursor Movement, Editor Keystrokes
+@subsection Editor Functions for Deleting text
+
+@table @asis
+@item Function: @code{backspace}, pre-bound to: @key{BS}
+@keindex backspace
+Kills the character on the left side of the cursor and moves the cursor back
+one step.
+
+@item Function: @code{del}, pre-bound to: @key{Del}
+@keindex del
+Deletes the character at the current cursor position.
+
+@item Function: @code{deleol}, pre-bound to: @kbd{@key{Alt}-@key{K}}
+@keindex deleol
+Deletes all characters from the current cursor position to the end of the
+line. This function has no effect if issued in an empty line.
+
+@item Function: @code{delline}, pre-bound to: @kbd{@key{Alt}-@key{D}}, @kbd{@key{Ctrl}-@key{Y}}
+@keindex delline
+Deletes all character in the current line and removes this line.
+
+@item Function: @code{emacskill}, pre-bound to: @kbd{@key{Ctrl}-@key{K}}
+@keindex emacskill
+This function works like @code{deleol}, i.E. it kills all characters from the
+current cursor position to the end of the line, but if issued in an empty
+line, it removes that line. This is just what pressing
+@kbd{@key{Ctrl}-@key{K}} does in the emacs editor.
+
+@item Function: @code{killword}, pre-bound to: @kbd{@key{Ctrl}-@key{T}}
+@keindex killword
+Deletes all characters from the current cursor postition to the end of the
+current word.
+
+@item Function: @code{undel}, pre-bound to: @kbd{@key{Ctrl}-@key{U}}
+@keindex undel
+This is a rather limited undelete function. It will restore lines that have
+previously been killed with the @code{delline} function. It will neither
+will it restore single charactres that have been killed with @code{del},
+@code{deleol}, @code{killword} or similar functions.
+
+@item Function: @code{zap}, pre-bound to: @kbd{@key{Alt}-@key{L}}
+@keindex zap
+This function is useful when using the quoted reply features. It will kill
+all lines below the current cursor position that only contain quoted text
+(these will usually be highlighted in a different color) until the next
+unquoted line. This is useful to easily kill quoted signature text etc. Use
+this to reduce the number of unnecessary quoted lines in your mails!
+
+@end table
+
+@node Text Block Commands, Misc. Editor Commands, Killing Text, Editor Keystrokes
+@subsection Editor Functions dealing with Text Blocks
+
+@table @asis
+
+@item Function: @code{anchor}, pre-bound to: @kbd{@key{Alt}-@key{A}}
+This drops an anchor at the current cursor position. You have to drop two
+anchors at different places, then the text between the two anchors will be
+highlighted and treated as a selected text block.
+
+@item Function: @code{cut}, pre-bound to: @kbd{@key{Alt}-@key{C}}
+This will cut the currently selected text block (use @code{anchor} to select
+a text block), i.E., it will delete all selected characters and store them in
+an internal clipboard.
+
+@item Function: @code{paste}, pre-bound to: @kbd{@key{Alt}-@key{P}}
+This will paste (insert) the text block from the clipboard (i.E. the last text
+that has been cut with the @code{cut} function) at the current cursor
+position.
+
+@item Function: @code{unblock}, pre-bound to: @kbd{@key{Alt}-@key{U}}
+Any anchors that have been dropped with the @code{anchor} function will be
+removed, that is, any previously highlighted text will again be displayed
+normally.
+@end table
+
+@node Misc. Editor Commands,  , Text Block Commands, Editor Keystrokes
+@subsection Miscellaneous Editor Functions
+STILL MISSING - FIXME!
 
 @node Redefining the Keyboard,  , Editor Keystrokes, Keyboard Reference
 @section Redefining the Keyboard Bindings
@@ -413,10 +564,10 @@ THE LIST WITH EDITOR KEYSTROKES IS STILL MISSING. FIXME!
 @cindex redef
 
 If you are dissatisfied with the default keyboard bindings, you can easily
-change the keyboard layout. Each reading mode or editing mode keyboard
-function that has an explicit name can be assigned an arbitrary keystroke
-using the @code{ReadKey} and @code{EditKey} configuration keywords. The 
-syntax of these commands is as follows:
+change the keyboard layout. Each of the message reader and message editor
+keyboard functions that have been listed on the previous pages can be
+assigned an arbitrary keystroke using the @code{ReadKey} and @code{EditKey}
+configuration keywords. The syntax of these commands is as follows:
 
 @example
 EditKey @var{keycode} @var{function-name}

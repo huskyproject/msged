@@ -1,5 +1,5 @@
-MSGED TE (TOBI'S EDITION) 05 - DOCUMENTATION OF NEW FEATURES
-============================================================
+MSGED TE (TOBI'S EDITION) 05 - DOCUMENTATION OF NEW FEATURES AND CHANGES
+========================================================================
 
 
 Features, Changes and Fixes in MsgEd TE 05
@@ -10,7 +10,7 @@ Changes:
 - ATTENTION!!!  If you want to use the gateway addressing feature
   (automatic recognition of fidogate-style to:- and from:-lines), that had
   been enabled by default in previous versions of MsgEd TE, you now must
-  put the following line into your confiuration file:
+  put the following line into your configuration file:
 
   Areafileflags u
 
@@ -139,7 +139,24 @@ Features:
 
 Fixes:
 
-- Changing (Alt+C) a mail that came in through an internat gateway (or
+- Tons of bugfixes in the special verison of the Squish Message API that
+  is used to build MsgEd TE. I can't list them all (particularly, the
+  OS/2 executable delivered with TE 04 did NOT lock the message base
+  correctly when writing mail, which could potentially screw up the
+  area) - simply upgrade older versions immediately, it is worth it.
+
+- When forwarding a mail into an echomail area, sometimes a nodelist
+  lookup was made on the receiver's name (which does not make sense
+  because most of the time you enter "All" there). This bug was introduced
+  by MsgEd TE 03.
+
+- When moving and copying mail, kludge lines were not preserved if
+  the ShowNotes switch was turned off. Now they are always preserved.
+
+- When moving and copying mail, umlauts were wrong in the copied / moved
+  mail and the charset kludge was missing.
+
+- Changing (Alt+C) a mail that came in through an internet gateway (or
   had a From: line in it for other reasons) resulted in a segmentation
   violation.
 
