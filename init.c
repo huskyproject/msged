@@ -186,6 +186,7 @@ int InitVars(void)
     ST->special_characters = NULL;
     ST->uucpreplyto = NULL;
     ST->freqflags = NULL;
+    ST->printer = NULL;
 
     uucp_gate.notfound = 1;
 

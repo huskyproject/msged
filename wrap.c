@@ -2164,7 +2164,7 @@ static void outtext(void)
             break;
 
         case ID_TWO:
-            export(msgtop);
+            export_text(messg, NULL);
             break;
 
         default:
@@ -2183,7 +2183,7 @@ static void outtext(void)
             break;
 
         case ID_TWO:
-            export(msgtop);
+            export_text(messg, NULL);
             break;
 
         default:
@@ -2206,7 +2206,7 @@ static void outtext(void)
             break;
 
         case ID_THREE:
-            export(msgtop);
+            export_text(messg, NULL);
             break;
 
         default:
@@ -2214,7 +2214,7 @@ static void outtext(void)
         }
         return;
     }
-    export(msgtop);
+    export_text(messg, NULL);
     cursor(1);
 }
 

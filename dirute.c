@@ -5,17 +5,19 @@
  *
  */
 
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
 #include <assert.h>
+#include <ctype.h>
 #include "dirute.h"
 #include "strextra.h"
+#include "memextra.h"
 
 
 #if defined(OS216)
-#include <ctype.h>
 #include <time.h>
 #include <dos.h>
 #include <io.h>
@@ -96,6 +98,9 @@ int dir_findnext(struct _dta *dta)
     }
 }
 
+#error The drive letter routines are not yet implemented for this platform.
+#error You might want to copypaste them from the 32-bit OS/2 section.
+
 #elif defined(OS2)
 #define INCL_DOSPROCESS
 #include <os2.h>
@@ -171,6 +176,46 @@ int dir_findnext(struct _dta *dta)
     }
 }
 
+/* drive letter routines for OS/2 32 Bit */
+
+const int drive_letters = 1;
+
+void dir_setdrive(int d)
+{
+    DosSetDefaultDisk((ULONG)d + 1UL);
+}
+int dir_getdrive(void)
+{
+    unsigned long drivenr;
+    unsigned long logmap;
+
+    DosQueryCurrentDisk((PULONG)(&drivenr), (PULONG)(&logmap));
+
+    return drivenr - 1;
+}
+char *dir_getdrivelist(void)
+{
+    unsigned long drivenr;
+    unsigned long logmap;
+    char *str = xmalloc(27);
+    int i , j;
+    unsigned long comp = 1;
+
+    DosQueryCurrentDisk((PULONG)(&drivenr), (PULONG)(&logmap));
+
+    for (i = 0, j = 0; i < 26; i++, comp = comp * 2UL)
+    {
+        if (logmap & comp)
+        {
+            str[j++] = (char)('A' + i);
+        }
+    }
+    str[j] = '\0';
+    return str;
+}
+
+
+
 #elif defined(__RSXNT__)
 
 #define NOUSER
@@ -244,6 +289,46 @@ static int dir_find_common(struct _dta *dta)
     }
 }
 
+/* drive letter routines for RSX compiler on NT 32 Bit */
+
+const int drive_letters = 1;
+
+void dir_setdrive(int d)
+{
+    char buf[3];
+    buf[0] = d + 'A';
+    buf[1] = ':';
+    buf[2] = '\0';
+    SetCurrentDirectory(buf);
+}
+int dir_getdrive(void)
+{
+    char buf[FILENAME_MAX + 1];
+
+    GetCurrentDirectory(buf, FILENAME_MAX);
+    return (toupper(buf[0]) - 'A');
+}
+char *dir_getdrivelist(void)
+{
+    unsigned long logmap;
+    char *str = xmalloc(27);
+    int i , j;
+    unsigned long comp = 1;
+
+    logmap = GetLogicalDrives();
+
+    for (i = 0, j = 0; i < 26; i++, comp = comp * 2UL)
+    {
+        if (logmap & comp)
+        {
+            str[j++] = 'A' + i;
+        }
+    }
+    str[j] = '\0';
+    return str;
+}
+
+
 #elif defined(__TURBOC__)
 
 #include <dos.h>
@@ -283,6 +368,63 @@ int dir_findnext(struct _dta *dta)
     return -1;
 }
 
+/* drive letter routines for Borland C */
+
+const int drive_letters = 1;
+
+void dir_setdrive(int d)
+{
+    setdisk(d);
+}
+int dir_getdrive(void)
+{
+    return getdisk();
+}
+#if defined(WINNT) || defined(__NT__)
+#define NOUSER
+#include <windows.h>
+char *dir_getdrivelist(void)
+{
+    unsigned long logmap;
+    char *str = xmalloc(27);
+    int i , j;
+    unsigned long comp = 1;
+
+    logmap = GetLogicalDrives();
+
+    for (i = 0, j = 0; i < 26; i++, comp = comp * 2UL)
+    {
+        if (logmap & comp)
+        {
+            str[j++] = 'A' + i;
+        }
+    }
+    str[j] = '\0';
+    return str;
+}
+#else
+char *dir_getdrivelist(void)
+{
+    int ct = 0, curd, i;
+    char *buf = xmalloc(27);
+
+    curd = getdisk();
+
+    for (i = 0; i < 26; i++)
+    {
+        setdisk(i);
+        if (i == getdisk())
+        {
+            buf[ct++] = i + 'A';
+        }
+    }
+    buf[ct] = '\0';
+    setdisk(curd);
+
+    return buf;
+}
+#endif
+
 #elif defined(PACIFIC)
 
 #include "rfind1st.h"
@@ -316,6 +458,8 @@ int dir_findnext(struct _dta *dta)
     }
     return -1;
 }
+
+#error You must implement the drive letter routines for this platform first!
 
 #elif defined(SASC)
 #include <dos.h>
@@ -352,6 +496,8 @@ int dir_findnext(struct _dta *dta)
     }
     return -1;
 }
+
+#error You must implement the drive letter routines for this platform first!
 
 #elif defined(UNIX)
 
@@ -554,6 +700,24 @@ void dir_findclose(struct _dta *dta)
     }
 }
 
+/* UNIX does not have drive letters */
+
+const int drive_letters = 0;
+
+void dir_setdrive(int d)
+{
+}
+int dir_getdrive(void)
+{
+    return 2;
+}
+char *dir_getdrivelist(void)
+{
+    return xstrdup("C");
+}
+
+
+
 #else  /* MSC version of these routines */
 
 #include <dos.h>
@@ -592,6 +756,63 @@ int dir_findnext(struct _dta *dta)
     return -1;
 }
 
+/* Drive letter routines for Microsoft C */
+/* I have no idea if these ones work. I copied them from Borland. */
+
+const int drive_letters = 1;
+
+void dir_setdrive(int d)
+{
+    setdisk(d);
+}
+int dir_getdrive(void)
+{
+    return getdisk();
+}
+#if defined(WINNT) || defined(__NT__)
+#define NOUSER
+#include <windows.h>
+char *dir_getdrivelist(void)
+{
+    unsigned long logmap;
+    char *str = xmalloc(27);
+    int i , j;
+    unsigned long comp = 1;
+
+    logmap = GetLogicalDrives();
+
+    for (i = 0, j = 0; i < 26; i++, comp = comp * 2UL)
+    {
+        if (logmap & comp)
+        {
+            str[j++] = 'A' + i;
+        }
+    }
+    str[j] = '\0';
+    return str;
+}
+#else
+char *dir_getdrivelist(void)
+{
+    int ct = 0, curd, i;
+    char *buf = xmalloc(27);
+
+    curd = getdisk();
+
+    for (i = 0; i < 26; i++)
+    {
+        setdisk(i);
+        if (i == getdisk())
+        {
+            buf[ct++] = i + 'A';
+        }
+    }
+    buf[ct] = '\0';
+    setdisk(curd);
+
+    return buf;
+}
+#endif
 
 #endif
 

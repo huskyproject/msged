@@ -172,4 +172,19 @@
   Create file request for all selected files .. Enter
   Abort (do not request any files) .............. Esc
 *End  
+*Begin 6
+
+*High            File Selection Dialog Box Help
+
+  Select the desired file from the pick list with the
+  the cursor keys.  Pressing Enter  on a subdirectory
+  changes to this directory, pressing Enter on a file
+  selects this file.
+
+  You can press  TAB  and enter a file search mask in 
+  the entry field at the top of the window. If you do 
+  not  like  to  use  the  pick  list,  you can  also 
+  directly enter a file name (that is allowed to con-
+  tain a path if necessary) in this entry field.
+*End
 *EF

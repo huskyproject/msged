@@ -31,8 +31,9 @@ OBJS=   addr.obj     \
 	echotoss.obj \
 	environ.obj  \
 	fconf.obj    \
-	fido.obj     \
 	fecfg145.obj \
+	fido.obj     \
+	filedlg.obj  \
 	flags.obj    \
 	freq.obj     \
 	gestr120.obj \

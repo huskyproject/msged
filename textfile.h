@@ -11,7 +11,8 @@
 
 void import(LINE * l);
 char *getfilename(char *buf);
-void export(LINE * f);
-void writetxt(void);
+void export_text(msg *, LINE *);
+void export(LINE * f); /* wrapper for export_text(f, NULL) */
+void writetxt(void);   /* wrapper for export_text(message, NULL) */
 
 #endif

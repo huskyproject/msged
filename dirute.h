@@ -118,6 +118,13 @@ int  dir_findnext(struct _dta *dta);
 int  dir_findfirst(char *filename, int attribute, struct _dta *dta);
 void dir_findclose(struct _dta *dta);
 
+extern const int drive_letters;
+/* the following functions will only be available if drive_letters is 1 */
+char *dir_getdrivelist(void);
+int   dir_getdrive(void);
+void  dir_setdrive(int);
+
+
 #ifdef UNIX
 void adaptcase(char *filename);
 #else

@@ -386,7 +386,7 @@ int WndWidth(void)
  *  type of border.
  */
 
-void WndTitle(char *title, int Attr)
+void WndTitle(const char *title, int Attr)
 {
     int cntr;
     int pos, i, len;

@@ -6,6 +6,16 @@ Features, Changes and Fixes in the current development version of MsgEd
 
 Features:
 
+- New keyword: Printer. Specifies the printer port (OS/2, DOS, Windows)
+  resp. the lpr options (UNIX) to use for printing (Alt+W, Print).
+  Default is "PRN" on OS/2, DOS and Windows, and an empty string ("lpr -" is
+  called without any options, so that the default queue is used) on UNIX.
+
+- Reworked the file import/export interface. You now have a nice menu for
+  selecting the file to read or write, and menus that ask you if you if you
+  want to write the text to file, or to print it or to pipe it, and which
+  export mode should be used.
+
 - Support for @FLAGS kludge lines. Msged now will write a FLAGS kludge
   line if flags that are not supported by the current storage format
   have to be saved, and it recognises flags in FLAGS kludge lines in 

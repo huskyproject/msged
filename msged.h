@@ -322,6 +322,7 @@ struct _sv
                                    without CHRS kludge. */
     char *uucpreplyto;          /* a replyto: string for e-mail */
     char *freqflags;            /* flags to use for file requests */
+    char *printer;              /* printer port or command name */
 };
 
 /* These are the system switches, for access across the system */

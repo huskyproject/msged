@@ -2,6 +2,7 @@
  *  TEXTFILE.C
  *
  *  Written on 30-Jul-90 by jim nutt.  Changes on 10-Jul-94 by John Dennis.
+ *  Changes by Frank Adams (dialog boxes etc.).
  *  Released to the public domain.
  *
  *  Handles import and export of text files.
@@ -11,6 +12,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <ctype.h>
 
 #if defined(PACIFIC)
 #include <unixio.h>
@@ -40,18 +42,21 @@
 #include "nshow.h"
 #include "quote.h"
 #include "textfile.h"
+#include "filedlg.h"
 
 #define TEXTLEN 2048
 
 void import(LINE * l)
 {
-    char *fn = xmalloc(PATHLEN + 1);
+    char *fn;
     static char fname[PATHLEN];
     static char line[TEXTLEN];
     char *temp;
     FILE *fp;
     LINE *n;
     int ret;
+
+    fn  = xmalloc(PATHLEN + 1);
 
     if (ST->infile)
     {
@@ -62,7 +67,7 @@ void import(LINE * l)
         fn[0] = '\0';
     }
 
-    ret = GetString(" Import File ", "Name of file to import?", fn, PATHLEN);
+    ret = FileDialog(fn, "Select a File to Import");
 
     release(ST->infile);
     ST->infile = xstrdup(fn);
@@ -210,278 +215,237 @@ char *getfilename(char *buf)
     return filename;
 }
 
-void export(LINE * f)
+
+void export_text(msg *mesg, LINE *line)
 {
-    FILE *fp;
-    char *fn = xmalloc(PATHLEN + 1);
-    int ret;
-    int use_pclose = 0;
+    LINE *l;
+    FILE *f;
+    int destination = 0, mode = 0, ret = 0, x1, x2;
+    char fn[2048];
+    int (*closefunc)(FILE *) = NULL;
 
-    if (ST->outfile)
+    static char *destinations[] = {
+        "Write to File",
+        "Print",
+        "Pipe into external Program",
+        "Cancel",
+        NULL
+    };
+    static char *modes[] = {
+        "As Plain Text",
+/*        "As Quoted Text", */
+        "Binary (for re-importing into Msged)",
+        "Cancel",
+        NULL
+    };
+
+    /* Find out if we want to print a message or only a piece of text */
+    if (mesg != NULL)
     {
-        strcpy(fn, ST->outfile);
+        l = mesg->text;
     }
     else
     {
-        strcpy(fn, "");
+        l = line;
     }
 
-    ret = GetString(" Export File ", "Name of file to export?", fn, PATHLEN);
+    /* Select the export destination */
+    
+    x1 = maxx/2 - 19; if (x1 < 0) x1 = 0;
+    x2 = x1 + 38;
+    destination = DoMenu(x1, 10, x2, 13, destinations, 0,
+                         SELBOX_WRTMODE, "Export Destination");
 
-    if (!ret)
+    switch (destination)
     {
-        xfree(fn);
-        return;
-    }
-
-    release(ST->outfile);
-    ST->outfile = strdup(fn);
-
-    fn = shell_expand(fn);
-
-    if (*fn == '+')
-    {
-        fp = fopen(fn + 1, "a");
-    }
-#ifdef HAVE_POPEN
-    else if (*fn == '|')
-    {
-        fp = popen(fn + 1, "w");
-        use_pclose = 1;
-    }
-#endif    
-    else
-    {
-        fp = fopen(fn, "w");
-    }
-
-    if (fp == NULL)
-    {
-        ChoiceBox("", "WARNING: Error opening file", "  Ok  ", NULL,  NULL);
-        xfree(fn);
-        return;
-    }
-
-    while (f != NULL)
-    {
-        if (f->text && (*(f->text) != '\01' || SW->shownotes))
+    case 0:                     /* as file */
+        if (ST->outfile)
         {
-            fputs(f->text, fp);
-            if (strchr(f->text, '\n') == NULL)
-            {
-                fputc('\n', fp);
-            }
+            strcpy(fn, ST->outfile);
         }
-        f = f->next;
-    }
+        else
+        {
+            strcpy(fn, "");
+        }
+        if ((ret = FileDialog(fn, "Select File to Write to")) <= 0)
+        {
+            return;
+        }
+        xfree(ST->outfile);
+        ST->outfile = strdup(fn);
+        break;
 
-    /* if output is to printer output a formfeed */
-    if (isatty(fileno(fp)))
-    {
-        fputc(12, fp);
-    }
+    case 1:                     /* print */
+#ifdef UNIX
+        destination = 2;
+        if (ST->printer != NULL)
+        {
+            sprintf(fn, "lpr %s -", ST->printer);
+        }
+        else
+        {
+            sprintf(fn, "lpr -");
+        }
+        break;
+#else
+        if (ST->printer != NULL)
+        {
+            strcpy(fn, ST->printer);
+        }
+        else
+        {
+            strcpy(fn, "PRN");
+        }
+#endif
+        break;
 
+    case 2:                     /* pipe */
 #ifdef HAVE_POPEN
-    if (use_pclose)
-    {
-        pclose(fp);
-    }
-    else
+        if (!GetString("Pipe Text To External Program", "Command Line", fn,
+                       2047))
+        {
+            return;
+        }
+#else
+        ChoiceBox("Not Implemented",
+                  "This version of Msged does not support piping.",
+                  "OK", NULL, NULL);
+        return;
 #endif        
-    {
-        fclose(fp);
-    }
+        break;
 
-    xfree(fn);
-    TTCurSet(1);
-}
-
-void writetxt(void)
-{
-    static char *modes[] = {"Text", "Quote", "Msged", NULL};
-    static char *ovr[] = {"Append", "Replace", NULL};
-    LINE *f = message->text;
-    char *fn = xmalloc(PATHLEN + 1);
-    static int mode = 0;
-    int ret;
-    FILE *fp;
-    char *s;
-    int use_pclose = 0;
-
-    if (ST->outfile)
-    {
-        strcpy(fn, ST->outfile);
-    }
-    else
-    {
-        strcpy(fn, "");
-    }
-
-    ret = GetString(" Export File ", "Name of file to export?", fn, PATHLEN);
-
-    if (!ret)
-    {
-        xfree(fn);
+    default:                     /* cancel */
         return;
     }
 
-    release(ST->outfile);
-    ST->outfile = strdup(fn);
 
-    fn = shell_expand(fn);
+    /* select the output mode, if a whole msg is exported */
 
-    s = strchr(fn, ',');
-    if (s != NULL)
+    if (mesg != NULL && destination != 1)
     {
-        *s++ = '\0';
-    }
-
-    if (s && *s == 't')
-    {
-        mode = 0;
-    }
-    else if (s && *s == 'q')
-    {
-        mode = 1;
-    }
-    else if ((s && *s == 'm') || !s)
-    {
-        mode = 2;
-    }
-
-    if (*fn == '?')
-    {
-        mode = DoMenu(61, 2, 69, 4, modes, mode, SELBOX_WRTMODE, "");
-        if (mode == -1)
+        mode = DoMenu(x1, 10, x2, 13, modes, 0,
+                      SELBOX_WRTMODE, "Export Mode");
+        if (mode < 0 || mode > 1)
         {
-            mode = 0;
-            xfree(fn);
             return;
         }
     }
 
-    if (*fn == '+')
+
+    /* Try to open the output medium */
+
+    switch (destination)
     {
-        fp = fopen(fn + 1, "a");
-    }
-#ifdef HAVE_POPEN
-    else if ((*fn == '|') || ((*fn == '?') && (*(fn + 1) == '|')))
-    {
-        fp = popen(fn + ((*fn == '?') ? 2 : 1), "w");
-        use_pclose = 1;
-    }
-#endif    
-    else if (*fn == '?')
-    {
-        fp = fopen(fn + 1, "r");
-        if (fp == NULL)
+    case 0:                     /* file */
+    case 1:
+        closefunc = fclose;
+        if (((f = fopen(fn, "r")) != NULL) && (!isatty(fileno(f))))
         {
-            fp = fopen(fn + 1, "w");
-        }
-        else if (isatty(fileno(fp)))
-        {
-            fclose(fp);
-            fp = fopen(fn + 1, "w");
-            mode = 0;
+            ret = ChoiceBox("Attention", "File already exists!",
+                            "Append", "Overwrite", "Cancel");
+                
+            switch(ret)
+            {
+            case ID_ONE:             /* append */
+                fclose(f);
+                f = fopen(fn, "a+");
+                if (f != NULL) fseek(f, 0, SEEK_END);
+                break;
+            case ID_TWO:
+                fclose(f);
+                f = fopen(fn, "w");
+                break;
+            case ID_THREE:
+                fclose(f);
+                return;
+            default:
+                abort();
+            }
         }
         else
         {
-            ret = DoMenu(61, 2, 69, 3, ovr, 0, SELBOX_WRTOVER, "");
-            if (ret == -1)
-            {
-                xfree(fn);
-                return;
-            }
-
-            fclose(fp);
-            if (ret)
-            {
-                fp = fopen(fn + 1, "w");
-            }
-            else
-            {
-                fp = fopen(fn + 1, "a");
-            }
+            f = fopen(fn, "w");
+            break;
         }
-    }
-    else
-    {
-        fp = fopen(fn, "w");
+
+        if (f == NULL)
+        {
+            ChoiceBox("Error", "Cannot write to file!", "OK", NULL, NULL);
+            return;
+        }
+        break;
+
+    case 2:
+#ifdef HAVE_POPEN        
+        closefunc = pclose;
+        f = popen(fn, "w");
+        if (f == NULL)
+        {
+            ChoiceBox("Error", "Cannot execute program!", "OK", NULL, NULL);
+            return;
+        }
+#endif
+        break;
     }
 
-    if (fp == NULL)
-    {
-        ChoiceBox("", "WARNING: Error opening file", "  Ok  ", NULL,  NULL);
-        xfree(fn);
-        return;
-    }
+    /* TODO: Quote Mode */
 
-    if (mode == 0 || (s != NULL && strchr(s, 't') != NULL))
+    /* write a header, if possible and desired */
+
+    if (mode == 0 && mesg != NULL)
     {
-        fprintf(fp, "Date:   %s", itime(message->timestamp));
-        fprintf(fp, "\nFrom:   %s", message->isfrom ? message->isfrom : "");
-        fprintf(fp, " of %s", show_address(&message->from));
-        fprintf(fp, "\nTo:     %s", message->isto ? message->isto : "");
+        fprintf(f, "Date:   %s", itime(mesg->timestamp));
+        fprintf(f, "\nFrom:   %s", mesg->isfrom ? mesg->isfrom : "");
+        fprintf(f, " of %s", show_address(&mesg->from));
+        fprintf(f, "\nTo:     %s", mesg->isto ? mesg->isto : "");
 
         if (CurArea.netmail)
         {
-            fprintf(fp, " of %s", show_address(&message->to));
+            fprintf(f, " of %s", show_address(&mesg->to));
         }
 
-        fprintf(fp, "\nSubj:   %s", message->subj ? message->subj : "");
+        fprintf(f, "\nSubj:   %s", mesg->subj ? mesg->subj : "");
 
-        MakeMsgAttrs(fn, &message->attrib, message->scanned, message->times_read);
+        MakeMsgAttrs(fn, &mesg->attrib, mesg->scanned, mesg->times_read);
 
-        fprintf(fp, "\nAttr:   %s", fn);
-        fprintf(fp, "\nConf:   %-30s", CurArea.description);
-        fprintf(fp, "\n\n");
+        fprintf(f, "\nAttr:   %s", fn);
+        fprintf(f, "\nConf:   %-30s", CurArea.description);
+        fprintf(f, "\n\n");
     }
 
-    if (mode == 1 || (s != NULL && strchr(s, 'q') != NULL))
-    {
-        makequote(message->text, message->isfrom);
-        f = message->text;
-    }
+    /* write the message text */
 
-    while (f != NULL)
+    while (l != NULL)
     {
-        if (f->text && (*(f->text) != '\01' || SW->shownotes))
+        if (l->text && (*(l->text) != '\01' || SW->shownotes))
         {
-            fputs(f->text, fp);
-            if (!strchr(f->text, '\n') && (!mode || mode == 1))
+            fputs(l->text, f);
+            if (!strchr(l->text, '\n') && (mode != 1))
             {
-                fprintf(fp, "\n");
+                fprintf(f, "\n");
             }
         }
-        f = f->next;
+        l = l->next;
     }
 
     /* if output is to printer output a formfeed */
-    if (isatty(fileno(fp)))
+    if (isatty(fileno(f)))
     {
-        fputc(12, fp);
+        fputc(12, f);
     }
 
-#ifdef HAVE_POPEN
-    if (use_pclose)
-    {
-        pclose(fp);
-    }
-    else
-#endif        
-    {
-        fclose(fp);
-    }
-    if (mode == 1 || (s != NULL && strchr(s, 'q') != NULL))
-    {
-        /* reread the old message text */
-        set_area(SW->area);
-    }
-    xfree(fn);
+    (*closefunc)(f);
 }
 
+/* called when exporting an anchor block from the editor */
+void export(LINE * f)
+{
 
+    export_text(NULL, f);
+}
 
-
-
-
+/* called when exporting while in reading mode */
+void writetxt(void)
+{
+    export_text(message, NULL);
+}

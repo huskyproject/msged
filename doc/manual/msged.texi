@@ -895,155 +895,122 @@ Fidonet-Internet gateway, how to use eight bit character sets, and similar.
 
 @node Exporting and Printing, Special Characters, Advanced Concepts, Advanced Concepts
 @section Exporting Mails to Text Files or to the Printer
-@cindex exporting a mail
-This section tells you how to export mails to text files that you can than
-use for various purposes like importing into a text processor, as well as how
-to print mails. While this as it self is not a very advanced feature, the
-file export menu in @value{MSGED} has some hidden features to control the
-format of the exported mail that might not be aware to you. Also, some users
-might not know that they can use the file export menu to print mails.
+
+This section tells you how to export mail messages. Exporting in this sense
+includes simply saving the message text into a file, but also printing the
+message or feeding it into a pipe.
 
 @menu
-* Exporting Basics::            How to export a mail to a text file.
-* Export Formats::              How to control the format of the text file.
-* Printing::                    How to print a mail to a line printer.
+* Exporting::                   Saving the message into a plain text file.
+* Printing::                    Printing the message.
+* Piping::                      Running an external command with the message
+                                text as standard input.
 @end menu
 
-@node Exporting Basics, Export Formats, Exporting and Printing, Exporting and Printing
-@subsection How to use the Mail Export Feature
-When you are in message reading mode, you can press @key{Alt}-@key{W} in
-order to invoke the mail export dialog. This dialog looks like this:
+@node Exporting, Printing, Exporting and Printing, Exporting and Printing
+@subsection Saving message text into a plain text file
+@cindex exporting message text
+@cindex text file, exporting to
+
+In order to export the message text into a plain text file, you have to
+invoke the @code{export} reader or editor function. If you did not change the
+keyboard binding, this is done by pressing @key{Alt}-@key{W}. You will be
+shown a menu that looks like this:
 
 @example
-*---------------------- Export File ----------------------*
-| Name of file to export?                                 |
-| mail.txt                                                |
-|                      Ok    !   Cancel  !                |
-|                   **********  **********                |
-*---------------------------------------------------------*
++-----------------------------------------+
+|  Write to File                          |
+|  Print                                  |
+|  Pipe into external Program             |
+|  Cancel                                 |
++-----------------------------------------+
 @end example
 
-It seems very simple to use at first glance. Simply write a name of a file to
-export the mail to into the dialog field and then press @key{Enter} to start
-the action. 
+Select the first entry, @samp{Write to File}. You then will be shown a dialog
+box where you can select a file name. You can use the cursor keys to navigate
+through the directory structure and select a file to be overwritten. If you
+want to create a new file, press @key{Tab} to get to the @samp{File:} entry
+box and enter a new file name. 
 
-And indeed you can export mails in this way. Mails that have been exported in
-this way are suitable to be re-imported into @value{MSGED} by pressing
-@key{Alt}-@key{R} when you are in the internal message editor. This is often
-useful when you want to copy a part of a mail and insert it into a new
-message you are composing.
-
-However, if you look at the file that has been generated with a text editor,
-the result will be dissatisfying. Read on below to find out why.
-
-@node Export Formats, Printing, Exporting Basics, Exporting and Printing
-@cindex format, of exported mail
-@subsection Controlling the Format of the Exported Message
-By default, @value{MSGED} exports a message in @dfn{raw message format}, also
-called @dfn{MsgEd format}. This format saves the mail raw as it is stored in
-the message base, which means that line feeds will only be placed after each
-@emph{paragraph}. This format is well suited if you later want to import the
-mail into the internal message editor, because it will exactly keep the
-paragraph format of the message. However, it is not suitable for printing or
-editing the file with a normal text editor, because there, you will only see
-one very long line per paragraph, which is mostly not what you wanted to
-have.
-
-If you want to print the file with the exported message or to view it with a
-normal text editor, you must instruct @value{MSGED} to export the file in the
-@dfn{text format}. In text format, the message will be saved in a
-line-wrapped form, that is, the file will look just like the mail that you
-see on screen in message reading mode, with a linefeed placed after each
-line. You instruct @value{MSGED} to export a mail in text format by appending
-@samp{,t} to the file name like in this example:
+After that, you will see a menu that asks you how the text should be
+exported:
 
 @example
-*---------------------- Export File ----------------------*
-| Name of file to export?                                 |
-| mail.txt,t                                              |
-|                      Ok    !   Cancel  !                |
-|                   **********  **********                |
-*---------------------------------------------------------*
++-----------------------------------------+
+|  As Plain Text                          |
+|  Binary (for re-importing into Msged)   |
+|  Cancel                                 |
++-----------------------------------------+
 @end example
 
-This format is well suited for printing and editing.
+Normally you will want to select @samp{As Plain Text}. This produces a nice
+message header and nicely wrapped paragraphcs. This format is useful for
+reading with normal editors, for printing etc. The @samp{Binary} format
+(formerly known as @samp{Msged Format}) will not write any headers, and it
+will not break the paragraphs into lines. This format is useful if you intend
+to re-import the text into @value{MSGED} or into another application that
+works paragraph-oriented rather than line-oriented (like a word processor).
 
-@value{MSGED} also has some other formats for exporting mails. All of them
-are invoked by placing a comma and the corresponding letter after the file
-name. Here is a complete list:
+Note that this dialog box will not be shown if you try to export text while
+you are @emph{editing} a message; in this case, the plain text mode will
+always be used.
 
-@table @samp
-@item ,t
-Text mode. Place a line feed after each line. Well suited for printing or
-editing with a standard text editor.
-@item ,m
-Raw message mode. This is your choice if you later wish to re-import the
-message into the internal message editor.
-@item ,q
-Quoted mode. This is like text mode, but each line will be prefixed with the
-quote string.
-@end table
+When you have made your selection, the file will be written. If you selected
+a file that already exists. you will see an additional dialog box that asks
+if you want to append to the file, overwrite it, or cancel the operation.
 
-If you cannot remember these format characters, you can also ask @value{MSGED}
-to present you a menu with all possible export formats by putting a
-questionmark @emph{in front of} the file name like in this example:
+@node Printing, Piping, Exporting, Exporting and Printing
+@subsection Printing a message
+@cindex Printing
+
+In order to print a message, press @key{Alt}-@key{W}. Select
+@samp{Print}. That's all about it, the message will be printed! But how did
+@value{MSGED} know how to find your printer? Well, on OS/2, DOS and Windows
+it just uses the standard printer, known as @samp{PRN}, which is usually
+connected to the first parallel port. On UNIX, it calls the @samp{lpr}
+command with no special options, which will lead to the default queue being
+used.
+
+If you want to use a different printer for printing mails -- for example, you
+might have two printers, one for high quality office correspondance, and one
+for quick printouts, and want to use the latter one for printing Fidonet
+messages --, you can use the @code{Printer} keyword in the @value{MSGED}
+configuration file to select a different printer. @xref{Printer,,The
+@code{Printer} Configuration Keyword}, for more information.
+
+@node Piping,  , Printing, Exporting and Printing
+@subsection Piping message text into external programs
+@cindex Piping
+
+What does @dfn{piping} mean? This feature works as follows: @value{MSGED}
+will start an external command or program and feed the mail text into this
+command's standard input stream. This feature originally comes from the Unix
+world. For example, you could pipe the message text into a Perl or Rexx
+script that analyses the text and does something with it (for example, the
+script could store the text in a cooking recipe database). The piping feature
+does not work in all versions of @value{MSGED}. It only works in the UNIX
+version and in those non-UNIX versions that have been compiled with a GNU gcc
+compiler.
+
+In order to pipe message text into an external program, type
+@key{Alt}-@key{W} and select @samp{Pipe into external program}. You will then
+see a dialog box that prompts you for a command to execute. You can enter
+any commands or programs in exactly the way as you would enter them at the
+shell prompt of your operating system. @value{MSGED} will execute exactly
+this command and provide the message contents as standard input to the
+command. For example, you could enter
 
 @example
-*---------------------- Export File ----------------------*
-| Name of file to export?                                 |
-| ?mail.txt                                               |
-|                      Ok    !   Cancel  !                |
-|                   **********  **********                |
-*---------------------------------------------------------*
+cat - >test.txt
 @end example
 
-@node Printing,  , Export Formats, Exporting and Printing
-@subsection Printing Mails
-@cindex printing
-@cindex piping
+This of course is a stupid example, because the same result could be achieved
+by selecting @samp{Write to File} and specifying @file{text.txt} as file
+name, but it shows how the mechanism works.
 
-The message export facility can also be used to print a message. On all
-systems except Unix, this is done by printing to the special printer device
-called @file{PRN}. That is, in order to print a mail, press @key{Alt}-@key{W}
-and enter @file{PRN} as name of the file to export the message to. Do not
-forget to enter @samp{,t} after the file name in order to switch to text mode
-(only text mode will yield good results for printing a mail):
-
-@example
-@r{Example for printing on OS/2, DOS or Windows:}
-*---------------------- Export File ----------------------*
-| Name of file to export?                                 |
-| PRN,t                                                   |
-|                      Ok    !   Cancel  !                |
-|                   **********  **********                |
-*---------------------------------------------------------*
-@end example
-
-On Unix, printing is performed by piping the mail into the lpr
-program. Fortunately, @value{MSGED} also supports piping. Simply prefix the
-``filename'' with a pipe character (the broken vertical bar), and the rest of
-the string (except for the comma and the format character) will be
-interpreted as a command to be executed by the shell. Again, do not forget to
-switch to text mode by appending @samp{,t} to the command.
-
-@example
-@r{Example for printing on Unix:}
-*---------------------- Export File ----------------------*
-| Name of file to export?                                 |
-| |lpr - ,t                                               |
-|                      Ok    !   Cancel  !                |
-|                   **********  **********                |
-*---------------------------------------------------------*
-@end example
-
-You can of course also use the pipe character for piping mails through other
-programs than lpr. For example, you could pipe cooking recipes from an
-echomail area devoted to cooking through a perl or rexx script that archives
-them in a database.
-
-As a side note, piping does also work in the OS/2 and Windows versions of
-@value{MSGED} if they have been compiled with a GNU compiler supporting the
-@code{popen} command. (The binary versions that I have released are).
+After that, you will be prompted for the export mode (plain text or
+binary). @xref{Exporting,,Saving message text into a plain text file}, for
+information on what this means.
 
 
 @node Special Characters, Internet Gateways, Exporting and Printing, Advanced Concepts
@@ -1710,10 +1677,8 @@ when writing messages.
 @cindex printing messages
 @cindex exporting message text
 Export the text of the current message to a file or printer port. You will be
-shown a dialog box where you can enter a filename. @xref{Exporting and
-Printing,,section Exporting Mails to Text Files or to the Printer}, for an
-explanation of the modifiers for the filename you can use to control how the
-output file is written.
+shown a dialog box where you can enter a filename and some other
+options. @xref{Exporting and Printing}, for further information.
 
 @item Function: @code{shell}, bound to: @key{Alt}-@key{O}
 @krindex shell
@@ -1923,9 +1888,8 @@ information) in case you made an error when first entering the header.
 @item Function: @code{export}, pre-bound to: @key{Alt}-@key{W}
 @keindex export
 Export the text of the current message to a file or printer port. You will be
-shown a dialog box where you can enter a filename. @xref{Outfile,,The Outfile
-configuration keyword}, for an explanation of the modifiers for the filename
-you can use to control how the output file is written.
+shown a dialog box where you can enter a filename. @xref{Exporting and
+Printing}, for further information.
 
 @item Function: @code{insert}, pre-bound to: @key{Ins}
 @keindex insert
@@ -2110,6 +2074,7 @@ are generally case-insensitive.
 * Origin::                      Choosing one or multiple origin lines.
 * Outfile::                     Selecting a default export file name.
 * OutputCharset::               Selecting the charset to use for umlauts.
+* Printer::                     Configuring the default printer.
 * PrivateNet::                  Nobody needs this.
 * Quick::                       Specifying a QuickBBS/Hudson format mail area.
 * QuickBBS::                    Specifying a QuickBBS/Hudson format mail area.
@@ -2887,44 +2852,10 @@ an origin line. This feature is called @dfn{origin shuffling}.
 @end table
 
 This keyword is used to configure the default @var{file-name} that should be
-used for exporting mails as text by pressing @key{Alt}-@key{W}. You can
-change this value at runtime; here, you just configure the default that the
-dialog box will be filled in with. You can specify a normal file name, or you
-can specify a special file name designating a device like for example
-@samp{LPT1:}. On Unix, you can also a program that the text should be piped to.
+used as a default selection for exporting mails as text by pressing
+@key{Alt}-@key{W}. 
 
-The default format for exporting text is to write it in raw format, that is,
-carriage returns will only be placed at the end of each paragraph, and no
-message header will be added. This format is useful if you later wish to
-re-import the text into @value{MSGED}, but it is not suitable for printing or
-editing with "standard" text editors.
-
-The default format can be changed by appending a suffix to the filename. If
-you append the filename with @samp{,t}, like in the example above, a carriage
-return will be placed after each line of text, and a message header will be
-put in front of the text. This format is well suited for printing (use
-@samp{lpt1:,t} to print the mail), or for using the mail in standard text
-editors.
-
-If you append @samp{,q} to the filename, the text will be exported in quote
-format.  This means that an attribution line will be added to the beginning
-of the message and each line will be preceded by the quote string.
-
-Putting a @samp{+} in front of the filename will cause the text to be
-appended to the file.  Otherwise the file will be overwritten.
-
-Putting a @samp{|} in front of the filename will cause the filename to be
-interpreted as an operating system command and the text will be piped to this
-command. This only works on Unix and EMX-compiled OS/2.
-
-Putting a @samp{?} in front of the filename indicates you want to be asked
-whether to append or not, and how to write out the file.  Some menus will
-appear and you choose the action you want.
-
-@xref{Exporting and Printing,,Exporting Mails to Text Files or to a Printer},
-for more information.
-
-@node OutputCharset, PrivateNet, Outfile, Keywords
+@node OutputCharset, Printer, Outfile, Keywords
 @subsection OutputCharset
 @findex OutputCharset
 @cindex character set, for writing messages
@@ -2975,7 +2906,40 @@ internally; @value{MSGED} will do all necessary conversion.
 @xref{Special Characters,,Using Special Characters - The FSC 0054 Charset
 Kludge}, for more information.
 
-@node PrivateNet, Quick, OutputCharset, Keywords
+@node Printer, PrivateNet, OutputCharset, Keywords
+@subsection Printer
+@findex Printer
+@cindex Printer, configuring
+@cindex Printing
+@table @asis
+@item Syntax:
+@code{Printer @var{printer}}
+@item Example:
+@example
+; On UNIX:
+Printer -Phplj4
+; On OS/2, DOS, Windows:
+Printer LPT3:
+@end example
+@end table
+
+This keyword is used to configure the printer that @value{MSGED} will use
+when printing a message (@key{Alt}-@key{W}). The usage of this keyword
+depends on your platform:
+
+On OS/2, DOS and Windows, it specifies the special device filename for
+printing. The default value is @code{PRN}. Other values that make sense are
+@code{LPT1:}, @code{LPT2:} and so on.
+
+On UNIX, @value{MSGED} prints by piping the message text into the @code{lpr}
+command, and the @code{Printer} keyword is used to configure additional
+options to the @code{lpr} command. By default, no additional options are
+used. If, for example, you do not want to use the default queue, but the
+queue named @samp{hpjl4}, you would use @code{Printer -Phplj4} in your
+configuration file.
+
+
+@node PrivateNet, Quick, Printer, Keywords
 @subsection PrivateNet
 @findex PrivateNet
 @cindex privatenets

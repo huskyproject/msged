@@ -15,6 +15,7 @@
 
 #include <assert.h>
 #include <stdio.h>
+#include <string.h>
 
 typedef unsigned char   byte;
 typedef unsigned short  word;

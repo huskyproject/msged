@@ -24,9 +24,10 @@ objs=	addr.obj     \
 	echotoss.obj \
 	environ.obj  \
 	fecfg145.obj \
-	flags.obj    \
 	fconf.obj    \
 	fido.obj     \
+	filedlg.obj  \
+	flags.obj    \
 	freq.obj     \
 	gestr120.obj \
 	getopts.obj  \

@@ -228,7 +228,7 @@ WND *WndOpen(int x1, int y1, int x2, int y2, int Bdr, int BAttr, int Attr);
 WND *WndPopUp(int wid, int dep, int Bdr, int BAttr, int NAttr);
 void WndClose(WND * w);
 void WndBox(int x1, int y1, int x2, int y2, int Attr, int type);
-void WndTitle(char *Str, int Attr);
+void WndTitle(const char *Str, int Attr);
 void WndWriteStr(int x, int y, int Attr, char *Str);
 void WndPutsCen(int y, int Attr, char *Str);
 int WndPrintf(int x, int y, int Attr, char *Str, ...);
@@ -241,6 +241,7 @@ void WndGotoXY(int x, int y);
 void WndClear(int x1, int y1, int x2, int y2, int attr);
 int WndGetLine(int x, int y, int len, char *buf, int Attr, int *pos, int nokeys, int fil, int disp, EVT * ev);
 void WndClearLine(int y, int Att);
+void WndFillField(int x, int y, int len, unsigned char ch, int Attr);
 void WndGetRel(int x, int y, int *wx, int *wy);
 
 /* Routines from system module (system independant) */

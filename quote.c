@@ -246,6 +246,7 @@ char *replace_noise(char *text)
     return c;
 }
 
+
 LINE *makequote(LINE * l, char *isfrom)
 {
     int i;
