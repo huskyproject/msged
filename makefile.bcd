@@ -3,11 +3,11 @@
 # No support for the Husky build environment
 
 CC=	bcc
-CFLAGS=	-w -I..\smapi -ml -v 
+CFLAGS=	-w -I..\smapi -ml
 CDEFS=	-DMSDOS -DUSE_MSGAPI -DUSE_CRITICAL -DHASCORE1 -I..\smapi
 COPT=	-O2
 ASM=	tasm
-AFLAGS=	-mx	
+AFLAGS=	-mx
 ADEFS=	-DMODL=large
 
 TARGET=	msged.exe
