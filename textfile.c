@@ -68,7 +68,7 @@ void filter_buffer(char *buf, int size)
 
         for (;*s && (size - 1);s++)
         {
-            if (*s < ' ')
+            if (*s < ' ' && *s >= 0)
             {
                 switch (*s)
                 {
