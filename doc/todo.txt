@@ -12,6 +12,12 @@ Category 1: Will certainly be implemented until next release
 - The block graphics mode works bad on too many systems. Give the user a way
   to disable it and switch back do traditional "minus plus pipe" graphics.
 
+- Fix: Defining an UUCP gate before defining at least one own address
+  causes a core dump
+
+- Fix: Msged does nonsense when ssh'ing into a linux box from a FreeBSD
+  xterm and the TERM variable is (incorrectly) set to linux-lat.
+
 Category 2: Might be implemented, but volunteers are always very welcome!
 =========================================================================
 
