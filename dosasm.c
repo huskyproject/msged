@@ -72,7 +72,7 @@ void dvpause(void)
 #endif
 }
 
-void winpause(void)
+void dpmipause(void)
 {
 #if defined(__DJGPP__)
     __dpmi_regs r;
@@ -85,6 +85,22 @@ void winpause(void)
     union REGS r;
     r.x.ax = 0x1680;
     int86(0x2f, &r, &r);
+#endif
+}
+
+int dpmicheck(void) /* checks for a DPMI host like OS/2 or Windows */
+{
+#if defined(__DJGPP__)
+    return 1;  /* DJGPP always runs in DPMI mode ... */
+#elif defined(__FLAT__)
+    RMINF.EAX = 0x1687;
+    int86x(0x2f);
+    return !(RMINF.EAX & 0xFFFF);
+#else
+    union REGS r;
+    r.x.ax = 0x1687;
+    int86(0x2f, &r, &r);
+    return !r.x.ax;
 #endif
 }
 

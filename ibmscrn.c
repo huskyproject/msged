@@ -216,7 +216,7 @@ void TTSendMsg(int msg, int x, int y, int msgtype)
 #define REPEAT_PAUSE  800
 #define T_DOS         1
 #define T_DV          2
-#define T_WINDOWS     3
+#define T_DPMI        3
 
 int ms_reset(int *mousetype);
 int ms_show_cursor(void);
@@ -239,8 +239,8 @@ void pause(void)
         dvpause();
         break;
 
-    case T_WINDOWS:
-        winpause();
+    case T_DPMI:
+        dpmipause();
         break;
 
     default:
@@ -480,6 +480,11 @@ int TTopen(void)
     {
         mtask = T_DV;
     }
+    else if (dpmicheck())
+    {
+        mtask = T_DPMI;
+    }
+
     VIOopen();
     term.NRow = VIOrows();
     term.NCol = VIOcolumns();
