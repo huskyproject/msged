@@ -29,6 +29,7 @@
 #include <time.h>
 #include "addr.h"
 #include "areas.h"
+#include "dirute.h"
 #include "nedit.h"
 #include "msged.h"
 #include "winsys.h"
@@ -305,6 +306,7 @@ static char *cfgswitches[] =
     "Shadows",
     "BS127",
     "LowerCase",
+    "AdaptiveCase",
     "ReceiveAllNames",
     "ReceiveAllAddresses",
     "SquishLock",
@@ -353,9 +355,10 @@ static char *cfgswitches[] =
 #define CFG_SW_SHADOWS              39
 #define CFG_SW_BS127                40
 #define CFG_SW_LOWERCASE            41
-#define CFG_SW_RECEIVEALLNAMES      42
-#define CFG_SW_RECEIVEALLADDR       43
-#define CFG_SW_SQUISH_LOCK          44 /* should be 45 */
+#define CFG_SW_ADAPTIVECASE         42
+#define CFG_SW_RECEIVEALLNAMES      43
+#define CFG_SW_RECEIVEALLADDR       44
+#define CFG_SW_SQUISH_LOCK          45
 
 #ifdef UNIX
 #include <sys/types.h>
@@ -495,6 +498,11 @@ char *pathcvt(char *path)
             path[i] = tolower(path[i]);
         }
     }
+    if (SW->adaptivecase)
+    {
+        adaptcase(path);
+    }
+            
     return path;
 }
 
@@ -895,6 +903,10 @@ void AssignSwitch(char *swtch, int OnOff)
         SW->lowercase = OnOff;
         break;
 
+    case CFG_SW_ADAPTIVECASE:
+        SW->adaptivecase = OnOff;
+        break;
+
     case CFG_SW_RECEIVEALLNAMES:
     	SW->receiveallnames = OnOff;
         break;
@@ -1157,8 +1169,8 @@ static void SetAreaInfo(AREA * a)
 
 static void AddArea(AREA * a)
 {
-    int i, g;
-    char *d, *t, *p;
+    int i, g, l;
+    char *d, *t, *p, *converted_path;
 
     if (tags2skip != NULL)
     {
@@ -1173,6 +1185,30 @@ static void AddArea(AREA * a)
         }
     }
 
+    if (a->msgtype != QUICK)
+    {
+        converted_path = xmalloc((l = strlen(a->path)) + 5);
+        memcpy(converted_path, a->path, l);
+        if (a->msgtype == SQUISH)  
+        {
+            /* we add the .sqd temporarily so that the case
+               adaption on Unix works correctly, because it can
+               only work if an existing file is referenced */
+            strcpy(converted_path + l, ".sqd");
+            kill_trail_slash(converted_path);
+            converted_path = pathcvt(converted_path);
+            if (a->msgtype == SQUISH && (l=strlen(converted_path)) > 4)
+            {
+                 converted_path[l - 4] = '\0';
+            }
+        }
+    }
+    else
+    {
+        converted_path = NULL;
+    }
+
+
     if (a->msgtype == QUICK && ST->quickbbs == NULL)
     {
         printf("\r\aFor QuickBBS areas, set QuickBBS path!\n");
@@ -1181,9 +1217,11 @@ static void AddArea(AREA * a)
 
     for (i = 0; i < SW->areas; i++)
     {
-        if ((arealist[i].path != NULL) && (((a->msgtype == QUICK) &&
-          (arealist[i].msgtype == QUICK) && (a->board == a->board)) ||
-          ((a->msgtype != QUICK) && (stricmp(a->path, arealist[i].path) == 0))))
+        if (((a->msgtype == QUICK) && (arealist[i].msgtype == QUICK) &&
+             (a->board ==arealist[i].board)) ||
+            ((a->msgtype != QUICK) && (arealist[i].msgtype != QUICK) &&
+             (arealist[i].path != NULL) && (converted_path != NULL) &&
+             (stricmp(arealist[i].path, converted_path) == 0)))
         {
             break;
         }
@@ -1216,12 +1254,7 @@ static void AddArea(AREA * a)
 
         CurArea.description = xstrdup(a->description);
         CurArea.tag = xstrdup(a->tag);
-        if (a->msgtype != QUICK)
-        {
-            CurArea.path = xstrdup(a->path);
-            kill_trail_slash(CurArea.path);
-            CurArea.path = pathcvt(CurArea.path);
-        }
+        CurArea.path = converted_path;
     }
     else
     {
@@ -1229,6 +1262,7 @@ static void AddArea(AREA * a)
          *  We redefine the area to the new defaults, with the
          *  exception of the path, tag, desc and group. */
 
+        release(converted_path);
         release(arealist[i].addr.domain);
         p = arealist[i].path;
         t = arealist[i].tag;
@@ -1343,7 +1377,6 @@ static void checkareas(char *areafile)
         {
             a.path = xstrdup(tokens[0]);
             kill_trail_slash(a.path);
-            a.path = pathcvt(a.path);
         }
 
         a.tag = xstrdup(tokens[1]);
@@ -1614,7 +1647,6 @@ static void check_fastecho(char *areafile)
         if (a.path)
         {
             kill_trail_slash(a.path);
-            a.path = pathcvt(a.path);
         }
 
 #ifdef USE_MSGAPI
@@ -1723,7 +1755,6 @@ static void check_squish(char *areafile)
             a.msgtype = FIDO;
             a.addr.notfound = 1;
             a.tag = xstrdup(tokens[1]);
-            a.path = pathcvt(xstrdup(tokens[2]));
             a.description = xstrdup(tokens[1]);
 
             strupr(a.tag);
@@ -1823,7 +1854,7 @@ static void check_gecho(char *areafile)
 
     kill_trail_slash(areafile);
     fn = xmalloc(strlen(areafile) + 10);
-    sprintf(fn, "%s\\SETUP.GE", areafile);
+    sprintf(fn, "%s\\setup.ge", areafile);
     fn = pathcvt(fn);
     fp = fopen(fn, "rb");
     release(fn);
@@ -1863,7 +1894,7 @@ static void check_gecho(char *areafile)
         a.addr.point = Setup.aka[0].point;
         a.tag = xstrdup("NETMAIL");
         a.description = xstrdup("NETMAIL - GEcho Netmail Folder");
-        a.path = pathcvt(xstrdup(Setup.mailpath));
+        a.path = xstrdup(Setup.mailpath);
         kill_trail_slash(a.path);
         applyflags (&a, areafileflags);
         AddArea(&a);
@@ -1873,7 +1904,7 @@ static void check_gecho(char *areafile)
     /* read AREAFILE.GE (scan for echomail and secondary netmail areas) */
 
     fn = xmalloc(strlen(areafile) + 13);
-    sprintf(fn, "%s\\AREAFILE.GE", areafile);
+    sprintf(fn, "%s\\areafile.ge", areafile);
     fn = pathcvt(fn);
     fp = fopen(fn, "rb");
     release(fn);
@@ -1979,7 +2010,7 @@ static void check_gecho(char *areafile)
             }
             else
             {
-                a.path = pathcvt(xstrdup(Area.path));
+                a.path = xstrdup(Area.path);
                 kill_trail_slash(a.path);
             }
 
@@ -2140,7 +2171,7 @@ static void parsemail(char *keyword, char *value)
         a.board = atoi(tokens[2]);
         break;
     default:
-        a.path = pathcvt(xstrdup(tokens[2]));
+        a.path = xstrdup(tokens[2]);
         break;
     }
 
@@ -2768,11 +2799,11 @@ static void parseconfig(FILE * fp)
             {
                 if (value[0] == '+')
                 {
-                    ST->echotoss = xstrdup(value + 1);
+                    ST->echotoss = pathcvt(xstrdup(value + 1));
                 }
                 else
                 {
-                    ST->echotoss = xstrdup(value);
+                    ST->echotoss = pathcvt(xstrdup(value));
                 }
             }
             break;

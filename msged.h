@@ -373,6 +373,7 @@ struct _swv
     int edittearlines;          /* add tearlines to template message */
     int editoriginlines;        /* add originlines to template message */
     int lowercase;              /* Convert filenames to lower case */
+    int adaptivecase;           /* Case insenstive behaviour on Unix */
     int receiveallnames;        /* Switch rvd on for mail to all configured */
                                 /* user names, or only for the active one? */
     int receivealladdr;         /* similar thing for FTN addresses */

@@ -7,6 +7,24 @@ Features, Changes and Fixes in the current development version of MsgEd
 
 Features:
 
+- Unix: New Switch "AdaptiveCase". If you set "Switch Adaptivecase On" 
+  at the beginning of your configuration file, MsgEd will treat all
+  file names case insensitively (i.E. it before trying to open any file,
+  it will look into the directory and determine how it is spelled). 
+
+  You should set this switch to On if you are using MsgEd together
+  with a message base or nodelist which is mounted from an DOSish (OS/2,
+  Windows, DOS) platform which has a case insensitive file system. Those
+  message bases usually use lower and upper case in a wild mix (i.E.
+  both .msg and .MSG and .Msg files, etc. pp.). Th adaptivecase switch 
+  allows MsgEd to cope with such directories.
+
+  If you are sure that you do not have case sensitivity problems, probably
+  because you are using Unix software exclusively, you can set this switch
+  to Off. This will gain you a little performance improvement and about 
+  200K memory. (These 200K are used by the AdaptiveCase feature as a
+  file system cache, because otherwise it would be too slow).
+
 - Unix: MsgEd TE is now able to correctly recognize the terminal size. It is
   also able to recoginze when the size of the xterm it is running in is 
   changed and adapts itself accordingly.
@@ -31,6 +49,13 @@ Features:
   "Switch ReceiveAllAddresses Off" to the configuration file.
 
 Fixes:
+
+- Fixed bugs in the routine that allowed for redefinition of areas
+  (i.E. manual redefition of files that previously have been imported
+  from an areafile - sometimes it simply would not work).
+
+- Backslashes could not be used in the template files. Fixed. (You only
+  need to enter a SINGLE backslash to produce one!).
 
 - Segmenatation faults and even worse errors fixed when Msged was started in
   a very small terminal (e.g. 8x8).

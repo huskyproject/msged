@@ -17,6 +17,7 @@
 #include "userlist.h"
 #include "vsevops.h"
 #include "strextra.h"
+#include "dirute.h"  /* adaptcase */
 
 static int compareSysop(void *a, void *b, int len)
 {
@@ -93,19 +94,26 @@ char *v7lookupnode(ADDRESS * faddr, char *name)
     VSEV vsev;
 
     strcpy(index_filename, ST->nodepath);
-    strcat(index_filename, "\\");
+    strcat(index_filename, "/");
     if (ST->nodebase != NULL)
     {
         strcat(index_filename, ST->nodebase);
     }
-    strcat(index_filename, ".NDX");
+    strcat(index_filename, ".ndx");
     strcpy(data_filename, ST->nodepath);
-    strcat(data_filename, "\\");
+    strcat(data_filename, "/");
     if (ST->nodebase != NULL)
     {
         strcat(data_filename, ST->nodebase);
     }
-    strcat(data_filename, ".DAT");
+    strcat(data_filename, ".dat");
+
+    /* Find the files in the correct spelling on UNIX file systems */
+    if (SW->adaptivecase)
+    {
+        adaptcase(data_filename);   
+        adaptcase(index_filename);
+    }
 
     record = mxbtOneSearch(&mxbt, index_filename, (void *)faddr, compareNode);
 
@@ -141,18 +149,25 @@ ADDRESS v7lookup(char *name)
     makeReverse(reverse, name);
 
     strcpy(index_filename, ST->nodepath);
-    strcat(index_filename, "\\");
+    strcat(index_filename, "/");
     if (ST->sysop != NULL)
     {
         strcat(index_filename, ST->sysop);
     }
     strcpy(data_filename, ST->nodepath);
-    strcat(data_filename, "\\");
+    strcat(data_filename, "/");
     if (ST->nodebase != NULL)
     {
         strcat(data_filename, ST->nodebase);
     }
-    strcat(data_filename, ".DAT");
+    strcat(data_filename, ".dat");
+
+    /* Find the files in the correct spelling on UNIX file systems */
+    if (SW->adaptivecase)
+    {
+        adaptcase(data_filename);   
+        adaptcase(index_filename);
+    }
 
     record = mxbtOneSearch(&mxbt, index_filename, (void *)reverse, compareSysop);
 
@@ -185,19 +200,26 @@ char *v7lookupsystem(ADDRESS * faddr, char *system)
     VSEV vsev;
 
     strcpy(index_filename, ST->nodepath);
-    strcat(index_filename, "\\");
+    strcat(index_filename, "/");
     if (ST->nodebase != NULL)
     {
         strcat(index_filename, ST->nodebase);
     }
-    strcat(index_filename, ".NDX");
+    strcat(index_filename, ".ndx");
     strcpy(data_filename, ST->nodepath);
-    strcat(data_filename, "\\");
+    strcat(data_filename, "/");
     if (ST->nodebase != NULL)
     {
         strcat(data_filename, ST->nodebase);
     }
-    strcat(data_filename, ".DAT");
+    strcat(data_filename, ".dat");
+
+    /* Find the files in the correct spelling on UNIX file systems */
+    if (SW->adaptivecase)
+    {
+        adaptcase(data_filename);   
+        adaptcase(index_filename);
+    }
 
     if (faddr->point)
     {

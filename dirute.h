@@ -28,6 +28,7 @@ struct _dta
 #define DIR_HIDDEN 0x0002
 #define DIR_SYSTEM 0x0004
 #define DIR_ICASE  0           /* HPFS is always case insensitive  */
+#define DIR_NO_WILDCARDS 0x0
 
 #elif defined(__RSXNT__)
 
@@ -48,6 +49,7 @@ struct _dta
 #define DIR_HIDDEN 0x0          /* ? */
 #define DIR_SYSTEM 0x0          /* ? */
 #define DIR_ICASE  0x0          /* NT is always case insensitive */
+#define DIR_NO_WILDCARDS 0x0
 
 #elif defined(UNIX)
 
@@ -70,6 +72,7 @@ struct _dta
 #define DIR_HIDDEN
 #define DIR_SYSTEM
 #define DIR_ICASE  8
+#define DIR_NO_WILDCARDS 16
 
 #else
 
@@ -94,6 +97,7 @@ struct _dta
 #define DIR_HIDDEN FA_HIDDEN
 #define DIR_SYSTEM FA_SYSTEM
 #define DIR_ICASE  0
+#define DIR_NO_WILDCARDS 0
 
 #else
 
@@ -104,13 +108,21 @@ struct _dta
 #define DIR_HIDDEN
 #define DIR_SYSTEM
 #define DIR_ICASE  0
+#define DIR_NO_WILDCARDS 0
 
 #endif
 
 #endif
 
-int dir_findnext(struct _dta *dta);
-int dir_findfirst(char *filename, int attribute, struct _dta *dta);
+int  dir_findnext(struct _dta *dta);
+int  dir_findfirst(char *filename, int attribute, struct _dta *dta);
+void dir_findclose(struct _dta *dta);
+
+#ifdef UNIX
+void adaptcase(char *filename);
+#else
+#define adaptacse(x) (x)
+#endif
 
 #define DIRUTE_NONE 1
 

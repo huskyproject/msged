@@ -12,7 +12,9 @@
 
 int strncmpi(const char *s, const char *t, size_t n);
 void strdel(char *l, int x);
+#ifndef UNIX
 int stricmp(const char *s, const char *t);
+#endif
 char *strdup(const char *s);
 
 #ifndef __IBMC__
@@ -31,6 +33,7 @@ const char *stristr(const char *s1, const char *s2);
 #define strend(str) ((str) + strlen(str) - 1)
 
 #ifdef UNIX
+#define stricmp strcasecmp
 #define strnicmp strncasecmp
 #endif
 

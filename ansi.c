@@ -40,7 +40,7 @@
 #include <signal.h>             /* signal ...     */
 #include <setjmp.h>             /* longjmp        */
 
-static int resize_pending = 0;
+static volatile int resize_pending = 0;
 
 #if (defined(__unix__) || defined(unix)) && !defined(USG)
 #include <sys/param.h>          /* used to differentiate BSD from SYSV  */
@@ -105,6 +105,9 @@ int coninit(void);
 void confin(void);
 #endif
 
+#ifdef UNIX
+volatile
+#endif
 TERM term =
 {
     80,
@@ -116,8 +119,8 @@ TERM term =
     0
 };
 
-static unsigned char *scrnbuf;
-static unsigned char *colbuf;
+static unsigned char *scrnbuf, *colbuf;
+
 
 #define EBUFSZ 100
 static EVT EVent[EBUFSZ];       /* event circular queue */
@@ -1180,7 +1183,7 @@ void TTSendMsg(unsigned int msg, int x, int y, unsigned int msgtype)
 }
 
 
-static int jump_on_resize = 0;
+static volatile int jump_on_resize = 0;
 static jmp_buf jmpbuf;
 
 static void collect_events(int block)
