@@ -12,6 +12,11 @@
 #include <errno.h>
 #include <assert.h>
 #include <ctype.h>
+
+#if defined(__WATCOMC__)
+#include <wtypes.h>
+#endif
+
 #include "dirute.h"
 #include "strextra.h"
 #include "memextra.h"
@@ -216,7 +221,7 @@ char *dir_getdrivelist(void)
 
 
 
-#elif defined(__RSXNT__) || defined (__MINGW32__)
+#elif defined(__RSXNT__) || defined (__MINGW32__) || defined (__WATCOMC__)
 
 #define NOUSER
 #include <windows.h>
@@ -305,7 +310,11 @@ int dir_getdrive(void)
 {
     char buf[FILENAME_MAX + 1];
 
+#if defined (__WATCOMC__)
+    GetCurrentDirectory(FILENAME_MAX, buf);
+#else
     GetCurrentDirectory(buf, FILENAME_MAX);
+#endif
     return (toupper(buf[0]) - 'A');
 }
 char *dir_getdrivelist(void)

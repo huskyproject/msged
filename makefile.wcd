@@ -10,6 +10,8 @@ INCDIR=c:\include
 # options for installing programs
 IBOPT=-s
 
+# debug?
+DEBUG=0
 
 CC=	wcl
 
@@ -28,63 +30,63 @@ ADEFS=	-DWATCOM
 TARGET=	msged.exe
 MSGAPI=	$(LIBDIR)\smapiwcd.lib
 
-objs=	addr.obj     \
-	areas.obj    \
-	bmg.obj      \
-	charset.obj  \
-	config.obj   \
-	control.obj  \
-	critical.obj \
-	date.obj     \
-	dialogs.obj  \
-	dirute.obj   \
-	dlgbox.obj   \
-	dlist.obj    \
-	dosasm.obj   \
-	dosmisc.obj  \
-	echotoss.obj \
-	environ.obj  \
-	fconf.obj    \
-	fecfg145.obj \
-	fido.obj     \
-	filedlg.obj  \
-	flags.obj    \
-	freq.obj     \
-	gestr120.obj \
-	getopts.obj  \
-	help.obj     \
-	helpcmp.obj  \
-	helpinfo.obj \
-	ibmscrn.obj  \
-	init.obj     \
-	keycode.obj  \
-	list.obj     \
-	maintmsg.obj \
-	makemsgn.obj \
-	memextra.obj \
-	menu.obj     \
-	misc.obj     \
-	mnu.obj      \
-	mouse4.obj   \
-	msg.obj      \
-	msged.obj    \
-	mxbt.obj     \
-	normalc.obj  \
-	nshow.obj    \
-	quick.obj    \
-	quote.obj    \
-	readmail.obj \
-	screen.obj   \
-	spawn.obj    \
-	strextra.obj \
-	system.obj   \
-	template.obj \
-	textfile.obj \
-	userlist.obj \
-	vio.obj      \
-	vsev.obj     \
-	vsevops.obj  \
-	win.obj      \
+objs=	addr.obj     &
+	areas.obj    &
+	bmg.obj      &
+	charset.obj  &
+	config.obj   &
+	control.obj  &
+	critical.obj &
+	date.obj     &
+	dialogs.obj  &
+	dirute.obj   &
+	dlgbox.obj   &
+	dlist.obj    &
+	dosasm.obj   &
+	dosmisc.obj  &
+	echotoss.obj &
+	environ.obj  &
+	fconf.obj    &
+	fecfg145.obj &
+	fido.obj     &
+	filedlg.obj  &
+	flags.obj    &
+	freq.obj     &
+	gestr120.obj &
+	getopts.obj  &
+	help.obj     &
+	helpcmp.obj  &
+	helpinfo.obj &
+	ibmscrn.obj  &
+	init.obj     &
+	keycode.obj  &
+	list.obj     &
+	maintmsg.obj &
+	makemsgn.obj &
+	memextra.obj &
+	menu.obj     &
+	misc.obj     &
+	mnu.obj      &
+	mouse4.obj   &
+	msg.obj      &
+	msged.obj    &
+	mxbt.obj     &
+	normalc.obj  &
+	nshow.obj    &
+	quick.obj    &
+	quote.obj    &
+	readmail.obj &
+	screen.obj   &
+	spawn.obj    &
+	strextra.obj &
+	system.obj   &
+	template.obj &
+	textfile.obj &
+	userlist.obj &
+	vio.obj      &
+	vsev.obj     &
+	vsevops.obj  &
+	win.obj      &
 	wrap.obj
 
 all: $(TARGET)
