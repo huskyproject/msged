@@ -54,6 +54,10 @@ Changes:
 
 Features:
 
+- Added Fidoconfig parsing code (areafile only) that can work without
+  fidoconfig library. This keeps the binaries small and insensitive against
+  library interface changes and new keyword introductions.
+
 - Group handling has been added. Msged can now read group information from
   tosser configuration files, sort areas by group, draw separators in the
   arealist between the groups, or only show areas of a single group at a time
