@@ -1,3 +1,8 @@
+2003-01-13 Monday 14:57  stas_degteff
+
+	* makefile.mvcdll (1.1): Makefile for Ms Visual C (DLL build) from
+	Andrey Reznik 2:5020/2999
+
 2003-01-10 Friday 12:43  mche
 
 	* dirute.c (1.15), fido.c (1.15), filedlg.c (1.13), msg.c (1.27),
