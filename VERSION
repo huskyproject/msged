@@ -1,3 +1,2 @@
 msged 6.0.2-stable
-requires smapi 2.0
-
+requires smapi 2.2-stable
