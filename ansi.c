@@ -572,7 +572,7 @@ int getkey()
 unsigned int TTGetKey(void)
 {
     int ch;
-
+    
  skip:
 #if defined(OS2) || defined(WINNT)
     ch = getch();
