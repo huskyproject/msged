@@ -98,7 +98,7 @@ all: $(TARGET)
 	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
 
 $(TARGET): $(objs)
-	$(CC) $(COPT) -fe=$(TARGET) *.obj $(MSGAPI)
+	$(CC) $(COPT) -fe=$(TARGET) $(objs) $(MSGAPI)
 
 clean:
 	del *.obj

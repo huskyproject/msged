@@ -91,7 +91,7 @@ all: $(TARGET)
 	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
 
 $(TARGET): $(objs)
-	$(CC) $(COPT) -k8192 -fe=$(TARGET) *.obj $(MSGAPI)
+	$(CC) $(COPT) -k8192 -fe=$(TARGET) $(objs) $(MSGAPI)
 	$(PMWDIR)\pmwbind -r -s$(PMWDIR)\pmodew.exe $(TARGET)
 
 clean:

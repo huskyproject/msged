@@ -74,6 +74,29 @@ struct _dta
 #define DIR_ICASE  8
 #define DIR_NO_WILDCARDS 16
 
+#elif defined(__WATCOMC__)
+
+#include <DIRECT.H>
+
+struct _dta
+{
+    char reserved[21];
+    char attrib;
+    unsigned short int wr_time;
+    unsigned short int wr_date;
+    long size;
+    char name[FILENAME_MAX + 1];
+};
+
+#define DIR_DIRECT _A_SUBDIR
+#define DIR_NORMAL _A_NORMAL
+#define DIR_ARCHVD _A_ARCH
+#define DIR_READON _A_RDONLY
+#define DIR_HIDDEN _A_HIDDEN
+#define DIR_SYSTEM _A_SYSTEM
+#define DIR_ICASE  0
+#define DIR_NO_WILDCARDS 0
+
 #else
 
 struct _dta
@@ -97,19 +120,6 @@ struct _dta
 #define DIR_READON FA_RDONLY
 #define DIR_HIDDEN FA_HIDDEN
 #define DIR_SYSTEM FA_SYSTEM
-#define DIR_ICASE  0
-#define DIR_NO_WILDCARDS 0
-
-#elif defined(__WATCOMC__)
-
-#include <DIRECT.H>
-
-#define DIR_DIRECT _A_SUBDIR
-#define DIR_NORMAL _A_NORMAL
-#define DIR_ARCHVD _A_ARCH
-#define DIR_READON _A_RDONLY
-#define DIR_HIDDEN _A_HIDDEN
-#define DIR_SYSTEM _A_SYSTEM
 #define DIR_ICASE  0
 #define DIR_NO_WILDCARDS 0
 

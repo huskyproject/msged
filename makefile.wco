@@ -1,11 +1,11 @@
 # look for libs in c:\lib
-LIBDIR=c:\lib
+LIBDIR=..
 
 # install programs in c:\bin
 BINDIR=c:\bin
 
 # look for includes here
-INCDIR=c:\include
+INCDIR=..
 
 # options for installing programs
 IBOPT=-s
@@ -13,19 +13,31 @@ IBOPT=-s
 # debug?
 DEBUG=0
 
+# use fidoconfig?
+USE_FIDOCONFIG=0
+
 CC=	wcl386
 
 !IF $(DEBUG) == 1
-  CFLAGS=	-zq -wx -I$(INCDIR) -d2
+CFLAGS= -zq -wx -I$(INCDIR) -d2
 !ELSE
-  CFLAGS=	-zq -wx -I$(INCDIR)
+CFLAGS= -zq -wx -I$(INCDIR)
 !ENDIF
 
 CDEFS=	-DOS2 -DUSE_MSGAPI
 #COPT=	-oneatx -5
 
+#COPT=  -oneatx -5
+MSGAPI= $(LIBDIR)\smapi\smapiwco.lib
+
+!IF $(USE_FIDOCONFIG) == 1
+CDEFS=  -DOS2 -DUSE_MSGAPI -DUSE_FIDOCONFIG
+FIDOCFG= $(LIBDIR)\fidoconfig\fidoconfig.lib
+!ELSE
+CDEFS=  -DOS2 -DUSE_MSGAPI
+!ENDIF
+
 TARGET=	msgedp.exe
-MSGAPI=	$(LIBDIR)\smapiwco.lib
 
 objs=	addr.obj     &
 	areas.obj    &
