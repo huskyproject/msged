@@ -12,11 +12,12 @@ Category 1: Will certainly be implemented until next release
   Also: Problem with capital / small spelling of lastread file name
   in name keyword on Linux. High time to fix this!!!)
 
-- Background attribute "transparent", for the new kconsole feature
-  (background images). Use patch that has already been submitted.
-
 Category 2: Might be implemented, but volunteers are always very welcome!
 =========================================================================
+
+- Background attribute "transparent", for the new kconsole feature
+  (background images). Patch that has already been submitted is not nice,
+  think of different solution.
 
 - Pseudo Grahpics with KOI8
 
