@@ -51,10 +51,10 @@
 #endif
 
 #ifdef UNIX
-#ifdef __FreeBSD__
-#define PROG     "Msged/BSD"
+#ifdef UNAME
+#define PROG "Msged/"UNAME
 #else
-#define PROG     "Msged/Lnx"
+#define PROG     "Msged/UNX"
 #endif
 #endif
 
