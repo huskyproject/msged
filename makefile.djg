@@ -3,7 +3,7 @@
 
 CC=	$(CROSSPREFIX)gcc
 CFLAGS=	-Wall -I../smapi -I..
-CDEFS=	-D__FLAT__ -DUSE_MSGAPI
+CDEFS=	-D__FLAT__ -DUSE_MSGAPI -DNOSEMAPHORES
 COPT=	-O3 -fomit-frame-pointer -fstrength-reduce
 LFLAGS= -L../smapi -s
 
