@@ -12,9 +12,6 @@ Category 1: Will certainly be implemented until next release
 - Give the user the possibilty to only include the Areatag, but not
   the Fastecho echo description into the area list (Ralf Hoerner)
 
-- Give the user the possibility to directly start into message list mode
-  instead of the message reader mode (Sascha M Silbe)
-
 - Write a tool that generates a FIDOUSER.LST for the Userlist feature.
 
 - Background attribute "transparent", vor the new kconsole feature
