@@ -1,3 +1,8 @@
+2002-11-09 Saturday 22:17  os2tobi
+
+	* fconf.c (1.20): fidoconfig parser now flags netmail areas as
+	private
+
 2002-11-08 Friday 20:42  os2tobi
 
 	* quick.c (1.6): fixed bug in Hudson routines introduced by last
