@@ -56,11 +56,10 @@
 #endif
 
 #ifdef UNIX
-#ifdef UNAME
-#define PROG "Msged/"UNAME
-#else
-#define PROG     "Msged/UNX"
+#ifndef UNAME
+#define UNAME "UNX"
 #endif
+#define PROG "Msged/"UNAME
 #define OSID "UNIX;"UNAME
 #endif
 
