@@ -12,7 +12,10 @@ Category 1: Will certainly be implemented until next release
 
 - Fix: Sascha reports crashes when resizing terminal window
 
-- Jam support
+- Jam support. Necessary fixes:
+  fix smapi gethighmsg function
+  spontaneous assertion failed when writing mail
+  PATH does not display, at least with stable smapi
 
 Category 2: Might be implemented, but volunteers are always very welcome!
 =========================================================================
