@@ -1,3 +1,11 @@
+2003-01-22 Wednesday 13:32  gerritkuehn
+
+	* fecfg145.c (1.6): Removed unused variable.
+
+2003-01-22 Wednesday 09:15  gerritkuehn
+
+	* msged.c (1.21), readmail.c (1.46): UNIX is not __FLAT__.
+
 2003-01-21 Tuesday 06:19  stas_degteff
 
 	* msged.dsp (1.2): 0x0a --> 0x0d0x0a for *.dsp
