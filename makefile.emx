@@ -1,0 +1,86 @@
+# Makefile for EMX GCC OMF-style on OS/2
+# No support for the Husky build environment
+
+CC=	 gcc
+CFLAGS=	-Wall -Zcrtdll
+CDEFS=	-DOS2 -DUSE_MSGAPI -I..
+COPT=   -O3 -fomit-frame-pointer -fstrength-reduce
+LFLAGS= -Zcrtdll -s
+
+.SUFFIXES:
+.SUFFIXES: .c .o
+
+TARGET=	msgedp.exe
+TMPLIB= msgedemx.a
+LIB=    ar
+MSGAPI= ../smapi/smapiemx.a
+
+objs=	addr.o     \
+	areas.o    \
+	bmg.o      \
+	charset.o  \
+	config.o   \
+	control.o  \
+	date.o     \
+	dialogs.o  \
+	dirute.o   \
+	dlgbox.o   \
+	dlist.o    \
+	echotoss.o \
+	environ.o  \
+	fconf.o    \
+	fecfg145.o \
+	fido.o     \
+	filedlg.o  \
+	flags.o    \
+	freq.o     \
+	gestr120.o \
+	getopts.o  \
+	help.o     \
+	helpcmp.o  \
+	helpinfo.o \
+	init.o     \
+	keycode.o  \
+	list.o     \
+	maintmsg.o \
+	makemsgn.o \
+	malloc16.o \
+	memextra.o \
+	menu.o     \
+	misc.o     \
+	mnu.o      \
+	msg.o      \
+	msged.o    \
+	mxbt.o     \
+	normalc.o  \
+	nshow.o    \
+	os2scr.o   \
+	quick.o    \
+	quote.o    \
+	readmail.o \
+	screen.o   \
+	strextra.o \
+	system.o   \
+	template.o \
+	textfile.o \
+	userlist.o \
+	vsev.o     \
+	vsevops.o  \
+	win.o      \
+	wrap.o
+
+all: $(TARGET)
+
+.c.o:
+	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
+	$(LIB) r $(TMPLIB) $@
+
+$(TARGET): $(objs)
+	$(CC) $(COPT) $(LFLAGS) -o $(TARGET) msged.o $(TMPLIB) $(MSGAPI)
+
+clean:
+	-del *.o
+	-del *.bak
+
+distclean: clean
+	-del $(TARGET)

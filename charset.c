@@ -53,7 +53,7 @@ void charset_alias (const char *from, const char *to)
     strncpy(aliases[naliases-1].to_charset, to, 9);
     aliases[naliases-1].to_charset[8] = '\0';
 }
-    
+
 static const char *findalias(const char *kludge)
 {
     int i;
@@ -196,7 +196,7 @@ void read_charset_maps(char *readmap, char *writemap)
 
     fnr = shell_expand(xstrdup(readmap));
     fnw = shell_expand(xstrdup(writemap));
-    
+
     readmaps=read_map(fnr);
     toasc_encountered=0;
     writemaps=read_map(fnw);
@@ -303,7 +303,7 @@ LOOKUPTABLE * get_writetable(const char *charset_name, int *allowed)
     int i;
 
     charset_name = findalias(charset_name);
- 
+
     if (writemaps == NULL)
     {
         *allowed=0;
@@ -360,12 +360,16 @@ void strip_control_chars (char *text)
 #if defined(UNIX) || defined(SASC)
 
     unsigned char c;
-    size_t dstidx, len = strlen(text);
+    size_t dstidx, len;
+
+    if (text == NULL) return;
+
+    len  = strlen(text);
 
     for (dstidx = 0; dstidx < len; dstidx++)
     {
         c = *(unsigned char*)(text + dstidx);
-        if ( (c < 32 && c != '\n' && c != '\r' && c != '\001') || 
+        if ( (c < 32 && c != '\n' && c != '\r' && c != '\001') ||
             (c >= 128 && c < 160) )
         {
             text[dstidx] = '?';
@@ -481,7 +485,7 @@ char *get_local_charset(void)
     {
         return NULL;
     }
-    
+
     sprintf (buffer, "%s 2", readmaps->charset_name);
     return buffer;
 }
@@ -548,6 +552,6 @@ char *get_known_charset_table(int *nelem, int *elem_size)
 
     return array;
 }
-    
 
-    
+
+

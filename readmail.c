@@ -95,7 +95,7 @@ char *do_softcrxlat(char *ptr)
 {
     char *p;
 
-    if (softcrxlat)
+    if (softcrxlat && ptr != NULL)
     {
         p = strchr(ptr, 0x8d);
         while (p != NULL)
@@ -266,7 +266,7 @@ msg *readmsg(unsigned long n)
                        is enforced */
                     break;
                 }
-                
+
 		if (strncmp(text + 1, "CHRS:", 5) == 0)
 		{
                     if (had_codepage)
@@ -1801,7 +1801,7 @@ int writemsg(msg * m)
             if (ST->output_charset[0] != 'C' || ST->output_charset[1] != 'P')
             {
                 int cp;
-                
+
              /* codepage of this kludge is non-obvious, add CODEPAGE kludge */
 
                 cp = get_codepage_number(ST->output_charset);
