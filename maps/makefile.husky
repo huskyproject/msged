@@ -21,7 +21,10 @@ allmaps = \
  is5_866.chs     is5_asc.chs     iso_850.chs     iso_asc.chs     iso_ibm.chs \
  iso_mac.chs     itl_ibm.chs     koi_1125.chs    koi_866.chs     koi_asc.chs \
  mac_850.chs     mac_ibm.chs     mac_iso.chs     nor_ibm.chs     prt_ibm.chs \
- spn_ibm.chs     swe_ibm.chs     swi_ibm.chs     uk_ibm.chs
+ spn_ibm.chs     swe_ibm.chs     swi_ibm.chs     uk_ibm.chs \
+ 850_865.chs  865_866.chs  865_ibm.chs  866_865.chs  iso_865.chs \
+ 865_850.chs  865_asc.chs  865_iso.chs  ibm_865.chs
+
 
 .PHONY: maps
 
@@ -36,7 +39,7 @@ makemaps$(EXE): makemaps$(OBJ)
 	$(CC) $(LFLAGS) -o makemaps$(EXE) makemaps$(OBJ)
 
 maps: 	makemaps$(EXE) readmaps.437 readmaps.850 readmaps.866 readmaps.koi readmaps.ukr \
-	readmaps.is1 readmaps.is5
+	readmaps.is1 readmaps.is5 readmaps.865
 
 readmaps.437:
 	-echo "DO NOT WORRY ABOUT WARNINGS ABOUT no matching charset!"
@@ -52,6 +55,13 @@ readmaps.850:
 	-$(RM) readmaps.850
 	$(MV) writmaps.dat writmaps.850
 	$(MV) readmaps.dat readmaps.850
+
+readmaps.865:
+	./makemaps$(EXE) CP865 $(allmaps)
+	-$(RM) writmaps.865
+	-$(RM) readmaps.865
+	$(MV) writmaps.dat writmaps.865
+	$(MV) readmaps.dat readmaps.865
 
 readmaps.866:
 	./makemaps$(EXE) CP866 $(allmaps)
@@ -101,6 +111,7 @@ ifeq ($(DEBIAN), 1)
 	-$(MKDIR) $(MKDIROPT) $(DESTDIR)/$(CFGDIR)
 	$(INSTALL) $(IIOPT) readmaps.437 $(DESTDIR)/$(CFGDIR)
 	$(INSTALL) $(IIOPT) readmaps.850 $(DESTDIR)/$(CFGDIR)
+	$(INSTALL) $(IIOPT) readmaps.865 $(DESTDIR)/$(CFGDIR)
 	$(INSTALL) $(IIOPT) readmaps.866 $(DESTDIR)/$(CFGDIR)
 	$(INSTALL) $(IIOPT) readmaps.koi $(DESTDIR)/$(CFGDIR)
 	$(INSTALL) $(IIOPT) readmaps.is1 $(DESTDIR)/$(CFGDIR)
@@ -108,6 +119,7 @@ ifeq ($(DEBIAN), 1)
 	$(INSTALL) $(IIOPT) readmaps.ukr $(DESTDIR)/$(CFGDIR)
 	$(INSTALL) $(IIOPT) writmaps.437 $(DESTDIR)/$(CFGDIR)
 	$(INSTALL) $(IIOPT) writmaps.850 $(DESTDIR)/$(CFGDIR)
+	$(INSTALL) $(IIOPT) writmaps.865 $(DESTDIR)/$(CFGDIR)
 	$(INSTALL) $(IIOPT) writmaps.866 $(DESTDIR)/$(CFGDIR)
 	$(INSTALL) $(IIOPT) writmaps.koi $(DESTDIR)/$(CFGDIR)
 	$(INSTALL) $(IIOPT) writmaps.is1 $(DESTDIR)/$(CFGDIR)
@@ -121,6 +133,7 @@ else
 	-$(MKDIR) $(MKDIROPT) $(CFGDIR)
 	$(INSTALL) $(IIOPT) readmaps.437 $(CFGDIR)
 	$(INSTALL) $(IIOPT) readmaps.850 $(CFGDIR)
+	$(INSTALL) $(IIOPT) readmaps.865 $(CFGDIR)
 	$(INSTALL) $(IIOPT) readmaps.866 $(CFGDIR)
 	$(INSTALL) $(IIOPT) readmaps.koi $(CFGDIR)
 	$(INSTALL) $(IIOPT) readmaps.is1 $(CFGDIR)
@@ -128,6 +141,7 @@ else
 	$(INSTALL) $(IIOPT) readmaps.ukr $(CFGDIR)
 	$(INSTALL) $(IIOPT) writmaps.437 $(CFGDIR)
 	$(INSTALL) $(IIOPT) writmaps.850 $(CFGDIR)
+	$(INSTALL) $(IIOPT) writmaps.865 $(CFGDIR)
 	$(INSTALL) $(IIOPT) writmaps.866 $(CFGDIR)
 	$(INSTALL) $(IIOPT) writmaps.koi $(CFGDIR)
 	$(INSTALL) $(IIOPT) writmaps.is1 $(CFGDIR)
@@ -146,6 +160,7 @@ uninstall:
 # Uninstall is normally never called on Debian, so no modifications here :)
 	-$(RM) $(CFGDIR)$(DIRSEP)readmaps.437
 	-$(RM) $(CFGDIR)$(DIRSEP)readmaps.850
+	-$(RM) $(CFGDIR)$(DIRSEP)readmaps.865
 	-$(RM) $(CFGDIR)$(DIRSEP)readmaps.866
 	-$(RM) $(CFGDIR)$(DIRSEP)readmaps.koi
 	-$(RM) $(CFGDIR)$(DIRSEP)readmaps.is1
@@ -153,6 +168,7 @@ uninstall:
 	-$(RM) $(CFGDIR)$(DIRSEP)readmaps.ukr
 	-$(RM) $(CFGDIR)$(DIRSEP)writmaps.437
 	-$(RM) $(CFGDIR)$(DIRSEP)writmaps.850
+	-$(RM) $(CFGDIR)$(DIRSEP)writmaps.865
 	-$(RM) $(CFGDIR)$(DIRSEP)writmaps.866
 	-$(RM) $(CFGDIR)$(DIRSEP)writmaps.koi
 	-$(RM) $(CFGDIR)$(DIRSEP)writmaps.is1

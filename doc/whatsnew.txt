@@ -54,6 +54,8 @@ Changes:
 
 Features:
 
+- Character set translation maps for CP865, courtesy of Jesper Soerensen
+
 - New switch "DomainMsgid". Turned on by default, but if turned off it will
   disable printing of the 5D domain string in MSGID lines. You must turn
   this off if you are using Soupgate for proper reply linking.

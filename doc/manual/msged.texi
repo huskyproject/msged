@@ -1529,6 +1529,7 @@ MAC 2         | MAC                   | Macintosh computers
 CP437 2       | IBM PC, Codepage 437  | DOS, OS/2, Windows console
 CP850 2       | IBM PC, Codepage 850  | International / European versions
               |                       |   of DOS, OS/2 and Windows.
+CP865 2       | IBM PC, Codepage 865  | Nordic versions of DOS, OS/2, Win
 CP866 2       | IBM PC, Codepage 866  | Russian OS/2, DOS, Windows
 CP1125 2      | IBM PC, Codepage 1125 | Ukrainian and Belorussian
               |                       |  OS/2, DOS, Windows
@@ -1606,7 +1607,7 @@ to your configuration file:
 OutputCharset IBMPC
 @end example
 
-Although it would be better to use @code{CP437}, @code{CP850} or @code{CP866}
+Although it would be better to use @code{CP437}, @code{CP850}, @code{CP865} or @code{CP866}
 (depending on your location), most readers still don't support this, so using
 @code{IBMPC} might be better for the moment. If you use @code{IBMPC},
 @value{MSGED} will emit an addtional @code{CODEPAGE} kludge line to make

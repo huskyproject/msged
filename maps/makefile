@@ -8,7 +8,10 @@ allmaps = \
  is5_866.chs     is5_asc.chs     iso_850.chs     iso_asc.chs     iso_ibm.chs \
  iso_mac.chs     itl_ibm.chs     koi_1125.chs    koi_866.chs     koi_asc.chs \
  mac_850.chs     mac_ibm.chs     mac_iso.chs     nor_ibm.chs     prt_ibm.chs \
- spn_ibm.chs     swe_ibm.chs     swi_ibm.chs     uk_ibm.chs
+ spn_ibm.chs     swe_ibm.chs     swi_ibm.chs     uk_ibm.chs      \
+ 850_865.chs     865_866.chs     865_ibm.chs     866_865.chs  iso_865.chs \
+ 865_850.chs     865_asc.chs     865_iso.chs     ibm_865.chs
+
 
 .PHONY: maps
 
@@ -23,7 +26,7 @@ makemaps: makemaps.o
 
 
 maps: 	makemaps readmaps.437 readmaps.850 readmaps.866 readmaps.koi readmaps.ukr \
-	readmaps.is1 readmaps.is5
+	readmaps.is1 readmaps.is5 readmaps.865
 
 readmaps.437:
 	makemaps CP437 $(allmaps)
@@ -38,6 +41,13 @@ readmaps.850:
 	-rm readmaps.850
 	mv writmaps.dat writmaps.850
 	mv readmaps.dat readmaps.850
+
+readmaps.865:
+	makemaps CP865 $(allmaps)
+	-rm writmaps.865
+	-rm readmaps.865
+	mv writmaps.dat writmaps.865
+	mv readmaps.dat readmaps.865
 
 readmaps.866:
 	makemaps CP866 $(allmaps)
