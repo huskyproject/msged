@@ -156,6 +156,8 @@ int forward_msg(int to_area)
     release(m->isto);
     release(m->from.domain);
     release(m->to.domain);
+    m->to.zone = m->to.net = m->to.node = m->to.point = 0; m->to.notfound = 0;
+    m->to.fidonet = 0; m->to.internet = 0; m->to.bangpath = 0;
 
     m->from = CurArea.addr;
 
@@ -298,7 +300,7 @@ int copy_msg(int to_area)
     {
         dispose(message);
     }
-    
+
     read_verbatim = 1;
     message = readmsg(CurArea.current);
 
@@ -367,7 +369,7 @@ int move_msg(int to_area)
         dispose(message);
         message = NULL;
     }
-    
+
     read_verbatim = 1;
     message = readmsg(CurArea.current);
 
