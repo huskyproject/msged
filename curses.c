@@ -419,13 +419,22 @@ static unsigned meta_digits[] =
     Key_A_5, Key_A_6, Key_A_7, Key_A_8, Key_A_9
 };
 
+#define resize_code 9999
+
 unsigned int TTGetKey(void)
 {
     int ch;
 
+
+redo:
+
     ch = getch();
     switch (ch)
     {
+#ifdef KEY_RESIZE
+    case KEY_RESIZE:
+        return resize_code;
+#endif
     case KEY_LEFT:
         return Key_Lft;
     case KEY_RIGHT:
@@ -650,6 +659,14 @@ int TTGetMsg(EVT * e)
     e->y = 0;
     e->msgtype = WND_WM_CHAR;
     e->id = 0;
+    if (e->msg == resize_code)
+    {
+        e->msg = 1;
+        e->msgtype = WND_WM_RESIZE;
+        term.NRow = getmaxy(stdscr);
+        term.NCol = getmaxx(stdscr);
+    }
+        
     return e->msg;
 }
 
