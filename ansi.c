@@ -98,6 +98,25 @@ static int ebufout = 0;         /* event out */
 static int mykbhit(void);
 static int FullBuffer(void);
 
+static char *mono_colors[128]=
+{
+  ";8", "", "", "", "", "", "","", 
+  ";8", ";1", ";1", ";1", ";1", ";1", ";1", ";1",
+  ";7", ";7;8", ";7", ";7", ";7", ";7", ";7", ";7",
+  ";7", ";1;7", ";1;7", ";1;7", ";1;7", ";1;7", ";1;7", ";1;7",
+  ";7", ";7", ";7;8", ";7", ";7", ";7", ";7", ";7",
+  ";7", ";1;7", ";1;7", ";1;7", ";1;7", ";1;7", ";1;7", ";1;7",
+  ";7", ";7", ";7", ";7;8", ";7", ";7", ";7", ";7",
+  ";7", ";1;7", ";1;7", ";1;7", ";1;7", ";1;7", ";1;7", ";1;7",
+  ";7", ";7", ";7", ";7", ";7;8", ";7", ";7", ";7",
+  ";7", ";1;7", ";1;7", ";1;7", ";1;7", ";1;7", ";1;7", ";1;7",
+  ";7", ";7", ";7", ";7", ";7", ";7;8", ";7", ";7",
+  ";7", ";1;7", ";1;7", ";1;7", ";1;7", ";1;7", ";1;7", ";1;7",
+  ";7", ";7", ";7", ";7", ";7", ";7", ";7;8", ";7",
+  ";7", ";1;7", ";1;7", ";1;7", ";1;7", ";1;7", ";1;7", ";1;7",
+  ";7", ";7", ";7", ";7", ";7", ";7", ";7", ";7;8",
+  ";7", ";1;7", ";1;7", ";1;7", ";1;7", ";1;7", ";1;7", ";1;7",
+};
 
 static int ansi_foreground_colors[8]=
 {
@@ -127,22 +146,30 @@ static int ansi_background_colors[8]=
 int TTScolor(unsigned int Attr)
 {
     color = Attr;
-    printf ("\x1b\x5b;2m");  /* reset intensify and bright attributes */
 
-    printf ("\x1b\x5b");
-    if (Attr & 0x08)
+    if (wnd_force_monochrome)
     {
-        printf ("1;");  /* intensified foreground */
+        printf ("%c%c0%sm",0x1b,0x5b,mono_colors[Attr&0x7F]);
+        return 1;
     }
-    if (Attr & 0x80)
+    else
     {
-        printf ("5;");  /* intensified background */
-    }
-    printf("%d;%dm", ansi_foreground_colors[Attr&0x7],
-                     ansi_background_colors[(Attr >> 4) & 0x7]);
+        printf ("%c%c0m",0x1b,0x5b);  /* reset attributes */
+
+        printf ("\x1b\x5b");
+        if (Attr & 0x08)
+        {
+            printf ("1;");  /* intensified foreground */
+        }
+        if (Attr & 0x80)
+        {
+            printf ("5;");  /* intensified background */
+        }
+        printf("%d;%dm", ansi_foreground_colors[Attr&0x7],
+               ansi_background_colors[(Attr >> 4) & 0x7]);
     
-    /* fflush(stdout);   this is not necessary as long as no output is done */
-    return 1;
+        return 1;
+    }
 }
 
 int TTCurSet(int st)
@@ -428,6 +455,9 @@ unsigned int TTGetKey(void)
         {
             switch (ch)
             {
+            case 0x1B:  /* double escape */
+                ch = Key_Esc;
+                break;
             case 'a':
                 ch = Key_A_A;
                 break;
@@ -774,6 +804,31 @@ unsigned int TTGetKey(void)
                     break;
                 case 'L':
                     ch = Key_Ins;
+                    break;
+                case '[':  /* linux console F1 .. F5 */
+                    block_console(0,2);
+                    ch = getchar();
+                    block_console(0,0);
+                    switch(ch)
+                    {
+                    case 'A':
+                        ch = Key_F1;
+                        break;
+                    case 'B':
+                        ch = Key_F2;
+                        break;
+                    case 'C':
+                        ch = Key_F3;
+                        break;
+                    case 'D':
+                        ch = Key_F4;
+                        break;
+                    case 'E':
+                        ch = Key_F5;
+                        break;
+                    default:
+                        goto skip;
+                    }
                     break;
                 case '1':
                     block_console(0,2);
