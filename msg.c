@@ -110,7 +110,12 @@ long SquishMsgAreaOpen(AREA * a)
     }
 
 #ifndef NO_SQUISH_LOCKING
-    MsgLock(Ahandle);
+    if (MsgLock(Ahandle) == -1)  /* Lock failed - return */
+    {
+        MsgCloseArea(Ahandle);
+        Ahandle = NULL;
+        return 0;
+    }
 #endif
 
     sprintf(work, "%s.sql", a->path);
