@@ -90,6 +90,7 @@ clean:
 distclean: clean
 	-$(RM) readmaps.*
 	-$(RM) writmaps.*
+	-$(RM) makemaps$(EXE)
 
 install: maps
 	-$(MKDIR) $(MKDIROPT) $(CFGDIR)
