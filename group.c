@@ -30,7 +30,7 @@ static struct group *groups=NULL;
 
 /* Search a group by name.
    Result is offset into groups array if found, -1 if not.
-*/   
+*/
 
 static int group_searchhandle(char *name)
 {
@@ -103,7 +103,7 @@ char **group_buildlist(char *firstentry)
         itms[i] = xstrdup(groups[j].name);
     }
     itms[i] = NULL;
-    
+
     return itms;
 }
 
@@ -115,7 +115,7 @@ int group_getusername(int handle)
     }
     return 0;
 }
-    
+
 int group_gettemplate(int handle)
 {
     if (handle >= 1 && handle <= ngroups)
@@ -171,7 +171,7 @@ void group_build_arealist(void)
     int i;
     int groupno = SW->group;
     int lastgroup = -1;
-    
+
     if (grouparealist == NULL)
     {
         grouparealist = malloc((SW->areas + ngroups) * sizeof(int));
@@ -196,13 +196,14 @@ void group_build_arealist(void)
 
             if (SW->groupseparators &&
                 arealist[i].group != lastgroup &&
+                arealist[i].group != 0 && /* no separater for areas w/o group */
                 (groupno != 0   ||  /* we display only a single group, so a
                                        separator is allowed as group "title"
                                        header - otherwise ... */
 		 (ST->sort_criteria && (
                   ST->sort_criteria[0] == 'g' || /* separators only work when */
                   ST->sort_criteria[0] == 'G')   /* alist is sorted by group */
-                 )   
+                 )
                 )
                )
             {
@@ -212,7 +213,7 @@ void group_build_arealist(void)
             }
 
             /* now we actually insert the area. */
-            
+
             grouparealist[SW->groupareas] = i;
             if (i == SW->area)
             {
@@ -236,12 +237,12 @@ void group_destroy_arealist(void)
         grouparealist = NULL;
     }
 }
-    
-    
+
+
 int group_set_group(int group)
 {
     int lastgroup = SW->group;
-    
+
     if (group <= ngroups)
     {
         SW->group = group;
