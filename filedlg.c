@@ -20,6 +20,7 @@
  * - Users can now enter a full path in the "file/mask" entry box. If it
  *   is a file name, it will be used. If it is a path with a mask following,
  *   we will change to that path and then use the mask.
+ * - Support the "outfile" keyword as default message box content.
  */
 
 #include <stdio.h>
