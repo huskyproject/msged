@@ -11,6 +11,10 @@ else
   LFLAGS=$(OPTLFLAGS)
 endif
 
+ifndef MSGEDCFG
+  MSGEDCFG=\"$(CFGDIR)/msged.cfg\"
+endif
+
 CDEFS=-D$(OSTYPE) -DUSE_MSGAPI -DUSE_FIDOCONFIG -DUNAME=\"$(UNAME)\" \
       $(ADDCDEFS) -DREADMAPSDAT=\"$(CFGDIR)/readmaps.dat\" \
       -DWRITMAPSDAT=\"$(CFGDIR)/writmaps.dat\" \
