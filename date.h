@@ -17,6 +17,7 @@ char *itime(time_t now);
 char *atime(time_t now);
 char *mtime(time_t now);
 char *qtime(time_t now);
-char *attrib_line(msg * m, msg * old, int olda, char *format);
+char *attrib_line(msg * m, msg * old, int olda, char *format,
+                  char **days, char **months);
 
 #endif

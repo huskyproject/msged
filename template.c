@@ -24,11 +24,38 @@
 
 static LINE* addline(LINE* ln,  char *l);
 
+static char **parse_words_to_array(char *string, int nmembers)
+{
+    char *cp = strtok(string, " \t\r\n");
+    int n=0;
+    char **whereto = xmalloc(nmembers * sizeof(char **));
+
+    while (cp != NULL && n < nmembers )
+    {
+        whereto[n++] = cp;
+        cp = strtok(NULL, " \t\r\n");
+    }
+
+    if (n < nmembers)
+    {
+        free(whereto);
+        return NULL;
+    }
+    if (cp != NULL)
+    {
+        return whereto;
+    }
+    return whereto;
+}
+
 int MakeTemplateMsg(msg * m, msg * oldmsg, int olda, int type)
 {
     LINE *ln = NULL;
     FILE *fp;
     char buf[TEXTLEN], buf2[TEXTLEN];
+    char *wdaybuf=NULL, *monthbuf=NULL;
+    char **use_month = NULL;
+    char **use_day   = NULL;
     char *l;
     int blankline;
 
@@ -58,6 +85,18 @@ int MakeTemplateMsg(msg * m, msg * oldmsg, int olda, int type)
         {
             switch (tolower(buf[1]))
             {
+            case 'w':
+                release(wdaybuf);
+                wdaybuf = xstrdup(buf+2);
+                use_day = parse_words_to_array(wdaybuf, 7);
+                continue;
+
+            case 'o':
+                release(monthbuf);
+                monthbuf = xstrdup(buf+2);
+                use_month = parse_words_to_array(monthbuf, 12);
+                continue;
+                
             case 'f':
                 if (!(type & MT_FOR))
                 {
@@ -145,7 +184,7 @@ int MakeTemplateMsg(msg * m, msg * oldmsg, int olda, int type)
             if (buf[2])
             {
                 /* could be a blank line... */
-                l = attrib_line(m, oldmsg, olda, buf + 2);
+                l = attrib_line(m, oldmsg, olda, buf + 2, use_day, use_month);
             }
             else
             {
@@ -154,7 +193,7 @@ int MakeTemplateMsg(msg * m, msg * oldmsg, int olda, int type)
         }
         else
         {
-            l = attrib_line(m, oldmsg, olda, buf);
+            l = attrib_line(m, oldmsg, olda, buf, use_day, use_month);
         }
 
         ln = addline(ln, l);
@@ -234,6 +273,9 @@ int MakeTemplateMsg(msg * m, msg * oldmsg, int olda, int type)
         ln = ln->prev;
     }
     m->text = ln;
+
+    release(monthbuf); release(wdaybuf);
+    release(use_month); release(use_day);
 
     return 0;
 }

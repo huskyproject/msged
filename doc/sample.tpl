@@ -28,6 +28,15 @@
 ;
 ; Note that the letters are case-insensitive.
 ;
+; Some special meta-lines can be used to configure/translate texts that tokens
+; (see below) get expanded to:
+;
+;     @w      The rest of the line is a space-separated list of the week day
+;             names
+;     @o      The rest of theline is a space-separated list of month names.
+;
+; Such meta-lines should appear before any other lines in the template-file.
+;
 ;-----------------------------------------------------------------------------
 ;
 ;-----------------------------------------------------------------------------
@@ -66,6 +75,12 @@
 ;    %oeh - old echo tag
 ;-----------------------------------------------------------------------------
 ;
+; Define names of week days and months. Note that theses strings must not
+; necessarily be exactly 3 characters in length:
+;
+@o Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec
+@w Sun Mon Tue Wed Thu Fri Sat
+;
 @f* Forwarded from %oeh by %una (%uad).
 @f* Originally by: %ofn (%ooa), %dms %mms %yms %tnm.
 @f* Originally to: %otn (%oda).
@@ -97,3 +112,5 @@
 @nRegards,
 @n%ufn
 ;-----------------------------------------------------------------------------
+$w Mon Tue Wed Thu Fr Sa So
+$m Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec

@@ -402,12 +402,16 @@ char *lastname(char *name)
 
 /* attrib_line - builds an attribution line */
 
-char *attrib_line(msg * m, msg * old, int olda, char *format)
+char *attrib_line(msg * m, msg * old, int olda, char *format,
+                  char **days, char **months)
 {
     struct tm now, *tm;
     char work[256], token[5], *t;
     time_t n;
     int num;
+
+    if (days == NULL) days = day;
+    if (months == NULL) months = month;
 
     if (format == NULL)
     {
@@ -461,12 +465,12 @@ char *attrib_line(msg * m, msg * old, int olda, char *format)
                 case ATTR_TOK_MMS:
                     if (old)
                     {
-                        strcpy(t, month[tm->tm_mon]);
+                        strcpy(t, months[tm->tm_mon]);
                     }
                     break;
 
                 case ATTR_TOK_MNO:
-                    strcpy(t, month[now.tm_mon]);
+                    strcpy(t, months[now.tm_mon]);
                     break;
 
                 case ATTR_TOK_DMS:
@@ -483,12 +487,12 @@ char *attrib_line(msg * m, msg * old, int olda, char *format)
                 case ATTR_TOK_WMS:
                     if (old)
                     {
-                        strcpy(t, day[tm->tm_wday]);
+                        strcpy(t, days[tm->tm_wday]);
                     }
                     break;
 
                 case ATTR_TOK_WNO:
-                    strcpy(t, day[now.tm_wday]);
+                    strcpy(t, days[now.tm_wday]);
                     break;
 
                 case ATTR_TOK_TNM:

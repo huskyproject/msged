@@ -54,6 +54,9 @@ Changes:
 
 Features:
 
+- You can now use @o and @w metalines in the template file to define your 
+  language's representation of month and day names.
+
 - Msged now creates a TZUTC kludge line by default. Use
   "switch TZUTC off to" disable this if you do not like it or wrong 
   information is put to the kludge. Msged does not yet evaluate TZUTC
