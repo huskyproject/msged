@@ -1,32 +1,14 @@
 # Makefile for IBM CSet on OS/2
 
-# look for libs in c:\lib
-LIBDIR=c:\lib
-
-# install programs in c:\bin
-BINDIR=c:\bin
-
-# look for includes here
-INCDIR=c:\include
-
-# options for installing programs
-IBOPT=-s
-
-
 CC=     icc
-
-ifeq ($(DEBUG), 1)
-  CFLAGS= -Sp1 -W2 -Q /I$(INCDIR) -g
-else
-  CFLAGS= -Sp1 -W2 -Q /I$(INCDIR) -s
-endif
-
+CFLAGS= -Sp1 -W2 -Q
 CDEFS=  -DOS2 -DUSE_MSGAPI
 #COPT=  -O
+MSGDIR= ..\smapi
 
 TARGET=	msgedp.exe
 default: $(TARGET)
-MSGAPI=	$(LIBDIR)\smapiibo.lib
+MSGAPI=	$(MSGDIR)\smapiibo.lib
 
 objs1=	addr.obj     \
 	areas.obj    \
@@ -42,9 +24,9 @@ objs1=	addr.obj     \
 	echotoss.obj \
 	environ.obj  \
 	fconf.obj    \
-	fecfg145.obj \
-objs2=	fido.obj
-	filedlg.obj  }
+	fecfg145.obj
+objs2=  fido.obj     \
+	filedlg.obj  \
 	flags.obj    \
 	freq.obj     \
 	gestr120.obj \
@@ -56,12 +38,12 @@ objs2=	fido.obj
 	keycode.obj  \
 	list.obj     \
 	maintmsg.obj \
-	makemsgn.obj \
-	malloc16.obj \
+	makemsgn.obj
+objs3=	malloc16.obj \
 	memextra.obj \
 	menu.obj     \
-	misc.obj
-objs3=	mnu.obj      \
+	misc.obj     \
+	mnu.obj      \
 	msg.obj      \
 	msged.obj    \
 	mxbt.obj     \
@@ -82,30 +64,28 @@ objs4=	system.obj   \
 	win.obj      \
 	wrap.obj
 
-all: $(TARGET)
+# Thunderbirds are go!
 
 .c.obj:
-	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
+	$(CC) $(COPT) $(CFLAGS) $(CDEFS) /I$(MSGDIR) -c $<
 
 icc.cfg: makefile.ibo
 	echo $(COPT) /Fe$(TARGET) /B"/NOE" > icc.cfg
-        echo $(objs1) >> icc.cfg
-        echo $(objs2) >> icc.cfg
+	echo $(objs1) >> icc.cfg
+	echo $(objs2) >> icc.cfg
 	echo $(objs3) >> icc.cfg
 	echo $(objs4) >> icc.cfg
-        echo $(MSGAPI) >> icc.cfg
+	echo $(MSGAPI) >> icc.cfg
 
 
 $(TARGET): $(objs1) $(objs2) $(objs3) $(objs4) icc.cfg
 	icc @icc.cfg
 
 clean:
-	del *.obj
-        del *.bak
+	-DEL *.OBJ
+	-DEL *.BAK
+        -DEL *~
 
 distclean: clean
-	del $(TARGET)
-
-install: $(TARGET)
-	copy $(TARGET) $(BINDIR)
+	-DEL $(TARGET)
 

@@ -1,29 +1,13 @@
-# look for libs in c:\lib
-LIBDIR=c:\lib
+# Legacy Makefile for Borland C for OS/2
+# No support for the Husky build environment
 
-# install programs in c:\bin
-BINDIR=c:\bin
-
-# look for includes here
-INCDIR=c:\include
-
-# options for installing programs
-IBOPT=-s
-
-
-CC=     bcc
-
-!IF $(DEBUG) == 1
-CFLAGS= -w -I$(INCDIR) -v
-!ELSE
-CFLAGS= -w -I$(INCDIR)
-!ENDIF
-
-CDEFS=  -DOS2 -DUSE_MSGAPI
-#COPT=  -O2
+CC=	bcc
+CFLAGS=	-w -I..\smapi -v 
+CDEFS=	-DOS2 -DUSE_MSGAPI -I..\smapi
+COPT=	-O2
 
 TARGET=	msgedp.exe
-MSGAPI=	$(LIBDIR)\smapibco.lib
+MSGAPI=	..\smapi\smapibco.lib
 
 objs=	addr.obj     \
 	areas.obj    \
@@ -85,7 +69,7 @@ all: $(TARGET)
 	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
 
 $(TARGET): $(objs)
-	$(CC) $(COPT) -e$(TARGET) *.obj $(MSGAPI)
+	$(CC) $(COPT) $(CFLAGS) -e$(TARGET) *.obj $(MSGAPI)
 
 clean:
 	del *.obj
@@ -93,7 +77,3 @@ clean:
 
 distclean: clean
 	del $(TARGET)
-
-install: $(TARGET)
-	copy $(TARGET) $(BINDIR)
-
