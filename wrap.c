@@ -607,7 +607,10 @@ int wrap(LINE * cl, int x, int y, int rm)
              */
 
             space = rm - slen;
-            if (space > strlen(s))
+            if (space > strlen(s) ||  
+                (space == strlen(s) &&
+                 ((l->text != NULL && trailspace(l->text) != 0) ||
+                  iswhspace(*s))))
             {
                 /* then we move the entire line up */
 
@@ -779,6 +782,7 @@ int wrap(LINE * cl, int x, int y, int rm)
                 *t = ch;
                 memmove(s, t, strlen(t) + 1);
             }
+            l = l->next;
         }
         else
         {
