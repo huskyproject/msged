@@ -1,3 +1,7 @@
+2003-01-21 Tuesday 06:19  stas_degteff
+
+	* msged.dsp (1.2): 0x0a --> 0x0d0x0a for *.dsp
+
 2003-01-13 Monday 14:57  stas_degteff
 
 	* makefile.mvcdll (1.1): Makefile for Ms Visual C (DLL build) from
