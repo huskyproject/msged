@@ -121,7 +121,7 @@ o e             ; 207 CF latin small ligature oe
 \0 \x98         ; 216 D8 latin small letter y with diaeresis
 \0 \x98         ; 217 D9 latin capital letter y with diaeresis
 \0 /            ; 218 DA fraction slash
-C u             ; 219 DB currency sign
+\0 \xD5         ; 219 DB Euro sign
 \0 <            ; 220 DC single left-pointing angle quotation mark
 \0 >            ; 221 DD single right-pointing angle quotation mark
 f i             ; 222 DE latin small ligature fi

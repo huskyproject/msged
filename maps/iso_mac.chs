@@ -30,7 +30,7 @@
 Latin-1		; from set
 MAC		; to set
 ;
-E U		; (missing) Euro currency sign in Windows ANSI
+\0 \xDB		; (missing) Euro currency sign in Windows ANSI
 \0 ?		; (missing)
 \0 ?		; (missing)
 \0 ?		; (missing) 4

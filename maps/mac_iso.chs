@@ -121,7 +121,7 @@ o e		; oe
 \0 \xff		; y dieresis
 \0 ?		;
 \0 ?		;
-\0 ?		;
+E U		; Euro currency sign
 \0 ?		;
 \0 ?		;
 \0 ?		;
