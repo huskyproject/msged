@@ -95,7 +95,7 @@ struct qinfo
     short active;
     short areas[200];
 };
-#define QINFO_SIZE 6+200*2
+#define QINFO_SIZE (6+200*2)
 
 int read_qinfo(FILE *f, struct qinfo *qinfo)
 {
@@ -337,7 +337,7 @@ struct qtext
     unsigned char length;
     char text[BLOCKLEN];
 };
-#define QTEXT_SIZE BLOCKLEN+1
+#define QTEXT_SIZE (BLOCKLEN+1)
 
 static int read_qtext(FILE *f, struct qtext *qtext)
 {
