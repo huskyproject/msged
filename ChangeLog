@@ -1,3 +1,8 @@
+2002-02-10 Sunday 16:24  tobi
+
+	* VERSION (1.1.2.5), version.h (1.7.2.4): stepped version number
+	after release
+
 2002-02-10 Sunday 15:55  tobi
 
 	* maintmsg.c (1.7.2.1, msged-6_0_1-release): Fix: In template text
