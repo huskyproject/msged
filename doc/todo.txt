@@ -1,0 +1,59 @@
+TODO-List for Msged
+===================
+
+Category 1: Will certainly be implemented until next release
+============================================================
+
+- Special characters that a user entered in the header should always
+  be converted to plain ASCII using the corresponding writmaps table,
+  no matter what the user has configured. (Currently, they are not
+  translated at all.)
+
+- Give the user the possibilty to only include the Areatag, but not
+  the Fastecho echo description into the area list (Ralf Hoerner)
+
+- Give the user the possibility to directly start into message list mode
+  instead of the message reader mode (Sascha M Silbe)
+
+- Write a tool that generates a FIDOUSER.LST for the Userlist feature.
+
+- Background attribute "transparent", vor the new kconsole feature
+  (background images). Use patch that has already been submitted.
+
+Category 2: Might be implemented, but volunteers are always very welcome!
+=========================================================================
+
+- Work on the area lister. Things to do:
+  - Divide message areas into groups.
+  - Show all groups with separators in between 
+  - Only show selected groups
+  - New sort cireteria: numer of messages, number of new messages, number
+    of personal messages, number of tagged messages, area tag (instead of
+    area description?)
+  - Online switiching of sort mode
+
+- Figure out Squish's "last scanned" behaviour
+
+- Think about if we can do anything in the case of reading a message
+  with special characers in the header.
+
+- Rewrite the V7 nodelist lookup code.
+
+- Place file requests directly into Binkley outbound
+
+- Secure mode. In this mode, Msged itself has full access to the message
+  base, but only allows the user to do secure tings. I.E. a user may only
+  delete his privat messages and echomail written by him that is not yet
+  exported. He may not do import/export, shell to OS, or similar. In this
+  mode, Msged can be used as a mail reader in a BBS, possibly running
+  "setgid fido", even when the SMAPI does not have security features built 
+  in.
+
+Category 3: Will only be included if volunteers send patches
+============================================================
+
+- Windows NT mouse support. Linux mouse support. Mouse support in places
+  where it isn't implemented currently (like file dialog boxes)
+
+Category 4: Will not be implemented
+===================================
