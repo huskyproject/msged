@@ -175,6 +175,17 @@ void check_fidoconfig(char *option_string)
                                 /* area to place file requests in */
             release(ST->freqarea);
             ST->freqarea = xstrdup(fc_config->netMailArea.areaName);
+
+                                /* fido user list */
+            if (fc_config->nodelistDir != NULL &&
+                fc_config->fidoUserList != NULL)
+            {
+                release(ST->userlist);
+                ST->userlist = xmalloc(strlen(fc_config->nodelistDir)+
+                                       strlen(fc_config->fidoUserList) + 1);
+                strcpy(ST->userlist, fc_config->nodelistDir);
+                strcat(ST->userlist, fc_config->fidoUserList);
+            }
         }
         if (check_type & 2)     /* load areas */
         {
