@@ -1,3 +1,8 @@
+2001-11-24 Saturday 10:38  tobi
+
+	* group.c (1.5.2.1): Fixed segfault handling areas that do not
+	belong to any group in connection with group separators.
+
 2001-07-08 Sunday 20:35  joerg.jaspert
 
 	* debian/examples (1.1): file examples was initially added on
