@@ -188,6 +188,7 @@ void DoHelp(int topic)
         switch (ch)
         {
         case Key_PgDn:
+        case Key_Dwn:
             if (page + 1 < pages)
             {
                 page++;
@@ -196,6 +197,7 @@ void DoHelp(int topic)
             break;
 
         case Key_PgUp:
+        case Key_Up:
             if (page > 0)
             {
                 page--;

@@ -5,7 +5,7 @@
  Enter a New Message in the Current Area ...... Alt-E
  Reply to Sender in Current Area .............. Alt-R
  Reply Quote to Sender in Current Area ........ Alt-Q
- Reply Quote to Addressee in Current Area ..... Alt-U
+ Reply Quote to Addressee (Follow-Up), Cur. Ar. Alt-U
  Reply Quote to Sender in Other Area .......... Alt-N
  Reply Quote to Addressee in Other Area ....... Alt-Y
  Delete Current Message ....................... Alt-D
@@ -23,10 +23,10 @@
   - Move A Message to Another Area ............... M
   - Copy A Message to Another Area ............... C
   - Forward A Message to Another Person .......... F
-  - Ditto, but make it from User ................. R
+  - Redirect A Message to Another Person.......... R
  Go to Previous Message in Thread .......... Ctl-Left
  Go to Next Message in Thread ............. Ctl-Right
- Go to First Message in Thread ................. Home
+ Go to First Message in this Area .............. Home
 
 *High                                            PgDn/PgUp
 
@@ -35,14 +35,14 @@
  Change Current Address ....................... Ctl-W
  Change Current Nodelist ...................... Ctl-N
  Change Current Username ...................... Ctl-U
- Force Move to Next Message in Thread ........... Tab
- Go to Highest Numbered Message Read ............ End
+ Force Move to Next Message in Thread ......... Ctl-I
+ Go to the Last Message in this Area ............ End
  Return to Area List ............................ Esc
  Do a hex dump ................................ Alt-B
  Do a uudecode dump ........................... Ctl-D
-
-
-
+ Personal Mail Scan in All Areas .............. Alt-P
+ Personal Mail Scan in Current Area Only .......... P
+ F'request Files from Sender .................. Ctl-F
 
 *High                                            PgDn/PgUp
 
@@ -58,28 +58,14 @@
  Move to Next Area with Unread Messages ........... +
  Move to Previous Area with Unread Messages ....... -
  Displays or Alters Switches .................. Alt-S
- Choose Attribution Line ...................... Ctl-A
-*High                                            PgDn/PgUp
-*Page
 
-*High       Area List Help
 
-  Go to First Area in list ..................... Home
-  Go to Last Area in List ....................... End
-  Go to Next Area ........................ Down Arrow
-  Go to Previous Area ...................... Up Arrow
-  Go to Next Page .............................. PgDn
-  Go to Previous Page .......................... PgUp
-  Select Highlighted Area ..................... Enter
-  Scan All Areas For New Messages ................. *
-  Personal Mail Scan .......................... Alt-P
-  Personal Mail Scan in current area .............. P
 *High                                            PgDn/PgUp
 *Page
 
 *High     User-Programmable Function-Keys (msged.cfg)
 
- F1 ....
+ F1 .... Help
  F2 ....
  F3 ....
  F4 ....
@@ -99,7 +85,7 @@
  Cut to Internal Clipboard .................... Alt-C
  Paste From Internal Clipboard ................ Alt-P
  Import A Textfile ............................ Alt-I
- Export Message To File ....................... Alt-W
+ Export Message To File / Print a Message ..... Alt-W
  Insert CR/LF at Cursor ....................... Enter
  Backspace and Delete ........................ BckSpc
  Delete Word Following Cursor ................. Ctl-T
@@ -137,7 +123,7 @@
 
 *High                                                 PgUp
 *End
-*Begin
+*Begin 3
 
 *High                     Listing Help
 
@@ -155,4 +141,35 @@
 
 *High                                          End of Help
 *End
+*Begin 4
+
+*High       Area List Help
+
+  Go to First Area in list ..................... Home
+  Go to Last Area in List ....................... End
+  Go to Next Area ........................ Down Arrow
+  Go to Previous Area ...................... Up Arrow
+  Go to Next Page .............................. PgDn
+  Go to Previous Page .......................... PgUp
+  Select Highlighted Area ..................... Enter
+  Scan All Areas For New Messages ................. *
+  Scan all unscanned areas for new messages ....... #
+  Quit MsgEd .................................. Alt-X
+
+*End
+*Begin 5
+
+*High      File Request Select Box Help
+
+  Move the selection bar down 1 line ..... Down Arrow
+  Move the selection bar up 1 line ......... Up Arrow
+  Move the selection bar down one page .... Page Down
+  Move the selection bar up one page ........ Page Up
+  Move to the beggining of the list ............ Home
+  Move to the end of the list ................... End
+  Select a file for file request .............. Space
+  Add a file to the list ............... Alt-I or Ins
+  Create file request for all selected files .. Enter
+  Abort (do not request any files) .............. Esc
+*End  
 *EF

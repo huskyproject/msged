@@ -312,7 +312,7 @@ void makefreq(void)
                     }
                     else
                     {
-                        if (maxn<num_freq-1)
+                        if (maxn<num_freq)
                         {
                             starty++;
                             maxn++;
@@ -374,6 +374,7 @@ void makefreq(void)
                     redraw = 1;
                     break;
                     
+                case Key_A_I:
                 case Key_Ins:
                     file[0]='\0';
                     gotdot =
@@ -451,7 +452,7 @@ void makefreq(void)
                     done=1;
                     break;
                 case Key_F1:
-                case 0x2300:
+                case Key_A_H:
                     if (ST->helpfile != NULL)
                     {
                         DoHelp(4);
