@@ -1,3 +1,11 @@
+msged (6.1.1-1) unstable; urgency=low
+
+  * A new package.
+  * Changed build-depends for libfidoconf to 0.13
+  * Build-Depend on libncurses5-dev is a nice thing :)
+
+ -- Joerg Jaspert (JJ) <joerg@goliathbbs.dnsalias.net>  Sun,  3 Mar 2002 23:38:59 +0100
+
 msged (6.1.0-2) unstable; urgency=low
 
   * Newest CVS
@@ -28,6 +36,4 @@ msged (0.6pre-1) unstable; urgency=low
 
  -- Joerg Jaspert (JJ) <joerg@goliathbbs.dnsalias.net>  Tue, 10 Apr 2001 22:15:33 +0200
 
-Local variables:
-mode: debian-changelog
-End:
+
