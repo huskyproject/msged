@@ -9,6 +9,9 @@ Category 1: Will certainly be implemented until next release
 
 - Document Fidoconfig stuff
 
+- The block graphics mode works bad on too many systems. Give the user a way
+  to disable it and switch back do traditional "minus plus pipe" graphics.
+
 Category 2: Might be implemented, but volunteers are always very welcome!
 =========================================================================
 
