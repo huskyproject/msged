@@ -615,6 +615,10 @@ void PutLine(LINE * l, int y)
     int len;
     
     strcpy(line, l->text);
+#ifdef UNIX
+    if (*line == '\001')
+        *line = '@';
+#endif
 
     pcr = strchr(line, '\r');
     plf = strchr(line, '\n');

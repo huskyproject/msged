@@ -146,6 +146,8 @@ Features:
 
 Fixes:
 
+- Fixed display of kludge character (001) on Linux.
+
 - The last line of the screen is now usable in the Message Editor also
   when the Status Bar is switched off.
 
