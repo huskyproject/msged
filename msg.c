@@ -1072,7 +1072,8 @@ int SquishAreaSetLast(AREA * a)
             {
 #ifdef UNIX
                 fd = sopen(work, O_BINARY | O_WRONLY | O_CREAT,
-                  SH_DENYNO, S_IWOTH);
+                  SH_DENYNO, 
+                  S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
 #else
                 fd = sopen(work, O_BINARY | O_WRONLY | O_CREAT,
                   SH_DENYNO, S_IWRITE | S_IREAD);
