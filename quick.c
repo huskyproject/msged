@@ -16,7 +16,7 @@
 #include <stat.h>
 #endif
 #include <assert.h>
-#include <smapi/compiler.h>
+#include <huskylib/compiler.h>
 #include "addr.h"
 #include "nedit.h"
 #include "msged.h"

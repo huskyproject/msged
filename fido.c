@@ -25,7 +25,7 @@
 #include <string.h>
 #include <time.h>
 #include <errno.h>
-#include <smapi/progprot.h>
+#include <huskylib/huskylib.h>
 #include <smapi/msgapi.h>
 #include <assert.h>
 #include "addr.h"
@@ -67,7 +67,7 @@ int sopen(char *filename, unsigned int access, int flags,...);
 #define O_BINARY 0x0000
 #endif
 
-#elif defined(UNIX) || defined(__DJGPP__)
+#elif defined(UNIX) || defined(__DJGPP__) || defined(__CYGWIN__)
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -86,7 +86,7 @@ int sopen(char *filename, unsigned int access, int flags,...);
 
 #include <io.h>
 #include <sys/types.h>
-#include <sys/stat.h>
+#include <sys/stat.h>		
 #include <share.h>
 #include <fcntl.h>
 

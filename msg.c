@@ -21,7 +21,7 @@
 #include <io.h>
 #endif
 
-#ifdef UNIX
+#if defined(UNIX) || defined(__CYGWIN__)
 #include <unistd.h>
 #endif
 
@@ -33,7 +33,7 @@
 #include <sys/locking.h>
 #endif
 
-#if !defined(UNIX) && !defined(SASC)
+#if !defined(UNIX) && !defined(SASC) && !defined(__CYGWIN__)
 #include <share.h>
 #endif
 

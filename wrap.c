@@ -12,7 +12,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include <smapi/compiler.h>
+#include <huskylib/compiler.h>
 #include "addr.h"
 #include "nedit.h"
 #include "msged.h"

@@ -25,9 +25,9 @@ CDEFS=-D$(OSTYPE) -DUSE_MSGAPI -DUSE_FIDOCONFIG -DUNAME=\"$(UNAME)\" \
       -DDEFAULT_CONFIG_FILE=$(MSGEDCFG)
 
 ifeq ($(SHORTNAME), 1)
-  LIBS= -L$(LIBDIR) -lfidoconf -lsmapi
+  LIBS= -L$(LIBDIR) -lfidoconf -lsmapi -lhuskylib
 else
-  LIBS= -L$(LIBDIR) -lfidoconfig -lsmapi
+  LIBS= -L$(LIBDIR) -lfidoconfig -lsmapi -lhuskylib
 endif
 
 TARGET=	msged$(EXE)

@@ -37,7 +37,11 @@
 #include <unistd.h>
 #endif
 
-#ifdef UNIX
+#ifdef __CYGWIN__
+#include <unistd.h>
+#endif
+
+#ifdef UNIX 
 #include <unistd.h>
 #endif
 

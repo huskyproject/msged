@@ -11,7 +11,7 @@
 
 #include <time.h>
 #include <stdlib.h>             /* NULL */
-#include <smapi/compiler.h>
+#include <huskylib/compiler.h>
 #include "timezone.h"
 
                                 /* guess our time zone */

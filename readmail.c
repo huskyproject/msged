@@ -34,7 +34,7 @@
 int bdos(int func, unsigned reg_dx, unsigned char reg_al);
 #endif
 
-#if defined(MSDOS) || (defined(WINNT) && !defined(__MINGW32__))
+#if defined(MSDOS) || (defined(WINNT) && (!defined(__MINGW32__)) && (!defined(__CYGWIN__)))
 #include <dos.h>
 #ifdef __TURBOC__
 #include <dir.h>
