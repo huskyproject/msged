@@ -1959,8 +1959,15 @@ int writemsg(msg * m)
         {
             if (l->text && *l->text != '\0')
             {
-                temptext = translate_text(l->text, ltable);
-                   /* output CHRS translation */
+                if (!m->rawcopy)
+                {
+                    temptext = translate_text(l->text, ltable);
+                    /* output CHRS translation */
+                }
+                else
+                {
+                    temptext = xstrdup(l->text);
+                }
                 while ((!abortWrite) &&
                        (MsgWriteText(temptext, n, length) == FALSE))
                 {
