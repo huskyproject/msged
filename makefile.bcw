@@ -60,7 +60,7 @@ OBJS=   addr.obj     \
 	vsev.obj     \
 	vsevops.obj  \
 	win.obj      \
-	winntscr.obj \
+        conioscr.obj \
 	wrap.obj
 
 # Thunderbirds are go!
