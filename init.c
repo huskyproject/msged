@@ -187,3 +187,4 @@ void DeinitMem(void)
     release(switch_vars);
     release(string_vars);
 }
+
