@@ -1,9 +1,14 @@
+msged (6.0.2-1) stable; urgency=low
+
+  * New maintainer
+  * Add Build-Depends for lbncurses5-dev, texi2html, texinfo
+  * Remove Build-Depends for fidoconf
+  * debain/examples: add doc/scheme.*
+
+ -- Pavel Andreew <pavel@collage.etel.ru>  Fri, 23 Aug 2002 16:50:35 +0600
+
 msged (6.0.0-1) unstable; urgency=low
 
   * Stable Msged.
 
  -- Joerg Jaspert (JJ) <joerg@goliathbbs.dnsalias.net>  Tue,  3 Jul 2001 00:25:22 +0200
-
-Local variables:
-mode: debian-changelog
-End:
