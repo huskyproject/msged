@@ -380,7 +380,7 @@ static int AreaBox(char **Itms, int y1, int real_y2, int len, int def,
                 currItem++;
                 if (curY == y2)
                 {
-                    WndScroll(1, y1, len - 1, y2, 1);
+                    WndScroll(1, y1, len, y2, 1);
                     Top++;
                 }
                 else
@@ -400,7 +400,7 @@ static int AreaBox(char **Itms, int y1, int real_y2, int len, int def,
                 currItem--;
                 if (curY == y1)
                 {
-                    WndScroll(1, y1, len - 1, y2, 0);
+                    WndScroll(1, y1, len, y2, 0);
                     if (Top)
                     {
                         Top--;
