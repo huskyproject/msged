@@ -19,15 +19,15 @@ ifndef MSGEDCFG
   MSGEDCFG=\"$(CFGDIR)/msged.cfg\"
 endif
 
-CDEFS=-D$(OSTYPE) -DUSE_MSGAPI -DUSE_FIDOCONFIG -DUNAME=\"$(UNAME)\" \
+CDEFS=-D$(OSTYPE) -DUSE_MSGAPI -DUNAME=\"$(UNAME)\" \
       $(ADDCDEFS) -DREADMAPSDAT=\"$(CFGDIR)/readmaps.dat\" \
       -DWRITMAPSDAT=\"$(CFGDIR)/writmaps.dat\" \
       -DDEFAULT_CONFIG_FILE=$(MSGEDCFG)
 
 ifeq ($(SHORTNAME), 1)
-  LIBS= -L$(LIBDIR) -lfidoconf -lsmapi
+  LIBS= -L$(LIBDIR) -lsmapi
 else
-  LIBS= -L$(LIBDIR) -lfidoconfig -lsmapi
+  LIBS= -L$(LIBDIR) -lsmapi
 endif
 
 TARGET=	msged$(EXE)
