@@ -1,3 +1,13 @@
+2002-11-04 Monday 21:38  os2tobi
+
+	* msg.c (1.25): use .jlr for lastread pointers for jam instead of
+	.sql
+
+2002-11-04 Monday 15:07  os2tobi
+
+	* msg.c (1.24), version.h (1.10), doc/whatsnew.txt (1.73): Fixed
+	crash when posting the second message to a JAM area.
+
 2002-10-24 Thursday 14:26  stas_degteff
 
 	* msg.c (1.23): Fix for typedef change in smapi
