@@ -888,22 +888,21 @@ int FileDialog(char *retpath, const char *title)
 
     int homedisk = (drive_letters) ? dir_getdrive() : 0;
 
-    if(AllocFiles(0) <= 0) /* init the file array */
+    if(AllocFiles(0) <= 0)      /* init the file array */
         return -1;
 
     GetAvDrives();
 
-    dlgetcwd(homedir, FILENAME_MAX);  /* save home location */
+    dlgetcwd(homedir, FILENAME_MAX); /* save home location */
 
+    strcpy(curdir,homedir);
     if (!(*retpath))
     {
-        strcpy(curdir,homedir);
         curfile.name[0]='\0';
     }
     else
     {
-                 /* in case retpath does not include a path */
-        strcpy(curdir, homedir);
+                                /* in case retpath does not include a path */
         strcpy(curfile.name, retpath);
         process_fileinput(retpath, curdir);
     }
@@ -929,6 +928,7 @@ int FileDialog(char *retpath, const char *title)
                 dir_setdrive(toupper(*curfile.name) - 'A');
                 chdir("/");
                 sprintf(curdir,"%c:/",*curfile.name);
+                curfile.name[0]='\0';
             }
 
             else if(curfile.attrib & DIR_DIRECT)   /* User asking for dir */
@@ -942,6 +942,7 @@ int FileDialog(char *retpath, const char *title)
                     chdir(curdir);
                     dlgetcwd(curdir,FILENAME_MAX);
                     AddDirSlash(curdir);
+                    curfile.name[0] = '\0';
                 }
                 else  /* ".."  bit easier */
                 {
@@ -959,6 +960,7 @@ int FileDialog(char *retpath, const char *title)
                             chdir(curdir);
                             dlgetcwd(curdir,FILENAME_MAX);
                             AddDirSlash(curdir);
+                            curfile.name[0] = '\0';
                         }
                     }
                 }
