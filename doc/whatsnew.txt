@@ -24,7 +24,6 @@ Changes:
 
 
 Features:
-=========
 
 - The UNIX version now draws pseudographics (instead of the ugly minus plus
   pipe graphics that was used previously) if the termcap entry suggests that
@@ -145,6 +144,10 @@ Features:
   "Switch ReceiveAllAddresses Off" to the configuration file.
 
 Fixes:
+
+- Reduced the memory requirements of a Borland compiled DOS executable
+  considerably in case of a lot of "Alias" definitions. Again the realloc()
+  problem.
 
 - Fixed display of kludge character (001) on Linux.
 

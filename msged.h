@@ -334,8 +334,9 @@ struct _swv
     int area;                   /* current area number */
     int areas;                  /* how many message areas */
     int maxareas;               /* how much room in arealist array */
-    int aliascount;             /* how many aliases do you have? */
-    int otheraliases;           /* how many "other" aliases? */
+    int aliascount;             /* how many AKAs aliases do you have? */
+    int otheraliases;           /* how many aliases for other nodes? */
+    int maxotheraliases;        /* consume memory in Zimbabwe ;-) */
     int numtemplates;           /* how many templates in use? */
     int domains;                /* how many domains listed */
     int rm;                     /* the current right margin */

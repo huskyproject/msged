@@ -2334,7 +2334,20 @@ static void parse_alias(char *value)
         }
     }
 
-    aliaslist = xrealloc(aliaslist, (++SW->otheraliases) * sizeof(struct _alias));
+
+    SW->otheraliases++;
+    if (SW->otheraliases > SW->maxotheraliases)
+    {
+        SW->maxotheraliases++;
+        SW->maxotheraliases*=3;
+
+        /* Reallocating in greater blocks dramatically reduces */
+        /* memory requirements of the DOS version. At least    */
+        /* Borlands realloc does not seem to be very "intelligent".. */
+        
+        aliaslist = xrealloc(aliaslist,
+                             SW->maxotheraliases * sizeof(struct _alias));
+    }
     aliaslist[SW->otheraliases - 1] = a;
 }
 
