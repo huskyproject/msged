@@ -521,7 +521,7 @@ char *get_known_charset_table(int *nelem, int *elem_size)
 
     *elem_size = 9 + 1 + 1; /* name, space, level */
     *nelem = readmaps->n_tables;
-    array = malloc((*nelem) * (*elem_size));
+    array = malloc(((*nelem) + 1)* (*elem_size));
 
     for (i = 0; i < (*nelem); i++)
     {
@@ -545,7 +545,7 @@ char *get_known_charset_table(int *nelem, int *elem_size)
         {
             memmove(array + i * (*elem_size),
                     array + (i + 1) * (*elem_size),
-                    ((*nelem) - i) * (*elem_size));
+                    ((*nelem) - i - 1) * (*elem_size));
             (*nelem)--;
         }
     }

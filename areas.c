@@ -433,7 +433,9 @@ static int AreaBox(char **Itms, int y1, int y2, int len, int def, WND * hPrev, W
             case Key_Rgt:
                 {
                     size_t i;
-                    i = (size_t) (strchr(Itms[currItem] + 1, ' ') - 1 - Itms[currItem]);
+
+                    i = (size_t) (((char *)(strchr(Itms[currItem] + 1, ' '))) - Itms[currItem]);
+                    i--;
                     if (i > 28)
                     {
                         i = 28;

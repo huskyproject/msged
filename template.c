@@ -165,7 +165,7 @@ int MakeTemplateMsg(msg * m, msg * oldmsg, int olda, int type)
 
     /* add tearline and origin if appropriate and wished */
 
-    if (CurArea.echomail)
+    if (CurArea.echomail && !(type & MT_RED))
     {
         if (ln != NULL)
         {

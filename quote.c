@@ -469,7 +469,7 @@ LINE *makequote(LINE * l, char *isfrom)
         {
             if (t->next && !is_blank(t->next) && is_same_quote(t, t->next))
             {
-                *(strchr(t->text, '\n')) = '\0';
+                *((char *)strchr(t->text, '\n')) = '\0';
             }
 
             wrap(t, 1, maxy, SW->qm);

@@ -2,7 +2,7 @@
 CC = gcc
 DEBUG = -s
 CFLAGS= -I.. $(DEBUG) -c
-CDEFS=	-DUNIX -DUSE_MSGAPI -DUSE_FIDOCONFIG -DUSE_CURSES
+CDEFS=	-DUNIX -DUSE_MSGAPI -DUSE_FIDOCONFIG -DUSE_CURSES -DUNAME=\"SUN\"
 COPT= -O3
 LOPT=
 LIBRARIES=../fidoconf/libfidoconfigsun.a ../smapi/libsmapisun.a -lncurses
