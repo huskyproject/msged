@@ -1,4 +1,8 @@
+ifeq ($(DEBIAN), 1)
+include ../../debian/huskymak.cfg
+else
 include ../../../huskymak.cfg
+endif
 
 ifdef HTMLDIR
 

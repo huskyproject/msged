@@ -1,4 +1,8 @@
+ifeq ($(DEBIAN), 1)
+include ../debian/huskymak.cfg
+else
 include ../../huskymak.cfg
+endif
 
 ifeq ($(DEBUG), 1)
   CFLAGS=$(WARNFLAGS) $(DEBCFLAGS) -I$(INCDIR)
@@ -93,6 +97,27 @@ distclean: clean
 	-$(RM) makemaps$(EXE)
 
 install: maps
+ifeq ($(DEBIAN), 1)
+	-$(MKDIR) $(MKDIROPT) $(DESTDIR)/$(CFGDIR)
+	$(INSTALL) $(IIOPT) readmaps.437 $(DESTDIR)/$(CFGDIR)
+	$(INSTALL) $(IIOPT) readmaps.850 $(DESTDIR)/$(CFGDIR)
+	$(INSTALL) $(IIOPT) readmaps.866 $(DESTDIR)/$(CFGDIR)
+	$(INSTALL) $(IIOPT) readmaps.koi $(DESTDIR)/$(CFGDIR)
+	$(INSTALL) $(IIOPT) readmaps.is1 $(DESTDIR)/$(CFGDIR)
+	$(INSTALL) $(IIOPT) readmaps.is5 $(DESTDIR)/$(CFGDIR)
+	$(INSTALL) $(IIOPT) readmaps.ukr $(DESTDIR)/$(CFGDIR)
+	$(INSTALL) $(IIOPT) writmaps.437 $(DESTDIR)/$(CFGDIR)
+	$(INSTALL) $(IIOPT) writmaps.850 $(DESTDIR)/$(CFGDIR)
+	$(INSTALL) $(IIOPT) writmaps.866 $(DESTDIR)/$(CFGDIR)
+	$(INSTALL) $(IIOPT) writmaps.koi $(DESTDIR)/$(CFGDIR)
+	$(INSTALL) $(IIOPT) writmaps.is1 $(DESTDIR)/$(CFGDIR)
+	$(INSTALL) $(IIOPT) writmaps.is5 $(DESTDIR)/$(CFGDIR)
+	$(INSTALL) $(IIOPT) writmaps.ukr $(DESTDIR)/$(CFGDIR)
+# I HATE symlinks with full path, it wont work in package-building process ! :)
+	cd $(DESTDIR)/$(CFGDIR) ; \
+	$(LN) $(LNOPT) readmaps.is1 readmaps.dat ; \
+	$(LN) $(LNOPT) writmaps.is1 writmaps.dat
+else
 	-$(MKDIR) $(MKDIROPT) $(CFGDIR)
 	$(INSTALL) $(IIOPT) readmaps.437 $(CFGDIR)
 	$(INSTALL) $(IIOPT) readmaps.850 $(CFGDIR)
@@ -115,8 +140,10 @@ else
 	$(LN) $(LNOPT) $(CFGDIR)$(DIRSEP)readmaps.437 $(CFGDIR)$(DIRSEP)readmaps.dat
 	$(LN) $(LNOPT) $(CFGDIR)$(DIRSEP)writmaps.437 $(CFGDIR)$(DIRSEP)writmaps.dat
 endif
+endif
 
 uninstall:
+# Uninstall is normally never called on Debian, so no modifications here :)
 	-$(RM) $(CFGDIR)$(DIRSEP)readmaps.437
 	-$(RM) $(CFGDIR)$(DIRSEP)readmaps.850
 	-$(RM) $(CFGDIR)$(DIRSEP)readmaps.866
