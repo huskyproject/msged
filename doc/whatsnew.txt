@@ -1,6 +1,21 @@
 MSGED TE (TOBI'S EDITION) 6.0 - DOCUMENTATION OF NEW FEATURES AND CHANGES
 =========================================================================
 
+Features, Changes and Fixes in Msged TE 6.0.1
+---------------------------------------------
+
+Fixes:
+
+- In template text in forwarded and redirected messages, the areatag was
+  filled in incorrectly if the area grouping feature (group separators
+  etc.) was used.
+
+- Fixed redraw problems with buttons in dialog boxes.
+
+- The binary versions of Msged TE 6.0.1 are linked against Smapi 2.0.1,
+  which brings quite some improvements in JAM access.
+
+
 Features, Changes and Fixes in Msged TE 6.0.0
 ---------------------------------------------
 
@@ -54,11 +69,11 @@ Changes:
 
 Features:
 
-- You can now use @o and @w metalines in the template file to define your 
+- You can now use @o and @w metalines in the template file to define your
   language's representation of month and day names.
 
 - Msged now creates a TZUTC kludge line by default. Use
-  "switch TZUTC off to" disable this if you do not like it or wrong 
+  "switch TZUTC off to" disable this if you do not like it or wrong
   information is put to the kludge. Msged does not yet evaluate TZUTC
   kludge lines when reading mail.
 
@@ -69,7 +84,7 @@ Features:
   this off if you are using Soupgate for proper reply linking.
 
 - Added Fidoconfig parsing code that can work without the fidoconfig
-  library. This keeps the binaries small and insensitive against library 
+  library. This keeps the binaries small and insensitive against library
   interface changes and new keyword introductions.
 
 - Group handling has been added. Msged can now read group information from
@@ -251,7 +266,7 @@ Fixes:
   also other formats), it could lead to the last several characters of a
   message being cut off. This was a problem especially because it destroyed
   the origin (and hence the sender AKA info) in echomails. Fortunately, it
-  only happend when you were typing umlauts and had instructed Msged to 
+  only happend when you were typing umlauts and had instructed Msged to
   convert those to low-ascii.
 
 - When Msged asked if you want to send a mail via the Zone Gate, Msged
