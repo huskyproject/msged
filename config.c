@@ -353,6 +353,7 @@ static char *cfgswitches[] =
     "PseudoGraphics",
     "GroupSeparators",
     "UseTosserGroups",
+    "DomainMsgid",
     NULL
 };
 
@@ -407,6 +408,7 @@ static char *cfgswitches[] =
 #define CFG_SW_PSEUDOGRAPHICS       48
 #define CFG_SW_GROUPSEPARATORS      49
 #define CFG_SW_USETOSSERGROUPS      50
+#define CFG_SW_DOMAINMSGID          51
 
 #ifdef UNIX
 #include <sys/types.h>
@@ -991,6 +993,11 @@ void AssignSwitch(char *swtch, int OnOff)
 
     case CFG_SW_USETOSSERGROUPS:
         SW->areafilegroups = OnOff;
+	break;
+	
+    case CFG_SW_DOMAINMSGID:
+	SW->domainmsgid = OnOff;
+	break;
 
     default:
         printf("\r\aUnknown switch: '%s'\n", swtch);

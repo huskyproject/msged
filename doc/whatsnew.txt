@@ -54,6 +54,10 @@ Changes:
 
 Features:
 
+- New switch "DomainMsgid". Turned on by default, but if turned off it will
+  disable printing of the 5D domain string in MSGID lines. You must turn
+  this off if you are using Soupgate for proper reply linking.
+
 - Added Fidoconfig parsing code that can work without the fidoconfig
   library. This keeps the binaries small and insensitive against library 
   interface changes and new keyword introductions.

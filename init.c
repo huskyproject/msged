@@ -198,6 +198,7 @@ int InitVars(void)
     SW->groupareas = 0;
     SW->groupseparators = YES;
     SW->areafilegroups = 1;
+    SW->domainmsgid = 1;
 
 #ifndef UNIX
     ST->comspec = getenv("COMSPEC");

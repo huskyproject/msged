@@ -434,6 +434,7 @@ struct _swv
     int groupseparators;        /* do we want to draw horizontal bars? */
     int grouparea;              /* SW->area = grouparealist[SW->grouparea] */
     int areafilegroups;         /* want to read group info from areafile? */
+    int domainmsgid;		/* show msgid's with domain string? */
 };
 
 

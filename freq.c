@@ -527,7 +527,9 @@ void makefreq(void)
                 
             if (SW->msgids)
             {
-	        sprintf(txt, "\01MSGID: %s %08lx\r", show_address(&from), now);
+	        sprintf(txt, "\01MSGID: %s %08lx\r",
+                        SW->domainmsgid ? show_address(&from) : show_4d(&from),
+                        now);
 	        now++;
                 curr = InsertAfter(curr, txt);
             }

@@ -4183,6 +4183,17 @@ When set to on, this will display the message number of the message currently
 being read on the top line of the header after the area description in the
 form: @samp{(currentmsg# of maxmsg#)}. Default: Off.
 
+@item DomainMsgid
+@findex DomainMsgid
+@cindex MSGID, generation
+@cindex message IDs
+@cindex soupgate compatibility
+Controls if the address in a MSGID control line will be printed in 5D with the
+domain identifier (On) or in 4D without.  When you are using an internet
+gateway which runs the Soupgate software by Tom Torfs, you should turn this
+switch to off in order to enable reply linking to self-written messages in
+newsgroups (Soupgate does not properly handles MSGID's with domain identifier,
+unfortunately). Default: On.
 
 @item DomainOrigin
 @findex DomainOrigin
@@ -4190,7 +4201,6 @@ If turned on, @value{MSGED} will generate five dimensional origin lines
 (i.E., it will append the domain string to the address in the origin
 line). It is suggested that you turn this switch off, but is is turned on by
 default. Default: On.
-
 
 @item EchoFlags
 @findex EchoFlags
@@ -4267,18 +4277,6 @@ used a specific message editor (only) for a particular address in a 3-year
 period.  Most people just ignore this potential problem and use them anyway.
 Leaving MSGIDs ON will help mail tossers in duplicate message checking and/or
 reply linking. Default: On.
-
-@item MSGID5D
-@findex MSGID5D
-@cindex MSGID, generation
-@cindex message IDs
-@cindex soupgate compatibility
-Controls if the address in a MSGID control line will be printed with the domain
-identifier (On) or without.  When you are using an internet gateway which runs
-the Soupgate software by Tom Torfs, you should turn this switch to off in order
-to enable reply linking to self-written messages in newsgroups (Soupgate does
-not properly handles MSGID's with domain identifier, unfortunately).
-Default: On.
 
 @item NetmailVia
 @findex NetmailVia
