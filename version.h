@@ -8,7 +8,7 @@
 #define __VERSION_H__
 
 #define VERNUM "6.1"
-#define VERPATCH ".0"
+#define VERPATCH ".1"
 #define VERBRANCH "-current"
 #define VERPROJECT "TE"
 
