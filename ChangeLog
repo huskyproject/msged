@@ -1,3 +1,7 @@
+2004-09-04 Saturday 21:42  os2tobi
+
+	* dirute.c (1.18): compilation fix
+
 2004-08-25 Wednesday 11:58  os2tobi
 
 	* Makefile (1.20), ansi.c (1.32), dirute.c (1.17), filedlg.c
