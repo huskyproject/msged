@@ -291,10 +291,11 @@ LOOKUPTABLE * get_writetable(const char *charset_name, int *allowed)
 
 void strip_control_chars (char *text)
 {
+#if defined(UNIX) || defined(SASC)
+
     unsigned char c;
     size_t dstidx, len = strlen(text);
-    
-#if defined(UNIX) || defined(SASC)
+
     for (dstidx = 0; dstidx < len; dstidx++)
     {
         c = *(unsigned char*)(text + dstidx);

@@ -889,6 +889,36 @@ int SquishMsgClose(void)
     }
 }
 
+
+/*
+ * Area locking functions
+ */
+
+int SquishMsgLock(void)
+{
+    if (!SW->squish_lock)
+    {
+        return MsgLock(Ahandle);
+    }
+    else
+    {
+        return 0;  /* area already locked */
+    }
+}
+
+int SquishMsgUnlock(void)
+{
+    if (!SW->squish_lock)
+    {
+        return MsgUnlock(Ahandle);
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+
 /*
  *  SquishMsgAreaClose; Closes the area currently opened.
  */

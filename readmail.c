@@ -65,7 +65,7 @@ int bdos(int func, unsigned reg_dx, unsigned char reg_al);
 #include "date.h"
 #include "echotoss.h"
 
-#define rand_number(num) (int) (((long) rand() * (num)) / RAND_MAX)
+#define rand_number(num) ((int) (((long) rand()) % (num)))
 
 #define TEXTLEN 96
 
@@ -1321,7 +1321,7 @@ static void StripKludges(msg * m, int *got_originline, char *origin,
                     {
                         strncpy (origin, p + 11, 79);
                         origin[79] = 0;
-                        p = strstr(origin, "(");
+                        p = strrchr(origin, '(');
                         if (p != NULL)
                         {
                             *p = '\0';
@@ -1445,7 +1445,20 @@ int writemsg(msg * m)
     xtear = NULL;
     xblank = NULL;
     ublank = NULL;
+#if 0
+    while (MsgLockArea() == -1)          /* Lock the Msg area for writing */
+    {
+        int ret;
+        
+        ret = ChoiceBox(" Error! ", "Could not write message!",
+                        "Retry", "Cancel", NULL);
 
+        if (ret == ID_TWO)
+        {
+            return FALSE;
+        }
+    }
+#endif
     if (now == 0L)
     {
         now = sec_time();
@@ -2028,6 +2041,10 @@ int writemsg(msg * m)
     deleteCrapLine(xblank);
     deleteCrapLine(xtear);
     deleteCrapLine(xorigin);
+
+#if 0
+    MsgUnlockArea();
+#endif    
 
     if (abortWrite)
     {

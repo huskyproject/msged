@@ -39,7 +39,9 @@ msghandle msgdo[] =
         FidoMsgAreaClose,
         FidoMsgClose,
         FidoUidToMsgn,
-        FidoMsgnToUid
+        FidoMsgnToUid,
+        FidoMsgLock,
+        FidoMsgUnlock
     },
     {
         QuickMsgReadHeader,
@@ -52,7 +54,9 @@ msghandle msgdo[] =
         QuickMsgAreaClose,
         QuickMsgClose,
         QuickUidToMsgn,
-        QuickMsgnToUid
+        QuickMsgnToUid,
+        QuickMsgLock,
+        QuickMsgUnlock
     }
 #ifdef USE_MSGAPI
     ,
@@ -67,7 +71,9 @@ msghandle msgdo[] =
         SquishMsgAreaClose,
         SquishMsgClose,
         SquishUidToMsgn,
-        SquishMsgnToUid
+        SquishMsgnToUid,
+        SquishMsgLock,
+        SquishMsgUnlock
     }
 #endif
 };
@@ -152,6 +158,7 @@ int InitVars(void)
     SW->edittearlines = NO;
     SW->editoriginlines = NO;
     SW->squish_lock = NO;
+    SW->lowercase = NO;
 
 #ifndef UNIX
     ST->comspec = getenv("COMSPEC");

@@ -19,5 +19,7 @@ int FidoMsgWriteHeader(msg * m, int type);
 int FidoMsgWriteText(char *text, unsigned long n, unsigned long mlen);
 unsigned long FidoMsgnToUid(unsigned long n);
 unsigned long FidoUidToMsgn(unsigned long n);
+int FidoMsgLock(void);
+int FidoMsgUnlock(void);
 
 #endif

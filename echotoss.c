@@ -13,6 +13,7 @@
 #include "nedit.h"
 #include "msged.h"
 #include "echotoss.h"
+#include "strextra.h"
 
 void echotoss_add(AREA *a)
 {

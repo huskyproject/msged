@@ -781,3 +781,13 @@ static time_t char_to_timet(unsigned char arr[])
     tt = mktime(&tms);
     return tt;
 }
+
+int FidoMsgLock(void)
+{
+    return 0;
+}
+
+int FidoMsgUnlock(void)
+{
+    return 0;
+}

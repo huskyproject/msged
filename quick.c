@@ -888,3 +888,13 @@ unsigned long QuickUidToMsgn(unsigned long n)
 {
     return n;
 }
+
+int QuickMsgLock(void)
+{
+    return 0;
+}
+
+int QuickMsgUnlock(void)
+{
+    return 0;
+}

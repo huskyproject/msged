@@ -22,5 +22,7 @@ unsigned long SquishUidToMsgn(unsigned long n);
 unsigned long SquishMsgnToUid(unsigned long n);
 void MsgApiInit(void);
 void MsgApiTerm(void);
+int SquishMsgLock(void);
+int SquishMsgUnlock(void);
 
 #endif

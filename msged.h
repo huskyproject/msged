@@ -267,6 +267,8 @@ typedef struct _msghandle
     int (*MsgClose) (void);
     unsigned long (*UidToMsgn) (unsigned long n);
     unsigned long (*MsgnToUid) (unsigned long n);
+    int (*MsgLockArea) (void);
+    int (*MsgUnlockArea) (void);
 }
 msghandle;
 
@@ -366,7 +368,8 @@ struct _swv
     int useoriginlines;         /* add origin lines in echomail? */
     int edittearlines;          /* add tearlines to template message */
     int editoriginlines;        /* add originlines to template message */
-    int squish_lock;            /* Lock message base for greater speed */
+    int squish_lock;            /* Lock message base for better speed */
+    int lowercase;              /* Convert filenames to lower case */
 };
 
 #ifndef INCL_MAIN
@@ -416,6 +419,8 @@ extern int scan;                  /* scan areas for new mail at startup? */
 #define MsgClose()                (msgdo[CurArea.msgtype].MsgClose())
 #define UidToMsgn(n)              (msgdo[CurArea.msgtype].UidToMsgn(n))
 #define MsgnToUid(n)              (msgdo[CurArea.msgtype].MsgnToUid(n))
+#define MsgLockArea()             (msgdo[CurArea.msgtype].MsgLockArea())
+#define MsgUnlockArea()           (msgdo[CurArea.msgtype].MsgUnlockArea())
 
 #define DOROT13(c) ((rot13 == 0) ? (c) : handle_rot((c)))
 

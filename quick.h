@@ -20,5 +20,7 @@ int QuickMsgWriteHeader(msg * m, int type);
 int QuickMsgWriteText(char *text, unsigned long n, unsigned long mlen);
 unsigned long QuickMsgnToUid(unsigned long n);
 unsigned long QuickUidToMsgn(unsigned long n);
+int QuickMsgLock(void);
+int QuickMsgUnlock(void);
 
 #endif

@@ -302,6 +302,7 @@ static char *cfgswitches[] =
     "Colors",
     "Shadows",
     "BS127",
+    "LowerCase",
     "SquishLock",
     NULL
 };
@@ -347,7 +348,8 @@ static char *cfgswitches[] =
 #define CFG_SW_COLORS               38
 #define CFG_SW_SHADOWS              39
 #define CFG_SW_BS127                40
-#define CFG_SW_SQUISH_LOCK          41 /* should be 45 */
+#define CFG_SW_LOWERCASE            41
+#define CFG_SW_SQUISH_LOCK          42 /* should be 45 */
 
 #ifdef UNIX
 #include <sys/types.h>
@@ -442,8 +444,9 @@ char *shell_expand(char *str)
 
 char *pathcvt(char *path)
 {
+    int i;
 #ifdef UNIX
-    int dospathlen, unixpathlen, i;
+    int dospathlen, unixpathlen;
 #endif
     path = shell_expand(path);
 #ifdef UNIX
@@ -472,14 +475,20 @@ char *pathcvt(char *path)
         release(path);
         path = temppath;
     }
+#endif
     for (i = strlen(path) - 1; i >= 0; i--)
     {
+#ifdef UNIX
         if (path[i] == '\\')
         {
             path[i] = '/';
         }
-    }
 #endif
+        if (SW->lowercase)
+        {
+            path[i] = tolower(path[i]);
+        }
+    }
     return path;
 }
 
@@ -875,6 +884,9 @@ void AssignSwitch(char *swtch, int OnOff)
     case CFG_SW_BS127:
         wnd_bs_127 = OnOff;
         break;
+
+    case CFG_SW_LOWERCASE:
+        SW->lowercase = OnOff;
 
     case CFG_SW_SQUISH_LOCK:
         SW->squish_lock = OnOff;

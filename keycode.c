@@ -19,6 +19,7 @@ void keycode(void)
 
     printf("Displaying keyboard scan codes in hexadecimal form.\n\n");
     printf("Press any key or key combination, or 'q' (lowercase 'Q') to exit.\n");
+    fflush(stdout);
 
     do
     {
@@ -33,6 +34,7 @@ void keycode(void)
             printf("0x%04x", ch);
         }
         printf("\n");
+        fflush(stdout);
     }
     while (ch != 'q');
     TTclose();
