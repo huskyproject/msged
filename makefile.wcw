@@ -1,40 +1,17 @@
-# look for libs in c:\lib
-LIBDIR=..
-
-# install programs in c:\bin
-BINDIR=c:\bin
-
-# look for includes here
-INCDIR=..
-
-# options for installing programs
-IBOPT=-s
-
-# debug?
-DEBUG=0
-
-# use fidoconfig?
-USE_FIDOCONFIG=1
+# Watcom Win32 makefile
+# No Support for Husky build environment
 
 CC=	wcl386
 
-!IF $(DEBUG) == 1
-CFLAGS= -zq -wx -bt=nt -l=nt -I$(INCDIR) -d2
-!ELSE
-CFLAGS= -zq -wx -bt=nt -l=nt -I$(INCDIR)
-!ENDIF
-
-#COPT=  -oneatx -5
-MSGAPI= $(LIBDIR)\smapi\smapiwcw.lib
-
-!IF $(USE_FIDOCONFIG) == 1
-CDEFS=  -DWINNT -DUSE_MSGAPI -DUSE_FIDOCONFIG
-FIDOCFG= $(LIBDIR)\fidoconf\fconfwcw.lib
-!ELSE
+CSWITCH= -zq -wx -I.. -bt=nt
+COPT=-oneatx -5
+MSGAPI= ..\smapi\smapiwcw.lib
 CDEFS=  -DWINNT -DUSE_MSGAPI
-!ENDIF
 
-TARGET= msgedw32.exe
+CFLAGS=$(CDEFS) $(COPT) $(CSWITCH)
+LFLAGS=-l=nt
+
+TARGET=msgednt.exe
 
 objs=	addr.obj     &
 	areas.obj    &
@@ -93,10 +70,10 @@ objs=	addr.obj     &
 all: $(TARGET)
 
 .c.obj:
-	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
+	$(CC) $(CFLAGS) -c $<
 
 $(TARGET): $(objs)
-	$(CC) $(COPT) -fe=$(TARGET) $(objs) $(MSGAPI) $(FIDOCFG)
+	$(CC) $(LFLAGS) -fe=$(TARGET) $(objs) $(MSGAPI) $(FIDOCFG)
 
 clean:
 	del *.obj
