@@ -12,15 +12,11 @@ Category 1: Will certainly be implemented until next release
   Also: Problem with capital / small spelling of lastread file name
   in name keyword on Linux. High time to fix this!!!)
 
-- Header recoding for Message List
-
 - Give the user the possibilty to only include the Areatag, but not
   the Fastecho echo description into the area list (Ralf Hoerner)
 
 - Background attribute "transparent", for the new kconsole feature
   (background images). Use patch that has already been submitted.
-
-- Debug squish garbage (Sven Bursch)
 
 Category 2: Might be implemented, but volunteers are always very welcome!
 =========================================================================

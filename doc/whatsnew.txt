@@ -192,6 +192,9 @@ Features:
 
 Fixes:
 
+- Fixes for treatment of High-ASCII characters, in message list and on
+  text import/export.
+
 - The message body length that Msged was reporting to the Squish API was
   longer than necessary.  This caused space waste and could also confuse
   other programs that read from the Squish base (though no real-life

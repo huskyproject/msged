@@ -204,7 +204,7 @@ static void showit(MLHEAD * h, int y, int sel)
 
     /* caveat the broken subject line!!! */
     for (cp=line; *cp; cp++)
-        if (*cp < ' ')
+        if (*cp >= 0 && *cp < ' ')
             *cp = ' ';
 
     if (sel)
