@@ -207,13 +207,35 @@ option when unzipping the archive, because some archives contain
 subdirectories. (You might already have done this).
 
 @item
-Find out which codepage you are using by issueing the @code{CHCP} command. If
-it is 437, you do not have to take any action. If it is 850, you have to
-rename @file{????maps.dat} to @file{????maps.437} (for backup purposes), and
-then you must rename @file{????maps.850} to
-@file{????maps.dat}. (Alternatively, you could consider writing a batch file
-that first calls @code{CHCP 437} and then calls the @value{MSGED}
-executable.)
+Find out which codepage you are using by issueing the @code{CHCP} command. It
+is probably 437, 850 or 866. Then, select the corressponding read map and
+write map files that are shipped with @value{MSGED} (the have names of the
+form @file{READMAPS.codepagenumber} and copy them over to @file{READMAPS.DAT}
+and @file{WRITMAPS.DAT}. For example, this could look like this:
+
+@example
+R:\MSGED> CHCP
+Active Codepage:   850
+Prepared System Codepages:   850;  437
+
+R:\MSGED> COPY READMAPS.850 READMAPS.DAT
+R:\MSGED> COPY WRITMAPS.850 WRITMAPS.DAT
+@end example
+
+If there is no @file{READMAPS.XXX} file corresponding to the @samp{Active
+Codepage} returned by the @code{CHCP} command, see if there is a
+@file{READMAPS.XXX} file for one of the prepared codepages. If there is, use
+that one, and use the @code{CHCP} command to change to this code page each
+time before starting @value{MSGED}. In the example above, this command would
+be @code{CHCP 437}. You probably would want to place this command in a batch
+file, together with the invoation of @value{MSGED}.
+
+If @value{MSGED} does not support the codepage that you want to use, please
+contact the author and ask him to add support for that particular codepage.
+
+@xref{Special Characters,,Using Special Characters like Umlauts or
+Cyrillics - The Charset Kludge}, for more information on read and write map
+files, charset kludge lines, codepages, and character set recoding.
 
 @item
 Rename the file @file{sample.cfg} to @file{msged.cfg} and modify it according
@@ -260,12 +282,10 @@ message areas with more than 5000 messages in them. In all other cases, the
 16 bit version is the better choice because it uses less memory
 
 @item
-If you have Windows 95 or Windows NT, you should use the Windows NT
-executable rather than the 32 Bit DOS executable. On Windows 95, the reason
-is that the Windows 95 DPMI server is a little buggy, and on Windows NT, the
-native NT version is much faster than the DOS version. - The 32 Bit DOS
-Version is primarily targeted on environments like DESQview, plain DOS or
-Windows 3.1.
+If you have Windows NT, you should use the Windows NT executable rather than
+the 32 Bit DOS executable. On Windows NT, the native Windows 32 Bit version
+is much faster than the DOS version. - The 32 Bit DOS Version is primarily
+targeted on environments like DESQview, plain DOS or Windows 3.1.
 
 @item
 The 32 bit DOS version requries a functional DPMI server to run. Valid DPMI
@@ -300,15 +320,15 @@ longer require the EMX runtime. It is a standalone OS/2 executable.
 @item
 The Windows version is a 32 bit executable designed for Windows NT. Although
 it has only been tested on Windows NT, it should also work on Windows 95 and
-Windows 98.
+Windows 98. There have been reports that screen redrawing is very slow on
+Windows 9x, so you might have to use the 32 bit DOS executable there.
 
 @item
 The Windows version presently does not support mouse control (even though the
 mouse cursor is visible).
 
 @item
-The Windows version has been compiled with the RSXNT GNU compiler. It is a
-standalone executable that does not require any runtime DLLs.
+The Windows version has been compiled with the Borland C++ 4.0 compiler. 
 
 @end itemize
 
@@ -335,6 +355,11 @@ FreeBSD, which due to a strange problem in the termios code won't run the
 Linux binaries properly) you have to compile the source code on your own
 (which usually is not much of a problem).
 @xref{Compiling,, Compiling the Soruce Code}, for more information on this.
+
+Please note that this manual does not necessarily cover installation of the
+RPM archives of Msged created by other persons. Some tips of the following
+sections also apply when you install the RPM files, but others don't Please
+refer to the documentation of those RPM archives for more information.
 
 The following describes the installation of the files from the Linux
 distribution archive. If you have compiled @value{MSGED} yourself, you will
@@ -394,14 +419,18 @@ You have to copy some other files as well:
 ~/msged-work $ cp msghelp.dat ~/.msged.hlp
 ~/msged-work $ cp sample.tpl ~/.msged.tpl
 ~/msged-work $ cp scheme.004 ~/.msged.colors
-~/msged-work $ cp readmaps.dat ~/.msged.readmaps
-~/msged-work $ cp writmaps.dat ~/.msged.writmaps
+~/msged-work $ cp readmaps.is1 ~/.msged.readmaps
+~/msged-work $ cp writmaps.is1 ~/.msged.writmaps
 @end example
 
-Note that if you have the source code distribution, you must take
-@file{readmaps.dat} and @file{writmaps.dat} from the @file{bin/latin}
-subdirectory (assuming that your Unix machine uses the ISO 8859-1 character
-set).
+Note that this assumes that you are using ISO 8859-1 font encoding, as is
+usally the case on Western Unix systems. If you use ISO 8859-5 (Russian Unix
+vendor fonts), use @file{readmaps.is5} and @file{writmaps.is5} instead, and
+if you use KOI8-R (Russian Linux and FreeBSD with e.g. cronyx fonts), use
+@file{readmaps.koi} and @file{writmaps.koi} instead. @xref{Special
+Characters,,Using Special Characters like Umlauts or Cyrillics - The Charset
+Kludge}, for more information on read and write map files, charset kludge
+lines, and character set recoding.
 
 @item
 Modify the configuration file @file{~/.msged} with your favourite text editor
@@ -1021,7 +1050,7 @@ information on what this means.
 
 
 @node Special Characters, Internet Gateways, Exporting and Printing, Advanced Concepts
-@section Using Special Characters like Umlauts or Cyrillics - The FSC 0054 Charset Kludge
+@section Using Special Characters like Umlauts or Cyrillics - The Charset Kludge
 @cindex FSC 0054
 @cindex special characters
 @cindex charset kludge
@@ -1066,10 +1095,14 @@ different code pages of the IBM PC character set. Unix computers and the
 Amiga in the western world typically use the ISO8859-1 character set, also
 known as Latin-1. Windows uses IBM PC for console applications, but ISO8859
 for graphical applications. The Macintosh uses the Macintosh character
-set. The consequence of this is clear: If you write a text on a Unix or
-Windows computer using special characters like accented letters or umlauts,
-you cannot expect it to be properly displayed on a DOS or OS/2 computer, and
-vice versa, unless special measures are taken.
+set.  In Russia, there is a similiar problems: There exist four ways of
+encoding cyrillics, namedly the KOI8-R fonts, the ISO 8859-5 fonts, the
+codepage 866 of the IBM PC character set, and Windows Codepage 1251.
+
+The consequence of this is clear: If you write a text on a Unix or Windows
+computer using special characters like accented letters or umlauts, you
+cannot expect it to be properly displayed on a DOS or OS/2 computer, and vice
+versa, unless special measures are taken.
 
 @node Special Characters in Fidonet, MsgEd TE and Special Characters, Problems with Special Characters, Special Characters
 @subsection How has this problem been solved in Fidonet?
@@ -1091,81 +1124,122 @@ editor will use its character translation tables and convert your text into a
 7 bit clean representation that can be displayed on @emph{all} computers even
 if they don't support FSC 0054. For example, a German sharp s would be
 converted into double s, an e with accent would be converted into an e
-without accent, and so on. This is the maximum compatibility mode: It offers
+without accent, a cyrillic soft a would be converted to its transliteration
+"ya", and so on. This is the maximum compatibility mode: It offers
 you the comfort of being able to write text just as you would in a letter,
 using all special characters that your language requries, but your mails
 will still be properly displayed on all computers. This might be an option
 for German users, but it certainly is not for Russian users, as the
-transliteration of cyrillic letters is not particularly easy to read \dots
+transliteration of cyrillic letters is not particularly easy to read.
 
 The other (better) possibility is that your editor leaves the special
-characters that you typed in as is, but inserts a hidden kludge line, from
-here on referred to as the @dfn{charset kludge}, into the message, that
-designates which character set you have used for composing the message. When
-your message is read on another computer by a Fidonet message reader that
-also supports FSC 0054, the message reader will see the charset kludge in
-your mail and then use its charset translation tables to convert your
-message into the character set that this computer uses. The consequence is
-that even if your computer and the computer of the receiver use different
-character sets, everything that you typed in will look just the same on the
-receiver's screen than on yours, including all special characters that have
-been typed.
+characters that you typed in as is, or converts them to a common transport
+charset (like codepage 866 in Russia, or codepage 850 in Europe), but inserts
+a hidden kludge line, from here on referred to as the @dfn{charset kludge},
+into the message, that designates which character the mails stored in the
+message are composed in. When your message is read on another computer by a
+Fidonet message reader that also supports FSC 0054, the message reader will
+see the charset kludge in your mail and then use its charset translation
+tables to convert your message into the character set that this computer
+uses. The consequence is that even if your computer and the computer of the
+receiver use different character sets, everything that you typed in will look
+just the same on the receiver's screen than on yours, including all special
+characters that have been typed.
 
 A particular note to all Russian users of Msged: In Russia, it has been
 commonly agreed on to transport all Fidonet mails in Codepage 866. So you
-might ask what you need a charset kludge for. But imagine a user in Germany
-who wants to read Russian echomails. His mail editor needs a way to know if a
-mail that it is about to display contains German special letters, or if it
-contains Russian ones. (Or vice versa, imagine a Russian person who wants to
-leran the German or English language). Only if Russian mails contain the
-proper charset kludge (@samp{CP866 2}), it will be able to display both
-languages correctly.
+might ask what you do need a charset kludge for - could not just @value{MSGED}
+recode everything to codepage 866 when writing a mail and importing from
+codepage 866 when reading a mail, and not care about that kludge line? But
+imagine a user in Germany who wants to read Russian echomails. His mail
+editor needs a way to know if a mail that it is about to display contains
+German special letters, or if it contains Russian ones. (Or vice versa,
+imagine a Russian person who wants to leran the German or English
+language). Only if Russian mails contain the proper charset kludge
+(@samp{CP866}), it will be able to display both languages correctly.
 
 @node MsgEd TE and Special Characters,  , Special Characters in Fidonet, Special Characters
 @subsection How do I configure @value{MSGED} to support FSC 0054?
-@value{MSGED} fully supports FSC 0054. The character set translation files
-are named @file{READMAPS.DAT} and @file{WRITMAPS.DAT}. You can enable
-character set translation support in @value{MSGED} by simply copying these
-files into the directory from which @value{MSGED} is started. (On Unix, the
-exact name and location of these files are determined by the defaults you put
-into the makefile, or @file{~/.msged.readmaps} and @file{~/msged.writmaps}
-for the precompiled binaries). You can change the file names and location to
-use with the @samp{Readmap} and @samp{Writemap} keywords. If the files can be
-found and are valid, you will be notified that the FSC 0054 character set
-translation engine has been activated when @value{MSGED} starts.
+@value{MSGED} fully supports FSC 0054. It uses two binary files, a read map
+and a write map. The read map contains tables that define how to convert all
+the known transport charsets to the local charset (this even includes
+transliteration tables for displaying Russian text on Western computers!),
+and similarly, the write map contains tables that define how to convert the
+local character set to any allowed transport character sets.
 
-It is important that you use the correct @file{READMAPS.DAT} and
-@file{WRITMAPS.DAT} files, because these files are tailored to the charcter
-set that you are using locally: The OS/2, DOS and Windows versions of
-@value{MSGED} ship with a pair of @file{READMAPS.DAT} and @file{WRITMAPS.DAT}
-that are tailored for the IBMPC codepage 437 (international). In order to
-find out if you are using codepage 437, you can use the @file{CHCP} command
-with no arguments. If you are not using codepage 437, you should write a
-batch file that first calls @file{CHCP 437} before calling @value{MSGED}. If
-you are using codepage 850, you might alternatively also delete
-@file{READMAPS.DAT} and @file{WRITMAPS.DAT} and then rename the files
-@file{READMAPS.850} and @file{WRITMAPS.850} to @file{READMAPS.DAT} and
-@file{WRITMAPS.DAT}. These files are tailored for codepage 850. Russian users
-that have codepage 866 should use @file{READMAPS.866} and @file{WRITMAPS.866}.
+The default name of the character set translation files are
+@file{READMAPS.DAT} and @file{WRITMAPS.DAT}, and they are searched in the
+current working directory when @value{MSGED} starts. (On Unix, the exact name
+and location of these files are determined by the defaults you put into the
+makefile, or @file{~/.msged.readmaps} and @file{~/msged.writmaps} for the
+precompiled binaries, while the RPM distribution might use yet other
+locations). You can change the file names and location to use with the
+@samp{Readmap} and @samp{Writemap} keywords (@pxref{Readmap,,The Readmap and
+Writemap Keywords}).
 
-The Linux version ships with a pair of @file{READMAPS.DAT} and
-@file{WRITMAPS.DAT} that are tailored to computers that use the ISO 8859
-character set (Latin-1). (Some Linux boxes use IBMPC, codepage 437, or even
-850, instead, but I strongly suggest that you change your system
-configuration to use ISO 8859 in that case!).
+The binary release of @value{MSGED} ships with a variety of read maps and
+write maps. For each character set or codepage, there is a pair of read map
+and write map file which contains tables to convert from any charset set to
+this codepage and back.
 
-Russian Linux users using KOI8-R fonts (like the @code{cronyx} font set)
-should use @file{READMAPS.KOI} and @file{WRITMAPS.KOI}. Russian Unix users
-which use vendor font sets in @samp{8859-5} encoding should use
-@file{READMAPS.IS5} and @file{WRITMAPS.IS5}.
+Now all you need to do in order to configure @code{MSGED} to properly encode
+and decode all sorts of special characters is to determine which character
+set or codepage your computer is using, and copy the corresponding pair of
+read map and write map file to the default name and location as noted above,
+or use the @samp{Readmap} and @samp{Writemap} keywords to point Msged to the
+correct pair of read map and write map files.
+
+The following tables lists all read map and write map files that
+@value{MSGED} currently includes:
+
+@example
+Filename     | Type of font / character set / computer 
+-------------------------------------------------------------------------
+READMAPS.850 | Any DOS or OS/2 computer, or Windows computer with the OEM
+WRITMAPS.850 | console fonts, that uses Codepage 850. This applies to most 
+             | computers in Western Europe. Some badly configured Linux 
+             | systems might also use this code page.
+-------------------------------------------------------------------------
+READMAPS.437 | Any DOS or OS/2 computer, or Windows computer with the OEM
+WRITMAPS.850 | fonts, that uses the standard codepage 437. This applies to
+             | most US-American installations, and also to some European 
+             | ones that use Codepage 850 because it has some more IBM 
+             | graphics characters.
+-------------------------------------------------------------------------
+READMAPS.866 | This is IBM Codepage 866, used by DOS and OS/2 or Windows
+WRITMAPS.866 | text mode applications in Russia.
+-------------------------------------------------------------------------
+READMAPS.UKR | This is IBM Codepage 1125, used by some DOS and OS/2 or
+WRITMAPS.UKR | Windows installations for text mode applications in
+             | Ukraine and Belorussia.
+-------------------------------------------------------------------------
+READMAPS.IS1 | This is ISO 8859-1. It is the standard encoding for 
+WRITMAPS.IS1 | X11 fonts and console fonts on Linux and Unix system
+-------------------------------------------------------------------------
+READMAPS.IS5 | This is ISO 8859-5. It is the encoding used for vendor
+WRITMAPS.IS5 | shipped additional fonts in Russian editions of commercial
+             | Unix systems.
+-------------------------------------------------------------------------
+READMAPS.KOI | This is KOI8-R, used by the cyrillic cronyx font set, 
+WRITMAPS.KOI | which is in use in almost any Russian Linux or FreeBSD
+             | installation, and can of course also be installed on
+             | commercial Unix systems.
+-------------------------------------------------------------------------
+@end example
+
+So, enabling character set translation is easy, but you have to pay attention
+to use the @emph{correct} pair of read map and write map file.
 
 If you have the source code distribution of @value{MSGED}, the @file{bin}
 subdiretory contains @file{readmaps.dat} and @file{writmaps.dat} files for
-all supported code pages.
+all supported code pages. If you are compiling directly out of CVS, you can
+go to the @file{maps} subdirectory and compile and use the @file{makemaps}
+utiltiy to build the proper character set maps.
 
-The following table lists all level 2 character sets that @value{MSGED}
-understands (meaning all character sets that are defined in the
-@file{READMAPS.DAT} and @file{WRITMAPS.DAT} files):
+The following table lists all level 2 transport character sets that
+@value{MSGED} understands when it finds them in mails (meaning all character
+sets that are defined in the @file{READMAPS.DAT} and @file{WRITMAPS.DAT}
+files):
 
 @example
 @@CHRS-Kludge: | Conventional Name:    | Used by these computers:
@@ -1178,8 +1252,15 @@ CP850 2       | IBM PC, Codepage 850  | International / European versions
 CP866 2       | IBM PC, Codepage 866  | Russian OS/2, DOS, Windows
 CP1125 2      | IBM PC, Codepage 1125 | Ukrainian and Belorussian
               |                       |  OS/2, DOS, Windows
-KOI8-R 2      | KOI8-R                | Russian Linux (cronyx fonts)
 @end example
+
+Apart from that, @value{MSGED} also understands the (outdated)
+@code{@@CODEPAGE} kludge line.
+
+Most @file{READMAPS.DAT} and @file{WRITMAPS.DAT} files define some more
+charset names, like @code{KOI8-R}, @code{ISO-5}, and so on, but these kludge
+lines are not intended for message transport, but only as an internal name
+for @value{MSGED} to see what charset your computer uses locally.
 
 There are quite some other (though incorrect or obsolete) charset kludges in
 widespread use in fidonet. The most prominent one is @code{IBMPC 2}.
@@ -1196,7 +1277,6 @@ probably put the following comand into his config file:
 @example
 CharsetAlias IBMPC CP850
 @end example
-
 
 An American user might prefer
 
@@ -1262,7 +1342,7 @@ file.
 If you only want to enable special characters for a few areas, you have to
 define these areas manually, giving each of them the @samp{8} flag
 individually. The same applies if you have to define your areas manually for
-other reaseons. @xref{Manual Area Definition,,Manual Area Definition}, for
+other reasons. @xref{Manual Area Definition,,Manual Area Definition}, for
 more information on this.
 
 @node Internet Gateways,  , Special Characters, Advanced Concepts
@@ -2122,6 +2202,7 @@ are generally case-insensitive.
 * AreaExcl::                    Excluding areas from the area list.
 * Areafile and AreaFileFlags::  Reading squish.cfg or fastecho.cfg.
 * AssumeCharset::               Workaround for mails without CHRS kludges.
+* CharsetAlias::                About IBMPC 2 and other wrong CHRS kludges.
 * Color::                       Configuring the screen colors.
 * Colour::                      
 * CurStart/CurEnd::             Configuring the cursor shape.
@@ -2153,6 +2234,7 @@ are generally case-insensitive.
 * Quote::                       Configuring the quote characters.
 * QuoteRight::                  Configuring the right margin for quoting.
 * ReadKey::                     Modifying the keyboard layout.
+* Readmap::                     Where READMAPS.DAT and WRITMAPS.DAT are found.
 * Right::                       Selecting the right margin for message display.
 * RobotName::                   Do not use templates for Areafix mails :-)
 * Scan::                        Enabling auto-scan on program startup.
@@ -2169,6 +2251,7 @@ are generally case-insensitive.
 * UUCP::                        Configuring your internet gateway.
 * UucpName::                    Configuring your internet gateway.
 * UucpReplyTo::                 Redirecting e-mail replies.
+* Writemap::                    Where READMAPS.DAT and WRITMAPS.DAT are found.
 @end menu
 
 
@@ -2267,7 +2350,7 @@ You must specify the @code{AreaExcl} keyword in the configuration file
 These keywords are documented in the section about area configuration
 (@pxref{Areafile Parsing,,Reading a Tosser Configuration File (Areafile)}).
 
-@node AssumeCharset, Color, Areafile and AreaFileFlags, Keywords
+@node AssumeCharset, CharsetAlias, Areafile and AreaFileFlags, Keywords
 @subsection AssumeCharset
 @cindex default character set
 @cindex character set, default for reading
@@ -2301,7 +2384,50 @@ set, so it makes sense to specify @samp{AssumeCharset IBMPC} here.
 
 In Russia, it is best to use @samp{AssumeCharset CP866}.
 
-@node Color, Colour, AssumeCharset, Keywords
+@node CharsetAlias, Color, AssumeCharset, Keywords
+@subsection CharsetAlias
+@findex CharsetAlias
+
+@table @asis
+@item Syntax:
+@code{CharsetAlias @var{charsetInMail} @var{charsetAsKnownToMsged}}
+@item Example:
+@code{CharsetAlias IBMPC CP850}
+@end table
+
+As already noted in the previous section, a lot of mails in Fidonet contain
+charset kludges that do not adhere to the current FTSC standard for 8-bit
+character transport, @code{FSP1013}. Using the @code{CharsetAlias} keyword,
+you can tell @value{MSGED} how to map character set kludge names
+commonly found in mails to their official names.
+
+The most prominent example is the @code{IBMPC} charset kludge. This kludge
+line is now obsoleted and should be replaced by @code{CPxxx} charset
+kludges, where @code{xxx} stands for the codepage that is used. @value{MSGED}
+@emph{only} knows about the new @code{CPxxx} charset. Therefore, you need to
+use @code{CharsetAlias} to tell @value{MSGED} how to interprete a
+@code{IBMPC} charset kludge. Now this is difficult, because, if the
+@code{IBMPC} charset kludge is not followed by a @code{@@CODEPAGE} kludge
+line, you do not know which codepage the author of the mail has
+used. According to @code{FSC0054}, he should have used codepage 437, but in
+Western Europe for example the majority of users put @code{IBMPC} charset
+kludge lines into their mails, but actually use codepage 850, and in Russia
+the same applies for codepage 866. This means that you have to do
+assumptions. A users who reads mainly texts in Western European languages
+should probably use @code{CharsetAlias IBMPC CP850}, while when you intend to
+read Russian echomail, @code{CharsetAlias IBMPC CP866} is probably the right
+thing to do.
+
+Also, some users are simply using fantasy names for the @code{CHRS} kludge
+line. The following commands have also proven to be handy:
+
+@example
+CharsetAlias +7_FIDO CP866
+CharsetAlias RUFIDO CP866
+CharsetAlias ASCII CP437
+@end example
+
+@node Color, Colour, CharsetAlias, Keywords
 @subsection Color
 @cindex color settings
 @cindex colour settings
@@ -2939,48 +3065,37 @@ used as a default selection for exporting mails as text by pressing
 @item Syntax:
 @code{OutputCharset @var{charset}}
 @item Example:
-@code{OutputCharset LATIN-1}
+@code{OutputCharset IBMPC}
 @end table
 
 This specifies which character set should be used for writing messages with
-special characters (like umlauts, accents, IBM graphics). The mail will be
-converted into the given charset, and the proper charset kludge will be
-appended. This does only apply to areas which have the @samp{8} flag set,
-because in all other areas, the messages will always be converted into a
-7-bit ASCII representation.
+special characters (like umlauts, accents, cyrillic letters, IBM
+graphics). The mail will be converted into the given charset, and the proper
+charset kludge will be appended. This does only apply to areas which have the
+@samp{8} flag set, because in all other areas, the messages will always be
+converted into a 7-bit ASCII representation.
 
 The charset that you specify as @var{charset} argument must be a level 2
 charset, and a matching translation table must be contained in the
 @file{writmaps.dat} file. If there isn't such a table, you will only see this
 from the fact that the written message will contain 8-bit characters, but no
-charset kludge(!). So be careful not to misspell the option.  If you use the
-@file{writmaps.dat} that shipped with @value{MSGED}, you have the following
-options:
+charset kludge(!). So be careful not to misspell the option. 
 
-@table @code
-@item IBMPC
-Specify this if you want to export IBM graphics characters, or if you want to
-be compatible with old DOS software that does not know about character set
-translation with charset kludges.
+@xref{Special Characters,,Using Special Characters like Umlauts or Cyrillics
+- The Charset Kludge}, for more information on the concept of
+charset kludges. You can list all charset kludges that are listed in this
+section as arguments to the @code{OutputCharset} keyword, but usually
+@code{IBMPC} is the right option to choose, according with a proper
+@code{CharsetAlias} definition (@pxref{CharsetAlias,,The @code{ChrasetAlias}
+Keyword}). Msged TE will then also emit a proper @code{CODEPAGE} kludge. A
+Russian user will probably want to use @code{CP866}. Once the @code{CPxxx}
+charset kludges have found more widesprad use in Europe, @code{OutputCharset
+CP850} should replace @code{OutputCharset IBMPC} also in Western European
+countries.
 
-@item MAC
-Specify this if you want to be compatible with old Macintosh softare that
-does not know about charset kludges.
-
-@item LATIN-1
-This is the ISO 8859 standard character set. It is always a good choice as
-long as you do not want to use IBM graphics characters.
-
-@item CP850
-@value{MSGED} supports the @code{CP850} charset kludge, but you should use it
-as output charset, because quite a few other editors do not support it.
-@end table
-
-The character does not need to match the charset that your computer is using
-internally; @value{MSGED} will do all necessary conversion.
-
-@xref{Special Characters,,Using Special Characters - The FSC 0054 Charset
-Kludge}, for more information.
+The character set that you use for output does not need to match the charset
+that your computer is using internally; @value{MSGED} will do all necessary
+conversion.
 
 @node Printer, PrivateNet, OutputCharset, Keywords
 @subsection Printer
@@ -3108,7 +3223,7 @@ carriage return after each line, you should not specify a value greater than
 75 in order to assure that the text can be displayed on standard 80 columns
 displays without problems.
 
-@node ReadKey, Right, QuoteRight, Keywords
+@node ReadKey, Readmap, QuoteRight, Keywords
 @subsection ReadKey
 @findex ReadKey
 @table @asis
@@ -3119,7 +3234,34 @@ displays without problems.
 This keyword is used to redefine the keyboard layout in message reading
 mode.  @xref{Redefining the Keyboard,,Redefining the Keyboard}, for more information.
 
-@node Right, RobotName, ReadKey, Keywords
+@node Readmap, Right, ReadKey, Keywords
+@subsection Readmap and Writemap
+@findex Readmap
+@findex Writemap
+@table @asis
+@item Syntax:
+@example
+Readmap @var{filename}
+Writemap @var{filename}
+@end example
+@item Example:
+@example
+Readmap /usr/local/share/msged/readmaps.is1
+Readmap /usr/local/share/msged/writmaps.is1
+@end example
+or
+@example
+Readmap  c:\msged\readmaps.850
+Writemap c:\msged\writmaps.850
+@end example
+@end table
+
+These keywords are used to tell @value{MSGED} where to find the character set
+translation map files.
+@xref{Special Characters,,Using Special Characters like Umlauts or Cyrillics
+- The Charset Kludge}, for a detailed explanation.
+
+@node Right, RobotName, Readmap, Keywords
 @subsection Right
 @findex Right
 @cindex right margin, for normal text
@@ -3402,7 +3544,7 @@ software allows any name to be put into the FTN header field.
 @xref{Internet Gateways,,Using @value{MSGED} for e-mail and newsgroups},
 for more information.
 
-@node UucpReplyTo,  , UucpName, Keywords
+@node UucpReplyTo, Writemap, UucpName, Keywords
 @subsection UucpName
 @findex UucpReplyTo
 @cindex Reply-To: header lines
@@ -3443,6 +3585,16 @@ Reply-To: user@@some.domain.com (Joe Sysop)
 Please note that of course the whole thing can only work if your gateway
 software can recognise @code{Reply-To:} headers in fido netmail. As always, 
 Fidogate can, while others probably can't.
+
+@node Writemap,  , UucpReplyTo, Keywords
+@subsection Writemap
+@table @asis
+@item Syntax:
+@code{Writemap @var{filename}}
+@end table
+
+@xref{Readmap,,The Readmap and Writemap Keywords}, for more information.
+
 
 @node Switches, Conditionals, Keywords, Configuration Reference
 @section Switches
@@ -4571,5 +4723,4 @@ Notes}, for information on how to install these files.
 @appendix Configuration File Keyword Index
 @printindex fn
 
-@contents
 @bye
