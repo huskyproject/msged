@@ -2080,6 +2080,7 @@ static void crosspost(msg * m)
         if (*(current->text) == '\n')
         {
             release(current->text);
+            strcat(dfn,"\n");
             current->text = xstrdup(dfn);
         }
     }
