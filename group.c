@@ -70,7 +70,7 @@ int group_gethandle(char *name, int crifnec)
         {
             groups=xmalloc(sizeof(struct group)*(nmaxgroups = 1));
         }
-        if (ngroups < nmaxgroups)
+        if (ngroups >= nmaxgroups)
         {
             groups=xrealloc(groups, sizeof(struct group)*(nmaxgroups *= 2));
         }
