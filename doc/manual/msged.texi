@@ -2,10 +2,10 @@
 
 @c %**start of header
 @setfilename msged.info
-@settitle MsgEd TE 6.0 - A Public Domain Fidonet Message Editor
+@settitle MsgEd TE 6.1 - A Public Domain Fidonet Message Editor
 @setchapternewpage odd
 @set MSGED MsgEd TE
-@set VERSION 6.0
+@set VERSION 6.1
 @set EDITION 1
 @defindex kr
 @defindex ke
