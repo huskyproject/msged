@@ -24,7 +24,7 @@
 #define TIME       time
 #define DATE       date
 #define FSIZE      size
-#pragma pack(1)
+/*#pragma pack(1)  this seems to do more harm than good !? */
 #include <direct.h>
 
 #elif defined(__TURBOC__)
@@ -57,7 +57,7 @@ struct DSTRUCT
 #define TIME       time
 #define DATE       date
 #define FSIZE      size
-#pragma pack(1)
+/*#pragma pack(1)  this seems to do more harm than good !? */
 #include <direct.h>
 
 #endif
