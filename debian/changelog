@@ -1,3 +1,15 @@
+msged (0.6pre-3) unstable; urgency=low
+
+  * Moved all my changes from upstream makefile into debian/rules.
+
+ -- Joerg Jaspert (JJ) <joerg@goliathbbs.dnsalias.net>  Thu, 12 Apr 2001 13:39:08 +0200
+
+msged (0.6pre-2) unstable; urgency=low
+
+  * Newest CVS-Snapshot.
+
+ -- Joerg Jaspert (JJ) <joerg@goliathbbs.dnsalias.net>  Wed, 11 Apr 2001 23:38:41 +0200
+
 msged (0.6pre-1) unstable; urgency=low
 
   * Initial Release.
