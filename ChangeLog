@@ -1,3 +1,8 @@
+2002-03-18 Monday 01:20  joerg.jaspert
+
+	* doc/manual/msged.texi (1.59): Keyword is SortAreas but the Manual
+	talked about SortArea.	Fixed. Reported by Roberto Suarez Soto.
+
 2002-03-05 Tuesday 13:40  joerg.jaspert
 
 	* debian/: changelog (1.4), control (1.4), huskymak.cfg (1.6): New
