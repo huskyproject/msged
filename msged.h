@@ -58,7 +58,7 @@
 #define JAM       0x03
 
 /* #define AREASBBS   0x00 */   /* area file types */
-#define FASTECHO   0x01          
+#define FASTECHO   0x01
 /* #define SQUISH     0x02 */
 #define GECHO      0x03
 #define FIDOCONFIG 0x04
@@ -68,7 +68,23 @@
 
 #define PATHLEN   64
 #define BLOCKLEN  255
+
+                                /* A buffer of this size must be able to
+                                   store a) the complete amount of kludges in
+                                   the message, or alternatively b) a complete
+                                   paragraph (i.E. a text block without CR's
+                                   in it.  Especially in times of internet
+                                   gateways, the amount of kludge lines can
+                                   easily grow past 4K (think of myriads of
+                                   @RFC-CC: kludges etc.). Msged will not
+                                   crash if the buffer has an overflow, but
+                                   the overflowing parts of the message will
+                                   simply not be displayed. */
+#ifdef DOS
 #define BUFLEN    4096
+#else
+#define BUFLEN  16384
+#endif
 
 #define MAXUSERS  20
 

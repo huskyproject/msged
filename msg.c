@@ -382,17 +382,21 @@ char *SquishMsgReadText(unsigned long n)
         {
             /* copy control info from */
             t = cinfbuf;  /* insert /r's */
-            *(t + (size_t) MsgGetCtrlLen(mh)) = '\0';
+            *(t + (size_t) ((MsgGetCtrlLen(mh)>=BUFLEN) ? (BUFLEN - 1) :
+                             MsgGetCtrlLen(mh))) = '\0';
             if (*t != '\0')
             {
                 *next++ = *t++;
-                while (*t != '\0')
+                while (*t != '\0' && next - msgbuf < BUFLEN - 2)
                 {
                     if (*t == '\01')
                     {
                         *next++ = '\r';  /* add a \r to the text */
                     }
-                    *next++ = *t++;
+                    if (next - msgbuf < BUFLEN - 2)
+                    {
+                        *next++ = *t++;
+                    }
                 }
                 if (*(next - 1) == '\01')
                 {
@@ -401,7 +405,10 @@ char *SquishMsgReadText(unsigned long n)
                 }
                 else
                 {
-                    *next++ = '\r';
+                    if (next - msgbuf < BUFLEN - 2)
+                    {
+                        *next++ = '\r';
+                    }
                     *next = '\0';  /* terminate string         */
                 }
             }

@@ -186,8 +186,6 @@ Features:
   After that, you can add any private setttings you would like to have, but
   the above two lines are enough to get a working Msged,.
 
-  [TODO: Write documentation about this in the manual]
-
 - Unix: New Switch "AdaptiveCase". If you set "Switch Adaptivecase On"
   at the beginning of your configuration file, MsgEd will treat all
   file names case insensitively (i.E. it before trying to open any file,
@@ -230,6 +228,10 @@ Features:
   "Switch ReceiveAllAddresses Off" to the configuration file.
 
 Fixes:
+
+- Fixed Msged crashes if the amount of kludges grew larger than BUFLEN
+  (Msged will now not crash, but simply cut off the rest of the kludge
+  lines), and raised BUFLEN to 16K for all platforms except DOS (4K).
 
 - Fixed a bug which caused crashes with Jam, while on Squish (an probably
   also other formats), it could lead to the last several characters of a
