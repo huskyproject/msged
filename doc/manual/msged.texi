@@ -3466,6 +3466,26 @@ BS127 On} statement in a Conditional that tests if the @code{TERM}
 environment variable is set to @code{Linux}. @xref{Conditionals,,Conditional
 Statements in the Configuration File}, for more information. Default: Off:
 
+@item Carthy
+@findex Carthy
+This switch fine-tunes the behaviour of the @code{delete_line} function of
+the internal message editor, which is usually bound to @key{Alt}-@key{D} and
+@key{Ctrl}-@key{Y}, for the special case that you delete the very last line
+of a message. If the switch is on (default behaviour), the last line will be
+cleared, but the cursor will remain there. This way, if you are in the middle
+of a message and press @key{Ctrl}-@key{Y} multiple times intending to zap the
+rest of the message, you will never delete anything that is above the line
+where you started to press @key{Ctrl}-@key{Y}. If you turn the switch off
+(behaviour of older versions of Msged TE), the last line will be deleted
+completely, and the cursor will be moved to the previous line. The switch
+name @samp{Carthy} is an appreviation for the function description,
+``@strong{C}ut @strong{A}nd @strong{R}emain @strong{TH}ere when pressing
+Alt+@strong{Y} on the very last line''. Or well @dots{} the true reason is
+that there was a user named Matt Mc_Carthy who really got mad about the old
+behaviour of the editor, so I implemented the switch and the new behaviour
+for him. Default: On
+
+
 @item Colors
 @findex Colors
 This switch is only relevant for the Unix versions of @value{MSGED}. If it is

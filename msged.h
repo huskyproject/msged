@@ -395,7 +395,7 @@ struct _swv
                                 /* user names, or only for the active one? */
     int receivealladdr;         /* similar thing for FTN addresses */
     int squish_lock;            /* Lock message base for better speed */
-
+    int carthy;                 /* behaviour of delete_line at last line */
 };
 
 #ifndef INCL_MAIN

@@ -318,6 +318,7 @@ static char *cfgswitches[] =
     "ReceiveAllNames",
     "ReceiveAllAddresses",
     "SquishLock",
+    "Carthy",
     NULL
 };
 
@@ -367,6 +368,7 @@ static char *cfgswitches[] =
 #define CFG_SW_RECEIVEALLNAMES      43
 #define CFG_SW_RECEIVEALLADDR       44
 #define CFG_SW_SQUISH_LOCK          45
+#define CFG_SW_CARTHY               46
 
 #ifdef UNIX
 #include <sys/types.h>
@@ -927,6 +929,10 @@ void AssignSwitch(char *swtch, int OnOff)
 
     case CFG_SW_SQUISH_LOCK:
         SW->squish_lock = OnOff;
+        break;
+
+    case CFG_SW_CARTHY:
+        SW->carthy = OnOff;
         break;
 
     default:

@@ -162,6 +162,7 @@ int InitVars(void)
     SW->adaptivecase = NO;
     SW->receiveallnames = YES;
     SW->receivealladdr  = YES;
+    SW->carthy = YES;
 
 #ifndef UNIX
     ST->comspec = getenv("COMSPEC");

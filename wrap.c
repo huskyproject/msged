@@ -1539,7 +1539,7 @@ static void udel_add_q(LINE * l)
      *  oldest one (on the end of queue).
      */
 
-    if (num >= 30)
+    if (num >= 50)
     {
         nl->prev->next = NULL;
         release(nl->text);
@@ -1560,17 +1560,28 @@ static void delete_line(void)
 
     if (current->next == NULL)
     {
-        if (current->prev)
+        if (current->prev != NULL)
         {
-            current->prev->next = NULL;
-            nl = current;
-            current = current->prev;
-            if (y > 1)
+            if (!SW->carthy)
             {
-                y--;
+                current->prev->next = NULL;
+                nl = current;
+                current = current->prev;
+                if (y > 1)
+                {
+                    y--;
+                }
+            }
+            else
+            {
+                    nl = current;
+                    current = xmalloc(sizeof(LINE));
+                    memcpy(current, nl, sizeof(LINE));
+                    current->text = xstrdup("\n");
+                    current->prev->next = current;
             }
         }
-        else
+        else 
         {
             nl = current;
             current = xmalloc(sizeof(LINE));

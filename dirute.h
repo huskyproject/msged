@@ -88,6 +88,7 @@ struct _dta
 
 #if defined(__TURBOC__) || defined(__DJGPP__)
 
+#include <dos.h>
 #include <dir.h>
 
 #define DIR_DIRECT FA_DIREC
