@@ -383,13 +383,24 @@ msg *readmsg(unsigned long n)
                 break;
 
 	    case 'T':
-		if (strncmp(text + 1, "TOPT", 4) != 0)
-		{
-		    break;
-		}
-		s = text + 5;
-		m->to.point = atoi(s + 1);
-		break;
+		if (strncmp(text + 1, "TOPT", 4) == 0)
+                {
+                    s = text + 5;
+                    m->to.point = atoi(s + 1);
+                }
+                else if (strncmp(text + 1, "TZUTC:", 6) == 0)
+                {
+                    s = text + 7;
+
+                    while (m_isspace(*s))
+                    {
+                        s++;
+                    }
+
+                    m->timezone = (atoi(s) % 100) + ((atoi(s) / 100) * 60);
+                    m->has_timezone = 1;
+                }
+                break;
 
 	    case 'D':
 		if (strncmp(text + 1, "DOMAIN", 6) != 0)
@@ -1816,6 +1827,13 @@ int writemsg(msg * m)
 		curr = InsertAfter(curr, text);
 	    }
 	}
+
+        if (m->has_timezone)
+        {
+            sprintf(text, "\01TZUTC: %.4li\r",
+                    ((m->timezone / 60) * 100) + (m->timezone % 60));
+            curr = InsertAfter(curr, text);
+        }
 
 	if (m->reply && (!m->new || SW->msgids))
 	{

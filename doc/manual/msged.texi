@@ -4482,6 +4482,19 @@ This switch controls if echomail messages will be appended with a tear
 line (three consecutive dashes) or not. You should leave this switch
 on. Default: On.
 
+@item TZUTC
+@findex TZUTC
+@cindex TZUTC kludge line
+@cindex timezone information
+Msged generates a TZUTC kludge line according to FSP-1001 by default. This
+kludge line gives the recipients of your mail a hint as to in which timezone
+you are living. This is important because message timestamps in fido
+messages always show local time, so they are useless for the recipient
+without this kludge line information. Msged automatically detects your
+timezone. In case it is doing this wrong, please send a bug report and
+disable generation of this kludge line by setting the @code{TZUTC} switch to
+off. Default: On.
+
 @item UseLastr
 @findex UseLastr
 You should leave this switch turned on. It instructs @value{MSGED} to use the

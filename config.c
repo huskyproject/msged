@@ -354,6 +354,7 @@ static char *cfgswitches[] =
     "GroupSeparators",
     "UseTosserGroups",
     "DomainMsgid",
+    "TZUTC",
     NULL
 };
 
@@ -409,6 +410,7 @@ static char *cfgswitches[] =
 #define CFG_SW_GROUPSEPARATORS      49
 #define CFG_SW_USETOSSERGROUPS      50
 #define CFG_SW_DOMAINMSGID          51
+#define CFG_SW_TZUTC                52
 
 #ifdef UNIX
 #include <sys/types.h>
@@ -997,6 +999,10 @@ void AssignSwitch(char *swtch, int OnOff)
 	
     case CFG_SW_DOMAINMSGID:
 	SW->domainmsgid = OnOff;
+	break;
+
+    case CFG_SW_TZUTC:
+	SW->tzutc = OnOff;
 	break;
 
     default:

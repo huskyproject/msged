@@ -66,6 +66,7 @@ objs=   addr.o     \
 	system.o   \
 	template.o \
 	textfile.o \
+	timezone.o \
 	userlist.o \
 	vio.o      \
 	vsev.o     \

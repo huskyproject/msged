@@ -94,6 +94,7 @@ objs=   addr$(OBJ)     \
 	system$(OBJ)   \
 	template$(OBJ) \
 	textfile$(OBJ) \
+	timezone$(OBJ) \
 	userlist$(OBJ) \
 	vsev$(OBJ)     \
 	vsevops$(OBJ)  \
@@ -185,7 +186,7 @@ endif
 endif
 
 uninstall:
-	-$(RM) $(RMOPT) $(BINDIR)$(DIRSEP)$(TARGET) 
+	-$(RM) $(RMOPT) $(BINDIR)$(DIRSEP)$(TARGET)
 	-$(RM) $(RMOPT) $(BINDIR)$(DIRSEP)testcons$(EXE) $(BINDIR)
 	-$(RM) $(RMOPT) $(CFGDIR)$(DIRSEP)msghelp.dat
 	(cd maps && $(MAKE) -f makefile.husky uninstall)

@@ -49,6 +49,7 @@
 #include "makemsgn.h"
 #include "strextra.h"
 #include "group.h"
+#include "timezone.h"
 
 #ifdef MSDOS
 #ifdef USE_CRITICAL
@@ -323,6 +324,11 @@ static void reply_msg(int type)
     do_lookup = (CurArea.netmail && (type & MT_NEW)) ? TRUE : FALSE;
     m->to = tmp;
     m->timestamp = time(NULL);
+    if (SW->tzutc)
+    {
+        m->timezone = tz_my_offset();
+        m->has_timezone = 1;
+    }
     m->replyto = 0;
     m->new = 1;
     m->cost = 0;

@@ -64,6 +64,7 @@ objs=	addr.obj     \
 	system.obj   \
 	template.obj \
 	textfile.obj \
+	timezone.obj \
 	userlist.obj \
 	vsev.obj     \
 	vsevops.obj  \

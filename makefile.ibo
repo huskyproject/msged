@@ -59,6 +59,7 @@ objs3=	malloc16.obj \
 objs4=	system.obj   \
 	template.obj \
 	textfile.obj \
+	timezone.obj \
 	userlist.obj \
 	vsev.obj     \
 	vsevops.obj  \

@@ -268,9 +268,11 @@ typedef struct _msg
     unsigned int soteot     : 1;  /* msg sot/eot protected? */
     unsigned int invkludges : 1;  /* invalidate kludges? */
     unsigned int rawcopy    : 1;  /* copy msg text/ctrlinfo raw? */
+    unsigned int has_timezone:1;  /* if timezone contains valid information */
 
     time_t timestamp;           /* creation date, */
     time_t time_arvd;           /* time message arrived */
+    int timezone;               /* offset from utc in minutes, east = + */
 
     unsigned long replyto;      /* thread to previous msg */
     unsigned long replies[10];  /* thread to next msg(s) */
@@ -435,6 +437,7 @@ struct _swv
     int grouparea;              /* SW->area = grouparealist[SW->grouparea] */
     int areafilegroups;         /* want to read group info from areafile? */
     int domainmsgid;		/* show msgid's with domain string? */
+    int tzutc;                  /* generate TZUTC kludge line? */
 };
 
 
