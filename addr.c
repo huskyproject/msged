@@ -165,9 +165,13 @@ ADDRESS parsenode(char *t)
     {
         tmp = CurArea.addr;
     }
-    else
+    else if (SW->aliascount && alias != NULL)
     {
         tmp = thisnode;
+    }
+    else
+    {
+        memset(&tmp, 0, sizeof(tmp));
     }
 
     tmp.point = tmp.notfound = 0;

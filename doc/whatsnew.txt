@@ -217,6 +217,14 @@ Features:
 
 Fixes:
 
+- You can now also do "cc:" and "xc:" crossposts when you edit a mail, not
+  only when you have started to write a new mail. However be aware of the
+  fact that any old crossposts that might already have been generated will
+  not be deleted, of course.
+
+- Fix: Defining an UUCP gate before defining at least one own address
+  causes a core dump.
+
 - The codepage 850 recoding tables now properly recognise the Euro currency
   sign (it will now be displayed as EU if the local terminal cannot display
   the Euro currency sign).
