@@ -1,7 +1,7 @@
 # Legacy Makefile for DOS / DJGPP
 # No support for the Husky build environment.
 
-CC=	gcc
+CC=	$(CROSSPREFIX)gcc
 CFLAGS=	-Wall -I../smapi -I..
 CDEFS=	-D__FLAT__ -DUSE_MSGAPI
 COPT=	-O3 -fomit-frame-pointer -fstrength-reduce
