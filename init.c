@@ -74,7 +74,24 @@ msghandle msgdo[] =
         SquishMsgnToUid,
         SquishMsgLock,
         SquishMsgUnlock
+    },
+    {                           /* JAM uses same routines as Squish,     */
+                                /* because both are handled by the SMAPI */
+        SquishMsgReadHeader,
+        SquishMsgReadText,
+        SquishMsgWriteHeader,
+        SquishMsgWriteText,
+        SquishMsgDelete,
+        SquishAreaSetLast,
+        SquishMsgAreaOpen,
+        SquishMsgAreaClose,
+        SquishMsgClose,
+        SquishUidToMsgn,
+        SquishMsgnToUid,
+        SquishMsgLock,
+        SquishMsgUnlock
     }
+
 #endif
 };
 

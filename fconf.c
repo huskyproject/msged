@@ -58,6 +58,7 @@ static void fc_add_area(s_area *fc_area, int netmail, int local)
     if (fc_area->msgbType != MSGTYPE_SDM
 #ifdef USE_MSGAPI
         && fc_area->msgbType != MSGTYPE_SQUISH
+        && fc_area->msgbType != MSGTYPE_JAM
 #endif
         )
     {
@@ -90,6 +91,9 @@ static void fc_add_area(s_area *fc_area, int netmail, int local)
         break;
     case MSGTYPE_SQUISH:
         a.msgtype = SQUISH;
+        break;
+    case MSGTYPE_JAM:
+        a.msgtype = JAM;
         break;
     default:  /* should never get here */
         abort();

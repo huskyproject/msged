@@ -6,6 +6,8 @@ Features, Changes and Fixes in the current development version of MsgEd
 
 Changes:
 
+- Reorganized the Makefiles, please read doc/README.Mak !!!
+
 - Changed the semantics of AssumeCharset. Now it also works for mails that
   do have a charset kludge, but the charset is unknown. This seems to be
   necessary in Russia especially ("AssumeCharset CP866").
@@ -19,10 +21,11 @@ Changes:
   If you do not like the new behaviour, add "Switch Carthy Off" to the confi-
   guration file in order to revert to the old behaviour.
 
-- Reorganized the Makefiles, please read doc/README.Mak !!!
-
 
 Features:
+=========
+
+- JAM Support. Still experimental. Thanks to Fedor Lizunkov.
 
 - Character set translate now does not only recode the mail text, but also
   the message header (from, to, and subject field). This allows for umlauts

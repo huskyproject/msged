@@ -123,6 +123,7 @@ static char *cfgverbs[] =
     "UucpReplyTo",
     "FreqFlags",
     "Printer",
+    "Jam",
     NULL
 };
 
@@ -187,6 +188,7 @@ static char *cfgverbs[] =
 #define CFG_UUCPREPLYTO    58
 #define CFG_FREQFLAGS      59
 #define CFG_PRINTER        60
+#define CFG_JAM            61
 
 static struct colorverb colortable[] =
 {
@@ -1371,6 +1373,11 @@ static void checkareas(char *areafile)
             sq = 1;
             s++;
         }
+        else if (*s == '!')
+        {
+            sq = 2;
+            s++;
+        }
         else
         {
             sq = 0;
@@ -1426,9 +1433,14 @@ static void checkareas(char *areafile)
         strupr(a.tag);
 
 #ifdef USE_MSGAPI
-        if (sq)
+        switch  (sq)
         {
+        case 1:
             a.msgtype = SQUISH;
+            break;
+        case 2:
+            a.msgtype = JAM;
+            break;
         }
 #endif
 
@@ -1624,6 +1636,10 @@ static void check_fastecho(char *areafile)
         {
             sq = 1;
         }
+        else if (storage == FE_JAM)
+        {
+            sq = 2;
+        }
         else
         {
             sq = 0;
@@ -1634,9 +1650,9 @@ static void check_fastecho(char *areafile)
         {
             a.msgtype = QUICK;
         }
-        else if (storage == FE_JAM || storage == FE_PASSTHRU)
+        else if (storage == FE_PASSTHRU)
         {
-            continue;  /* JAM is unsupported */
+            continue;
         }
 
         if (a.msgtype == QUICK)
@@ -1672,9 +1688,14 @@ static void check_fastecho(char *areafile)
         }
 
 #ifdef USE_MSGAPI
-        if (sq)
+        switch (sq)
         {
+        case 1:
             a.msgtype = SQUISH;
+            break;
+        case 2:
+            a.msgtype = JAM;
+            break;
         }
 #endif
         applyflags(&a, areafileflags);
@@ -1994,8 +2015,12 @@ static void check_gecho(char *areafile)
                     a.msgtype = SQUISH;
                     break;
                 }
-#endif
             case FORMAT_JAM:    /* Joaquim-Andrew-Mats message base proposal */
+                {
+                    a.msgtype = JAM;
+                    break;
+                }
+#endif
             case FORMAT_PCB:    /* PCBoard 15.0 */
             case FORMAT_WC:     /* Wildcat! 4.0 */
             default:
@@ -2174,6 +2199,9 @@ static void parsemail(char *keyword, char *value)
 #ifdef USE_MSGAPI
     case 's':
         a.msgtype = SQUISH;
+        break;
+    case 'j':
+        a.msgtype = JAM;
         break;
 #endif
     }
@@ -3038,6 +3066,7 @@ static void parseconfig(FILE * fp)
         case CFG_FIDO:
         case CFG_SQUISH:
         case CFG_QUICK:
+        case CFG_JAM:
             parsemail(keyword, value);
             break;
 

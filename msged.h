@@ -47,6 +47,7 @@
 #define FIDO      0x00          /* message base types */
 #define QUICK     0x01
 #define SQUISH    0x02
+#define JAM       0x03
 
 /* #define AREASBBS   0x00 */   /* area file types */
 #define FASTECHO   0x01          

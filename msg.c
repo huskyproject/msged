@@ -106,7 +106,8 @@ long SquishMsgAreaOpen(AREA * a)
         }
     }
 
-    Ahandle = MsgOpenArea((byte *)a->path, MSGAREA_CRIFNEC, MSGTYPE_SQUISH);
+    Ahandle = MsgOpenArea((byte *)a->path, MSGAREA_CRIFNEC,
+                          ((a->msgtype == JAM) ? MSGTYPE_JAM:MSGTYPE_SQUISH));
     if (Ahandle == NULL)
     {
         return 0;
