@@ -226,13 +226,24 @@ msg *readmsg(unsigned long n)
 		if (strncmp(text + 1, "CHRS:", 5) == 0)
 		{
                     s = text + 6;
+                    strcpy(tmp, s + 1);
                 }
                 else if (strncmp(text + 1, "CHARSET:", 8) == 0)
                 {
                     s = text + 9;
+                    strcpy(tmp, s + 1);
+                }
+                else if (strncmp(text + 1, "CODEPAGE:", 9) == 0)
+                {
+                    s = text + 10;
+                    sprintf(tmp, "CP%s 2", s+1);
+                }
+                else
+                {
+                    break;
                 }
 
-		strcpy(tmp, s + 1);
+
 		memset(tokens, 0, sizeof(tokens));
 		parse_tokens(tmp, tokens, 2);
 		if (!tokens[1])
@@ -1733,6 +1744,19 @@ int writemsg(msg * m)
 	{
 	    sprintf(text, "\01CHRS: %s 2\r", ST->output_charset);
 	    curr = InsertAfter(curr, text);
+            if (ST->output_charset[0] != 'C' || ST->output_charset[1] != 'P')
+            {
+                int cp;
+                
+             /* codepage of this kludge is non-obvious, add CODEPAGE kludge */
+
+                cp = get_codepage_number(ST->output_charset);
+                if (cp != 0)
+                {
+                    sprintf(text, "\01CODEPAGE: %d\r", cp);
+                    curr = InsertAfter(curr, text);
+                }
+            }
 	}
 
 

@@ -6,8 +6,35 @@ Features, Changes and Fixes in the current development version of MsgEd
 
 Changes:
 
-- Reorganized the Makefiles, please read doc/README.Mak !!!
-  (Currently the makefiles are broken. Please wait another few days.)
+- Brought Msged/TE in line with FSP 1013 (resp. Charset Kludges). Msged now
+  uses and understands the new-style CPxxx CHRS kludges instead of the 
+  obsolete "IBMPC" charset kludge. In order to be compatible with other
+  readers, you should definitely add the following line to your config file:
+     CharsetAlias IBMPC CPxxx
+  where xxx should be the codepage that is used most frequently in your
+  country (850 for Western Europe, 437 for America, 866 for Russia).
+  If you want to use the new style CPxx CHRS kludges for output, you must
+  also change your OutputCharset statement like
+     OutputCharset CPxxx
+  but be aware of the fact that, except for perhaps Russian setups, most
+  readers do not yet understand the "CPxxx" charset kludge.  If you stick
+  with the old "OutputCharset IBMPC" method, Msged will emit an
+  additional "@CODEPAGE" kludge to denote the codepage that you are using. 
+
+  Please also make sure that you are using the correct translation
+  tables. If you are using a binary release, choose one pair of
+  readmaps.xxx/writmaps.xxx files (the manual, section "advanced topics",
+  subsection "special characters / fsc 0054") aids you in selecting the right
+  one and copy them over the old readmaps.dat/writmaps.dat files, or youe the
+  new keywords "Readmap" and "Writemap" to make Msged use these map files.
+
+  If you are compiling Msged on your own, you should also re-build
+  your readmaps.dat/writmaps.dat files with the makemaps utilities from the
+  upgraded recoding tables in the "maps" directory. You can use the new
+  "Readmap" and "Writemap" configuration keywords to explictly point Msged to
+  the correct readmaps and writmaps files. Use "CP437", "CP850" or "CP866" as
+  argument to makemaps for a OS/2, DOS or Windows PC, depending on your
+  location, or use "LATIN-1", "KOI8-R" or "ISO-5" for a Unix computer.
 
 - Changed the semantics of AssumeCharset. Now it also works for mails that
   do have a charset kludge, but the charset is unknown. This seems to be
@@ -24,6 +51,14 @@ Changes:
 
 
 Features:
+
+- New keywords "readmap" and "writemap". You can use these to configure the
+  location of the READMAPS.DAT style input recoding map and the WRITMAPS.DAT
+  style export recoding map. Previously, those file names were hardcoded in
+  the executable. Changing the default is useful if you want to write two
+  config files for Msged, one for a Western codedpage and one for a Cyrillic
+  codepage, for example. See the section "Special Characters" in the
+  "Advanced Topics" section of the manual for more information.
 
 - The UNIX version now draws pseudographics (instead of the ugly minus plus
   pipe graphics that was used previously) if the termcap entry suggests that
@@ -144,6 +179,8 @@ Features:
   "Switch ReceiveAllAddresses Off" to the configuration file.
 
 Fixes:
+
+- Msged can now handle TAB characters in text files when importing them.
 
 - Fixed crashes on importing text files that contained tabulator characters.
 

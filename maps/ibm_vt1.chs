@@ -30,7 +30,7 @@
 ;
 2		; level number
 ;
-IBMPC		; from set
+CP437		; from set
 VT100		; to set
 ;
 \0 C		; C with cedilla

@@ -114,6 +114,16 @@ int rot13;
 int stripSoft;
 int softcrxlat = 0;
 
+#ifndef READMAPSDAT
+#ifdef UNIX
+#define READMAPSDAT "~/.msged.readmaps"
+#define WRITMAPSDAT "~/.msged.writmaps"
+#else
+#define READMAPSDAT "readmaps.dat"
+#define WRITMAPSDAT "writmaps.dat"
+#endif
+#endif
+
 int InitVars(void)
 {
     /* Allocate some memory & initialize it. */
@@ -206,6 +216,8 @@ int InitVars(void)
     ST->uucpreplyto = NULL;
     ST->freqflags = NULL;
     ST->printer = NULL;
+    ST->readmap  = xstrdup(READMAPSDAT);
+    ST->writemap = xstrdup(WRITMAPSDAT);
 
     uucp_gate.notfound = 1;
 
@@ -217,6 +229,11 @@ void DeinitMem(void)
     release(origins);
     n_origins = 0;
 
+    if (string_vars != NULL)
+    {
+        release(string_vars->readmap);
+        release(string_vars->writemap);
+    }
     release(switch_vars);
     release(string_vars);
 }

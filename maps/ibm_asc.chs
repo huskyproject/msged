@@ -28,7 +28,7 @@
 ;
 2		; level number
 ;
-IBMPC		; from set
+CP437		; from set
 ASCII		; to set (change to UK for UK character set)
 ;
 \0 C		; C with cedilla

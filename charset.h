@@ -24,8 +24,14 @@ typedef struct _readwritemap
     LOOKUPTABLE   *tables;
 } READWRITEMAPS;
 
-void         read_charset_maps    (void); /* initialize the charset engine   */
-void         destroy_charset_maps (void); /* destroy the charset engine      */
+typedef struct _charsetalias
+{
+    char           from_charset[9];
+    char           to_charset[9];
+} CHARSETALIAS;
+
+void read_charset_maps (char *, char *); /* initialize the charset engine */
+void destroy_charset_maps (void);        /* destroy the charset engine    */
 
 #define READ_DIRECTION 1
 #define WRITE_DIRECTION 2
@@ -33,20 +39,12 @@ void         destroy_charset_maps (void); /* destroy the charset engine      */
 int          have_readtable      (const char *, int);
 LOOKUPTABLE *get_readtable       (const char *, int);
 LOOKUPTABLE *get_writetable      (const char *, int*);
-
+void         charset_alias       (const char *, const char *);
+int          get_codepage_number (const char *);
 
 void         strip_control_chars (char *);
 char        *translate_text      (const char *, LOOKUPTABLE *);
 
-#ifndef READMAPSDAT
-#ifdef UNIX
-#define READMAPSDAT "~/.msged.readmaps"
-#define WRITMAPSDAT "~/.msged.writmaps"
-#else
-#define READMAPSDAT "readmaps.dat"
-#define WRITMAPSDAT "writmaps.dat"
-#endif
-#endif
 
 #endif
 

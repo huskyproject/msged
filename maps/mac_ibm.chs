@@ -28,7 +28,7 @@
 2		; level number
 ;
 MAC		; from set
-IBMPC		; to set
+CP437		; to set
 ;
 \0 \x8E		; A dieresis
 \0 \x8F		; A ring

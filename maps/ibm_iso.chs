@@ -27,7 +27,7 @@
 ;
 2		; level number
 ;
-IBMPC		; from set
+CP437		; from set
 LATIN-1		; to set
 ;
 \0 \xc7		; C with cedilla

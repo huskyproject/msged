@@ -28,7 +28,7 @@
 2               ; level number
 ;
 LATIN-1         ; from set
-IBMPC           ; to set
+CP437           ; to set
 ;
 \0 \d128        ; (missing) These codes are unused in the LATIN-1 set.
 \0 \d129        ; (missing) For transparency, these are not mapped.

@@ -23,7 +23,7 @@ makemaps as follows:
   makemaps <charset-name> <table1.chs> <table2.chs> ...
 
 Where <charset-name> is the name of  the  charset your maps files are being
-built for (usually IBMPC if you are running OS/2,  DOS  or  Windows,  and
+built for (usually CP437 if you are running OS/2,  DOS  or  Windows,  and
 LATIN-1 if you are running Unix or AmigaOS; in the Russian world CP866 if
 running OS/2, DOS or Windows, LATIN-5 if running a commercial Unix, and
 KOI8-R if running Linux or FreeBSD.).

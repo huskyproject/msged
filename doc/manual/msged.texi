@@ -896,7 +896,7 @@ Fidonet-Internet gateway, how to use eight bit character sets, and similar.
 
 @menu
 * Exporting and Printing::      Exporting mails to text files or printers.
-* Special Characters::          Special Characters and FSC 0054 Charset Kludges
+* Special Characters::          Umlauts, Cyrillics and Charset Kludges
 * Internet Gateways::           Using @value{MSGED} for e-mail correspondance.
 @end menu
 
@@ -1021,17 +1021,20 @@ information on what this means.
 
 
 @node Special Characters, Internet Gateways, Exporting and Printing, Advanced Concepts
-@section Using Special Characters - The FSC 0054 Charset Kludge
+@section Using Special Characters like Umlauts or Cyrillics - The FSC 0054 Charset Kludge
 @cindex FSC 0054
 @cindex special characters
 @cindex charset kludge
 @cindex character set conversion
+@cindex russification
+@cindex cyrillic letters
 
 Languages other than English often use special characters besides the normal
 alphabet. Examples are the accented letters in French or the umlauts in
-German. IBM block graphics are also called special characters. This section
-will describe what measures have to be taken in order to be able to transmit
-special characters via Fidonet.
+German, or the cyrillic alphabet used in Russia and elsewhere. IBM block
+graphics are also called special characters. This section will describe what
+measures have to be taken in order to be able to transmit special characters
+via Fidonet.
 
 @menu
 * Problems with Special Characters::  Description of the general problem.
@@ -1060,18 +1063,19 @@ ASCII as an subset, but they all differ in how they encode special
 characters. DOS and OS/2 computers typically use the IBM PC character set,
 but even there, dependent on what country you live in, there are several
 different code pages of the IBM PC character set. Unix computers and the
-Amiga typically use the ISO8859 character set, also known as Latin-1. Windows
-uses IBM PC for console applications, but ISO8859 for graphical
-applications. The Macintosh uses the Macintosh character set. The consequence
-of this is clear: If you write a text on a Unix or Windows computer using
-special characters like accented letters or umlauts, you cannot expect it to
-be properly displayed on a DOS or OS/2 computer, and vice versa, unless
-special measures are taken.
+Amiga in the western world typically use the ISO8859-1 character set, also
+known as Latin-1. Windows uses IBM PC for console applications, but ISO8859
+for graphical applications. The Macintosh uses the Macintosh character
+set. The consequence of this is clear: If you write a text on a Unix or
+Windows computer using special characters like accented letters or umlauts,
+you cannot expect it to be properly displayed on a DOS or OS/2 computer, and
+vice versa, unless special measures are taken.
 
 @node Special Characters in Fidonet, MsgEd TE and Special Characters, Problems with Special Characters, Special Characters
 @subsection How has this problem been solved in Fidonet?
 This issue of special characters has been a problem for Fidonet in the past,
-but it has been solved by the Fidonet standard FSC 0054, so that you can now
+but it has been solved by the Fidonet standard FSC 0054 and its successor,
+FSP 1013, so that you can now
 safely use special characters in Fidonet mail @emph{if} your message editor
 supports FSC 0054. FSC 0054 basically works like this:
 
@@ -1090,7 +1094,9 @@ converted into double s, an e with accent would be converted into an e
 without accent, and so on. This is the maximum compatibility mode: It offers
 you the comfort of being able to write text just as you would in a letter,
 using all special characters that your language requries, but your mails
-will still be properly displayed on all computers.
+will still be properly displayed on all computers. This might be an option
+for German users, but it certainly is not for Russian users, as the
+transliteration of cyrillic letters is not particularly easy to read \dots
 
 The other (better) possibility is that your editor leaves the special
 characters that you typed in as is, but inserts a hidden kludge line, from
@@ -1105,16 +1111,28 @@ character sets, everything that you typed in will look just the same on the
 receiver's screen than on yours, including all special characters that have
 been typed.
 
+A particular note to all Russian users of Msged: In Russia, it has been
+commonly agreed on to transport all Fidonet mails in Codepage 866. So you
+might ask what you need a charset kludge for. But imagine a user in Germany
+who wants to read Russian echomails. His mail editor needs a way to know if a
+mail that it is about to display contains German special letters, or if it
+contains Russian ones. (Or vice versa, imagine a Russian person who wants to
+leran the German or English language). Only if Russian mails contain the
+proper charset kludge (@samp{CP866 2}), it will be able to display both
+languages correctly.
+
 @node MsgEd TE and Special Characters,  , Special Characters in Fidonet, Special Characters
 @subsection How do I configure @value{MSGED} to support FSC 0054?
 @value{MSGED} fully supports FSC 0054. The character set translation files
 are named @file{READMAPS.DAT} and @file{WRITMAPS.DAT}. You can enable
 character set translation support in @value{MSGED} by simply copying these
-files into the directory from which @value{MSGED} is started. (On Unix, you
-have to move and rename them to @file{~/.msged.readmaps} and
-@file{~/msged.writmaps} instead. If the files can be found and are valid, you
-will be notified that the FSC 0054 character set translation engine has been
-activated when @value{MSGED} starts.
+files into the directory from which @value{MSGED} is started. (On Unix, the
+exact name and location of these files are determined by the defaults you put
+into the makefile, or @file{~/.msged.readmaps} and @file{~/msged.writmaps}
+for the precompiled binaries). You can change the file names and location to
+use with the @samp{Readmap} and @samp{Writemap} keywords. If the files can be
+found and are valid, you will be notified that the FSC 0054 character set
+translation engine has been activated when @value{MSGED} starts.
 
 It is important that you use the correct @file{READMAPS.DAT} and
 @file{WRITMAPS.DAT} files, because these files are tailored to the charcter
@@ -1127,13 +1145,19 @@ batch file that first calls @file{CHCP 437} before calling @value{MSGED}. If
 you are using codepage 850, you might alternatively also delete
 @file{READMAPS.DAT} and @file{WRITMAPS.DAT} and then rename the files
 @file{READMAPS.850} and @file{WRITMAPS.850} to @file{READMAPS.DAT} and
-@file{WRITMAPS.DAT}. These files are tailored for codepage 850.
+@file{WRITMAPS.DAT}. These files are tailored for codepage 850. Russian users
+that have codepage 866 should use @file{READMAPS.866} and @file{WRITMAPS.866}.
 
 The Linux version ships with a pair of @file{READMAPS.DAT} and
 @file{WRITMAPS.DAT} that are tailored to computers that use the ISO 8859
 character set (Latin-1). (Some Linux boxes use IBMPC, codepage 437, or even
 850, instead, but I strongly suggest that you change your system
 configuration to use ISO 8859 in that case!).
+
+Russian Linux users using KOI8-R fonts (like the @code{cronyx} font set)
+should use @file{READMAPS.KOI} and @file{WRITMAPS.KOI}. Russian Unix users
+which use vendor font sets in @samp{8859-5} encoding should use
+@file{READMAPS.IS5} and @file{WRITMAPS.IS5}.
 
 If you have the source code distribution of @value{MSGED}, the @file{bin}
 subdiretory contains @file{readmaps.dat} and @file{writmaps.dat} files for
@@ -1144,19 +1168,49 @@ understands (meaning all character sets that are defined in the
 @file{READMAPS.DAT} and @file{WRITMAPS.DAT} files):
 
 @example
-@@CHRS-Kludge: | Conventional Name:   | Used by these computers:
---------------+----------------------+---------------------------
-LATIN-1       | ISO 8859-1           | Unix, Amiga, Windows GUI
-MAC           | MAC                  | Macintosh computers
-IBMPC         | IBM PC, Codepage 437 | DOS, OS/2, Windows console
-CP850         | IBM PC, Codepage 850 | National German editions of
-              |                      |   DOS, OS/2 and Windows.
+@@CHRS-Kludge: | Conventional Name:    | Used by these computers:
+--------------+-----------------------+---------------------------
+LATIN-1 2     | ISO 8859-1            | Western Unix, Amiga, Windows GUI
+MAC 2         | MAC                   | Macintosh computers
+CP437 2       | IBM PC, Codepage 437  | DOS, OS/2, Windows console
+CP850 2       | IBM PC, Codepage 850  | International / European versions
+              |                       |   of DOS, OS/2 and Windows.
+CP866 2       | IBM PC, Codepage 866  | Russian OS/2, DOS, Windows
+CP1125 2      | IBM PC, Codepage 1125 | Ukrainian and Belorussian
+              |                       |  OS/2, DOS, Windows
+KOI8-R 2      | KOI8-R                | Russian Linux (cronyx fonts)
 @end example
 
-These are the character sets that are used in the Western World. I would like
-to also support the different Kyrillic and Slavic character sets, but do not
-have any information on those. If you can supply me with more information,
-please contact me!
+There are quite some other (though incorrect or obsolete) charset kludges in
+widespread use in fidonet. The most prominent one is @code{IBMPC 2}.
+Originaly, @code{IBMPC 2} meant the DOS codepage 437, but in the meantime, it
+has been used to simply denote the codepage that a "IBM" computer is
+typically using. This means that if a Russian user has a kludge that says
+@code{IBMPC 2}, he probably means @code{CP866 2}, while if a German user has
+@code{IBMPC 2}, he probably means @code{CP850 2}. 
+
+Msged supports use of those outdated or incorrect charset kludges with the
+@code{CharsetAlias} command. A Western European user should
+probably put the following comand into his config file:
+
+@example
+CharsetAlias IBMPC CP850
+@end example
+
+
+An American user might prefer
+
+@example
+CharsetAlias IBMPC CP437
+@end example
+
+A Russian user needs a whole bunch of commands:
+
+@example
+CharsetAlias IBMPC CP866
+CharsetAlias +7_FIDO CP866
+CharsetAlias RUFIDO CP866
+@end example
 
 Once FSC 0054 is activated, @value{MSGED} will be able to correctly display
 all mails that have been created with one of the characters sets listed
@@ -1168,22 +1222,30 @@ character set when you save them.
 
 If you want to retain special characters in your mail by adding a charset
 kludge, you have to do two things. First, you have to define which character
-set to use for saving your mails (it must not necessarily be the character
-set that you are using locally, but you should not use
-@code{CP850}). @xref{OutputCharset,,The @code{OutputCharset} Keyword}, for
-information on how to do this. In most cases, you will simply want to add the
-following line to your configuration file:
+set to use for saving your mails . @xref{OutputCharset,,The
+@code{OutputCharset} Keyword}, for information on how to do this. In most
+cases, you will simply want to add the following line to your configuration
+file:
 
 @example
 OutputCharset IBMPC
 @end example
 
-This will even work if you have a Linux box. Then, you have to tell
-@value{MSGED} in which areas it is allowable to send mails with special
-characters and charset kludges. @value{MSGED} will only write special
-characters into areas that have the @samp{8} flag set. If you are importing
-your message area configuration from a tosser configuration file, you can
-simply put the following line to the beginning of your configuration file:
+Although it would be better to use @code{CP437}, @code{CP850} or @code{CP866}
+(depending on your location), most readers still don't support this, so using
+@code{IBMPC} might be better for the moment. If you use @code{IBMPC},
+@value{MSGED} will emit an addtional @code{CODEPAGE} kludge line to make
+clear which codepage you actually are using.
+
+Exporting in
+@code{IBMPC} charset will even work on a Linux box, just if you were wondering.
+
+Then, you have to tell @value{MSGED} in which areas it is allowable to send
+mails with special characters and charset kludges. @value{MSGED} will only
+write special characters into areas that have the @samp{8} flag set. If you
+are importing your message area configuration from a tosser configuration
+file, you can simply put the following line to the beginning of your
+configuration file:
 
 @example
 AreaFileFlags 8

@@ -187,19 +187,20 @@ typedef struct _area
     char *tag;                  /* what confmail calls it! */
     char *path;                 /* where the area is on disk */
 
-    unsigned int local    : 1;  /* local message area */
-    unsigned int netmail  : 1;  /* netmail message area */
-    unsigned int echomail : 1;  /* echomail area */
-    unsigned int news     : 1;  /* usenet news area */
-    unsigned int uucp     : 1;  /* usenet mail area */
-    unsigned int new      : 1;  /* a message has been entered */
-    unsigned int priv     : 1;  /* default private */
-    unsigned int hold     : 1;  /* default hold */
-    unsigned int direct   : 1;  /* default direct */
-    unsigned int crash    : 1;  /* default crash */
-    unsigned int killsent : 1;  /* default crash */
-    unsigned int eightbits: 1;  /* use charset kludging */
-    unsigned int scanned  : 1;  /* area has been scanned */
+    unsigned int local     : 1;  /* local message area */
+    unsigned int netmail   : 1;  /* netmail message area */
+    unsigned int echomail  : 1;  /* echomail area */
+    unsigned int news      : 1;  /* usenet news area */
+    unsigned int uucp      : 1;  /* usenet mail area */
+    unsigned int new       : 1;  /* a message has been entered */
+    unsigned int priv      : 1;  /* default private */
+    unsigned int hold      : 1;  /* default hold */
+    unsigned int direct    : 1;  /* default direct */
+    unsigned int crash     : 1;  /* default crash */
+    unsigned int killsent  : 1;  /* default crash */
+    unsigned int eightbits : 1;  /* use charset kludging */
+    unsigned int scanned   : 1;  /* area has been scanned */
+    unsigned int recodedsc : 1;  /* recode areatag from IBMPC to local chrs */
 
     int group;                  /* fastecho group number for areasort */
     int areanumber;             /* Number of this area. Normally corresponds
@@ -324,6 +325,8 @@ struct _sv
     char *uucpreplyto;          /* a replyto: string for e-mail */
     char *freqflags;            /* flags to use for file requests */
     char *printer;              /* printer port or command name */
+    char *readmap;              /* READMAPS.DAT filename */
+    char *writemap;             /* WRITMAPS.DAT filename */
 };
 
 /* These are the system switches, for access across the system */

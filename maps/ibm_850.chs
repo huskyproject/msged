@@ -28,7 +28,7 @@
 ;
 2		; level number
 ;
-IBMPC		; from set
+CP437		; from set
 CP850           ;
 ;
 \0 \x80		; C with cedilla

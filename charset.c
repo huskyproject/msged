@@ -22,6 +22,9 @@
 static READWRITEMAPS *readmaps=NULL, *writemaps=NULL;
 static int toasc_encountered=0;
 
+static CHARSETALIAS *aliases = NULL;
+static int naliases = 0;
+
 /* The maskout_table is a lookup table that simply replaces all
    characters with an ASCII code >= 128 with question marks. It is
    necessary to do this translation when reading a mail without
@@ -29,6 +32,39 @@ static int toasc_encountered=0;
    create strange effects in the UNIX version running in an xterm. */
 
 static LOOKUPTABLE maskout_table;
+
+
+/* register an alias name for a charset kludge (for backward compatibility with
+   things like IBMPC, 7_FIDO or RUFIDO ... */
+
+void charset_alias (const char *from, const char *to)
+{
+    if (!naliases)
+    {
+        aliases=xmalloc(sizeof(CHARSETALIAS));
+    }
+    else
+    {
+        aliases=realloc(aliases, sizeof(CHARSETALIAS) * (1+naliases));
+    }
+    naliases++;
+    strncpy(aliases[naliases-1].from_charset, from, 9);
+    aliases[naliases-1].from_charset[8] = '\0';
+    strncpy(aliases[naliases-1].to_charset, to, 9);
+    aliases[naliases-1].to_charset[8] = '\0';
+}
+    
+static const char *findalias(const char *kludge)
+{
+    int i;
+
+    for (i = 0; i < naliases; i++)
+    {
+        if (!strcmp(aliases[i].from_charset, kludge))
+            return aliases[i].to_charset;
+    }
+    return kludge;
+}
 
 
 READWRITEMAPS *read_map(const char *filename)
@@ -141,7 +177,7 @@ cleanup:
 }
 
 
-void read_charset_maps(void)
+void read_charset_maps(char *readmap, char *writemap)
 {
     int i;
     char *fnr, *fnw;
@@ -158,8 +194,8 @@ void read_charset_maps(void)
         maskout_table.lookuptable[i * 2 + 1] = '?';
     }
 
-    fnr = shell_expand(xstrdup(READMAPSDAT));
-    fnw = shell_expand(xstrdup(WRITMAPSDAT));
+    fnr = shell_expand(xstrdup(readmap));
+    fnw = shell_expand(xstrdup(writemap));
     
     readmaps=read_map(fnr);
     toasc_encountered=0;
@@ -168,11 +204,13 @@ void read_charset_maps(void)
     if (readmaps == NULL || writemaps == NULL)
     {
         fprintf (stderr,
-                 "\r\aWarning: Could not open %s. You should correct this",
-                 readmaps == NULL ? READMAPSDAT : WRITMAPSDAT);
+      "\r\aWarning: Could not open %s \"%s\".",
+                 readmaps == NULL ? "read map" : "write map",
+                 readmaps == NULL ? fnr: fnw);
         fprintf (stderr,
-                 "\n         before you try to use umlauts, accented "
-                 "characters or IBM graphics.\n");
+                 "\n         You should correct this before you try "
+                            "to use umlauts, cyrillic"
+                 "\n         letters, accented characters, IBM graphics etc.\n");
     }
 
     if (readmaps != NULL && writemaps != NULL)
@@ -229,6 +267,8 @@ LOOKUPTABLE *get_readtable (const char *charset_name, int level)
 {
     int i;
 
+    charset_name = findalias(charset_name);
+
     if (readmaps == NULL)
     {
         return NULL;
@@ -262,6 +302,7 @@ LOOKUPTABLE * get_writetable(const char *charset_name, int *allowed)
 {
     int i;
 
+    charset_name = findalias(charset_name);
  
     if (writemaps == NULL)
     {
@@ -422,5 +463,12 @@ char *translate_text (const char *text, LOOKUPTABLE *table)
 }
 
 
+int get_codepage_number(const char *kludge_name)
+{
+    kludge_name = findalias(kludge_name);
 
-
+    if (kludge_name[0] == 'C' && kludge_name[1] == 'P')
+        return atoi(kludge_name + 2);
+    else
+        return 0;
+}

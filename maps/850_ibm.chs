@@ -29,7 +29,7 @@
 2		; level number
 ;
 CP850		; from set
-IBMPC           ;
+CP437           ;
 ;
 \0 \x80		; C with cedilla
 \0 \x81		; u dieresis

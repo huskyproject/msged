@@ -1,7 +1,7 @@
 ;
 ; This file is a charset conversion module in text form.
 ;
-; This module converts the Finnish set to IBMPC.
+; This module converts the Finnish set to CP437.
 ; You can use it as a basis for a level 1 converter.
 ;
 ; Format: ID, version, level,
@@ -29,7 +29,7 @@
 1               ; level number
 ;
 FINNISH         ; from set
-IBMPC           ; to set
+CP437           ; to set
 ;
 \0 \0           ; NUL
 \0 \x1          ; SOH

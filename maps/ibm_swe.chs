@@ -28,7 +28,7 @@
 ;
 2               ; level number
 ;
-IBMPC		; from set
+CP437		; from set
 SWEDISH         ; to set (change to UK for UK character set)
 ;
 \0 \d128        ; C with cedilla

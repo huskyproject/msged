@@ -1,5 +1,5 @@
 /*
- *  config.C
+ *  config.c
  *
  *  Written on 30-Jul-90 by jim nutt.  Changes on 10-Jul-94 by John Dennis.
  *  Released to the public domain.
@@ -124,6 +124,9 @@ static char *cfgverbs[] =
     "FreqFlags",
     "Printer",
     "Jam",
+    "ReadMap",
+    "WriteMap",
+    "CharsetAlias",
     NULL
 };
 
@@ -189,6 +192,9 @@ static char *cfgverbs[] =
 #define CFG_FREQFLAGS      59
 #define CFG_PRINTER        60
 #define CFG_JAM            61
+#define CFG_READMAP        62
+#define CFG_WRITEMAP       63
+#define CFG_CHARSETALIAS   64
 
 static struct colorverb colortable[] =
 {
@@ -1451,13 +1457,39 @@ static void checkareas(char *areafile)
     fclose(fp);
 }
 
+/* Recode the area tags / descriptions. This is needed when reading a
+   fastecho.cfg or gecho.cfg config file on a Unix machine. */
+
+static void recode_area_descriptions(void)
+{
+    LOOKUPTABLE *ltable;        /* for description charset conversion */
+    int i;
+    char *tempdsc;
+
+    ltable = get_readtable("IBMPC", 2);
+                                /* we assume that umlauts in the
+                                   fastecho.cfg area descriptions are
+                                   always in the IBMPC charset. */
+
+    for (i = 0; i < SW->areas; i++)
+    {
+        if (arealist[i].recodedsc)
+        {
+            tempdsc = translate_text(arealist[i].description, ltable);
+            strip_control_chars(tempdsc);
+            release(arealist[i].description);
+            arealist[i].description = tempdsc;
+        }
+    }
+}
+
 /* check_fastecho - reads the areas in a FastEcho 1.45 configuration file */
 
 static void check_fastecho(char *areafile)
 {
     static AREA a;              /* current area */
     FILE *fp;                   /* file handle */
-    LOOKUPTABLE *ltable;        /* for description charset conversion */
+
 #ifdef USE_MSGAPI
     int sq = 0;                 /* a squish base? */
 #endif
@@ -1533,10 +1565,6 @@ static void check_fastecho(char *areafile)
         return;
     }
 
-    ltable = get_readtable("IBMPC", 2);
-                                /* we assume that umlauts in the
-                                   fastecho.cfg area descriptions are
-                                   always in the IBMPC charset. */
 
     /* set up the fastecho primary netmail path */
     memset(&a, 0, sizeof a);
@@ -1667,14 +1695,14 @@ static void check_fastecho(char *areafile)
         a.tag = xstrdup(fearea.name);
         strupr(a.tag);
 
+        a.recodedsc = 1; /* fastecho.cfg always has IBMPC type characters */
+
         if (fearea.desc && *fearea.desc)
         {
-            tempdsc = translate_text(fearea.desc, ltable);
-            strip_control_chars(tempdsc);
             a.description =
-              xmalloc(strlen(fearea.name) + strlen(tempdsc) + 4 );
+              xmalloc(strlen(fearea.name) + strlen(fearea.desc) + 4 );
 
-            sprintf (a.description, "%s - %s", fearea.name, tempdsc);
+            sprintf (a.description, "%s - %s", fearea.name, fearea.desc);
             release(tempdsc);
         }
         else
@@ -1868,7 +1896,6 @@ static void check_gecho(char *areafile)
     static AREA a;              /* current area */
     char *fn;                   /* file name */
     FILE *fp;                   /* file handle */
-    LOOKUPTABLE *ltable;        /* for description charset conversion */
     char *tempdsc;
 
     static char progress_indicators[4] =
@@ -1956,10 +1983,6 @@ static void check_gecho(char *areafile)
     {
         return;
     }
-
-    ltable = get_readtable("IBMPC", 2);
-                                /* we assume that area descriptions
-                                   are always in the IBMPC charset. */
 
     if (read_areafile_hdr(&AreaHdr, fp) == -1)
     {
@@ -2073,14 +2096,14 @@ static void check_gecho(char *areafile)
             a.tag = xstrdup(Area.name);
             strupr(a.tag);
 
+            a.recodedsc = 1; /* gecho.cfg always has IBMPC type characters */
+
             if (*Area.comment)
             {
-                tempdsc = translate_text(Area.comment, ltable);
-                strip_control_chars(tempdsc);
                 a.description =
-                    xmalloc(strlen(Area.name) + strlen(tempdsc) + 4);
+                    xmalloc(strlen(Area.name) + strlen(Area.comment) + 4);
 
-                sprintf (a.description, "%s - %s", Area.name, tempdsc);
+                sprintf (a.description, "%s - %s", Area.name, Area.comment);
                 release(tempdsc);
             }
             else
@@ -3337,6 +3360,26 @@ static void parseconfig(FILE * fp)
             ST->printer = xstrdup(value);
             break;
 
+        case CFG_READMAP:
+            release (ST->readmap);
+            ST->readmap = xstrdup(value);
+            break;
+
+        case CFG_WRITEMAP:
+            release (ST->writemap);
+            ST->writemap = xstrdup(value);
+            break;
+
+        case CFG_CHARSETALIAS:
+            parse_tokens(value, tokens, 2);
+            if (tokens[0] != NULL && tokens[1] != NULL)
+            {
+                charset_alias(tokens[0], tokens[1]);
+            }
+            break;
+
+            
+
         case -2:   /* skip */
             break;
 
@@ -3454,8 +3497,6 @@ void opening(char *cfgfile, char *areafile)
     printf(PROG " " VERSION CLOSED " ... \n");
     fflush(stdout);
 
-    read_charset_maps(); /* initialise the FTSC0054 charset engine */
-
     fp = fileopen(cfnname, cfgfile);
     if (fp == NULL)
     {
@@ -3469,6 +3510,10 @@ void opening(char *cfgfile, char *areafile)
 
     parseconfig(fp);
     fclose(fp);
+
+                                /* initialise the FTSC0054 charset engine */
+    read_charset_maps(ST->readmap, ST->writemap);
+    recode_area_descriptions();
 
     if (cur_cond != NULL)
     {

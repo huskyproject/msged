@@ -27,7 +27,7 @@
 ;
 2		; level number
 ;
-IBMPC		; from set
+CP437		; from set
 MAC		; to set
 ;
 \0 \x82		; C with cedilla

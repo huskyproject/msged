@@ -28,7 +28,7 @@
 2         ; level number
 ;
 CP866     ; from set
-IBMPC     ; to set
+CP437     ; to set
 ;
 \0 \x41   ; 0x80   cyrillic capital letter a
 \0 \x42   ; 0x81   cyrillic capital letter be
