@@ -88,7 +88,8 @@ int stricmp(const char *s, const char *t)
 #endif
 
 #ifndef __IBMC__
-#ifndef UNIX
+
+#if !(defined(_MSC_VER) && (_MSC_VER >= 1200)) && !defined(UNIX)
 char *strdup(const char *s)
 {
     char *p;
@@ -101,6 +102,8 @@ char *strdup(const char *s)
 }
 #endif
 #endif
+
+#if !(defined(_MSC_VER) && (_MSC_VER >= 1200))
 
 #ifndef __IBMC__
 int memicmp(const void *s1, const void *s2, size_t n)
@@ -145,6 +148,8 @@ char *strupr(char *s)
     }
     return s;
 }
+
+#endif
 
 #if !defined(PACIFIC) && !defined(__HIGHC__)
 

@@ -10,12 +10,17 @@
 #ifndef __STREXTRA_H__
 #define __STREXTRA_H__
 
+#include <smapi/compiler.h>
+
 #ifdef __MINGW32
 #define strncmpi _strncmpi
 #endif
 
 int strncmpi(const char *s, const char *t, size_t n);
 void strdel(char *l, int x);
+
+#if !(defined(_MSC_VER) && (_MSC_VER >= 1200))
+
 #ifndef UNIX
 int stricmp(const char *s, const char *t);
 #endif
@@ -23,14 +28,18 @@ int stricmp(const char *s, const char *t);
 char *strdup(const char *s);
 #endif
 
+
 #ifndef __IBMC__
 int memicmp(const void *s1, const void *s2, size_t n);
 #else
 int memicmp(void *s1, void *s2, size_t n);
 #endif
 
+
 char *strlwr(char *s);
 char *strupr(char *s);
+
+#endif
 
 #ifndef PACIFIC
 const char *stristr(const char *s1, const char *s2);
