@@ -619,9 +619,6 @@ includes:
 @item
 the QuickBBS / Hudson Message Base routines
 
-@item
-the Fido *.MSG routines
-
 @end itemize
 
 This means that you presently must restrict yourself to a Squish message base

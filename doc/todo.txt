@@ -13,6 +13,8 @@ Category 1: Will certainly be implemented until next release
 Category 2: Might be implemented, but volunteers are always very welcome!
 =========================================================================
 
+- Make QUICK storage format endian safe
+
 - Fix multiple To: - lines when editing internet mail
 
 - Show FTN header even when in e-mail mode if user wishes so.

@@ -96,6 +96,32 @@ int sopen(char *filename, unsigned int access, int flags,...);
 #define OPENC   O_WRONLY | O_BINARY | O_CREAT   /* open/create */
 #define OPENRW  O_RDWR | O_BINARY               /* open read/write */
 
+/*
+ *  get_dword
+ *
+ *  Reads in a 4 byte word that is stored in little endian (Intel) notation
+ *  and converts it to the local representation n an architecture-
+ *  independent manner
+ */
+
+#define get_dword(ptr)            \
+   ((dword)((ptr)[0]) |           \
+    (((dword)((ptr)[1])) << 8)  | \
+    (((dword)((ptr)[2])) << 16) | \
+    (((dword)((ptr)[3])) << 24))  \
+
+/*
+ *  get_word
+ *
+ *  Reads in a 2 byte word that is stored in little endian (Intel) notation
+ *  and converts it to the local representation in an architecture-
+ *  independent manner
+ */
+
+#define get_word(ptr)         \
+    ((word)(ptr)[0] |         \
+     (((word)(ptr)[1]) << 8 ))
+
 /* prototypes */
 
 #include "normal.h"
@@ -125,7 +151,7 @@ typedef struct _fidoheader
     unsigned char up[2];        /* thread to next msg    */
 }
 MFIDO;
-
+#define MFIDO_SIZE 36+36+72+20+2+2+2+2+2+2+4+4+2+2+2
 /* local vars */
 
 static int fd = -1;                   /* current file handle */
@@ -269,6 +295,7 @@ int FidoMsgWriteHeader(msg * m, int type)
         size_t len_from;
         len_from = strlen(m->isfrom);
         memcpy(msghead.from, m->isfrom, min(sizeof msghead.from, len_from));
+        msghead.from[sizeof(msgedhead.from) - 1] = '\0';
     }
     else
     {
@@ -280,6 +307,7 @@ int FidoMsgWriteHeader(msg * m, int type)
         size_t len_to;
         len_to = strlen(m->isto);
         memcpy(msghead.to, m->isto, min(sizeof msghead.to, len_to));
+        msghead.to[sizeof(msgedhead.to) - 1] = '\0';
     }
     else
     {
@@ -291,6 +319,7 @@ int FidoMsgWriteHeader(msg * m, int type)
         size_t len_subj;
         len_subj = strlen(m->subj);
         memcpy(msghead.subj, m->subj, min(sizeof msghead.subj, len_subj));
+        msghead.subj[sizeof(msghead.subj) - 1] = '\0';
     }
     else
     {
@@ -321,6 +350,7 @@ int FidoMsgWriteHeader(msg * m, int type)
         }
     }
 
+    assert(sizeof(MFIDO) == MFIDO_SIZE);
     farwrite(fd, (char *)&msghead, sizeof(MFIDO));
 
     if (type == WR_HEADER)
@@ -363,9 +393,11 @@ msg *FidoMsgReadHeader(unsigned long n, int type)
 
     m = xcalloc(1, sizeof *m);
 
+    assert(sizeof(MFIDO) == MFIDO_SIZE);
     farread(fd, (char *)&msghead, (int)sizeof(MFIDO));
 
     m->msgnum = msgn;
+
     m->from.net = (msghead.orig_net[1] << 8) | msghead.orig_net[0];
     m->from.node = (msghead.orig[1] << 8) | msghead.orig[0];
     m->to.net = (msghead.dest_net[1] << 8) | msghead.dest_net[0];
@@ -597,6 +629,7 @@ long FidoMsgAreaOpen(AREA * a)
     static char path[PATHLEN];
     short int c = 10, l;
     unsigned long msgnum;
+    unsigned char shorbuf[2];
 
     sprintf(path, "%s/*.msg", a->path);
     a->last = a->first = 1;
@@ -610,10 +643,15 @@ long FidoMsgAreaOpen(AREA * a)
     fd = sopen(path, OPENR, SH_DENYNO, S_IMODE);
     if (fd != -1)
     {
-        farread(fd, (char *) &c, sizeof c);
-        if (farread(fd, (char *) &l, sizeof l) != sizeof l)
+        farread(fd, (char *) shortbuf, sizeof shortbuf);
+        c = get_word(shortbuf);
+        if (farread(fd, (char *) shortbuf, sizeof shortbuf) != sizeof shortbuf)
         {
             l = c;
+        }
+        else
+        {
+            l = get_word(shortbuf);
         }
         close(fd);
         fd = -1;
@@ -652,6 +690,7 @@ int FidoAreaSetLast(AREA * a)
     int fd;
     static char path[PATHLEN];
     short i = 0;
+    unsigned char shortbuf[2];
 
     sprintf(path, "%s/%s", a->path, ST->lastread);
     fd = sopen(path, OPENRW, SH_DENYNO, S_IMODE);
@@ -678,9 +717,11 @@ int FidoAreaSetLast(AREA * a)
         a->lastread <=msgarrsz && a->current <= msgarrsz)
     {
         i = (short)msgarr[(size_t) (a->current - 1)];
-        farwrite(fd, (char *)&i, sizeof(short));
+        shortbuf[0] = i & 0xFF; shortbuf[1] = (i >> 8) & 0xFF;
+        farwrite(fd, (char *) shortbuf, sizeof(shortbuf));
         i = (short)msgarr[(size_t) (a->lastread - 1)];
-        farwrite(fd, (char *)&i, sizeof(short));
+        shortbuf[0] = i & 0xFF; shortbuf[1] = (i >> 8) & 0xFF;
+        farwrite(fd, (char *) shortbuf, sizeof(shortbuf));
     }
     else
     {
