@@ -814,8 +814,10 @@ int selectarea(char *topMsg, int def)
     {
         ret = SelBox(alist2, 1, dep - 2, wid - 1, def, hCurr, hWnd,
                      cm[MN_STXT], cm[MN_NTXT], SELBOX_REPLYOTH, topMsg);
-    } while (group_getareano(ret) < 0); /* don't allow group separators
-                                           as selection */
+    } while (ret != -1 && group_getareano(ret) < 0);
+
+                                /* don't allow group separators
+                                   as selection */
 
     for (i = 0; i < SW->groupareas; i++)
     {
