@@ -70,6 +70,9 @@ static unsigned long global_len;
 static unsigned long global_msgn;
 static int global_ctrl = 1;
 
+static int ready = FALSE, ctrl = TRUE;
+
+
 static UMSGID replyto = 0;      /* to ensure correct uplinks when mxx is used */
 
 /* Make Msged work with both stable and current smapi: */
@@ -803,7 +806,6 @@ int JamMsgWriteText(char *text, unsigned long msgn, unsigned long mlen)
 int SquishMsgWriteText(char *text, unsigned long msgn, unsigned long mlen)
 {
     static char *tptr, *c;
-    static int ready = FALSE, ctrl = TRUE;
     static unsigned long n = 0;
     char cz = 0;
     unsigned long clen;
@@ -962,12 +964,13 @@ int JamMsgClose(void)
         if (SquishMsgWriteText(global_text, global_msgn, global_len) != TRUE)
             rv = ERR_CLOSE_MSG;
         xfree(global_text);
+
+	global_ctrl = 1;            /* reset! */
+	global_text = NULL;
+	global_pos  = 0;
     }
 
     srv = SquishMsgClose();
-    global_ctrl = 1;            /* reset! */
-    global_text = NULL;
-    global_pos  = 0;
     return (rv != TRUE ? rv : srv);
 }
 
@@ -981,6 +984,7 @@ int SquishMsgClose(void)
     {
         return TRUE;
     }
+ 
     if (MsgCloseMsg(mh) == -1)
     {
         printf("\n!SquishMsgClose(): Message didn't close, error %ud!\n", msgapierr);
@@ -989,6 +993,7 @@ int SquishMsgClose(void)
     }
     else
     {
+        ready = FALSE; ctrl = TRUE;
         mh = NULL;
         return TRUE;
     }

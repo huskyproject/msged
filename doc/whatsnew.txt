@@ -15,6 +15,9 @@ Features:
 
 Fixes:
 
+- Fix crash when posting more than 1 message to JAM areas. (Raised version
+  to 6.1.2. This may have side effects on Squish, beware!)
+
 - Fix handling of CHARSET kludge and of CHRS kludge without "level".  Level
   2 is now assumed as default.
 
