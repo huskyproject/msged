@@ -7,7 +7,7 @@ Features, Changes and Fixes in the current development version of MsgEd
 Changes:
 
 - Brought Msged/TE in line with FSP 1013 (resp. Charset Kludges). Msged now
-  uses and understands the new-style CPxxx CHRS kludges instead of the 
+  uses and understands the new-style CPxxx CHRS kludges instead of the
   obsolete "IBMPC" charset kludge. In order to be compatible with other
   readers, you should definitely add the following line to your config file:
      CharsetAlias IBMPC CPxxx
@@ -19,13 +19,13 @@ Changes:
   but be aware of the fact that, except for perhaps Russian setups, most
   readers do not yet understand the "CPxxx" charset kludge.  If you stick
   with the old "OutputCharset IBMPC" method, Msged will emit an
-  additional "@CODEPAGE" kludge to denote the codepage that you are using. 
+  additional "@CODEPAGE" kludge to denote the codepage that you are using.
 
   Please also make sure that you are using the correct translation
   tables. If you are using a binary release, choose one pair of
   readmaps.xxx/writmaps.xxx files (the manual, section "advanced topics",
   subsection "special characters / fsc 0054") aids you in selecting the right
-  one and copy them over the old readmaps.dat/writmaps.dat files, or youe the
+  one and copy them over the old readmaps.dat/writmaps.dat files, or use the
   new keywords "Readmap" and "Writemap" to make Msged use these map files.
 
   If you are compiling Msged on your own, you should also re-build
@@ -51,6 +51,11 @@ Changes:
 
 
 Features:
+
+- Added recoding tables for cyrillic codepages (KOI8-RU, CP866, CP1125,
+  ISO 8859-5). Msged is now fully "cyrillified". Please read the manual,
+  section "Special Characters", for information on how to set up Msged
+  in a cyrillic environment.
 
 - New keywords "readmap" and "writemap". You can use these to configure the
   location of the READMAPS.DAT style input recoding map and the WRITMAPS.DAT
@@ -88,10 +93,10 @@ Features:
 
 - Support for @FLAGS kludge lines. Msged now will write a FLAGS kludge
   line if flags that are not supported by the current storage format
-  have to be saved, and it recognises flags in FLAGS kludge lines in 
+  have to be saved, and it recognises flags in FLAGS kludge lines in
   messages that it reads. See FSC 0053 for further information.
 
-- Support for the following new message flags: 
+- Support for the following new message flags:
   kfs, a/s, imm, tfs, lock, cfm, zon, hub
   Especially kfs is important: If you send file attaches to points of other
   sysops, you should always set kfs to insure that the message is killed on
@@ -137,26 +142,26 @@ Features:
 
   [TODO: Write documentation about this in the manual]
 
-- Unix: New Switch "AdaptiveCase". If you set "Switch Adaptivecase On" 
+- Unix: New Switch "AdaptiveCase". If you set "Switch Adaptivecase On"
   at the beginning of your configuration file, MsgEd will treat all
   file names case insensitively (i.E. it before trying to open any file,
-  it will look into the directory and determine how it is spelled). 
+  it will look into the directory and determine how it is spelled).
 
   You should set this switch to On if you are using MsgEd together
   with a message base or nodelist which is mounted from an DOSish (OS/2,
   Windows, DOS) platform which has a case insensitive file system. Those
   message bases usually use lower and upper case in a wild mix (i.E.
-  both .msg and .MSG and .Msg files, etc. pp.). Th adaptivecase switch 
+  both .msg and .MSG and .Msg files, etc. pp.). Th adaptivecase switch
   allows MsgEd to cope with such directories.
 
   If you are sure that you do not have case sensitivity problems, probably
   because you are using Unix software exclusively, you can set this switch
-  to Off. This will gain you a little performance improvement and about 
+  to Off. This will gain you a little performance improvement and about
   200K memory. (These 200K are used by the AdaptiveCase feature as a
   file system cache, because otherwise it would be too slow).
 
 - Unix: MsgEd TE is now able to correctly recognize the terminal size. It is
-  also able to recoginze when the size of the xterm it is running in is 
+  also able to recoginze when the size of the xterm it is running in is
   changed and adapts itself accordingly.
 
 - MsgEd is now able to read the mail area configuration from GEcho 1.20.
@@ -181,7 +186,7 @@ Features:
 Fixes:
 
 - Fixed the SoftCRXlat translation method to work on the transport charset
-  instead of the local charset. This affects specifically the problem with 
+  instead of the local charset. This affects specifically the problem with
   the cyrillic big en ("H"). Please refer to the entry for the keyword
   "SoftCRXlat" in the updated Msged manual.
 
@@ -211,7 +216,7 @@ Fixes:
 - If you used "scan" to do an area scan on startup, the scan could
   not be interrupted if you also used the autostart macro.
 
-- The autostart macro (and probably also other macro functions) did not 
+- The autostart macro (and probably also other macro functions) did not
   work properly.
 
 - If you quote a mail from a person like Bill 'billy' Gates, the quote initals
@@ -228,7 +233,7 @@ Fixes:
   a very small terminal (e.g. 8x8).
 
 - Typing umlauts did not work any more  after an OS shell (Alt+J) has been
-  performed. 
+  performed.
 
 - If a mail in an area with the "u" flag contained multiple "from:"-lines
   (which happens if an internet user forwards mail from another internet

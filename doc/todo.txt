@@ -4,20 +4,16 @@ TODO-List for Msged
 Category 1: Will certainly be implemented until next release
 ============================================================
 
+- Menu for manual charset selection override
+
 - Debug "Switch Statbar Off" (MMC)
 
-- Debug Sascha Sible's Lastread problem
-
 - Header recoding for Message List
-
-- Add more cyrillic konversion tables (i.E. transcription to ASCII)
 
 - Give the user the possibilty to only include the Areatag, but not
   the Fastecho echo description into the area list (Ralf Hoerner)
 
-- Write a tool that generates a FIDOUSER.LST for the Userlist feature.
-
-- Background attribute "transparent", vor the new kconsole feature
+- Background attribute "transparent", for the new kconsole feature
   (background images). Use patch that has already been submitted.
 
 Category 2: Might be implemented, but volunteers are always very welcome!
