@@ -68,6 +68,7 @@ static char *global_text = NULL;
 static unsigned long global_pos = 0;
 static unsigned long global_len;
 static unsigned long global_msgn;
+static int global_ctrl = 1;
 
 static UMSGID replyto = 0;      /* to ensure correct uplinks when mxx is used */
 
@@ -731,6 +732,19 @@ static dword strip_whitel(void)
 int JamMsgWriteText(char *text, unsigned long msgn, unsigned long mlen)
 {
     int l;
+
+    if (global_ctrl)
+    {
+        if (text != NULL && *text != '\01')
+        {
+            global_ctrl = 0;
+        }
+        else
+        {
+            return SquishMsgWriteText(text, msgn, mlen);
+        }
+    }
+
     
     if (global_text == NULL)
     {
@@ -918,10 +932,9 @@ int SquishMsgWriteText(char *text, unsigned long msgn, unsigned long mlen)
 
 int JamMsgClose(void)
 {
-    if (SquishMsgWriteText(global_text, global_msgn, global_len) != TRUE)
-        return FALSE;
     if (global_text != NULL)
     {
+        if (SquishMsgWriteText(global_text, global_msgn, global_len) != TRUE)
         xfree(global_text); global_text = NULL;
         global_text = NULL;
     }
