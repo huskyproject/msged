@@ -29,7 +29,7 @@ TERM term =
 {
     80,
     25,
-    0
+    0,
 };
 
 #define EBUFSZ 25
@@ -44,19 +44,8 @@ static unsigned long key_hit = 0xFFFFFFFFUL;
 
 static int FullBuffer(void);
 
-char tt_specials[2][22]=
-{
-    {
-        0xBA, 0xCD, 0xC9, 0xBB, 0xC8, 0xBC, 0xB3, 0xC4, 0xDA, 0xBF,  
-        0xC0, 0xD9, 0xB1, 0x10, 0x11, 0xDC, 0xDF, 0x18, 0x19, 0x14, 
-        0x1D, 0
-    },
-    {
-        0xBA, 0xCD, 0xC9, 0xBB, 0xC8, 0xBC, 0xB3, 0xC4, 0xDA, 0xBF,  
-        0xC0, 0xD9, 0xB1, 0x10, 0x11, 0xDC, 0xDF, 0x18, 0x19, 0x14, 
-        0x1D, 0
-    }
-};
+/* codepage 437 / 850 block graphics */
+char *tt_specials="\272\315\311\273\310\274\263\304\332\277\300\331\261\020\021\334\337\030\031\024\035\000";
 
 int tt_graphics = 0;
 
@@ -86,9 +75,11 @@ int TTclose(void)
    so the function TTEnableSCInput does not need to be implemented for
    everything except the ANSI/VT100 screen module */
 
+#pragma warn -par
 void TTEnableSCInput(char *special_characters)
 {
 }
+#pragma warn +par
 
 
 int TTgotoxy(int row, int col)
@@ -110,7 +101,7 @@ int TTPutChr(unsigned int Ch)
     unsigned char wch;
     coord.X = (SHORT) vcol;
     coord.Y = (SHORT) vrow;
-    wattr = color;
+    wattr = (WORD) color;
     wch = (unsigned char) Ch;
     WriteConsoleOutputCharacterA(HOutput, &wch, 1, coord, &len);
     WriteConsoleOutputAttribute(HOutput, &wattr, 1, coord, &len);
@@ -244,11 +235,11 @@ static int mykbhit(int block)
                 case 0x77:
                 case 0x78:
                 case 0x79:
-                    if (fAlt)
+                    if (fAlt != 0)
                     {
                         vs += 0x2D;  /* Alt+F-Key */
                     }
-                    else if (fShift)
+                    else if (fShift != 0)
                     {
                         vs += 0x19;  /* Shift+F-Key */
                     }
@@ -460,14 +451,14 @@ int TTStrWr(unsigned char *s, int row, int col)
     DWORD i, len;
     COORD coord;
     LPWORD pwattr;
-    pwattr = malloc(strlen(s) * sizeof *pwattr);
+    pwattr = (LPWORD) malloc(strlen((char *)s) * sizeof *pwattr);
     if (pwattr == NULL)
     {
         return 0;
     }
     coord.X = (SHORT) col;
     coord.Y = (SHORT) row;
-    for (i = 0; i < strlen(s); i++)
+    for (i = 0; i < strlen((char *)s); i++)
     {
         *(pwattr + i) = color;
     }
@@ -526,7 +517,7 @@ int TTEeol(void)
     return 1;
 }
 
-int TTWriteStr(unsigned short *b, int len, int row, int col)
+int TTWriteStr(unsigned long *b, int len, int row, int col)
 {
     DWORD i, wlen;
     COORD coord;
@@ -547,7 +538,7 @@ int TTWriteStr(unsigned short *b, int len, int row, int col)
     for (i = 0; i < len; i++)
     {
         *(pstr + i) = *b & 0xff;
-        *(pwattr + i) = (*b & 0xff00U) >> 8;
+        *(pwattr + i) = ((*b) >> 16) & 0xff;
         b++;
     }
     coord.X = (SHORT) col;
@@ -560,7 +551,7 @@ int TTWriteStr(unsigned short *b, int len, int row, int col)
     return 1;
 }
 
-int TTReadStr(unsigned short *b, int len, int row, int col)
+int TTReadStr(unsigned long *b, int len, int row, int col)
 {
     DWORD i, wlen;
     COORD coord;
@@ -584,8 +575,7 @@ int TTReadStr(unsigned short *b, int len, int row, int col)
     ReadConsoleOutputAttribute(HOutput, pwattr, len, coord, &wlen);
     for (i = 0; i < len; i++)
     {
-        b[i] = pstr[i];
-        b[i] |= pwattr[i] << 8;
+        b[i] = MAKECELL(pstr[i] & 0xFF, pwattr[i] & 0xFF);
     }
     free(pwattr);
     free(pstr);

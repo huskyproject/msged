@@ -1,41 +1,15 @@
-# Makefile for building a Windows 95/NT verison of MsgEd using
-# Borland C++ 4.0
+# Legacy Makefile fBorland C for Win32
+# No support for the Husky build environment
 
-# look for libs in c:\lib
-LIBDIR=c:\lib
+CC=	bcc32
+CFLAGS=	-w -WC -I..\smapi
+CDEFS=	-D__NT__ -DWINNT -DUSE_MSGAPI -I..\smapi
+COPT=	-O2
 
-# install programs in c:\bin
-BINDIR=c:\bin
+TARGET=	msgednt.exe
+MSGAPI=	..\smapi\smapibcw.lib
 
-# look for includes here
-INCDIR=c:\include
-
-# options for installing programs
-IBOPT=-s
-
-
-#CC=     BCC
-CC=      BCC32
-
-!IF ($(DEBUG), 1)
-CFLAGS= -WC -v -I$(INCDIR)
-!ELSE
-CFLAGS= -WC -I$(INCDIR)
-!ENDIF
-
-CDEFS=  -D__NT__ -DWINNT  -DUSE_MSGAPI
-LFLAGS= -WC
-COPT=
-
-
-TARGET= msgednt.exe
-TMPLIB= msgedbcw.lib
-LIB=    tlib
-MSGAPI= $(LIBDIR)\smapibcw.lib
-
-default: $(TARGET)
-
-OBJS=   addr.obj     \
+objs=	addr.obj     \
 	areas.obj    \
 	bmg.obj      \
 	charset.obj  \
@@ -59,6 +33,7 @@ OBJS=   addr.obj     \
 	help.obj     \
 	helpcmp.obj  \
 	helpinfo.obj \
+	winntscr.obj  \
 	init.obj     \
 	keycode.obj  \
 	list.obj     \
@@ -85,17 +60,18 @@ OBJS=   addr.obj     \
 	vsev.obj     \
 	vsevops.obj  \
 	win.obj      \
-	winntscr.obj \
 	wrap.obj
 
 all: $(TARGET)
 
+.asm.obj:
+	$(ASM) $(AFLAGS) $(ADEFS) $<
+
 .c.obj:
 	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
-	$(LIB) $(TMPLIB) -+$@
 
-$(TARGET): $(OBJS)
-	$(CC) $(LFLAGS) -e$(TARGET) msged.obj $(TMPLIB) $(MSGAPI)
+$(TARGET): $(objs)
+	$(CC) $(COPT) $(CFLAGS) -e$(TARGET) *.obj $(MSGAPI)
 
 clean:
 	del *.obj
@@ -103,7 +79,3 @@ clean:
 
 distclean: clean
 	del $(TARGET)
-
-install: $(TARGET)
-	copy $(TARGET) $(BINDIR)
-

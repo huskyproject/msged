@@ -880,6 +880,18 @@ unsigned int TTGetKey(void)
                 case 64:
                     ch = Key_A_B;
                     break;
+                case 65:
+                    ch = Key_Up; /* Windows NT Telnet */
+                    break;
+		case 66:
+		    ch = Key_Dwn;
+                    break;
+		case 67:
+		    ch = Key_Rgt;
+		    break;
+		case 68:
+		    ch = Key_Lft;
+		    break;
                 case 69:
                     ch = Key_A_F5;
                     break;
