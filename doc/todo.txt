@@ -4,9 +4,6 @@ TODO-List for Msged
 Category 1: Will certainly be implemented until next release
 ============================================================
 
-- Fix: Msged 386 does not update message number in window while deleting
-  messages.
-
 - Document Fidoconfig stuff
 
 Category 2: Might be implemented, but volunteers are always very welcome!
@@ -18,13 +15,11 @@ Category 2: Might be implemented, but volunteers are always very welcome!
 
 - Pseudo Grahpics with KOI8
 
-- Echotoss log is not updated for forwarded messages.
-
 - Work on the area lister. Things to do:
   - Divide message areas into groups.
   - Show all groups with separators in between
   - Only show selected groups
-  - New sort cireteria: numer of messages, number of new messages, number
+  - New sort criteria: number of messages, number of new messages, number
     of personal messages, number of tagged messages, area tag (instead of
     area description?)
   - Online switiching of sort mode
@@ -51,3 +46,4 @@ Category 3: Will only be included if volunteers send patches
 
 Category 4: Will not be implemented
 ===================================
+
