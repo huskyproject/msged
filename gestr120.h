@@ -606,9 +606,9 @@ typedef struct
 
 /* --- Routed node status */
 
-#define ZONE_ALL  0x01
-#define NET_ALL   0x02
-#define NODE_ALL  0x04
+#define GED_ZONE_ALL  0x01
+#define GED_NET_ALL   0x02
+#define GED_NODE_ALL  0x04
 
 
 /* --- Routed node entry */
