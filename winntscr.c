@@ -129,11 +129,10 @@ static int mykbhit(int block)
                     irBuffer.Event.KeyEvent.wVirtualKeyCode,
                     irBuffer.Event.KeyEvent.wVirtualScanCode,
                     irBuffer.Event.KeyEvent.uChar.AsciiChar,
-                    irBuffer.Event.KeyEvent.uChar.AsciiChar,
                     irBuffer.Event.KeyEvent.dwControlKeyState);
         }
-#endif        
-        
+#endif
+
 
         if (irBuffer.EventType == KEY_EVENT && irBuffer.Event.KeyEvent.bKeyDown != 0 && irBuffer.Event.KeyEvent.wRepeatCount <= 1)
         {
@@ -341,8 +340,8 @@ int TTkopen(void)
     {
         abort();
     }
-#endif    
-    
+#endif
+
     return 0;
 }
 
