@@ -124,7 +124,7 @@ void check_fidoconfig(char *option_string)
     exit(-1);
 #else
 
-    s_fidoconfig *fc_config = readConfig();
+    s_fidoconfig *fc_config = readConfig(NULL);
     s_area       *fc_area;
     int i;
     int check_type;
