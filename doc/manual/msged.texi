@@ -512,18 +512,21 @@ to turn the @code{BS127} switch on by adding @code{Switch BS127 On} to your
 configuration file. The sample configuration file already contains correct
 settings of the @code{BS127} switch for some widespread Unix consoles.
 
-Also, some xterm variants are really broken. For example, the DEC Unix xterm
-does always report code 127 for both Delete and Backspace, so you will only
-be able to have either Backspace or Delete working. Also, the DEC Unix xterm
-dos not report codes for @key{Home} and @key{End} at all. If you have such
+Also, some xterm variants are really broken. For example, I have seen xterm's
+reporting code 127 for both Delete and Backspace, so you will only
+be able to have either Backspace or Delete working. Also, some xterms
+doe not report codes for @key{Home} and @key{End} at all. If you have such
 an xterm, a tip would be to install rxvt and use msged in an rxvt window
 instead of an xterm window.
 
-Entering national special characters like the German a dieresis, or the
-french accented characters, is always a problem on Unix. If you want to do
-that with @value{MSGED}, refer to the sample configuration file and the
+Entering national special characters like cyrillics, the German a dieresis,
+or the french accented characters, is always a problem on Unix. If you want
+to do that with @value{MSGED}, refer to the sample configuration file and the
 documentation on the @code{EnableSC} keyword (@pxref{EnableSC,,The
-@code{EnableSC} keyword}).
+@code{EnableSC} keyword}). The most easiest solution is to put the
+@code{EnableSC} keyword into the configuration file, but if you do this, you
+will loose the @key{Alt} key combination functionality and will have to
+emulate all @key{alt} keystorkes using the @key{ESC}-technique explained above.
 
 If all this sounds very clumsy to you, perhaps you might volunteer to create
 a more Unix-friendly keyboard layout for @value{MSGED}. @value{MSGED} allows
@@ -2604,7 +2607,7 @@ internal editor as compared to the external one.
 @cindex special characters, on UNIX
 @table @asis
 @item Syntax:
-@code{EnableSC @var{string}}
+@code{EnableSC [@var{string}]}
 @item Example:
 @iftex
 @code{EnableSC} "a@"o@"u@"A@"O@"U
@@ -2616,9 +2619,7 @@ internal editor as compared to the external one.
 @end table
 
 (The example from above will only look correct in the TeX (@file{.DVI} or
-@file{.PS} or @file{.PDF}) edition of this document. It should be an a dieresis, o dieresis,
-u dieresis, A dieresis, O dieresis, U dieresis, and a sharp s in true 8 bit
-special characters.)
+@file{.PS} or @file{.PDF}) edition of this document.)
 
 This keyword is only relevant on UNIX. On UNIX, when using a VT100, xterm, or
 similar terminal, @key{Alt} or @key{Meta} key combinations generate the same
@@ -2628,10 +2629,19 @@ of normal keys with Alt, but on the other hand, you probably want to use
 national special characters in your mail.
 
 By default, the UNIX version of @value{MSGED} enables all @key{Alt} key
-combinations and disables all national special characters. You can then use
-the @code{EnableSC} keyword to selectively enable national special
-charcters. All special characters that occur in the @var{string} given as
-argument will be interpreted as charcters rather then @key{Alt} key
+combinations and disables all national special characters. 
+
+You can revert this behaviour by specifying @code{EnableSC} without
+parameters. This will cause @value{MSGED} to interpret all high ASCII
+keycodes as national special characters, instead of @key{Alt} key
+combination. You'll then have to use the  @key{ESC} key to emulate all
+@key{Alt} key cominations. This is probably what users of complete
+high ASCII alphabets, like the cyrillic alphabet, will wnat to do.
+
+On the other hand, if your language only has few special characters, you can
+also use the @code{EnableSC} keyword to selectively enable some national
+special charcters. All special characters that occur in the @var{string}
+given as argument will be interpreted as charcters rather then @key{Alt} key
 combinations.
 
 The example from above enables all German national charcters. The only
@@ -2642,9 +2652,9 @@ isn't a problem.
 
 Note that you will have to use an editor that allows the input of national
 charcters in order to generate the necessary configuration file
-entry. @code{vi} should be able to do this, as well as @code{joe}. If you are
-not able to type those characters in vi, you should not even try to type them
-in @value{MSGED} @dots{}
+entry. @code{vi} should be able to do this, as well as @code{joe -asis}. If
+you are not able to type those characters in vi, you should not even try to
+type them in @value{MSGED} @dots{}
 
 If you need information on how to set up a FreeBSD system to correctly
 process special national characters, you can f`req @file{syscons.tgz} at

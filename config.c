@@ -3435,7 +3435,23 @@ static void parseconfig(FILE * fp)
             break;
 
         case CFG_ENABLESC:
-            TTEnableSCInput(value);
+            if (value != NULL)
+            {
+                TTEnableSCInput(value);
+            }
+            else
+            {
+                unsigned char buffer[129];
+                int i;
+
+                for (i = 0; i < 128; i++)
+                {
+                    buffer[i] = i + 128;
+                }
+                buffer[i] = '\0';
+                
+                TTEnableSCInput(buffer);
+            }
             break;
 
         case CFG_AREAFILEFLAGS:

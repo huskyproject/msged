@@ -54,6 +54,13 @@ Changes:
 
 Features:
 
+- You can now globally enable input of high ASCII codes for Unix by
+  specifying "EnableSC" without parameters in the configuration file. This is
+  useful if you need to enter cyrillics and the like (previously, you had to
+  list each and ever character that you wanted to enable as parameter, which
+  is good if you only want to enable few, but bad if you must enable a whole
+  alphabet).
+
 - The AKA matching alogrithm now also takes into account net and node number.
   So, if you have two AKAs, 2:1234/5 and 2:789/123, and you write a mail to
   a member of net 2:789 your 2:789/123 AKA will be used instead of your
