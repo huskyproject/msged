@@ -1,3 +1,11 @@
+2004-08-25 Wednesday 11:58  os2tobi
+
+	* Makefile (1.20), ansi.c (1.32), dirute.c (1.17), filedlg.c
+	(1.15), patmat.h (1.2), readtc.c (1.6), strextra.h (1.7), winsys.h
+	(1.14): Some compatibility fixes for Cygwin. Terminal interface
+	still doesn't fully work (seems kbhit() is broken), but already
+	usable!
+
 2004-08-24 Tuesday 18:06  os2tobi
 
 	* gestr120.h (1.7): 
