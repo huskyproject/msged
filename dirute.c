@@ -367,6 +367,11 @@ int dir_findnext(struct _dta *dta)
 #include <ctype.h>
 #include "patmat.h"
 
+#if (defined(__unix__) || defined(unix)) && !defined(USG)
+#include <sys/param.h>          /* used to differentiate BSD from SYSV  */
+#endif                                
+
+
 static DIR *dir;
 static struct dirent *de;
 static int  ff_attribute;
@@ -646,6 +651,12 @@ static int cache_find_cmp(const void *a, const void *b)
   
 /* #define TRACECACHE */
 
+#ifdef BSD
+#define DIRENTLEN(x) ((x)->d_namlen)
+#else
+#define DIRENTLEN(x) (strlen((x)->d_name))
+#endif
+
 void adaptcase(char *pathname)
 {
     int i,j,k,l,n,nmax, found=1, addresult=0;
@@ -812,8 +823,8 @@ cache_failure:
                 {
                     /* file exists, take over it's name */
             
-                    assert(i - j == dp->d_namlen);
-                    memcpy(buf + j, dp->d_name, dp->d_namlen + 1);
+                    assert(i - j == DIRENTLEN(dp));
+                    memcpy(buf + j, dp->d_name, DIRENTLEN(dp) + 1);
                     closedir(dirp);
                     dirp = NULL;
                     found = 1;
@@ -881,7 +892,7 @@ add_to_cache:
 
         while ((dp = readdir(dirp)) != NULL)
         {
-            if (raw_high + dp->d_namlen + 1 > rawmax)
+            if (raw_high + DIRENTLEN(dp) + 1 > rawmax)
             {
                 if ((adaptcase_cache[l].raw_cache =
                      realloc(adaptcase_cache[l].raw_cache,
@@ -903,9 +914,9 @@ add_to_cache:
             }
 
             memcpy (adaptcase_cache[l].raw_cache + raw_high,
-                    dp->d_name, dp->d_namlen + 1);
+                    dp->d_name, DIRENTLEN(dp) + 1);
             adaptcase_cache[l].cache_index[adaptcase_cache[l].n++] = raw_high;
-            raw_high += dp->d_namlen + 1;
+            raw_high += DIRENTLEN(dp) + 1;
         }
         closedir(dirp);
         current_cache=adaptcase_cache[l].raw_cache;
