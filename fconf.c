@@ -559,6 +559,7 @@ static void parse_fc_area(int type)
     {
     case 1:
         a.netmail = 1;
+	a.priv    = 1;
         break;
     case 2:
         a.local = 1;
