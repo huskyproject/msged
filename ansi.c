@@ -536,6 +536,24 @@ unsigned int TTGetKey(void)
                 block_console(0,0);
                 switch(ch)
                 {
+                case 121:
+                    ch = Key_PgUp;
+                    break;
+                case 115:
+                    ch = Key_PgDn;
+                    break;
+                case 119:
+                    ch = Key_Home;
+                    break;
+                case 113:
+                    ch = Key_End;
+                    break;
+                case 112:
+                    ch = Key_Ins;
+                    break;
+                case 110:
+                    ch = Key_Del;
+                    break;
                 case 92:
                     ch = Key_A_Q;
                     break;
