@@ -231,6 +231,9 @@ Features:
 
 Fixes:
 
+- Fixed crashes when replying to a message with long subject (buffer was
+  three bytes too short).
+
 - You can now also do "cc:" and "xc:" crossposts when you edit a mail, not
   only when you have started to write a new mail. However be aware of the
   fact that any old crossposts that might already have been generated will

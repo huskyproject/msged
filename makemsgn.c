@@ -690,32 +690,32 @@ int ChangeAttrib(msg * m)
         case Key_A_Y:
             m->attrib.tfs ^= 1;
             break;
-            
+
         case Key_A_J:
             m->attrib.as ^= 1;
             break;
-            
+
         case Key_A_V:
             m->attrib.immediate ^= 1;
             break;
-            
+
         case Key_A_W:
             m->attrib.lock ^= 1;
             break;
-            
+
         case Key_A_M:
             m->attrib.cfm ^= 1;
             break;
-            
+
         case Key_A_G:
             m->attrib.zon ^= 1;
             break;
-            
+
         case Key_A_B:
             m->attrib.hub ^= 1;
             break;
-            
-            
+
+
         case Key_A_Z:
             m->attrib.attach = 0;
             m->attrib.priv = 0;
@@ -1126,7 +1126,7 @@ static void GetAddress(ADDRESS * addr, char *from, char *subj)
 static int ChangeName(ADDRESS * addr, char *from, char *subj, int y)
 {
     EVT e;
-    char tmp[70], tmp2[70];
+    char tmp[73], tmp2[73];
     static int disp;
     int ch = 0, pos, done = 0;
 
@@ -2224,7 +2224,7 @@ static void crosspost(msg * m)
             {
                 m->msgnum = MsgnToUid(CurArea.messages) + 1;
             }
-                
+
             if (strncmpi(s, "cc:", 3) == 0)
             {
                 save(m);
