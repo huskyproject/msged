@@ -159,6 +159,8 @@ int InitVars(void)
     SW->editoriginlines = NO;
     SW->squish_lock = NO;
     SW->lowercase = NO;
+    SW->receiveallnames = YES;
+    SW->receivealladdr  = YES;
 
 #ifndef UNIX
     ST->comspec = getenv("COMSPEC");

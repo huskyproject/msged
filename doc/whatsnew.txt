@@ -17,6 +17,15 @@ Features:
   structure layout issues, i.E. they now also work on Non-Intel hardware
   like PPC (e.g. RS/6000 with AIX) or Sparc.
 
+- MsgEd TE will now turn on the Rvd flag for any mail which is addressed
+  to *any* of your FTN addresses and *any* of the configured user names.
+  If you want to restore the old behaviour (i.E. the Rvd flag is only
+  turned on if the destination name is the currently ACTIVE user name, which
+  can be selected by pressing Ctrl+U AND the Rvd flag is only turned
+  on if the destination address is the default address of the current
+  mail area, you must add "Switch ReceiveAllNames Off" and
+  "Switch ReceiveAllAddresses Off" to the configuration file.
+
 Fixes:
 
 - If a mail in an area with the "u" flag contained multiple "from:"-lines

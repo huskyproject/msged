@@ -656,6 +656,7 @@ msg *readmsg(unsigned long n)
 void checkrcvd(msg * m, unsigned long n)
 {
     msg *mn;
+    int set_received = 0, j;
 
     if (m->attrib.rcvd)
     {
@@ -664,7 +665,28 @@ void checkrcvd(msg * m, unsigned long n)
 
     m->times_read++;
 
-    if (stricmp(ST->username, m->isto) == 0 && is_sameaddr(&m->to))
+    if (is_sameaddr(&m->to))
+    {
+        if (SW->receiveallnames)
+        {
+            for (j = 0; j < MAXUSERS && (!set_received); j++)
+            {
+                if (stricmp(user_list[j].name, m->isto) == 0)
+                {
+                    set_received = 1;
+                }
+            }
+        }
+        else
+        {
+            if (stricmp(ST->username, m->isto) == 0)
+            {
+                set_received = 1;
+            }
+        }
+    }
+
+    if (set_received)
     {
 	mn = MsgReadHeader(n, RD_HEADER);
 	if (mn == NULL)
@@ -682,28 +704,39 @@ void checkrcvd(msg * m, unsigned long n)
 
 static int is_sameaddr(ADDRESS * msg)
 {
+    int j;
+ 
     if (!CurArea.netmail)
     {
 	/* we only care about the address in netmail areas */
 	return 1;
     }
-    if (msg->zone != CurArea.addr.zone)
+
+    if (!SW->receivealladdr)
     {
-	return 0;
+        if (msg->zone != CurArea.addr.zone ||
+            msg->net != CurArea.addr.net   ||
+            msg->node != CurArea.addr.node ||
+            msg->point != CurArea.addr.point)
+        {
+            return 0;
+        }
+        return 1;
     }
-    if (msg->net != CurArea.addr.net)
+    else
     {
-	return 0;
+        for (j = 0; j < SW->aliascount; j++)
+        {
+            if (alias[j].zone  == msg->zone  &&
+                alias[j].net   == msg->net   &&
+                alias[j].node  == msg->node  &&
+                alias[j].point == msg->point)
+            {
+                return 1;
+            }
+        }
+        return 0;
     }
-    if (msg->node != CurArea.addr.node)
-    {
-	return 0;
-    }
-    if (msg->point != CurArea.addr.point)
-    {
-	return 0;
-    }
-    return 1;
 }
 
 /*

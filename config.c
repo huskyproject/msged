@@ -304,6 +304,8 @@ static char *cfgswitches[] =
     "Shadows",
     "BS127",
     "LowerCase",
+    "ReceiveAllNames",
+    "ReceiveAllAddresses",
     "SquishLock",
     NULL
 };
@@ -350,7 +352,9 @@ static char *cfgswitches[] =
 #define CFG_SW_SHADOWS              39
 #define CFG_SW_BS127                40
 #define CFG_SW_LOWERCASE            41
-#define CFG_SW_SQUISH_LOCK          42 /* should be 45 */
+#define CFG_SW_RECEIVEALLNAMES      42
+#define CFG_SW_RECEIVEALLADDR       43
+#define CFG_SW_SQUISH_LOCK          45 /* should be 45 */
 
 #ifdef UNIX
 #include <sys/types.h>
@@ -888,6 +892,15 @@ void AssignSwitch(char *swtch, int OnOff)
 
     case CFG_SW_LOWERCASE:
         SW->lowercase = OnOff;
+        break;
+
+    case CFG_SW_RECEIVEALLNAMES:
+    	SW->receiveallnames = OnOff;
+        break;
+
+    case CFG_SW_RECEIVEALLADDR:
+        SW->receivealladdr = OnOff;
+        break;
 
     case CFG_SW_SQUISH_LOCK:
         SW->squish_lock = OnOff;
@@ -2663,14 +2676,14 @@ static void parseconfig(FILE * fp)
             parse_tokens(value, tokens, 3);
             if (tokens[0] != NULL)
             {
-                for (i = 0; i < 11; i++)
+                for (i = 0; i < MAXUSERS; i++)
                 {
                     if (user_list[i].name == NULL)
                     {
                         break;
                     }
                 }
-                if (i < 11)
+                if (i < MAXUSERS)
                 {
                     user_list[i].name = xstrdup(tokens[0]);
 

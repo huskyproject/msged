@@ -370,8 +370,12 @@ struct _swv
     int useoriginlines;         /* add origin lines in echomail? */
     int edittearlines;          /* add tearlines to template message */
     int editoriginlines;        /* add originlines to template message */
-    int squish_lock;            /* Lock message base for better speed */
     int lowercase;              /* Convert filenames to lower case */
+    int receiveallnames;        /* Switch rvd on for mail to all configured */
+                                /* user names, or only for the active one? */
+    int receivealladdr;         /* similar thing for FTN addresses */
+    int squish_lock;            /* Lock message base for better speed */
+
 };
 
 #ifndef INCL_MAIN

@@ -2,11 +2,11 @@
 
 @c %**start of header
 @setfilename msged.info
-@settitle MsgEd TE 05 - A Public Domain Fidonet Message Editor
+@settitle MsgEd TE 06 - A Public Domain Fidonet Message Editor
 @setchapternewpage odd
 @set MSGED MsgEd TE
-@set VERSION 05
-@set EDITION 02
+@set VERSION 06 (pre)
+@set EDITION 03
 @defindex kr
 @defindex ke
 @c %**end of header
@@ -2533,6 +2533,10 @@ be used for areas belonging to this group. The first message template file
 that you have specified with the @code{Template} keyword has number 0, the
 second has number 1, and so on.
 
+@epmh{Attention:} The @code{group} keyword must be specified @emph{after} any
+@code{name} or @code{template} keywords, but @emph{before} any area
+definitions.
+
 @c FIXME @xref{Template,,The @code{Template} Keyword}, for more information.
 
 @node HelpFile, Include, Group, Keywords
@@ -3516,6 +3520,22 @@ If this switch is turned on, the message list screen (@key{Alt}-@key{L}) will
 display the actual message number of each message instead of displaying the
 messages in sequential order, starting with 1. Default: Off.
 
+@item ReceiveAllNames and ReceiveAllAddresses
+@findex ReceiveAllNames
+@findex ReceiveAllAddresses
+These switches control under which circumstances the @code{Rvd} flag of a
+netmail is turned on, indicating that the mail has been received (read) by
+you. When these switches are turned on, the flag is set whenever the
+destination address of the mail matches any of your AKAs, and whenever the
+destination user name of the mail mathes any of the user names that you have
+configured with the @code{Name} keyword.  Default: Both On.
+
+You should turn off @code{ReceiveAllNames} if you have configured multiple
+user names that belong to different persons (i.E. you and your girl friend /
+boy friend <g>). In this case, only the user name that currently is active
+will count when determining if the message is addressed to you or not. You
+can switch the active user name by pressing @key{Ctrl}-@key{U}.
+
 @item RightNextUnreadArea
 @findex RightNextUnreadArea
 When in message reading mode, and this switch is set to on, and there are no
@@ -4009,13 +4029,16 @@ follows:
 @end example
 
 The @var{type} parameter designates the type of tosser configuration file to
-use. It can be @samp{Squish}, @samp{Fastecho} or @samp{AreasBBS}. The
-@var{filename} parameter specifies the path and file name of the tosser
-configuration file that should be read. (Plase note that only the area
-definitions from a Squish configuration file will be read. If the Squish
-configuration file references another @file{areas.bbs} file, you have to
-define it separately for @value{MSGED} using a second @code{Areafile}
-statement).
+use. It can be @samp{Squish}, @samp{Fastecho}, @samp{GEcho} or
+@samp{AreasBBS}. The @var{filename} parameter specifies the path and file
+name of the tosser configuration file that should be read. In case of
+@samp{Gecho}, you must specify the path to your GEcho installation rather
+than a configuration file name. Only GEcho 1.20 is supported.
+
+(Plase note that only the area definitions from a Squish configuration file
+will be read. If the Squish configuration file references another
+@file{areas.bbs} file, you have to define it separately for @value{MSGED}
+using a second @code{Areafile} statement).
 
 There is one problem with reading echo definitions from tosser configuration
 files: Those files do not contain all information that can be specified in a
