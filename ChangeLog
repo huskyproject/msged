@@ -1,3 +1,9 @@
+2001-12-04 Tuesday 00:38  tobi
+
+	* areas.c (1.10.2.1): Patch by Pascal Schmidt: Fixed off-by-one
+	error in area list scrolling, was only visible with group
+	seperators (last character of seperator was not scrolled)
+
 2001-11-26 Monday 21:45  tobi
 
 	* fconf.c (1.17.2.2, msged-6_0_0-release): Fixed core dump.
