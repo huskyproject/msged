@@ -288,17 +288,28 @@ void check_fidoconfig(char *option_string)
 /* Part 2: Fidoconfig routines that directly parse the Fidoconfig file   */
 /* ===================================================================== */
 
-static void read_fidoconfig_file (char *filename);
+static void read_fidoconfig_file (char *filename, int check_type);
 static ADDRESS fc_default_address;
 static int fc_default_address_set;
+static char *fc_config_nodelistDir;
+static char *fc_config_fidoUserList;
 
 void check_fidoconfig(char *option_string)
 {
     char *filename;
-    
-    if (option_string != NULL)
+    int check_type;
+
+    if (option_string != NULL && !stricmp(option_string, "settings"))
     {
-        printf ("\r\nOnly loading area info from fidoconfig, because this binary is not linked\nagainst fidoconfig libaries.\n");
+        check_type = 1;
+    }
+    else if (option_string != NULL && !stricmp(option_string, "both"))
+    {
+        check_type = 3;
+    }
+    else /* Default: Load areas only */
+    {
+       check_type = 2;
     }
 
     filename = getenv("FIDOCONFIG");
@@ -312,13 +323,89 @@ void check_fidoconfig(char *option_string)
     fc_default_address_set = 0;
     memset(&fc_default_address, 0, sizeof(ADDRESS));
     release (fc_default_address.domain);
+    
+    fc_config_nodelistDir = NULL;
+    fc_config_fidoUserList = NULL;
 
-    read_fidoconfig_file(filename);
+    read_fidoconfig_file(filename, check_type);
+    
+    if (fc_config_nodelistDir != NULL &&
+        fc_config_fidoUserList != NULL)
+    {
+        release(ST->userlist);
+        ST->userlist = xmalloc(strlen(fc_config_nodelistDir) +
+                               strlen(fc_config_fidoUserList) + 1);
+        strcpy(ST->userlist, fc_config_nodelistDir);
+        strcat(ST->userlist, fc_config_fidoUserList);
+    }
+    release(fc_config_nodelistDir);
+    release(fc_config_fidoUserList);
 }
 
-static void parse_fc_address(void)
+static char *get_rest_of_line(void)
+{
+    static char *rest;
+    char *ptr;
+    int len=0;
+
+    if ((rest = strtok(NULL, "")) == NULL)
+    {
+        return NULL;
+    }
+
+    for (ptr = rest; *ptr == ' ' || *ptr == '\t'; ptr ++);
+
+    if ((len = strlen(ptr)) == 0)
+    {
+        return NULL;
+    }
+
+    len --;
+
+    while (len >= 0 && (ptr[len] == ' ' || ptr[len] =='\t'))
+    {
+        len--;
+    }
+    ptr[len + 1] = '\0';
+    
+    return ptr;
+}
+
+
+static void parse_fc_sysop(void)
+{
+    int i;
+    char *sysop = get_rest_of_line();
+
+    if (sysop)
+    {
+        for (i = 0; i < MAXUSERS; i++)
+        {
+            if (user_list[i].name == NULL)
+            {
+                break;
+            }
+        }
+        
+        if (i < MAXUSERS)
+        {
+            user_list[i].name = xstrdup(sysop);
+            if (i == 0)
+            {
+                release(ST->username);
+                ST->username = xstrdup(user_list[i].name);
+                SW->useroffset = user_list[i].offset;
+            }
+        }
+    }
+}
+
+
+static void parse_fc_address(int check_type)
 {
     char *token = strtok(NULL, " \t");
+    ADDRESS tmp;
+    tmp = parsenode(token);
 
     if (token == NULL)
     {
@@ -328,15 +415,40 @@ static void parse_fc_address(void)
 
     if (!fc_default_address_set)
     {
-        ADDRESS tmp;
-        
         fc_default_address_set = 1;
-        tmp = parsenode(token);
-        memcpy(&fc_default_address, &tmp, sizeof(ADDRESS));
+        copy_addr(&fc_default_address, &tmp);
+    }
+
+    if (check_type & 1) /* load settings */
+    {
+        alias = xrealloc(alias, (++SW->aliascount) * sizeof(ADDRESS));
+        copy_addr(alias + SW->aliascount - 1, &tmp);
+    }
+    release(tmp.domain);
+}
+
+static void parse_fc_tosslog(void)
+{
+    char *tosslog = get_rest_of_line();
+
+    if (tosslog)
+    {
+        release(ST->echotoss);
+        ST->echotoss = pathcvt(xstrdup(tosslog));
     }
 }
 
-static void parse_fc_include(void)
+static void parse_fc_fidouserlist()
+{
+    fc_config_fidoUserList = xstrdup(get_rest_of_line());
+}
+
+static void parse_fc_nodelistdir()
+{
+    fc_config_nodelistDir = xstrdup(get_rest_of_line());
+}
+
+static void parse_fc_include(int check_type)
 {
     char *token = strtok(NULL, " \t");
     char *fn;
@@ -346,7 +458,7 @@ static void parse_fc_include(void)
     {
         duptoken = xstrdup(token);
         fn = pathcvt(duptoken);
-        read_fidoconfig_file(fn);
+        read_fidoconfig_file(fn, check_type);
         xfree(fn);
     }
     else
@@ -394,6 +506,10 @@ static char *fc_get_description(char *firsttoken)
         else
         {
             token = NULL;
+            if (len)
+            {
+                desc[len - 1] = '\0';
+            }
         }
     }
     
@@ -530,7 +646,7 @@ static void parse_fc_area(int type)
     AddArea(&a);
 }
 
-static void parse_fc_line(char *line)
+static void parse_fc_line(char *line, int check_type)
 {
     char *token;
 
@@ -546,28 +662,51 @@ static void parse_fc_line(char *line)
         return;
     }
 
-    if ((!stricmp(token, "netmailarea")) ||
-        (!stricmp(token, "netarea")))
+    if ((check_type & 2) &&
+        ((!stricmp(token, "netmailarea")) ||
+         (!stricmp(token, "netarea"))))
     {
         parse_fc_area(1); /* netmail folders */
     }
-    else if ((!stricmp(token, "dupearea")) ||
-             (!stricmp(token, "badarea")) ||
-             (!stricmp(token, "localarea")))
+    else if ((check_type && 2) &&
+             ((!stricmp(token, "dupearea")) ||
+              (!stricmp(token, "badarea")) ||
+              (!stricmp(token, "localarea"))))
     {
         parse_fc_area(2); /* local folders */
     }
-    else if ((!stricmp(token, "echoarea")))
+    else if ((check_type && 2) &&
+             (!stricmp(token, "echoarea")))
     {
         parse_fc_area(3); /* echomail folders */
     }
     else if ((!stricmp(token, "include")))
     {
-        parse_fc_include();
+        parse_fc_include(check_type);
     }
     else if ((!stricmp(token, "address")))
     {
-        parse_fc_address();
+        parse_fc_address(check_type);
+    }
+    else if ((check_type && 1) &&
+             (!stricmp(token, "sysop")))
+    {
+        parse_fc_sysop();
+    }
+    else if ((check_type && 1) &&
+             (!stricmp(token, "echotosslog")))
+    {
+        parse_fc_tosslog();
+    }
+    else if ((check_type && 1) &&
+             (!stricmp(token, "fidouserlist")))
+    {
+        parse_fc_fidouserlist();
+    }
+    else if ((check_type && 1) &&
+             (!stricmp(token, "nodelistdir")))
+    {
+        parse_fc_nodelistdir();
     }
     else
     {
@@ -578,7 +717,7 @@ static void parse_fc_line(char *line)
     return;
 }
     
-static void read_fidoconfig_file (char *filename)
+static void read_fidoconfig_file (char *filename, int check_type)
 {
     FILE *f = fopen(filename, "r");
     static char line[2048]; /* uh, oh, care for reentrance! */
@@ -643,7 +782,7 @@ static void read_fidoconfig_file (char *filename)
         }
         
         expanded_line = env_expand(line); /* expand %ENVIRONMENT% variables */
-        parse_fc_line(expanded_line);
+        parse_fc_line(expanded_line, check_type);
         xfree(expanded_line);
     }
 
