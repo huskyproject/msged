@@ -530,9 +530,8 @@ int TTEeol(void)
     int x,tnc = term.NCol;
 
     /* The ANSI escape sequence ESC [ K does not clear the background
-       color on some, admittedly broken, terminals (ex.: Mac OS X
-       "Terminal" application). For those terminals, we write spaces
-       instead of using this ANSI sequence.
+       color on some terminals (ex.: Mac OS X "Terminal" application). 
+       For those terminals, we write spaces instead of using this ANSI sequence.
     */
 
 
@@ -562,8 +561,8 @@ int TTEeol(void)
 	/* The very last character in the right bottom corner is
 	   cleared with the ESC sequence even though that one does not
 	   reliably clear the background color, because we have no
-	   other way to prevent scrolling in some other, also broken
-	   :-) terminals, like cygwin or the FreeBSD console. */
+	   other way to prevent scrolling in some other, terminals, 
+	   like cygwin or the FreeBSD console. */
 
 	fputs("\033[0K", stdout); 
     }
