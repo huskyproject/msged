@@ -57,6 +57,7 @@ objs=	addr.obj     &
 	freq.obj     &
 	gestr120.obj &
 	getopts.obj  &
+	group.obj    &
 	help.obj     &
 	helpcmp.obj  &
 	helpinfo.obj &

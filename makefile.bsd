@@ -59,6 +59,7 @@ objs=   addr.o     \
 	freq.o     \
 	gestr120.o \
 	getopts.o  \
+	group.o    \
 	help.o     \
 	helpcmp.o  \
 	helpinfo.o \

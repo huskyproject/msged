@@ -2,7 +2,7 @@
 # No support for the Husky build environment
 
 CC=	 gcc
-CFLAGS=	-Wall -Zomf -Zsys -s 
+CFLAGS=	-Wall -Zomf -Zsys -s
 CDEFS=	-DOS2 -DUSE_MSGAPI -I..
 COPT=   -O3 -fomit-frame-pointer -fstrength-reduce
 LFLAGS= $(CFLAGS)
@@ -36,6 +36,7 @@ objs=	addr.obj     \
 	freq.obj     \
 	gestr120.obj \
 	getopts.obj  \
+	group.obj    \
 	help.obj     \
 	helpcmp.obj  \
 	helpinfo.obj \
