@@ -208,7 +208,7 @@ static void showit(MLHEAD * h, int y, int sel)
         if (l)
             WndPutsn(l, y, 1, cm[LS_STXT] | F_ALTERNATE, line + l);
         if (l + 1 < maxx - 2)
-            WndPutsn(l + 1, y, (maxx - 2) - (l + 1), cm[LS_STXT] | F_ALTERNATE,
+            WndPutsn(l + 1, y, (maxx - 2) - (l + 1), cm[LS_STXT],
                      line + l + 1);
     }
     else if (stricmp(h->to_name, ST->username) == 0 ||
@@ -219,7 +219,7 @@ static void showit(MLHEAD * h, int y, int sel)
         if (l)
             WndPutsn(l, y, 1, cm[LS_ITXT] | F_ALTERNATE, line + l);
         if (l + 1 < maxx - 2)
-            WndPutsn(l + 1, y, (maxx - 2) - (l + 1), cm[LS_ITXT] | F_ALTERNATE,
+            WndPutsn(l + 1, y, (maxx - 2) - (l + 1), cm[LS_ITXT],
                      line + l + 1);
     }
     else
@@ -229,7 +229,7 @@ static void showit(MLHEAD * h, int y, int sel)
         if (l)
             WndPutsn(l, y, 1, cm[LS_NTXT] | F_ALTERNATE, line + l);
         if (l + 1 < maxx - 2)
-            WndPutsn(l + 1, y, (maxx - 2) - (l + 1), cm[LS_NTXT] | F_ALTERNATE,
+            WndPutsn(l + 1, y, (maxx - 2) - (l + 1), cm[LS_NTXT],
                      line + l + 1);
     }
 
