@@ -1,3 +1,13 @@
+msged (6.1.1-2) unstable; urgency=low
+
+  * New maintainer
+  * Add depends for texi2html, texinfo
+  * debian/examples: add doc/scheme.*
+  * debian/copyright: new http-location of sources
+  * Clean info dir after install
+
+ -- Pavel Andreew <pavel@collage.etel.ru>  Mon, 26 Aug 2002 16:26:42 +0600
+
 msged (6.1.1-1) unstable; urgency=low
 
   * A new package.
