@@ -22,18 +22,26 @@
 # library, or simply leave out the "-Zsys" switch  (at the expense that
 # the resulting executable then requires RSXNT.DLL at runtime)
 
+# include Husky-Makefile-Config
+include ../huskymak.cfg
+
 CC=     gcc
-CFLAGS= -Wall -pedantic
+
+ifeq ($(DEBUG), 1)
+  CFLAGS= -Wall -pedantic -I$(INCDIR) -g
+else
+  CFLAGS= -Wall -pedantic -I$(INCDIR) -s
+endif
+
 CDEFS=  -D__NT__ -DWINNT  -DUSE_MSGAPI -D__MINGW32__
-LFLAGS= -s
+LFLAGS= -L$(LIBDIR)
 COPT=
-MSGDIR= ../smapi
 
 
 TARGET= msgednta.exe
 # TMPLIB= msgedmgw.a
 # LIB=    ar
-MSGAPI= $(MSGDIR)/smapimgw.a
+MSGAPI= $(LIBDIR)/smapimgw.a
 
 objs=   addr.o     \
 	areas.o    \
@@ -88,15 +96,22 @@ objs=   addr.o     \
 	winntscr.o \
 	wrap.o
 
-# Thunderbirds are go!
+all: $(TARGET)
 
 .c.o:
-	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -I$(MSGDIR) -c $<
+	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
 #	$(LIB) r $(TMPLIB) $@
 
 $(TARGET): $(objs)
 	$(CC) $(LFLAGS) -o $(TARGET) $(objs) $(MSGAPI)
 
+clean:
+	del *.obj
+	del *.bak
 
+distclean: clean
+	del $(TARGET)
 
+install: $(TARGET)
+	copy $(TARGET) $(BINDIR)
 

@@ -1,19 +1,27 @@
 # Makefile for building a Windows 95/NT verison of MsgEd using
 # Borland C++ 4.0
 
+# include Husky-Makefile-Config
+!include ..\huskymak.cfg
+
 #CC=     BCC
 CC=      BCC32
-CFLAGS= -WC
+
+!IF $(DEBUG) == 1
+CFLAGS= -WC -v -I$(INCDIR)
+!ELSE
+CFLAGS= -WC -I$(INCDIR)
+!ENDIF
+
 CDEFS=  -D__NT__ -DWINNT  -DUSE_MSGAPI
 LFLAGS= -WC
 COPT=
-MSGDIR= ..\smapi
 
 
 TARGET= msgednt.exe
 TMPLIB= msgedbcw.lib
 LIB=    tlib
-MSGAPI= $(MSGDIR)\smapibcw.lib
+MSGAPI= $(LIBDIR)\smapibcw.lib
 
 default: $(TARGET)
 
@@ -70,15 +78,22 @@ OBJS=   addr.obj     \
 	winntscr.obj \
 	wrap.obj
 
-# Thunderbirds are go!
+all: $(TARGET)
 
 .c.obj:
-	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -I$(MSGDIR) -c $<
+	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
 	$(LIB) $(TMPLIB) -+$@
 
 $(TARGET): $(OBJS)
 	$(CC) $(LFLAGS) -e$(TARGET) msged.obj $(TMPLIB) $(MSGAPI)
 
+clean:
+	del *.obj
+	del *.bak
 
+distclean: clean
+	del $(TARGET)
 
+install: $(TARGET)
+	copy $(TARGET) $(BINDIR)
 

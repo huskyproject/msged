@@ -1,9 +1,17 @@
+# include Husky-Makefile-Config
+include ../huskymak.cfg
+
 CC=	gcc
-CFLAGS= -O3
+
+ifeq ($(DEBUG), 1)
+  CFLAGS= -O3 -I$(INCDIR) -g
+else
+  CFLAGS= -O3 -I$(INCDIR) -s
+endif
+
 CDEFS=	-DUNIX -DUSE_MSGAPI -DUSE_FIDOCONFIG
 COPT=
-LIBDIR=	-L../fidoconfig -L../smapi
-INCLDIR=	-I../fidoconfig -I../smapi
+LOPT= -L$(LIBDIR)
 LIBRARIES=	-lfidoconfig -lsmapisun -lcurses
 
 TARGET=	msged
@@ -63,10 +71,20 @@ objs=	addr.o     \
 	win.o      \
 	wrap.o
 
-# Thunderbirds are go!
+all: $(TARGET)
 
 .c.o:
-	$(CC) $(COPT) $(CFLAGS) $(CDEFS) $(INCLDIR) -c $<
+	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
 
 $(TARGET): $(objs)
-	$(CC) $(COPT) -o $(TARGET) $(objs) $(LIBDIR) $(LIBRARIES)
+	$(CC) $(COPT) -o $(TARGET) $(objs) $(LOPT) $(LIBRARIES)
+
+clean:
+	-rm *.o *~
+
+distclean: clean
+	-rm $(TARGET)
+
+install: $(TARGET)
+	install $(IBOPT) $(TARGET) $(BINDIR)
+

@@ -1,14 +1,22 @@
 # Makefile for IBM CSet on OS/2
 
+# include Husky-Makefile-Config
+include ..\huskymak.cfg
+
 CC=     icc
-CFLAGS= -Sp1 -W2 -Q
+
+ifeq ($(DEBUG), 1)
+  CFLAGS= -Sp1 -W2 -Q /I$(INCDIR) -g
+else
+  CFLAGS= -Sp1 -W2 -Q /I$(INCDIR) -s
+endif
+
 CDEFS=  -DOS2 -DUSE_MSGAPI
 #COPT=  -O
-MSGDIR= ..\smapi
 
 TARGET=	msgedp.exe
 default: $(TARGET)
-MSGAPI=	$(MSGDIR)\smapiibo.lib
+MSGAPI=	$(LIBDIR)\smapiibo.lib
 
 objs1=	addr.obj     \
 	areas.obj    \
@@ -64,10 +72,10 @@ objs4=	system.obj   \
 	win.obj      \
 	wrap.obj
 
-# Thunderbirds are go!
+all: $(TARGET)
 
 .c.obj:
-	$(CC) $(COPT) $(CFLAGS) $(CDEFS) /I$(MSGDIR) -c $<
+	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
 
 icc.cfg: makefile.ibo
 	echo $(COPT) /Fe$(TARGET) /B"/NOE" > icc.cfg
@@ -81,10 +89,13 @@ icc.cfg: makefile.ibo
 $(TARGET): $(objs1) $(objs2) $(objs3) $(objs4) icc.cfg
 	icc @icc.cfg
 
+clean:
+	del *.obj
+	del *.bak
 
+distclean: clean
+	del $(TARGET)
 
-
-
-
-
+install: $(TARGET)
+	copy $(TARGET) $(BINDIR)
 

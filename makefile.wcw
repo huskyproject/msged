@@ -1,12 +1,20 @@
+# include Husky-Makefile-Config
+!include ..\huskymak.cfg
+
 CC=	wcl386
-CFLAGS=	-zq -wx -bt=nt -l=nt
+
+!IF $(DEBUG) == 1
+  CFLAGS=	-zq -wx -bt=nt -l=nt -I$(INCDIR) -d2
+!ELSE
+  CFLAGS=	-zq -wx -bt=nt -l=nt -I$(INCDIR)
+!ENDIF
+
 #CDEFS=	-DWINNT
 CDEFS=	-DWINNT -DUSE_MSGAPI
 #COPT=	-oneatx -5
-MSGDIR=	..\smapi
 
 TARGET=	msgedw32.exe
-MSGAPI=	$(MSGDIR)\smapiwcw.lib
+MSGAPI=	$(LIBDIR)\smapiwcw.lib
 
 objs=	addr.obj     \
 	areas.obj    \
@@ -61,10 +69,21 @@ objs=	addr.obj     \
 	winntscr.obj \
 	wrap.obj
 
-# Thunderbirds are go!
+all: $(TARGET)
 
 .c.obj:
-	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -I$(MSGDIR) -c $<
+	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
 
 $(TARGET): $(objs)
 	$(CC) $(COPT) -fe=$(TARGET) *.obj $(MSGAPI)
+
+clean:
+	del *.obj
+	del *.bak
+
+distclean: clean
+	del $(TARGET)
+
+install: $(TARGET)
+	copy $(TARGET) $(BINDIR)
+

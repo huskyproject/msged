@@ -1,11 +1,19 @@
+# include Husky-Makefile-Config
+!include ..\huskymak.cfg
+
 CC=	hc
-CFLAGS=	-w4 -Hmscerr
+
+!IF $(DEBUG) == 1
+  CFLAGS=	-w4 -Hmscerr -I$(INCDIR) -g
+!ELSE
+  CFLAGS=	-w4 -Hmscerr -I$(INCDIR) -s
+!ENDIF
+
 CDEFS=	-DOS2 -DUSE_MSGAPI
 COPT=	-O3
-MSGDIR=	..\smapi
 
 TARGET=	msgedp.exe
-MSGAPI=	$(MSGDIR)\smapihco.lib
+MSGAPI=	$(LIBDIR)\smapihco.lib
 
 objs=   addr.obj     \
 	areas.obj    \
@@ -61,10 +69,21 @@ objs=   addr.obj     \
 	win.obj      \
 	wrap.obj
 
-# Thunderbirds are go!
+all: $(TARGET)
 
 .c.obj:
-	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -I$(MSGDIR) -c $<
+	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
 
 $(TARGET): $(objs)
 	$(CC) $(COPT) -o $(TARGET) $(objs) $(MSGAPI)
+
+clean:
+	del *.obj
+	del *.bak
+
+distclean: clean
+	del $(TARGET)
+
+install: $(TARGET)
+	copy $(TARGET) $(BINDIR)
+

@@ -1,12 +1,20 @@
+# include Husky-Makefile-Config
+include ..\huskymak.cfg
+
 CC=	wcl386
-CFLAGS=	-zq -wx
+
+!IF $(DEBUG) == 1
+  CFLAGS=	-zq -wx -I$(INCDIR) -d2
+!ELSE
+  CFLAGS=	-zq -wx -I$(INCDIR)
+!ENDIF
+
 CDEFS=	-DUSE_MSGAPI
 #COPT=	-oneatx -5
-MSGDIR=	..\smapi
 PMWDIR=	\pmw
 
 TARGET=	msged32.exe
-MSGAPI=	$(MSGDIR)\smapiwcx.lib
+MSGAPI=	$(LIBDIR)\smapiwcx.lib
 
 objs=	addr.obj     \
 	areas.obj    \
@@ -65,11 +73,22 @@ objs=	addr.obj     \
 	win.obj      \
 	wrap.obj
 
-# Thunderbirds are go!
+all: $(TARGET)
 
 .c.obj:
-	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -I$(MSGDIR) -c $<
+	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
 
 $(TARGET): $(objs)
 	$(CC) $(COPT) -k8192 -fe=$(TARGET) *.obj $(MSGAPI)
 	$(PMWDIR)\pmwbind -r -s$(PMWDIR)\pmodew.exe $(TARGET)
+
+clean:
+	del *.obj
+	del *.bak
+
+distclean: clean
+	del $(TARGET)
+
+install: $(TARGET)
+	copy $(TARGET) $(BINDIR)
+

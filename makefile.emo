@@ -1,9 +1,17 @@
+# include Husky-Makefile-Config
+include ../huskymak.cfg
+
 CC=	 gcc
-CFLAGS=	-Wall -Zomf -Zsys -s
+
+ifeq ($(DEBUG), 1)
+  CFLAGS=	-Wall -Zomf -Zsys -g -I$(INCDIR)
+else
+  CFLAGS=	-Wall -Zomf -Zsys -s -I$(INCDIR)
+endif
+
 CDEFS=	-DOS2 -DUSE_MSGAPI
 COPT=   -O3 -fomit-frame-pointer -fstrength-reduce
 #-m486
-MSGDIR=	../smapi
 
 .SUFFIXES:
 .SUFFIXES: .c .obj
@@ -11,7 +19,7 @@ MSGDIR=	../smapi
 TARGET=	msgedp.exe
 TMPLIB= msgedemo.lib
 LIB=    emxomfar
-MSGAPI=	$(MSGDIR)/smapiemo.lib
+MSGAPI=	$(LIBDIR)/smapiemo.lib
 
 objs=	addr.obj     \
 	areas.obj    \
@@ -67,11 +75,22 @@ objs=	addr.obj     \
 	win.obj      \
 	wrap.obj
 
-# Thunderbirds are go!
+all: $(TARGET)
 
 .c.obj:
-	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -I$(MSGDIR) -c $<
+	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
 	$(LIB) r $(TMPLIB) $@
 
 $(TARGET): $(objs)
 	$(CC) $(COPT) $(CFLAGS) -Zlinker "/pm:vio" -o $(TARGET) msged.obj $(TMPLIB) $(MSGAPI)
+
+clean:
+	-del *.obj
+	-del *.bak
+
+distclean: clean
+	-del $(TARGET)
+
+install: $(TARGET)
+	copy $(TARGET) $(BINDIR)
+

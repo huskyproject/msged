@@ -1,15 +1,22 @@
+# include Husky-Makefile-Config
+!include ..\huskymak.cfg
+
 CC=	qcl
-CFLAGS=	-W4 -AL
+
+!IF $(DEBUG) == 1
+  CFLAGS=	-W4 -AL -I$(INCDIR) -g
+!ELSE
+  CFLAGS=	-W4 -AL -I$(INCDIR) -s
+!ENDIF
+
 CDEFS=	-DMSDOS -DUSE_MSGAPI -DUSE_CRITICAL
 #COPT=	-Ox
 ASM=	tasm
 AFLAGS=	-mx
 ADEFS=	-DMODL=large
 
-MSGDIR=	..\smapi
-
 TARGET=	msged.exe
-MSGAPI=	$(MSGDIR)\smapiqcd.lib
+MSGAPI=	$(LIBDIR)\smapiqcd.lib
 
 objs=	addr.obj     \
 	areas.obj    \
@@ -70,13 +77,24 @@ objs=	addr.obj     \
 	win.obj      \
 	wrap.obj
 
-# Thunderbirds are go!
+all: $(TARGET)
 
 .asm.obj:
 	$(ASM) $(AFLAGS) $(ADEFS) $<
 
 .c.obj:
-	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -I$(MSGDIR) -c $<
+	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
 
 $(TARGET): $(objs)
 	$(CC) $(COPT) -Fe$(TARGET) -F 2000 *.obj $(MSGAPI)
+
+clean:
+	del *.obj
+	del *.bak
+
+distclean: clean
+	del $(TARGET)
+
+install: $(TARGET)
+	copy $(TARGET) $(BINDIR)
+

@@ -19,6 +19,8 @@ Changes:
   If you do not like the new behaviour, add "Switch Carthy Off" to the confi-
   guration file in order to revert to the old behaviour.
 
+- Reorganized the Makefiles, please read doc/README.Mak !!!
+
 
 Features:
 
