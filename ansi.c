@@ -1475,7 +1475,7 @@ int TTkopen(void)
     block_console(0,0);
     setbuf(stdin, NULL);
 #ifdef sun
-    initscr();  //curses initialization
+    initscr();  /* curses initialization */
     cbreak();
     noecho();
 #endif
