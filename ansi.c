@@ -178,6 +178,8 @@ static int ansi_background_colors[8]=
     47   /* gray    */
 };
     
+void TTBeginOutput(void) {}
+void TTEndOutput(void) {}    
   
 int TTScolor(unsigned int Attr)
 {

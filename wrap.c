@@ -251,6 +251,8 @@ void RedrawPage(LINE * start, int wherey)
 
     if (start != NULL && wherey <= ed_maxy)
     {
+        TTBeginOutput();
+
         while (cur != NULL && cury <= ed_maxy)
         {
             EdPutLine(cur, cury);
@@ -271,6 +273,8 @@ void RedrawPage(LINE * start, int wherey)
                 cury++;
             }
         }
+
+        TTEndOutput();
     }
 }
 
@@ -965,13 +969,18 @@ static void insert_char(char ch)
 {
     int slen, wlen;
 
-#ifdef UNIX /* entering these characters would cause problems on Unix */
+    /* entering these characters would cause problems on Unix */
+
+#if defined(UNIX) && !defined(USE_CURSES)
     if ((unsigned char)ch < 32 ||
         ((unsigned char)ch >= 128 && (unsigned char)ch < (128 + 32)))
     {
         return;
     }
 #endif    
+
+
+    TTBeginOutput();
 
     if ((unsigned char)ch == 0x8d && softcrxlat)
     {
@@ -1033,6 +1042,8 @@ static void insert_char(char ch)
 
     x++;
     SetLineBuf();
+
+    TTEndOutput();
 }
 
 /*
@@ -1044,6 +1055,8 @@ static void delete_character(void)
     LINE *nl;
 
     current->templt = 0;
+
+    TTBeginOutput();
 
     if (*line_buf == 0 || line_buf[0] == '\n')
     {
@@ -1095,6 +1108,8 @@ static void delete_character(void)
         }
     }
     SetLineBuf();
+
+    TTEndOutput();
 }
 
 /*
@@ -1104,6 +1119,8 @@ static void delete_character(void)
 
 static void backspace(void)
 {
+
+    TTBeginOutput();
     if (x == 1)
     {
         if (current->prev == NULL)
@@ -1121,6 +1138,7 @@ static void backspace(void)
         delete_character();
     }
     EdPutLine(current, y);
+    TTEndOutput();
 }
 
 static void delword(void)
@@ -1190,9 +1208,11 @@ static void go_up(void)
         currline--;
         if (y == ed_miny)
         {
+            TTBeginOutput();
             pagetop = current;
             ScrollDown(1, ed_maxy);
             EdPutLine(current, y);
+            TTEndOutput();
         }
         else
         {
@@ -1211,8 +1231,10 @@ static void go_down(void)
         currline++;
         if (y == ed_maxy)
         {
+            TTBeginOutput();
             ScrollUp(1, ed_maxy);
             EdPutLine(current, y);
+            TTEndOutput();
         }
         else
         {
@@ -1501,12 +1523,17 @@ static void newline(void)
             current->templt = 0;
         }
     }
+
+    TTBeginOutput();
+
     go_down();
     go_bol();
 
     wrap(current, 0, 0, SW->rm);
     RedrawPage(current->prev, y - 1);
     SetLineBuf();
+
+    TTEndOutput();
 }
 
 /*
@@ -2013,6 +2040,8 @@ static void paste(void)
 
 static void tabit(void)
 {
+    TTBeginOutput();
+    
     if (!(x % SW->tabsize))
     {
         insert_char(' ');
@@ -2024,6 +2053,8 @@ static void tabit(void)
     }
 
     insert_char(' ');
+
+    TTEndOutput();
 }
 
 static void go_tos(void)
@@ -2613,11 +2644,17 @@ int editmsg(msg * m, int quote)
         SW->showcr = 1;
     }
     SetLineBuf();
+
+
+    TTBeginOutput();
+
     RedrawPage(current, y);
 
     done = FALSE;
     cursor(1);
     GotoXY(x, y);
+
+    TTEndOutput();
 
     while (!done)
     {

@@ -483,6 +483,7 @@ static void search(void)
         oldmsg = tmp;
         message = m;
 
+        TTBeginOutput();
         ShowMsgHeader(message);
 
         if (l != NULL)
@@ -494,6 +495,7 @@ static void search(void)
         {
             RefreshMsg(message->text, 6);
         }
+        TTEndOutput();
     }
     else
     {
@@ -655,6 +657,8 @@ static void hdrsearch(void)
         lastfound = tmp;
         oldmsg = tmp;
 
+        TTBeginOutput();
+
         ShowMsgHeader(message);
 
         if (l != NULL)
@@ -666,6 +670,8 @@ static void hdrsearch(void)
         {
             RefreshMsg(message->text, 6);
         }
+
+        TTEndOutput();
     }
     else
     {
@@ -783,6 +789,8 @@ static void spmail(void)
         oldmsg = tmp;
         message = m;
 
+        TTBeginOutput();
+
         ShowMsgHeader(message);
 
         if (l != NULL)
@@ -794,6 +802,8 @@ static void spmail(void)
         {
             RefreshMsg(message->text, 6);
         }
+
+        TTEndOutput();
     }
     else
     {
@@ -1161,6 +1171,7 @@ static void scan_areas(int all)
 
         if (SW->statbar)
         {
+            TTBeginOutput();
             sprintf(line, "%.40s", CurArea.description);
             if (!SW->dmore)
             {
@@ -1177,6 +1188,7 @@ static void scan_areas(int all)
                 WndPutsn(l + 6, maxy - 1, maxx - l - 7, cm[CM_ITXT], "Scanning:");
                 WndWriteStr(l + 16, maxy - 1, cm[CM_ITXT], line);
             }
+            TTEndOutput();
         }
         else
         {
@@ -1196,6 +1208,8 @@ static void scan_areas(int all)
             MsgAreaClose();
         }
     }
+
+    TTBeginOutput();
 
     if (!SW->statbar)
     {
@@ -1230,6 +1244,8 @@ static void scan_areas(int all)
         WndPutsn((strlen(PROG) + strlen(VERSION CLOSED) + 6), maxy - 1, 18, cm[CM_ITXT], line);
     }
     TTgotoxy(x,y);
+
+    TTEndOutput();
 }
 
 /*
@@ -1421,10 +1437,14 @@ static void gotomsg(unsigned long i)
     int ret;
     int pos;
 
+    TTBeginOutput();
+
     hCurr = WndTop();
     hWnd = WndPopUp(30, 6, INSBDR | SHADOW, cm[IP_BTXT], cm[IP_NTXT]);
     WndTitle(" Jump to Message ", cm[IP_NTXT]);
     WndWriteStr(1, 1, cm[IP_NTXT], "Message #");
+
+    TTEndOutput();
 
     if (i != 0)
     {
@@ -1950,6 +1970,8 @@ static void message_reading_mode(void)
         
         if (!CurArea.messages || newmsg || !CurArea.status || message == NULL)
         {
+            TTBeginOutput();
+
             if (!CurArea.status || message == NULL || !CurArea.messages)
             {
                 ClearMsgScreen();
@@ -1963,6 +1985,8 @@ static void message_reading_mode(void)
             {
                 RefreshMsg(message->text, 6);
             }
+
+            TTEndOutput();
         }
         
         oldmsg = CurArea.current;

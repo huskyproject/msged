@@ -155,6 +155,7 @@ static void ulistTerm(void)
 
 static void update(MLHEAD * headers, unsigned long i, int y)
 {
+    TTBeginOutput();
     while (i <= CurArea.messages && y <= maxy - 4)
     {
         getheader(i, &headers[y - 1], 1);
@@ -166,6 +167,7 @@ static void update(MLHEAD * headers, unsigned long i, int y)
     {
         WndClear(1, y, maxx - 2, maxy - 4, cm[LS_NTXT]);
     }
+    TTEndOutput();
 }
 
 /*
@@ -177,6 +179,8 @@ static void showit(MLHEAD * h, int y, int sel)
     unsigned long msgn;
     char line[384];
     char msgnbuf[9];
+
+    TTBeginOutput();
 
     msgn = SW->showrealmsgn ? h->umsgid : h->msgnum;
     sprintf(msgnbuf, "%5ld %c", msgn, h->sel ? SC14 : ' ');
@@ -206,6 +210,9 @@ static void showit(MLHEAD * h, int y, int sel)
     {
         WndPutsn(1, y, maxx - 2, cm[LS_NTXT], line);
     }
+
+    TTEndOutput();
+
 }
 
 /*
@@ -366,6 +373,7 @@ static int movemsgs(int rc, int to_area)
 
     if (clear)
     {
+        TTBeginOutput();
         WndClearLine(0, cm[MN_NTXT]);
         WndWriteStr(2, 0, cm[LS_TTXT], CurArea.description);
 
@@ -378,6 +386,7 @@ static int movemsgs(int rc, int to_area)
             }
             WndBox(0, 1, maxx - 1, maxy - 2, cm[LS_BTXT], SBDR);
         }
+        TTEndOutput();
     }
     return to_area;
 }
@@ -528,6 +537,7 @@ begin:
 
     /* Open the window and draw the screen and allocate the memory. */
 
+    TTBeginOutput();
     WndClearLine(0, cm[MN_NTXT]);
     WndClearLine(maxy - 1, cm[MN_NTXT]);
     WndWriteStr(2, 0, cm[LS_TTXT], CurArea.description);
@@ -552,9 +562,12 @@ begin:
     }
     y = 1;
     update(headers, a, y);
+    TTEndOutput();
+
 
     while (!done)
     {
+        TTBeginOutput();
 #if defined(MSDOS) && !defined(__FLAT__)
         /* shows memory if compiled under dos */
 
@@ -588,6 +601,7 @@ begin:
             WndWriteStr(41, 0, cm[LS_TTXT], "Subject");
         }
         showit(&headers[y - 1], y, 1);
+        TTEndOutput();
 
         if (down)
         {

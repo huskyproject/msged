@@ -71,6 +71,9 @@ static int mykbhit(void);
 static int FullBuffer(void);
 static unsigned long hsec_time(void);
 
+void TTBeginOutput(void) {}
+void TTEndOutput(void) {}    
+
 int TTScolor(unsigned int Attr)
 {
     color = Attr;

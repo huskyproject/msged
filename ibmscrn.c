@@ -58,6 +58,9 @@ static int mousey = 12;
 static int mykbhit(void);
 static int FullBuffer(void);
 
+void TTBeginOutput(void) {}
+void TTEndOutput(void) {}
+
 int TTScolor(unsigned int Attr)
 {
     VIOsetfore(Attr & 0x000f);

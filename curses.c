@@ -45,6 +45,31 @@ static int ebufout = 0;		/* event out */
 
 static int kbhit(void);
 
+static int norefresh = 0;
+
+static void ttrefresh(void)
+{
+    if (!norefresh)
+    {
+        refresh();
+    }
+}
+
+void TTBeginOutput(void)
+{
+    norefresh++;
+}
+
+void TTEndOutput(void)
+{
+    if (norefresh)
+    {
+        norefresh--;
+        ttrefresh();
+    }
+}
+    
+
 /* This maps PC colors to monochrome attributes for w/o color support */
 static int mono_colors[128]= 
 {
@@ -125,7 +150,7 @@ int TTCurSet(int st)
 int TTgotoxy(int row, int col)
 {
     move(vrow = row, vcol = col);
-    refresh();
+    ttrefresh();
     return 1;
 }
 
@@ -140,7 +165,7 @@ int TTPutChr(unsigned int ch)
 {
     move(vrow, vcol);
     addch(ch);
-    refresh();
+    ttrefresh();
     return 1;
 }
 
@@ -197,7 +222,7 @@ int TTWriteStr(unsigned short *b, int len, int row, int col)
         TTScolor(oldcol);
     move(vrow, vcol);
     
-    refresh();
+    ttrefresh();
     
     return 1;
 }
@@ -212,7 +237,7 @@ int TTStrWr(unsigned char *s, int row, int col)
         return 1;
     
     move(row, col);
-    for (len = strlen(s); len; len--, s++)
+    for (len = strlen((const char*)s); len; len--, s++)
     {
         /* control chars are written in ^X notation */
         if (*s < ' ')
@@ -250,7 +275,7 @@ int TTStrWr(unsigned char *s, int row, int col)
     }
     
     move(vrow, vcol);
-    refresh();
+    ttrefresh();
     return 1;
 }
 
@@ -273,7 +298,7 @@ int TTReadStr(unsigned short *b, int len, int row, int col)
         col++;
     }
     move(vrow, vcol);
-    refresh();
+    ttrefresh();
     return 1;
 }
 
@@ -293,7 +318,7 @@ int TTScroll(int x1, int y1, int x2, int y2, int lines, int dir)
     scrollok(win, TRUE);
     wscrl(win, dir ? lines : -lines);
     touchline(stdscr, y1, height);
-    wrefresh(win);
+    wttrefresh(win);
     delwin(win);
 #else
     int y;
@@ -331,7 +356,7 @@ int TTScroll(int x1, int y1, int x2, int y2, int lines, int dir)
     }
     free(buf);
     move(vrow, vcol);
-    refresh();
+    ttrefresh();
 #endif
     return 1;
 }
@@ -347,7 +372,7 @@ int TTClear(int x1, int y1, int x2, int y2)
         return 0;
     werase(win);
     touchline(stdscr, y1, height);
-    wrefresh(win);
+    wttrefresh(win);
     delwin(win);
 #else
     int y;
@@ -360,7 +385,7 @@ int TTClear(int x1, int y1, int x2, int y2)
             addch(' ');
     }
     move(vrow, vcol);
-    refresh();
+    ttrefresh();
 #endif
     return 1;
 }
@@ -370,7 +395,7 @@ int TTEeol(void)
     move(vrow, vcol);
     clrtoeol();
     move(vrow, vcol);
-    refresh();
+    ttrefresh();
     return 1;
 }
 
@@ -536,7 +561,7 @@ unsigned int TTGetKey(void)
          
         if (allowed_special_characters != NULL)
         {
-            if (strchr(allowed_special_characters, ch) != NULL)
+            if (strchr((char*)allowed_special_characters, ch) != NULL)
             {
                 assume_meta_key = 0;
             }

@@ -167,8 +167,10 @@ static int AreaBox(char **Itms, int y1, int y2, int len, int def, WND * hPrev, W
     }
     done = 0;
 
+    TTBeginOutput();
     SelShowPage(Itms, y1, y2, len, Top, Norm, indent);
     SelShowItem(Itms[currItem], curY, len, Sel, indent);
+    TTEndOutput();
 
     TTClearQue();               /* clear input queue */
 
@@ -284,12 +286,14 @@ static int AreaBox(char **Itms, int y1, int y2, int len, int def, WND * hPrev, W
                 {
                     break;
                 }
+                TTBeginOutput();
                 SelShowItem(Itms[currItem], curY, len, Norm, indent);
                 currItem = 0;
                 Top = 0;
                 curY = y1;
                 SelShowPage(Itms, y1, y2, len, Top, Norm, indent);
                 SelShowItem(Itms[currItem], curY, len, Sel, indent);
+                TTEndOutput();
                 memset(find, '\0', sizeof find);
                 break;
 
@@ -306,6 +310,7 @@ static int AreaBox(char **Itms, int y1, int y2, int len, int def, WND * hPrev, W
                 {
                     break;
                 }
+                TTBeginOutput();
                 SelShowItem(Itms[currItem], curY, len, Norm, indent);
                 currItem = itemCnt - 1;
                 while (currItem && currItem >= (itemCnt - page))
@@ -318,6 +323,7 @@ static int AreaBox(char **Itms, int y1, int y2, int len, int def, WND * hPrev, W
                 CalcDef(itemCnt, currItem, &Top, y1, y2, &curY);
                 SelShowPage(Itms, y1, y2, len, Top, Norm, indent);
                 SelShowItem(Itms[currItem], curY, len, Sel, indent);
+                TTEndOutput();
                 memset(find, '\0', sizeof find);
                 break;
 
@@ -369,6 +375,7 @@ static int AreaBox(char **Itms, int y1, int y2, int len, int def, WND * hPrev, W
                 {
                     break;
                 }
+                TTBeginOutput();
                 SelShowItem(Itms[currItem], curY, len, Norm, indent);
                 if ((currItem -= page) < 0)
                 {
@@ -378,6 +385,7 @@ static int AreaBox(char **Itms, int y1, int y2, int len, int def, WND * hPrev, W
                 curY = y1;
                 SelShowPage(Itms, y1, y2, len, Top, Norm, indent);
                 SelShowItem(Itms[currItem], curY, len, Sel, indent);
+                TTEndOutput();
                 memset(find, '\0', sizeof find);
                 break;
 
@@ -386,6 +394,7 @@ static int AreaBox(char **Itms, int y1, int y2, int len, int def, WND * hPrev, W
                 {
                     break;
                 }
+                TTBeginOutput();
                 SelShowItem(Itms[currItem], curY, len, Norm, indent);
                 Top = currItem;
 
@@ -406,6 +415,7 @@ static int AreaBox(char **Itms, int y1, int y2, int len, int def, WND * hPrev, W
                 CalcDef(itemCnt, currItem, &Top, y1, y2, &curY);
                 SelShowPage(Itms, y1, y2, len, Top, Norm, indent);
                 SelShowItem(Itms[currItem], curY, len, Sel, indent);
+                TTEndOutput();
                 memset(find, '\0', sizeof find);
                 break;
 
@@ -573,6 +583,7 @@ int mainArea(void)
         wid = maxx - 1;
         dep = maxy - 2;
 
+        TTBeginOutput();
         WndClearLine(0, cm[MN_NTXT]);
         WndClearLine(maxy - 1, cm[MN_NTXT]);
         hCurr = WndTop();
@@ -583,6 +594,8 @@ int mainArea(void)
         WndWriteStr(maxx - 19, 0, cm[LS_TTXT], "Msgs");
         WndWriteStr(maxx - 12, 0, cm[LS_TTXT], "New");
         WndWriteStr(maxx - 7, 0, cm[LS_TTXT], "Last");
+        TTEndOutput();
+
 
         BuildList(&alist);
 

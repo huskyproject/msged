@@ -221,6 +221,8 @@ void MouseClose(void);
 int GetMouInfo(int *x, int *y);
 void TTClearQue(void);
 int TTPeekQue(void);
+void TTBeginOutput(void); /* suppresses screen drawing until ... */
+void TTEndOutput(void);   /* .. ttendoutput is called. This improves speed! */ 
 
 /* routines from the window module (system independant) */
 
@@ -244,7 +246,7 @@ void WndClearLine(int y, int Att);
 void WndFillField(int x, int y, int len, unsigned char ch, int Attr);
 void WndGetRel(int x, int y, int *wx, int *wy);
 
-/* Routines from system module (system independant) */
+/* Routines from system module (system independent) */
 
 void PushHotGroup(HotGroup * New);
 void PopHotGroup(void);

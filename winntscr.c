@@ -43,6 +43,9 @@ static unsigned long key_hit = 0xFFFFFFFFUL;
 
 static int FullBuffer(void);
 
+void TTBeginOutput(void) {}
+void TTEndOutput(void) {}
+
 int TTopen(void)
 {
     CONSOLE_SCREEN_BUFFER_INFO csbi;

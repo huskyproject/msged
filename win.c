@@ -108,8 +108,6 @@ WND *WndOpen(int x1, int y1, int x2, int y2, int Bdr, int BAttr, int Attr)
     w->flags = (unsigned char)Bdr;
     w->title = NULL;
 
-
-
     if (Bdr & SHADOW)
     {
         x2 += 2;
@@ -144,6 +142,8 @@ WND *WndOpen(int x1, int y1, int x2, int y2, int Bdr, int BAttr, int Attr)
     {
         w->buffer = NULL;
     }
+
+    TTBeginOutput();
 
     /* put out shadow */
 
@@ -194,6 +194,8 @@ WND *WndOpen(int x1, int y1, int x2, int y2, int Bdr, int BAttr, int Attr)
     }
 
     MouseON();
+
+    TTEndOutput();
 
     CW = w;
 
@@ -255,6 +257,7 @@ void WndClose(WND * w)
         y2++;
     }
 
+    TTBeginOutput();
     MouseOFF();
 
     if (!(wnd->flags & NOSAVE))
@@ -268,6 +271,7 @@ void WndClose(WND * w)
     }
     xfree(wnd);
     MouseON();
+    TTEndOutput();
 }
 
 /*
@@ -281,6 +285,7 @@ static void WDrwBox(int x1, int y1, int x2, int y2, unsigned char *Bdrc, int Bat
     int xmod = ins ? 2 : 0;
     int ymod = ins ? 1 : 0;
 
+    TTBeginOutput();
     MouseOFF();
 
     /* write corner chars */
@@ -320,6 +325,7 @@ static void WDrwBox(int x1, int y1, int x2, int y2, unsigned char *Bdrc, int Bat
         TTWriteStr(&cell, 1, i, x2 - xmod);
     }
 
+    TTEndOutput();
     MouseON();
 }
 
@@ -423,6 +429,8 @@ void WndTitle(const char *title, int Attr)
         MouseOFF();
     }
 
+    TTBeginOutput();
+
     if (CW->title)
     {
         if (!(CW->flags & NBDR))
@@ -456,6 +464,8 @@ void WndTitle(const char *title, int Attr)
     {
         MouseON();
     }
+
+    TTEndOutput();
 }
 
 /*
@@ -528,6 +538,8 @@ void WndWriteStr(int x, int y, int Attr, char *Str)
         *trunc = '\0';
     }
 
+    TTBeginOutput();
+
     TTScolor(Attr);
     TTStrWr((unsigned char *)PrintStr, row, col);
 
@@ -535,6 +547,8 @@ void WndWriteStr(int x, int y, int Attr, char *Str)
     {
         xfree(PrintStr);
     }
+
+    TTEndOutput();
 
     if (m)
     {
@@ -661,8 +675,12 @@ void WndScroll(int x1, int y1, int x2, int y2, int dir)
         m = 1;
         MouseOFF();
     }
+    TTBeginOutput();
     TTScolor(CW->wattr);
-    TTScroll(CW->x1 + x1 + xmod, CW->y1 + y1 + ymod, CW->x1 + x2 + xmod, CW->y1 + y2 + ymod, 1, dir);
+    TTScroll(CW->x1 + x1 + xmod, CW->y1 + y1 + ymod, CW->x1 + x2 + xmod,
+             CW->y1 + y2 + ymod, 1, dir);
+    TTEndOutput();
+    
     if (m)
     {
         MouseON();
@@ -828,8 +846,10 @@ int WndGetLine(int x, int y, int len, char *buf, int Attr, int *pos, int nokeys,
 
     if (disp)
     {
+        TTBeginOutput();
         WndFillField(col, row, len + 1, fill, Attr);
         WndPutsn(col, row, len, Attr, buf);
+        TTEndOutput();
     }
 
     xmod = XMOD(CW);
@@ -887,6 +907,7 @@ int WndGetLine(int x, int y, int len, char *buf, int Attr, int *pos, int nokeys,
             case Key_BS:
                 if (i > 0)
                 {
+                    TTBeginOutput();
                     if (i < strlen(buf))
                     {
                         memmove(buf + i - 1, buf + i, strlen(buf + i) + 1);
@@ -901,15 +922,18 @@ int WndGetLine(int x, int y, int len, char *buf, int Attr, int *pos, int nokeys,
                         WndGotoXY(i + col, row);
                         WndPutc(fill, Attr);
                     }
+                    TTEndOutput();
                 }
                 break;
 
             case Key_Del:
                 if (i < strlen(buf))
                 {
+                    TTBeginOutput();
                     memmove(buf + i, buf + i + 1, strlen(buf + i + 1) + 1);
                     WndWriteStr(col + i, row, Attr, buf + i);
                     WndPrintf(col + strlen(buf), row, Attr, "%c", fill);
+                    TTEndOutput();
                 }
                 break;
 
@@ -932,6 +956,7 @@ int WndGetLine(int x, int y, int len, char *buf, int Attr, int *pos, int nokeys,
             default:
                 if (ch > 0 && i < len && strlen(buf) < len)
                 {
+                    TTBeginOutput();
                     if (nokeys)
                     {
                         strcpy(buf, "");
@@ -953,10 +978,11 @@ int WndGetLine(int x, int y, int len, char *buf, int Attr, int *pos, int nokeys,
                         WndPutc((unsigned char)ch, Attr);
                         i++;
                     }
+                    TTEndOutput();
                 }
                 else
                 {
-                    done = 1;
+                   done = 1;
                 }
                 break;
             }

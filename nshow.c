@@ -136,6 +136,8 @@ void DrawHeader(void)
 {
     static char line[256];
 
+    TTBeginOutput();
+
     WndClear(0, 1, maxx - 1, 4, cm[CM_NINF]);
 
     memset(line, SC8, maxx);  /* clear dividing line */
@@ -151,6 +153,9 @@ void DrawHeader(void)
         sprintf(line, " %s %s %c ", PROG, VERSION CLOSED, SC7);
         WndPutsn(0, maxy - 1, maxx, cm[CM_ITXT], line);
     }
+
+    TTEndOutput();
+
 }
 
 /*
@@ -176,8 +181,10 @@ void ClearScreen(void)
 
 void ClearMsgScreen(void)
 {
+    TTBeginOutput();
     WndClear(8, 1, maxx - 1, 4, cm[CM_FTXT]);
     RefreshMsg(NULL, 6);
+    TTEndOutput();
 }
 
 /*
@@ -190,6 +197,8 @@ void ShowNewArea(void)
 
     if (!groupmove)
     {
+        TTBeginOutput();
+
         sprintf (tmpbuf, "%-*.*s", (maxx-31) > 139 ? 139 : maxx-31,
                  (maxx-31) > 139 ? 139 : maxx-31, CurArea.description);
 
@@ -211,11 +220,16 @@ void ShowNewArea(void)
             EVT e;
             ProcessMenu(&MouseMnu, &e, 1);
         }
+
+        TTBeginOutput();
     }
 }
 
 int OpenMsgWnd(int wid, int dep, char *title, char *msg, int x, int y)
 {
+
+    TTBeginOutput();
+
     hMsgCurr = WndTop();
     hMsgWnd = WndPopUp(wid, dep, INSBDR | SHADOW, cm[IP_BTXT], cm[IP_NTXT]);
 
@@ -234,6 +248,8 @@ int OpenMsgWnd(int wid, int dep, char *title, char *msg, int x, int y)
         WndWriteStr(x, y, cm[IP_NTXT], msg);
     }
 
+    TTEndOutput();
+
     return 1;
 }
 
@@ -248,8 +264,10 @@ void SendMsgWnd(char *msg, int y)
         return;
     }
 
+    TTBeginOutput();
     WndClearLine(y, cm[IP_NTXT]);
     WndPutsCen(y, cm[IP_NTXT], msg);
+    TTEndOutput();
 }
 
 int CloseMsgWnd(void)
@@ -428,6 +446,8 @@ void ShowMsgHeader(msg * m)
     int i, r = 0;
     unsigned long rep = 0;
 
+    TTBeginOutput();
+
     if (SW->statbar)
     {
         sprintf(line, " %s %s %c ", PROG, VERSION CLOSED, SC7);
@@ -493,9 +513,9 @@ void ShowMsgHeader(msg * m)
 
     if (m == NULL)
     {
+        TTEndOutput();
         return;
     }
-
 
     /* show the message links, up and down */
 
@@ -556,6 +576,8 @@ void ShowMsgHeader(msg * m)
     {
         WndPutsn(maxx - 20, 4, 19, cm[CM_HTXT], " ");
     }
+
+    TTEndOutput();
 
 }
 
@@ -629,6 +651,8 @@ void Go_Up(void)
         return;
     }
 
+    TTBeginOutput();
+
     if (top->prev)
     {
         while (top->prev)  /* we want to skip hidden lines */
@@ -642,6 +666,8 @@ void Go_Up(void)
             }
         }
     }
+
+    TTEndOutput();
 }
 
 void Go_Dwn(void)
@@ -673,6 +699,7 @@ void Go_Dwn(void)
     {
         if (bottom->next)
         {
+            TTBeginOutput();
             bottom = bottom->next;
             top = top->next;
             MsgScroll(1);
@@ -685,6 +712,7 @@ void Go_Dwn(void)
             {
                 PutLine(bottom, maxy - 1);
             }
+            TTEndOutput();
         }
     }
 }
@@ -766,6 +794,7 @@ void RefreshMsg(LINE * line, int y)
 
     if (!line)
     {
+        TTBeginOutput();
         if (SW->statbar)
         {
             WndClear(0, y, maxx - 1, maxy - 2, cm[CM_NTXT]);
@@ -774,9 +803,11 @@ void RefreshMsg(LINE * line, int y)
         {
             WndClear(0, y, maxx - 1, maxy - 1, cm[CM_NTXT]);
         }
+        TTEndOutput();
         return;
     }
 
+    TTBeginOutput();
     if (SW->statbar)
     {
         while (t && i <= maxy - 2)
@@ -811,4 +842,5 @@ void RefreshMsg(LINE * line, int y)
             }
         }
     }
+    TTEndOutput();
 }
