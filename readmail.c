@@ -65,9 +65,7 @@ int bdos(int func, unsigned reg_dx, unsigned char reg_al);
 #include "date.h"
 #include "echotoss.h"
 
-#ifndef random
-#define random(num) (int) (((long) rand() * (num)) / RAND_MAX)
-#endif
+#define rand_number(num) (int) (((long) rand() * (num)) / RAND_MAX)
 
 #define TEXTLEN 96
 
@@ -1146,7 +1144,7 @@ void GetOrigin(char *origin)
     if (n_origins > 1)          /* origin shuffling */
     {
         release(ST->origin);
-        ST->origin = xstrdup(origins[random(n_origins)]);
+        ST->origin = xstrdup(origins[rand_number(n_origins)]);
     }
 
     if (!SW->override)
@@ -1180,7 +1178,7 @@ void GetOrigin(char *origin)
             }
             while (!feof(fp));
 
-            orgnum = random(orgcnt) + 1;
+            orgnum = rand_number(orgcnt) + 1;
 
             rewind(fp);
 
