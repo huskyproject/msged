@@ -15,6 +15,12 @@ Features:
 
 Fixes:
 
+- Fix display problems (uncontrolled scrolling) in cygwin terminal and
+  on FreeBSD console. On some other terminals (e.g. MacOS X Terminal.app)
+  this will cause a new bug: the character in the bottom right corner will
+  have the wrong color. But that's better than Msged not wokring in some 
+  other terminals at all. 
+
 - Fix coredump on Unix if "set statbar off" is configured.
 
 - Fix coredump if "To" field is null and origin line contains @N token.

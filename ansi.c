@@ -523,11 +523,18 @@ int TTClear(int x1, int y1, int x2, int y2)
     }
     TTgotoxy(y1, x1);
     return 1;
-}
+} 
 
 int TTEeol(void)
 {
-    int x;
+    int x,tnc = term.NCol;
+
+    /* The ANSI escape sequence ESC [ K does not clear the background
+       color on some, admittedly broken, terminals (ex.: Mac OS X
+       "Terminal" application). For those terminals, we write spaces
+       instead of using this ANSI sequence.
+    */
+
 
     if (spaces_need_init)
     {
@@ -535,19 +542,32 @@ int TTEeol(void)
         spaces_need_init = 0;
     }
 
-    /* This code does not clear with the background color, so we have
-       to do it manually :-(
+    if (vrow == term.NRow - 1)
+    {
+	/* Special treatment for last row to prevent scrolling when
+	   writing to the character in the right bottom corner */
 
-       fputs("\033[K", stdout); 
-       fflush(stdout);
-    */
+	tnc--;
+    }
 
-    for (x = vcol; x < term.NCol; x += sizeof(spaces))
+    for (x = vcol; x < tnc; x += sizeof(spaces))
     {
         fwrite(spaces,
-               ((x + sizeof(spaces)) < term.NCol) ? sizeof(spaces)
-                                                  : term.NCol - x, 1, stdout);
+               (((x + sizeof(spaces)) < tnc) ? sizeof(spaces)
+		                             : (tnc - x)), 1, stdout);
     }
+
+    if (vrow == term.NRow - 1)	
+    {
+	/* The very last character in the right bottom corner is
+	   cleared with the ESC sequence even though that one does not
+	   reliably clear the background color, because we have no
+	   other way to prevent scrolling in some other, also broken
+	   :-) terminals, like cygwin or the FreeBSD console. */
+
+	fputs("\033[0K", stdout); 
+    }
+    fflush(stdout);
 
     return 1;
 }
