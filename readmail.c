@@ -1711,11 +1711,17 @@ int writemsg(msg * m)
 		sprintf(text, "\01TOPT %d\r", m->to.point);
 		curr = InsertAfter(curr, text);
 	    }
-	    if (m->from.point)
-	    {
-		sprintf(text, "\01FMPT %d\r", m->from.point);
-		curr = InsertAfter(curr, text);
-	    }
+
+            if (! (!m->attrib.direct && !m->attrib.crash && m->from.point &&
+                   SW->pointnet != 0 && CurArea.netmail))
+            {
+                /* privatenet / fakenet is not used */
+                if (m->from.point)
+                {
+                    sprintf(text, "\01FMPT %d\r", m->from.point);
+                    curr = InsertAfter(curr, text);
+                }
+            }
 	}
 
 	/* these babies go everywhere */
@@ -2023,6 +2029,8 @@ int writemsg(msg * m)
     {
 	/* remap point originated crashmail */
 
+        /* if you change this if condition, don't forget to change the same
+           conditions some lines above in the generation of FMPT also! */
 	if (!m->attrib.direct && !m->attrib.crash && m->from.point &&
 	  SW->pointnet != 0 && CurArea.netmail)
 	{
