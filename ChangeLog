@@ -1,3 +1,11 @@
+2004-09-10 Friday 00:21  os2tobi
+
+	* Makefile (1.22): see last checkin
+
+2004-09-10 Friday 00:17  os2tobi
+
+	* Makefile (1.21): adapted Makefile to recent huskymak.cfg standard
+
 2004-09-04 Saturday 21:42  os2tobi
 
 	* dirute.c (1.18): compilation fix
