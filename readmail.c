@@ -183,13 +183,14 @@ msg *readmsg(unsigned long n)
     {
 	if (*text == '\n' || *text == '\0' || !stricmp(text, "Lines:"))
 	{
+	    headerfin = 1;  /* want to stop looking unix header info */
+
 	    if (lastwasfromto && (!SW->shownotes) && (!read_verbatim))
 	    {
 		 release(text); /* skip the blank line after from: / to: */
 		 lastwasfromto = 0;
 		 continue;
 	    }
-	    headerfin = 1;  /* want to stop looking unix header info */
 	}
 
 	lastwasfromto = 0;
