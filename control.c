@@ -11,8 +11,9 @@
 #include "winsys.h"
 #include "menu.h"
 #include "specch.h"
+#include "memextra.h"
 
-static char text[255];
+static char *text = NULL;
 
 /*
  *  Makes up a button.
@@ -20,6 +21,8 @@ static char text[255];
 
 char *MakeButton(button * b, int sel)
 {
+    if (text == NULL) text = xmalloc(255);
+
     if (sel)
     {
         sprintf(text, "%c %s %c", SC14, b->btext, SC15);
@@ -42,6 +45,8 @@ void ShowButton(button * b)
     int len;
     unsigned char attr;
 
+    if (text == NULL) text = xmalloc(255);
+
     s = MakeButton(b, b->select);
     len = strlen(s);
     if (b->select)
@@ -61,7 +66,7 @@ void ShowButton(button * b)
         ublock[0] = SC16;
         WndWriteStr(b->x + len, b->y, b->battr | F_ALTERNATE, (char *)ublock);
 
-        memset(text, SC17, sizeof(text));
+        memset(text, SC17, sizeof(255));
         *(text + len) = '\0';
         WndPutsn(b->x + 1, b->y + 1, len, b->battr | F_ALTERNATE, text);
 
@@ -73,7 +78,7 @@ void ShowButton(button * b)
         WndPutsn(b->x + len - 1, b->y, 1, attr | F_ALTERNATE, s + len - 1);
         WndWriteStr(b->x, b->y, b->battr, " ");
 
-        memset(text, ' ', sizeof(text));
+        memset(text, ' ', 255);
         *(text + len) = '\0';
 
         WndPutsn(b->x + 1, b->y + 1, len, b->battr, text);
@@ -89,6 +94,8 @@ void ShowButton(button * b)
 void ShowCkbutton(ckbutton * i)
 {
     int fa = (i->select) ? i->sattr : i->fattr;
+
+    if (text == NULL) text = xmalloc(255);
 
     if (i->down)
     {

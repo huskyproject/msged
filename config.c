@@ -15,7 +15,7 @@
 #endif
 #endif
 
-#if defined(OS2) || defined(UNIX)
+#if defined(OS2) || defined(UNIX) || defined(WINNT)
 #define TEXTLEN    1024
 #else
 #define TEXTLEN    512
@@ -1000,7 +1000,7 @@ void AssignSwitch(char *swtch, int OnOff)
     case CFG_SW_USETOSSERGROUPS:
         SW->areafilegroups = OnOff;
 	break;
-	
+
     case CFG_SW_DOMAINMSGID:
 	SW->domainmsgid = OnOff;
 	break;
@@ -1420,7 +1420,7 @@ void AddArea(AREA * a)
 static void checkareas(char *areafile)
 {
     static AREA a;                /* current area */
-    static char buffer[TEXTLEN];  /* line buffer */
+    static char *buffer=NULL;     /* line buffer */
     FILE *fp;                     /* file handle */
     char *s;                      /* pointer */
     int flag = 1;                 /* found host name? */
@@ -1429,6 +1429,8 @@ static void checkareas(char *areafile)
 #ifdef USE_MSGAPI
     int sq = 0;                   /* a squish base? */
 #endif
+
+    if (buffer == NULL) buffer = xmalloc(TEXTLEN);
 
     fp = fileopen("areas.bbs", areafile);
     if (fp == NULL)
@@ -1474,10 +1476,10 @@ static void checkareas(char *areafile)
         {
 #if MSGAPI_VERSION < 2
             continue;
-#else            
+#else
             sq = 2;
             s++;
-#endif            
+#endif
         }
         else
         {
@@ -1539,11 +1541,11 @@ static void checkareas(char *areafile)
         case 1:
             a.msgtype = SQUISH;
             break;
-#if MSGAPI_VERSION >= 2            
+#if MSGAPI_VERSION >= 2
         case 2:
             a.msgtype = JAM;
             break;
-#endif            
+#endif
         }
 #endif
 
@@ -1818,7 +1820,7 @@ static void check_fastecho(char *areafile)
             continue;
 #else
             sq = 2;
-#endif            
+#endif
         }
         else
         {
@@ -1865,7 +1867,7 @@ static void check_fastecho(char *areafile)
         case 2:
             a.msgtype = JAM;
             break;
-#endif        
+#endif
         }
 #endif
         applyflags(&a, areafileflags);
@@ -1906,12 +1908,14 @@ static void check_squish(char *areafile)
     static AREA a;
     static char progress_indicators[4] =
     {'-', '\\', '|', '/'};
-    static char raw_buffer[TEXTLEN];
+    static char *raw_buffer = NULL;
     char *buffer = NULL;
     char *tokens[20];
     FILE *fp;
     int i, line_num = 0;
     char *s;
+
+    if (raw_buffer == NULL) raw_buffer = xmalloc(TEXTLEN);
 
     if (alias == NULL)
     {
@@ -2203,13 +2207,13 @@ static void check_gecho(char *areafile)
                     a.msgtype = SQUISH;
                     break;
                 }
-#if MSGAPI_VERSION >= 2            
+#if MSGAPI_VERSION >= 2
             case FORMAT_JAM:    /* Joaquim-Andrew-Mats message base proposal */
                 {
                     a.msgtype = JAM;
                     break;
                 }
-#endif            
+#endif
 #endif
             case FORMAT_PCB:    /* PCBoard 15.0 */
             case FORMAT_WC:     /* Wildcat! 4.0 */
@@ -2379,11 +2383,11 @@ static void parsemail(char *keyword, char *value)
     case 's':
         a.msgtype = SQUISH;
         break;
-#if MSGAPI_VERSION >= 2        
+#if MSGAPI_VERSION >= 2
     case 'j':
         a.msgtype = JAM;
         break;
-#endif        
+#endif
 #endif
     }
 
@@ -3065,7 +3069,7 @@ static void parseconfig(FILE * fp)
 {
     static char progress_indicators[4] =
     {'-', '\\', '|', '/'};
-    static char raw_buffer[TEXTLEN];
+    static char *raw_buffer;
     static char *buffer = NULL;
     char *keyword;
     char *value = NULL;
@@ -3074,6 +3078,7 @@ static void parseconfig(FILE * fp)
     int i = 0, line_num = 0;
     int verb;
 
+    if (raw_buffer == NULL) raw_buffer = xmalloc(TEXTLEN);
     memset(raw_buffer, 0, TEXTLEN);
 
     while (!feof(fp))
@@ -3425,7 +3430,7 @@ static void parseconfig(FILE * fp)
         case CFG_QUICK:
 #if MSGAPI_VERSION >= 2
         case CFG_JAM:
-#endif            
+#endif
             parsemail(keyword, value);
             break;
 
