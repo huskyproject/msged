@@ -142,6 +142,9 @@ Features:
 
 Fixes:
 
+- The last line of the screen is now usable in the Message Editor also
+  when the Status Bar is switched off.
+
 - Fixed the handling of FIDOUSER.LST in case of user entries that did not
   contain a ",", like "Echolist".
 

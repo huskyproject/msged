@@ -2363,7 +2363,7 @@ static void reopen_screen(void) /* used by shellos, and on WND_WM_RESIZE */
     ShowMsgHeader(messg);
 
     edminy = 5;
-    edmaxy = maxy - 1;
+    edmaxy = maxy - ((SW->statbar) ? 1 : 0);
     ed_miny = 1;
     ed_maxy = edmaxy - edminy - 1;
 
@@ -2614,7 +2614,7 @@ int editmsg(msg * m, int quote)
     y = 1;
     currline = 1;
     edminy = 5;
-    edmaxy = maxy - 1;
+    edmaxy = maxy - ((SW->statbar) ? 1 : 0);
     ed_miny = 1;
     ed_maxy = edmaxy - edminy - 1;
     messg = m;
