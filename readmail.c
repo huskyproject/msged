@@ -910,7 +910,7 @@ int setcwd(char *path)
 	setDefaultDisk((unsigned short)(toupper(*path) - 'A' + 1));
 #elif defined(MSDOS) && !defined(__FLAT__)
 	bdos(14, toupper(*path) - 'A', 0);
-#elif defined(__FLAT__)
+#elif defined(__FLAT__) && defined(MSDOS)
 	{
 	    unsigned dummy;
 	    _dos_setdrive(toupper(*path) - 'A' + 1, &dummy);

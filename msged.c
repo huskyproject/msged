@@ -1840,10 +1840,10 @@ void shell_to_dos(void)
     }
 #elif defined(PACIFIC)
     spawnl(ST->comspec, NULL);
-#elif defined(__FLAT__) || defined(OS2)
-    spawnl(0, ST->comspec, ST->comspec, NULL);
 #elif defined(UNIX)
     system(ST->comspec);
+#elif defined(__FLAT__) || defined(OS2)
+    spawnl(0, ST->comspec, ST->comspec, NULL);
 #else
     system("");
 #endif
