@@ -7,11 +7,6 @@ Category 1: Will certainly be implemented until next release
 - Fix: Msged 386 does not update message number in window while deleting
   messages.
 
-- Still: Sascha's Lastread pointer problem.
-  (If name taken from fidoconfig -> no lastread pointer at all.
-  Also: Problem with capital / small spelling of lastread file name
-  in name keyword on Linux. High time to fix this!!!)
-
 - Document Fidoconfig stuff
 
 Category 2: Might be implemented, but volunteers are always very welcome!
