@@ -1,31 +1,13 @@
-# look for libs in /usr/local/lib
-LIBDIR=/usr/local/lib
 
-# install programs in /usr/local/bin
-BINDIR=/usr/local/bin
+CC = gcc
+DEBUG = -s
+CFLAGS= -I.. $(DEBUG) -c
+CDEFS=	-DUNIX -DUSE_MSGAPI -DUSE_FIDOCONFIG -DUSE_CURSES
+COPT= -O3
+LOPT=
+LIBRARIES=../fidoconf/libfidoconfigsun.a ../smapi/libsmapisun.a -lncurses
 
-# look for includes here
-INCDIR=/usr/local/include
-
-# options for installing programs
-IBOPT=-s
-
-
-CC=	gcc
-
-ifeq ($(DEBUG), 1)
-  CFLAGS= -O3 -I$(INCDIR) -g
-else
-  CFLAGS= -O3 -I$(INCDIR) -s
-endif
-
-CDEFS=	-DUNIX -DUSE_MSGAPI -DUSE_FIDOCONFIG
-COPT=
-LOPT= -L$(LIBDIR)
-LIBRARIES=	-lfidoconfig -lsmapisun -lcurses
-
-TARGET=	msged
-MSGAPI=	smapisun
+TARGET=	msgedsun
 
 objs=	addr.o     \
 	ansi.o     \
@@ -70,6 +52,7 @@ objs=	addr.o     \
 	quick.o    \
 	quote.o    \
 	readmail.o \
+	readtc.o   \
 	screen.o   \
 	strextra.o \
 	system.o   \
@@ -84,7 +67,7 @@ objs=	addr.o     \
 all: $(TARGET)
 
 .c.o:
-	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
+	$(CC) $(COPT) $(CFLAGS) $(CDEFS) $<
 
 $(TARGET): $(objs)
 	$(CC) $(COPT) -o $(TARGET) $(objs) $(LOPT) $(LIBRARIES)
@@ -94,7 +77,4 @@ clean:
 
 distclean: clean
 	-rm $(TARGET)
-
-install: $(TARGET)
-	install $(IBOPT) $(TARGET) $(BINDIR)
 
