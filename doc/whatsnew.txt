@@ -15,6 +15,9 @@ Features:
 
 Fixes:
 
+- Made Hudson/Quick code platform independent. This fixes Hudson for Win32,
+  DOS/32 and other platforms.
+
 - Fix crash when posting more than 1 message to JAM areas. (Raised version
   to 6.1.2. This may have side effects on Squish, beware!)
 

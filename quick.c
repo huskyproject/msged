@@ -15,6 +15,7 @@
 #else
 #include <stat.h>
 #endif
+#include <assert.h>
 #include "addr.h"
 #include "nedit.h"
 #include "msged.h"
@@ -25,22 +26,67 @@
 #include "quick.h"
 #include "charset.h"
 
-#if defined(PACIFIC) || defined(MSC) || defined(__EMX__) || defined(__IBMC__) || defined(__HIGHC__) || defined(UNIX)
-#pragma pack(1)
-#endif
-
-#if defined(__WATCOMC__) || defined(UNIX) || defined(__DJGPP__)
-typedef unsigned short bits;
-#else
 typedef unsigned int bits;
-#endif
 
 #define CHUNKSZ 32
 
-short qlast[200];
+#define QLASTN 200
+short qlast[QLASTN];
 
 static char msgtxt[FILENAME_MAX];
 static char msghdr[FILENAME_MAX];
+
+				/* I/O macros for platform independent
+				   binary I/O. copied from smapi, as
+				   msged with quick can be compiled
+				   without/smapi (!) */
+
+static void put_word(unsigned char *ptr, unsigned short value)
+{
+    ptr[0] = (value & 0xFF);
+    ptr[1] = (value >> 8) & 0xFF;
+}
+
+#define get_word(ptr)         \
+    ((unsigned short)((unsigned char)(ptr)[0]) |         \
+     (((unsigned short)((unsigned char)(ptr)[1])) << 8 ))
+
+
+int read_qlast(FILE *f, short *p)
+{
+    unsigned char buf[QLASTN * 2], *pbuf = buf;
+    int i;
+
+    if (fread(buf, 2*QLASTN, 1, f) != 1)
+    {
+	return 0;
+    }
+
+    for (i=0; i < QLASTN; i++)
+    {
+	p[i] = get_word(pbuf);
+	pbuf += 2;
+    }
+    return 1;
+
+}
+
+int write_qlast(FILE *f, short *p)
+{
+   unsigned char buf[QLASTN * 2], *pbuf = buf;
+   int i;
+
+   for (i=0; i < QLASTN; i++)
+   {
+       put_word(pbuf, p[i]); pbuf+=2;
+   }
+
+   assert(pbuf - buf == QLASTN * 2);
+
+   return (fwrite(buf, 2*QLASTN, 1, f) == 2*QLASTN);
+}
+
+
 
 struct qinfo
 {
@@ -49,28 +95,106 @@ struct qinfo
     short active;
     short areas[200];
 };
+#define QINFO_SIZE 6+200*2
+
+int read_qinfo(FILE *f, struct qinfo *qinfo)
+{
+    unsigned char buf[QINFO_SIZE], *pbuf = buf;
+    int i;
+
+    if (fread(buf, QINFO_SIZE, 1, f) != 1)
+    {
+        return 0;
+    }
+
+    qinfo->low = get_word(pbuf); pbuf+=2;
+    qinfo->high = get_word(pbuf); pbuf+=2;
+    qinfo->active = get_word(pbuf); pbuf+=2;
+    for (i=0; i < 200; i++)
+    {
+	qinfo->areas[i] = get_word(pbuf); pbuf+=2;
+    }
+    assert (pbuf - buf == QINFO_SIZE);
+    return 1;
+}            
+
+int write_qinfo(FILE *f, struct qinfo *qinfo)
+{
+    unsigned char buf[QINFO_SIZE], *pbuf = buf;
+    int i;
+
+    put_word(pbuf, qinfo->low); pbuf+=2;
+    put_word(pbuf, qinfo->high); pbuf+=2;
+    put_word(pbuf, qinfo->active); pbuf+=2;
+    for (i=0; i < 200; i++)
+    {
+	put_word(pbuf, qinfo->areas[i]); pbuf+=2;
+    }
+    assert (pbuf - buf == QINFO_SIZE);
+
+    if (fwrite(buf, QINFO_SIZE, 1, f) != 1)
+    {
+        return 0;
+    }
+
+    return 1;
+}            
 
 struct qidx
 {
     short number;
     char board;
 };
+#define QIDX_SIZE 3
+
+int read_qidx(FILE *f, struct qidx *qidx)
+{
+    unsigned char buf[QIDX_SIZE], *pbuf = buf;
+
+    if (fread(buf, QIDX_SIZE, 1, f) != 1)
+    {
+        return 0;
+    }
+
+    qidx->number = get_word(pbuf); pbuf+=2;
+    qidx->board = *pbuf; pbuf++;
+
+    assert (pbuf - buf == QIDX_SIZE);
+    return 1;
+}            
+
+int write_qidx(FILE *f, struct qidx *qidx)
+{
+    unsigned char buf[QIDX_SIZE], *pbuf = buf;
+ 
+    put_word(pbuf, qidx->number); pbuf+=2;
+    *pbuf = qidx->board; pbuf++;
+
+    assert (pbuf - buf == QIDX_SIZE);
+ 
+    if (fwrite(buf, QIDX_SIZE, 1, f) != 1)
+    {
+        return 0;
+    }
+    return 1;
+}            
+  
 
 struct qmsg
 {
     short number;
     short replyto;
     short replyfrom;
-    short times_read;
+    short times_read;		/* 8 bytes */
     unsigned short start;
     unsigned short count;
     short destnet;
-    short destnode;
+    short destnode;		/* 16 bytes */
     short orignet;
     short orignode;
     char destzone;
     char origzone;
-    short cost;
+    short cost;			/* 24 bytes */
 
     /* message attributes */
     bits deleted  : 1;
@@ -88,21 +212,165 @@ struct qmsg
     bits rreq     : 1;
     bits areq     : 1;
     bits rrcpt    : 1;
-    bits xx2      : 1;
+    bits xx2      : 1;		/* 26 bytes */
 
-    char board;
-    char posttime[6];
-    char postdate[9];
-    char whoto[36];
-    char whofrom[36];
-    char subject[73];
+    char board;			/* 27 bytes */
+    char posttime[6];		/* 33 bytes */
+    char postdate[9];		/* 42 bytes */
+    char whoto[36];		/* 78 bytes */
+    char whofrom[36];		/* 114 bytes */
+    char subject[73];		/* 187 bytes */
 };
+#define QMSG_SIZE 187
+
+static int read_qmsg(FILE *f, struct qmsg *qmsg)
+{
+    unsigned char buf[QMSG_SIZE], *pbuf = buf;
+    unsigned short attr;
+
+    if (fread(buf, QMSG_SIZE, 1, f) != 1)
+    {
+        return 0;
+    }
+
+    qmsg->number=get_word(pbuf); pbuf+=2;
+    qmsg->replyto=get_word(pbuf); pbuf+=2;
+    qmsg->replyfrom=get_word(pbuf); pbuf+=2;
+    qmsg->times_read=get_word(pbuf); pbuf+=2;
+    qmsg->start=get_word(pbuf); pbuf+=2;
+    qmsg->count=get_word(pbuf); pbuf+=2;
+    qmsg->destnet=get_word(pbuf); pbuf+=2;
+    qmsg->destnode=get_word(pbuf); pbuf+=2;
+    qmsg->orignet=get_word(pbuf); pbuf+=2;
+    qmsg->orignode=get_word(pbuf); pbuf+=2;
+    qmsg->destzone = *pbuf; pbuf++;
+    qmsg->origzone = *pbuf; pbuf++;
+    qmsg->cost=get_word(pbuf); pbuf+=2;
+
+    attr = get_word(pbuf); pbuf+=2;
+    qmsg->deleted = attr & 1; attr = attr >> 1;
+    qmsg->outnet = attr & 1; attr = attr >> 1;
+    qmsg->netmail = attr & 1; attr = attr >> 1;
+    qmsg->priv = attr & 1; attr = attr >> 1;
+    qmsg->rcvd = attr & 1; attr = attr >> 1;
+    qmsg->echo = attr & 1; attr = attr >> 1;
+    qmsg->local = attr & 1; attr = attr >> 1;
+    qmsg->xx1 = attr & 1; attr = attr >> 1;
+    qmsg->killsent = attr & 1; attr = attr >> 1;
+    qmsg->sent = attr &  1; attr = attr >> 1;
+    qmsg->attach = attr & 1; attr = attr >> 1;
+    qmsg->crash = attr &  1; attr = attr >> 1;
+    qmsg->rreq = attr & 1; attr = attr >> 1;
+    qmsg->areq = attr &  1; attr = attr >> 1;
+    qmsg->rrcpt = attr &  1; attr = attr >> 1;
+    qmsg->xx2 = attr &  1; attr = attr >> 1;
+
+    qmsg->board = *pbuf; pbuf++;
+    memcpy(qmsg->posttime, pbuf, 6); pbuf+=6;
+    memcpy(qmsg->postdate, pbuf, 9); pbuf+=9;
+    memcpy(qmsg->whoto, pbuf, 36); pbuf+=36;
+    memcpy(qmsg->whofrom, pbuf, 36); pbuf+=36;
+    memcpy(qmsg->subject, pbuf, 73); pbuf+=73;
+    assert (pbuf - buf == QMSG_SIZE);
+    return 1;
+}      
+
+static int write_qmsg(FILE *f, struct qmsg *qmsg)
+{
+    unsigned char buf[QMSG_SIZE], *pbuf = buf;
+    unsigned short attr;
+
+    
+    put_word(pbuf,qmsg->number); pbuf+=2;
+    put_word(pbuf,qmsg->replyto); pbuf+=2;
+    put_word(pbuf,qmsg->replyfrom); pbuf+=2;
+    put_word(pbuf,qmsg->times_read); pbuf+=2;
+    put_word(pbuf,qmsg->start); pbuf+=2;
+    put_word(pbuf,qmsg->count); pbuf+=2;
+    put_word(pbuf,qmsg->destnet); pbuf+=2;
+    put_word(pbuf,qmsg->destnode); pbuf+=2;
+    put_word(pbuf,qmsg->orignet); pbuf+=2;
+    put_word(pbuf,qmsg->orignode); pbuf+=2;
+    *pbuf = qmsg->destzone; pbuf++;
+    *pbuf = qmsg->origzone; pbuf++;
+    put_word(pbuf,qmsg->cost); pbuf+=2;
+
+    attr =
+	(qmsg->deleted ? 1 : 0) + 
+	(qmsg->outnet  ? 2 : 0) +
+	(qmsg->netmail ? 4 : 0) +
+	(qmsg->priv ? 8  : 0 )+
+	(qmsg->rcvd ? 16 : 0 ) + 
+	(qmsg->echo ? 32 : 0 ) +
+	(qmsg->local ? 64 : 0 ) +
+	(qmsg->xx1 ? 128 : 0 ) +
+	(qmsg->killsent ? 256 : 0 ) +
+	(qmsg->sent ? 512 : 0 ) +
+	(qmsg->attach ? 1024 : 0 ) +
+	(qmsg->crash ? 2048 : 0 ) +
+	(qmsg->rreq ? 4096 : 0 ) +
+	(qmsg->areq ? 8192 : 0 ) +
+	(qmsg->rrcpt ? 16384 : 0 ) +
+	(qmsg->xx2 ? 32768U : 0 );
+
+    put_word(pbuf, attr); pbuf+=2;
+
+    *pbuf = qmsg->board; pbuf++;
+    memcpy(pbuf, qmsg->posttime, 6); pbuf+=6;
+    memcpy(pbuf, qmsg->postdate, 9); pbuf+=9;
+    memcpy(pbuf, qmsg->whoto, 36); pbuf+=36;
+    memcpy(pbuf, qmsg->whofrom, 36); pbuf+=36;
+    memcpy(pbuf, qmsg->subject, 73); pbuf+=73;
+
+    assert (pbuf - buf == QMSG_SIZE);
+
+    if (fwrite(buf, QMSG_SIZE, 1, f) != 1)
+    {
+        return 0;
+    }
+
+    return 1;
+}      
 
 struct qtext
 {
     unsigned char length;
     char text[BLOCKLEN];
 };
+#define QTEXT_SIZE BLOCKLEN+1
+
+static int read_qtext(FILE *f, struct qtext *qtext)
+{
+    unsigned char buf[QTEXT_SIZE], *pbuf = buf;
+
+    if (fread(buf, QTEXT_SIZE, 1, f) != 1)
+    {
+        return 0;
+    }
+
+    qtext->length= *pbuf; pbuf++;
+    memcpy(qtext->text, pbuf, BLOCKLEN); pbuf+=BLOCKLEN;
+
+    assert (pbuf - buf == QTEXT_SIZE);
+    return 1;
+}            
+
+static int write_qtext(FILE *f, struct qtext *qtext)
+{
+    unsigned char buf[QTEXT_SIZE], *pbuf = buf;
+
+    *pbuf = qtext->length; pbuf++;
+    memcpy(pbuf, qtext->text, BLOCKLEN); pbuf+=BLOCKLEN;
+
+    assert (pbuf - buf == QTEXT_SIZE);
+
+    if (fwrite(buf, QTEXT_SIZE, 1, f) != 1)
+    {
+        return 0;
+    }
+    return 1;
+}            
+
 
 static struct qinfo info;
 static struct qmsg header;
@@ -126,18 +394,18 @@ int QuickMsgDelete(unsigned long n)
     header.deleted = 1;
 
     if (fseek(hdrfp, (long)(messages[(size_t) (n - 1)] *
-      (long)sizeof header), SEEK_SET))
+      (long)QIDX_SIZE), SEEK_SET))
     {
         return FALSE;
     }
 
-    fwrite(&header, sizeof header, 1, hdrfp);
+    write_qmsg(hdrfp, &header);
     fflush(hdrfp);
 
-    fseek(idxfp, messages[(size_t) (n - 1)] * (long)sizeof index, SEEK_SET);
+    fseek(idxfp, messages[(size_t) (n - 1)] * (long)QIDX_SIZE, SEEK_SET);
     index.board = (char)CurArea.board;
     index.number = -1;
-    fwrite(&index, 1, sizeof index, idxfp);
+    write_qidx(idxfp, &index);
     fflush(idxfp);
 
     start = count = 0;
@@ -145,7 +413,7 @@ int QuickMsgDelete(unsigned long n)
 
     info.areas[CurArea.board - 1]--;
     fseek(infofp, 0L, SEEK_SET);
-    fwrite(&info, sizeof info, 1, infofp);
+    write_qinfo(infofp, &info);
     fflush(infofp);
 
     return TRUE;
@@ -168,7 +436,7 @@ int QuickMsgWriteText(char *text, unsigned long n, unsigned long mlen)
 #else
         fstat(fileno(textfp), &b);
 #endif
-        start = b.st_size / sizeof block;
+        start = b.st_size / QTEXT_SIZE;
         count = 0;
     }
 
@@ -178,13 +446,13 @@ int QuickMsgWriteText(char *text, unsigned long n, unsigned long mlen)
         memset(block.text, 0, sizeof block.text);
         strcpy(block.text, buf);
         block.length = (char)strlen(buf);
-        fseek(textfp, (long)(start + count) * (long)sizeof block, SEEK_SET);
-        fwrite(&block, 1, sizeof block, textfp);
+        fseek(textfp, (long)(start + count) * (long)QTEXT_SIZE, SEEK_SET);
+        write_qtext(textfp, &block);
         fflush(textfp);
         header.start = (unsigned short)start;
         header.count = (unsigned short)++count;
-        fseek(hdrfp, (long)n * (long)sizeof header, SEEK_SET);
-        fwrite(&header, sizeof header, 1, hdrfp);
+        fseek(hdrfp, (long)n * (long)QMSG_SIZE, SEEK_SET);
+        write_qmsg(hdrfp, &header);
         fflush(hdrfp);
         f = 0;
         memset(buf, 0, sizeof buf);
@@ -198,8 +466,8 @@ int QuickMsgWriteText(char *text, unsigned long n, unsigned long mlen)
         memcpy(block.text, buf, sizeof block.text);
         strcpy(buf, s);
         block.length = sizeof block.text;
-        fseek(textfp, (long)(start + count) * (long)sizeof block, SEEK_SET);
-        fwrite(&block, sizeof block, 1, textfp);
+        fseek(textfp, (long)(start + count) * (long)QTEXT_SIZE, SEEK_SET);
+        write_qtext(textfp, &block);
         fflush(textfp);
         count++;
     }
@@ -219,11 +487,11 @@ short quick2msg(short number)
 
     for (i = 0; i < CurArea.messages; i++)
     {
-        if (fseek(idxfp, messages[(size_t) i] * (long)sizeof index, SEEK_SET))
+        if (fseek(idxfp, messages[(size_t) i] * (long) QIDX_SIZE, SEEK_SET))
         {
             return 0;
         }
-        if (fread(&index, (unsigned)sizeof index, 1, idxfp) != 1)
+        if (read_qidx(idxfp, &index) != 1)
         {
             return 0;
         }
@@ -244,12 +512,12 @@ short msg2quick(short n)
         return 0;
     }
 
-    if (fseek(idxfp, messages[(size_t) (n - 1)] * (long)sizeof index, SEEK_SET))
+    if (fseek(idxfp, messages[(size_t) (n - 1)] * (long)QIDX_SIZE, SEEK_SET))
     {
         return 0;
     }
 
-    if (fread(&index, (unsigned)sizeof index, 1, idxfp) != 1)
+    if (read_qidx(idxfp, &index) != 1)
     {
         return 0;
     }
@@ -274,14 +542,14 @@ short find_link(unsigned long n)
     fstat(fileno(hdrfp), &b);
 #endif
 
-    i = (long)(messages[(size_t) (n - 1)]) * (long)sizeof header;
+    i = (long)(messages[(size_t) (n - 1)]) * (long)QMSG_SIZE;
     if (i > b.st_size)
     {
         return 0;
     }
 
     fseek(hdrfp, i, SEEK_SET);
-    if (fread(&header, sizeof header, 1, hdrfp) != 1)
+    if (read_qmsg(hdrfp, &header) != 1)
     {
         return 0;
     }
@@ -295,7 +563,7 @@ short find_link(unsigned long n)
 #endif
 
     if ((((long)header.start + (long)header.count) *
-      (long)sizeof(struct qtext)) > b.st_size)
+      (long)QTEXT_SIZE) > b.st_size)
     {
         return 0;
     }
@@ -328,7 +596,7 @@ msg *QuickMsgReadHeader(unsigned long n, int type)
     fstat(fileno(hdrfp), &b);
 #endif
 
-    i = (long)(messages[(size_t) (n - 1)]) * (long)sizeof header;
+    i = (long)(messages[(size_t) (n - 1)]) * (long) QMSG_SIZE;
     if (i > b.st_size)
     {
         return NULL;
@@ -337,7 +605,7 @@ msg *QuickMsgReadHeader(unsigned long n, int type)
     position = messages[(size_t) (n - 1)];
 
     fseek(hdrfp, i, SEEK_SET);
-    if (fread(&header, sizeof header, 1, hdrfp) != 1)
+    if (read_qmsg(hdrfp, &header) != 1)
     {
         return NULL;
     }
@@ -352,7 +620,7 @@ msg *QuickMsgReadHeader(unsigned long n, int type)
 #else
     fstat(fileno(textfp), &b);
 #endif
-    if (((start + count) * (long)sizeof(struct qtext)) > b.st_size)
+    if (((start + count) * (long)QTEXT_SIZE) > b.st_size)
     {
         return NULL;
     }
@@ -390,8 +658,8 @@ msg *QuickMsgReadHeader(unsigned long n, int type)
         if (type & RD_ALL)
         {
             header.times_read++;
-            fseek(hdrfp, (long)position * (long)sizeof header, SEEK_SET);
-            fwrite(&header, sizeof header, 1, hdrfp);
+            fseek(hdrfp, (long)position * (long)QMSG_SIZE, SEEK_SET);
+            write_qmsg(hdrfp, &header);
         }
     }
 
@@ -450,7 +718,7 @@ int QuickMsgWriteHeader(msg * m, int type)
         {
             messages = xrealloc(messages, (maxmsgs += CHUNKSZ) * sizeof(short));
         }
-        messages[c] = (short)(b.st_size / sizeof header);
+        messages[c] = (short)(b.st_size / QMSG_SIZE);
         start = (unsigned short)(header.start = 0);
         count = (unsigned short)(header.count = 0);
         info.areas[CurArea.board - 1]++;
@@ -550,16 +818,16 @@ int QuickMsgWriteHeader(msg * m, int type)
         memcpy(header.subject + 1, m->subj, header.subject[0]);
     }
 
-    fseek(hdrfp, (long)position * (long)sizeof header, SEEK_SET);
-    fwrite(&header, sizeof header, 1, hdrfp);
+    fseek(hdrfp, (long)position * (long)QMSG_SIZE, SEEK_SET);
+    write_qmsg(hdrfp, &header);
 
     fseek(infofp, 0L, SEEK_SET);
-    fwrite(&info, sizeof info, 1, infofp);
+    write_qinfo(infofp, &info);
 
     index.number = header.number;
     index.board = (char)CurArea.board;
-    fseek(idxfp, (long)position * (long)sizeof(struct qidx), SEEK_SET);
-    fwrite(&index, sizeof index, 1, idxfp);
+    fseek(idxfp, (long)position * (long)QIDX_SIZE, SEEK_SET);
+    write_qidx(idxfp, &index);
 
     fflush(idxfp);
     fflush(infofp);
@@ -635,11 +903,11 @@ char *QuickMsgReadText(unsigned long n)
 
         memset(s, 0, (size_t) c * sizeof text + 1);
 
-        fseek(textfp, (long)(start * (long)sizeof text), SEEK_SET);
+        fseek(textfp, (long)(start * (long)QTEXT_SIZE), SEEK_SET);
         while (c)
         {
             memset(&text, 0, sizeof text);
-            if (fread(&text, sizeof text, 1, textfp) == 1)
+            if (read_qtext(textfp, &text) == 1)
             {
                 if (text.length > sizeof text.text)
                 {
@@ -691,7 +959,7 @@ int QuickAreaSetLast(AREA * a)
     fp = fopen(path, "wb");
     if (fp != NULL)
     {
-        fwrite(qlast, 1, sizeof qlast, fp);
+        write_qlast(fp, qlast);
         fclose(fp);
     }
 
@@ -802,7 +1070,7 @@ static int quick_scan(AREA * a)
     messages = NULL;
 
     rewind(infofp);
-    if (fread(&info, (unsigned)sizeof info, 1, infofp) != 1)
+    if (read_qinfo(infofp, &info) != 1)
     {
         memset(&info, 0, sizeof info);
     }
@@ -811,7 +1079,7 @@ static int quick_scan(AREA * a)
     maxmsgs = 0;
     idx = 0;
     rewind(idxfp);
-    while (fread(&index, (unsigned)sizeof index, 1, idxfp) == 1)
+    while (read_qidx(idxfp, &index) == 1)
     {
         if (index.board == (char)a->board && index.number > 0)
         {
@@ -833,7 +1101,7 @@ static int quick_scan(AREA * a)
     fp = fopen(path, "rb");
     if (fp != NULL)
     {
-        fread(qlast, 1, sizeof qlast, fp);
+        read_qlast(fp, qlast);
         a->lastread = qlast[a->board - 1];
         fclose(fp);
     }
