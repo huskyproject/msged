@@ -118,7 +118,7 @@ do-maps:
 	$(CC) $(CFLAGS) $(CDEFS) -c $*.c
 
 $(TARGET): $(objs) $(osobjs)
-	$(CC) $(LFLAGS) -o $(TARGET) $(objs) $(osobjs) $(LIBS) $(OSLIBS) -ltmalloc
+	$(CC) $(LFLAGS) -o $(TARGET) $(objs) $(osobjs) $(LIBS) $(OSLIBS)
 
 ifeq ($(OSTYPE), UNIX)
 testcons: testcons$(OBJ)
