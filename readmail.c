@@ -309,7 +309,7 @@ msg *readmsg(unsigned long n)
                     clevel = atoi(tokens[1]);
                 }
 
-                if ( have_readtable(tokens[0], clevel)) ||
+                if ( have_readtable(tokens[0], clevel) ||
                      ST->input_charset == NULL /* user wants no assumptions */)
                 {
                     release(m->charset_name);
