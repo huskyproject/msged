@@ -1436,7 +1436,8 @@ static void StripKludges(msg * m, int *got_originline, char *origin,
 	    if (strstr(p, "\01MSGID: ") == p || strstr(p, "\01REPLY: ") == p ||
 	      strstr(p, "\01FLAGS ") == p || strstr(p, "\01PID: ") == p ||
 	      strstr(p, "\01SOT:") == p || strstr(p, "\01EOT:") == p ||
-	      strstr(p, "\01CHRS: ") == p || strstr(p, "\01CODEPAGE:") == p)
+	      strstr(p, "\01CHRS: ") == p || strstr(p, "\01TZUTC:") == p ||
+              strstr(p, "\01CODEPAGE:") == p)
 	    {
 		*p = '\0';
 	    }
@@ -1679,23 +1680,23 @@ int writemsg(msg * m)
 	     *  we don't want to gate the message (we assume it's destined to
 	     *  our own network).
 	     */
-            
+
             for (i = 0; i < SW->domains; i++)
             {
                 if (!stricmp(domain_list[i].domain, m->to.domain))
                 {
                     domain_gated = 1;
-                    
+
                     if (m->attrib.crash || m->attrib.direct ||
                         m->attrib.hold  || m->attrib.immediate)
                     {
                         int ret;
-                        
+
                         ret = ChoiceBox(" Direct Message ",
                                         " Direct Message "
                                         "(crash, dir, imm or hold) to?",
                                         "Domain Gate", "Destination Node", NULL);
-                        
+
                         if (ret == ID_ONE)
                         {
                             m->to = domain_list[i];
@@ -1735,7 +1736,7 @@ int writemsg(msg * m)
 	    }
 
             if (CurArea.netmail)
-            {                
+            {
                 /* AKA-Matching for UUCP gated messages */
                 akamatch(&(m->from), &(m->to));
             }
@@ -1802,7 +1803,7 @@ int writemsg(msg * m)
                 do_zonegate = 1;
                 m->attrib.zon = 1;
             }
-        
+
         }
 
 	/* these babies go everywhere */
@@ -1831,7 +1832,7 @@ int writemsg(msg * m)
         if (m->has_timezone)
         {
             sprintf(text, "\01TZUTC: %.4li\r",
-                    ((m->timezone / 60) * 100) + (m->timezone % 60));
+                    (long)(((m->timezone / 60) * 100) + (m->timezone % 60)));
             curr = InsertAfter(curr, text);
         }
 
