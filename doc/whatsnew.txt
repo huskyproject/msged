@@ -139,6 +139,10 @@ Features:
 
 Fixes:
 
+- Changing (Alt+C) a mail that came in through an internat gateway (or
+  had a From: line in it for other reasons) resulted in a segmentation
+  violation.
+
 - Fixed some bugs in the origin handling code that could lead to messages
   with invalid origin lines.
 

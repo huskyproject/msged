@@ -1280,12 +1280,12 @@ int EditHeader(msg * m)
             if (m->isfrom)
             {
                 strcpy(tmp, m->isfrom);
-                xfree(m->isfrom);
+                release(m->isfrom);
             }
             if (m->subj)
             {
                 strcpy(tmp2, m->subj);
-                xfree(m->subj);
+                release(m->subj);
             }
             ch = ChangeName(&m->from, tmp, tmp2, 1);
             m->isfrom = getstring(tmp);
@@ -1324,12 +1324,12 @@ int EditHeader(msg * m)
                 if (m->isto)
                 {
                     strcpy(tmp, m->isto);
-                    xfree(m->isto);
+                    release(m->isto);
                 }
                 if (m->subj)
                 {
                     strcpy(tmp2, m->subj);
-                    xfree(m->subj);
+                    release(m->subj);
                 }
                 ch = ChangeName(&m->to, tmp, tmp2, 2);
                 m->isto = getstring(tmp);
@@ -1378,7 +1378,7 @@ int EditHeader(msg * m)
             if (m->subj)
             {
                 strcpy(tmp, m->subj);
-                xfree(m->subj);
+                release(m->subj);
             }
             ch = ChangeSubject(tmp);
             m->subj = getstring(tmp);
@@ -1882,13 +1882,13 @@ void save(msg * m)
             {
                 if (names[i]->name)
                 {
-                    xfree(names[i]->name);
+                    release(names[i]->name);
                 }
                 if (names[i]->addr.domain)
                 {
-                    xfree(names[i]->addr.domain);
+                    release(names[i]->addr.domain);
                 }
-                xfree(names[i]);
+                release(names[i]);
             }
             return;
         }
@@ -2024,7 +2024,7 @@ static void crosspost(msg * m)
             i = 0;
             while (arean[i] != NULL)
             {
-                xfree(arean[i++]);
+                release(arean[i++]);
             }
             return;
         }
@@ -2033,10 +2033,10 @@ static void crosspost(msg * m)
 
         if (current->prev->text)
         {
-            xfree(current->prev->text);
+            release(current->prev->text);
         }
 
-        xfree(current->prev);
+        release(current->prev);
         current->prev = NULL;
     }
 

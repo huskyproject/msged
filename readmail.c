@@ -1534,7 +1534,7 @@ int writemsg(msg * m)
         if (m->from.internet || m->from.bangpath)
         {
             uucp_gated = 1;
-            uucp_from = m->from.domain;
+            uucp_from = xstrdup(m->from.domain);
             if (!CurArea.echomail)              /* don't change adresses */
             {                                   /* in echomail areas     */
                 m->from = uucp_gate;
