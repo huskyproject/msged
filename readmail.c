@@ -97,7 +97,7 @@ char *do_softcrxlat(char *ptr)
 
     if (softcrxlat)
     {
-        p = strchr(line, 0x8d);
+        p = strchr(ptr, 0x8d);
         while (p != NULL)
         {
             *p++ = softcrxlat;
@@ -173,6 +173,7 @@ msg *readmsg(unsigned long n)
     char tmp[128];
     int goteot = 0;
     int gotsot = 0;
+    int had_codepage = 0;
     LOOKUPTABLE *ltable = NULL;
     int fmpt, topt;
 
@@ -242,16 +243,21 @@ msg *readmsg(unsigned long n)
 	    case 'C':
 		if (strncmp(text + 1, "CHRS:", 5) == 0)
 		{
+                    if (had_codepage)
+                        break;  /* @CODEPAGE is definitive override */
                     s = text + 6;
                     strcpy(tmp, s + 1);
                 }
                 else if (strncmp(text + 1, "CHARSET:", 8) == 0)
                 {
+                    if (had_codepage)
+                        break;  /* @CODEPAGE is definitive override */
                     s = text + 9;
                     strcpy(tmp, s + 1);
                 }
                 else if (strncmp(text + 1, "CODEPAGE:", 9) == 0)
                 {
+                    had_codepage = 1;
                     s = text + 10;
                     sprintf(tmp, "CP%s 2", s+1);
                 }
