@@ -2,13 +2,13 @@
 # No support for the Husky build environment.
 
 CC=	gcc
-CFLAGS=	-Wall -I../smapi
+CFLAGS=	-Wall -I../smapi -I..
 CDEFS=	-D__FLAT__ -DUSE_MSGAPI
 COPT=	-O3 -fomit-frame-pointer -fstrength-reduce
 LFLAGS= -L../smapi -s
 
 TARGET=	msged32.exe
-MSGAPI=-lsmapidjg
+MSGAPI= ../smapi/smapidjg.a
 
 #If you don't have ncurses, try this, but be aware that the Linux termcap
 #database has many bugs. For example, you will lose pseudographics in the
