@@ -349,7 +349,7 @@ int TTStrWr(unsigned char *s, int row, int col)
         scrnbuf[vrow * term.NCol + vcol + i] = s[i];
         colbuf[vrow * term.NCol + vcol + i] = color;
     }
-    fputs(s, stdout);
+    fputs((const char *)s, stdout);
     TTgotoxy(row, col + len);
     return 1;
 }
@@ -480,9 +480,20 @@ int TTScroll(int x1, int y1, int x2, int y2, int lines, int Dir)
     return 1;
 }
 
+static char spaces[3];
+static int spaces_need_init = 1;
+
 int TTClear(int x1, int y1, int x2, int y2)
 {
     int x, y;
+
+    if (spaces_need_init)
+    {
+        memset(spaces, ' ', sizeof(spaces));
+        spaces_need_init = 0;
+    }
+
+    
     for (y = y1; y <= y2; y++)
     {
         TTgotoxy_noflush(y, x1);
@@ -492,9 +503,11 @@ int TTClear(int x1, int y1, int x2, int y2)
         }
         else
         {
-            for (x = x1; x <= x2; x++)
+            for (x = x1; x <= x2; x += sizeof(spaces))
             {
-                putchar(' ');
+                fwrite(spaces,
+                       ((x + sizeof(spaces)) <= x2) ?
+                       sizeof(spaces) : x2 - x + 1, 1, stdout);
             }
         }
         for (x = x1; x <= x2; x++)
@@ -512,8 +525,28 @@ int TTClear(int x1, int y1, int x2, int y2)
 
 int TTEeol(void)
 {
-    fputs("\033[K", stdout); 
-    fflush(stdout);
+    int x;
+
+    if (spaces_need_init)
+    {
+        memset(spaces, ' ', sizeof(spaces));
+        spaces_need_init = 0;
+    }
+
+    /* This code does not clear with the background color, so we have
+       to do it manually :-(
+
+       fputs("\033[K", stdout); 
+       fflush(stdout);
+    */
+
+    for (x = vcol; x < term.NCol; x += sizeof(spaces))
+    {
+        fwrite(spaces,
+               ((x + sizeof(spaces)) < term.NCol) ? sizeof(spaces)
+                                                  : term.NCol - x, 1, stdout);
+    }
+
     return 1;
 }
 
@@ -570,7 +603,7 @@ unsigned int TTGetKey(void)
          
         if (allowed_special_characters != NULL)
         {
-            if (strchr(allowed_special_characters, ch) != NULL)
+            if (strchr((const char *)allowed_special_characters, ch) != NULL)
             {
                 assume_meta_key = 0;
             }
