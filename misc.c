@@ -513,9 +513,9 @@ void sel_chs(void)
     x2 = (maxx / 2) + 17;
     y1 = 8;
 
-    if (num + 2 > maxy - 1)
+    if (y1 + num + 3 > maxy - 2)
     {
-        y2 = maxy - 1;
+        y2 = maxy - 2;
     }
     else
     {
