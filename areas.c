@@ -576,7 +576,7 @@ int mainArea(void)
         WndClearLine(0, cm[MN_NTXT]);
         WndClearLine(maxy - 1, cm[MN_NTXT]);
         hCurr = WndTop();
-        hWnd = WndOpen(0, 1, wid, dep, NBDR, 0, cm[MN_BTXT]);
+        hWnd = WndOpen(0, 1, wid, dep, NBDR | NOSAVE, 0, cm[MN_BTXT]);
         WndBox(0, 0, maxx - 1, maxy - 3, cm[MN_BTXT], SBDR);
 
         WndWriteStr(3, 0, cm[LS_TTXT], "EchoID");

@@ -396,6 +396,7 @@ struct _swv
     int receivealladdr;         /* similar thing for FTN addresses */
     int squish_lock;            /* Lock message base for better speed */
     int carthy;                 /* behaviour of delete_line at last line */
+    int direct_list;            /* jump directly to message listing mode */
 };
 
 #ifndef INCL_MAIN

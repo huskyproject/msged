@@ -59,7 +59,7 @@ int newarea(void);
 void cursor(char state);
 void replyextra(void);
 void set_area(int newarea);
-void do_list(void);
+int do_list(void);
 unsigned int KeyHit(void);
 unsigned int ConvertKey(int ch);
 unsigned int GetKey(void);

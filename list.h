@@ -23,6 +23,6 @@ typedef struct _mlhead
 }
 MLHEAD;
 
-void do_list(void);
+int do_list(void);
 
 #endif

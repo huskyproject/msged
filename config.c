@@ -319,6 +319,7 @@ static char *cfgswitches[] =
     "ReceiveAllAddresses",
     "SquishLock",
     "Carthy",
+    "DirectList",
     NULL
 };
 
@@ -369,6 +370,7 @@ static char *cfgswitches[] =
 #define CFG_SW_RECEIVEALLADDR       44
 #define CFG_SW_SQUISH_LOCK          45
 #define CFG_SW_CARTHY               46
+#define CFG_SW_DIRECTLIST           47
 
 #ifdef UNIX
 #include <sys/types.h>
@@ -933,6 +935,10 @@ void AssignSwitch(char *swtch, int OnOff)
 
     case CFG_SW_CARTHY:
         SW->carthy = OnOff;
+        break;
+
+    case CFG_SW_DIRECTLIST:
+        SW->direct_list = OnOff;
         break;
 
     default:
@@ -2204,9 +2210,7 @@ static void parsemail(char *keyword, char *value)
                 a.addr = parsenode(tokens[4]);
             }
         }
-        else
-        {
-            a.tag = xstrdup(a.description);
+ E ‹≈V  E  (≈W@ 3˚S√&ÇaÅE¿W	a<Ω>ç∫tag = xstrdup(a.description);
         }
     }
     else
@@ -2637,8 +2641,7 @@ static void func_endif(int line_no)
 static void parseconfig(FILE * fp)
 {
     static char progress_indicators[4] =
-    {'-', '\\', '|', '/'};
-    static char raw_buffer[TEXTLEN];
+    {'-', '\\',E ‹≈g@ E  (≈i@ 3˚A√&ÇaÅE¿W	a<Ω>ç∫er[TEXTLEN];
     static char *buffer = NULL;
     char *keyword;
     char *value = NULL;

@@ -17,6 +17,11 @@ Changes:
 
 Features:
 
+- New Switch: DirectList. If you put "Switch DirectList On" into your config
+  file, you will directly drop into the message listing mode when entering a
+  message area, instead of the individual message reading mode like it is the
+  default.
+
 - New keyword: Printer. Specifies the printer port (OS/2, DOS, Windows)
   resp. the lpr options (UNIX) to use for printing (Alt+W, Print).
   Default is "PRN" on OS/2, DOS and Windows, and an empty string ("lpr -" is

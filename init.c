@@ -163,6 +163,7 @@ int InitVars(void)
     SW->receiveallnames = YES;
     SW->receivealladdr  = YES;
     SW->carthy = YES;
+    SW->direct_list = NO;
 
 #ifndef UNIX
     ST->comspec = getenv("COMSPEC");

@@ -87,7 +87,7 @@ char msgbuf[BUFLEN];            /* message buffer used for reading */
 int msgederr = 0;               /* errno for msged */
 int set_rcvd = 1;               /* used to tell readmsg() not to set rcvd */
 
-/* only used between readmail.c and msged.c */
+/* only used readmail between.c and msged.c */
 static unsigned long root = 0;       /* root message of a thread */
 static unsigned long back = 0;       /* Where you were before you said "go
                                       * root" */
@@ -1062,7 +1062,7 @@ void set_area(int newarea)
             done = TRUE;
         }
     }
-    ShowNewArea();              /* display the new area */
+    ShowNewArea();            /* display the new area */
 }
 
 /*
@@ -1838,12 +1838,17 @@ static void nada(void)
 
 void dolist(void)
 {
-    if (message != NULL)
+    if (SW->direct_list)
+        endMain = 1;
+    else
     {
-        do_list();
-        ClearScreen();
-        DrawHeader();
-        ShowNewArea();
+        if (message != NULL)
+        {
+            do_list();
+            ClearScreen();
+            DrawHeader();
+            ShowNewArea();
+        }
     }
 }
 
@@ -1906,11 +1911,204 @@ opt_t opttable[] =
     {NULL, 0, NULL}
 };
 
-int main(int argc, char *argv[])
+static void message_reading_mode(void)
 {
     EVT event;
     int newmsg;
-    static char line[256];
+
+    if (window_resized)
+    {
+        window_resized = 0;  /* ack! */
+        WndClose(hMnScr);
+        KillHotSpots();
+        TTclose();
+        InitScreen();
+        adapt_margins();
+        BuildHotSpots();
+    }
+    
+    DrawHeader();
+    
+    endMain = 0;
+    message = KillMsg(message);
+    message = readmsg(CurArea.current);
+    
+    if (!CurArea.status || message == NULL || !CurArea.messages)
+    {
+        ClearMsgScreen();
+        ShowMsgHeader(message);
+        ChoiceBox(" Notice ", "There are no messages stored in this area", "  Ok  ", NULL, NULL);
+    }
+    
+    newmsg = 1;
+    
+    while (!endMain)
+    {
+        
+        if (!CurArea.messages || newmsg || !CurArea.status || message == NULL)
+        {
+            if (!CurArea.status || message == NULL || !CurArea.messages)
+            {
+                ClearMsgScreen();
+            }
+            
+            ShowMsgHeader(message);
+            
+            newmsg = 0;
+            
+            if (message != NULL)
+            {
+                RefreshMsg(message->text, 6);
+            }
+        }
+        
+        oldmsg = CurArea.current;
+        command = MnuGetMsg(&event, hMnScr->wid);
+        switch (event.msgtype)
+        {
+        case WND_WM_RESIZE:
+            window_resized = 1;  /* we'll exit to redraw the
+                                    screen */
+            break;
+            
+        case WND_WM_COMMAND:
+            switch (command)
+            {
+            case LMOU_CLCK:
+                switch (event.id)
+                {
+                case ID_LNDN:
+                    link_from();
+                    break;
+                    
+                case ID_LNUP:
+                    link_to();
+                    break;
+                    
+                default:
+                    break;
+                }
+                break;
+                
+            case MOU_LBTDN:
+            case LMOU_RPT:
+                switch (event.id)
+                {
+                case ID_SCRUP:
+                    Go_Up();
+                    break;
+                    
+                case ID_SCRDN:
+                    Go_Dwn();
+                    break;
+                    
+                case ID_MGLFT:
+                    left();
+                    break;
+                    
+                case ID_MGRGT:
+                    right();
+                    break;
+                    
+                default:
+                    break;
+                }
+                break;
+                
+            default:
+                break;
+            }
+            break;
+            
+        case WND_WM_MOUSE:
+            switch (command)
+            {
+            case MOU_LBTDN:
+                if (event.x >= (maxx - MNU_LEN - 1) && event.y == 0)
+                {
+                    command = ProcessMenu(&MouseMnu, &event, 0);
+                }
+                
+                if (command == ID_QUIT)
+                {
+                    quit();
+                }
+                break;
+                
+            default:
+                break;
+            }
+            break;
+            
+        case WND_WM_CHAR:
+            switch (command)
+            {
+            case Key_PgUp:
+                Go_PgUp();
+                break;
+                
+            case Key_PgDn:
+            case Key_Spc:
+                Go_PgDwn();
+                break;
+                
+            case Key_Up:
+                Go_Up();
+                break;
+                
+            case Key_Dwn:
+                Go_Dwn();
+                break;
+                
+            default:
+                if (command & 0xff)
+                {
+                    if (isdigit(command & 0xff))
+                    {
+                        gotomsg((command & 0xff)- 0x30);
+                    }
+                    else
+                    {
+                        if (mainckeys[command & 0xff])
+                        {
+                            (*mainckeys[command & 0xff]) ();
+                        }
+                    }
+                }
+                else
+                {
+                    if (mainakeys[command >> 8])
+                    {
+                        (*mainakeys[command >> 8]) ();
+                    }
+                }
+                break;
+            }
+            break;
+        }
+        
+        if (window_resized && endMain == 0) endMain = 2;
+        
+        if (CurArea.messages > 0 &&
+            (!message || oldmsg != CurArea.current || CurArea.current == 0))
+        {
+            message = KillMsg(message);
+            if (CurArea.current == 0)
+            {
+                CurArea.current = 1;
+            }
+            if (CurArea.status)
+            {
+                message = readmsg(CurArea.current);
+                newmsg = 1;
+            }
+        }
+    }
+}
+
+
+int main(int argc, char *argv[])
+{
     int optup;
 
     optup = getopts(argc, argv, opttable);
@@ -1977,202 +2175,21 @@ int main(int argc, char *argv[])
     {
         arealist_area_scan(1);
     }
-    if (SW->statbar)
-    {
-        sprintf(line, " %s %s %c ", PROG, VERSION CLOSED, SC7);
-        WndPutsn(0, maxy - 1, maxx, cm[CM_ITXT], line);
-    }
-    DrawHeader();
+    /* DrawHeader(); */
     RegisterKeyProc(CKey);      /* to allow for macros in the system */
 
     while (endMain == 2 || newarea() >= 0)
     {
-        if (window_resized)
+        if (SW->direct_list)
         {
-            window_resized = 0;  /* ack! */
-            WndClose(hMnScr);
-            KillHotSpots();
-            TTclose();
-            InitScreen();
-            DrawHeader();
-            ShowNewArea();
-            adapt_margins();
+            while (do_list())
+            {
+                message_reading_mode();
+            }
         }
-
-        endMain = 0;
-        message = KillMsg(message);
-        message = readmsg(CurArea.current);
-
-        if (!CurArea.status || message == NULL || !CurArea.messages)
+        else
         {
-            ClearMsgScreen();
-            ShowMsgHeader(message);
-            ChoiceBox(" Notice ", "There are no messages stored in this area", "  Ok  ", NULL, NULL);
-        }
-
-        newmsg = 1;
-
-        while (!endMain)
-        {
-
-            if (!CurArea.messages || newmsg || !CurArea.status || message == NULL)
-            {
-                if (!CurArea.status || message == NULL || !CurArea.messages)
-                {
-                    ClearMsgScreen();
-                }
-
-                ShowMsgHeader(message);
-
-                newmsg = 0;
-
-                if (message != NULL)
-                {
-                    RefreshMsg(message->text, 6);
-                }
-            }
-
-            oldmsg = CurArea.current;
-            command = MnuGetMsg(&event, hMnScr->wid);
-            switch (event.msgtype)
-            {
-            case WND_WM_RESIZE:
-                    window_resized = 1;  /* we'll exit to redraw the
-                                            screen */
-                    break;
-
-            case WND_WM_COMMAND:
-                switch (command)
-                {
-                case LMOU_CLCK:
-                    switch (event.id)
-                    {
-                    case ID_LNDN:
-                        link_from();
-                        break;
-
-                    case ID_LNUP:
-                        link_to();
-                        break;
-
-                    default:
-                        break;
-                    }
-                    break;
-
-                case MOU_LBTDN:
-                case LMOU_RPT:
-                    switch (event.id)
-                    {
-                    case ID_SCRUP:
-                        Go_Up();
-                        break;
-
-                    case ID_SCRDN:
-                        Go_Dwn();
-                        break;
-
-                    case ID_MGLFT:
-                        left();
-                        break;
-
-                    case ID_MGRGT:
-                        right();
-                        break;
-
-                    default:
-                        break;
-                    }
-                    break;
-
-                default:
-                    break;
-                }
-                break;
-
-            case WND_WM_MOUSE:
-                switch (command)
-                {
-                case MOU_LBTDN:
-                    if (event.x >= (maxx - MNU_LEN - 1) && event.y == 0)
-                    {
-                        command = ProcessMenu(&MouseMnu, &event, 0);
-                    }
-
-                    if (command == ID_QUIT)
-                    {
-                        quit();
-                    }
-                    break;
-
-                default:
-                    break;
-                }
-                break;
-
-            case WND_WM_CHAR:
-                switch (command)
-                {
-                case Key_PgUp:
-                    Go_PgUp();
-                    break;
-
-                case Key_PgDn:
-                case Key_Spc:
-                    Go_PgDwn();
-                    break;
-
-                case Key_Up:
-                    Go_Up();
-                    break;
-
-                case Key_Dwn:
-                    Go_Dwn();
-                    break;
-
-                default:
-                    if (command & 0xff)
-                    {
-                        if (isdigit(command & 0xff))
-                        {
-                            gotomsg((command & 0xff)- 0x30);
-                        }
-                        else
-                        {
-                            if (mainckeys[command & 0xff])
-                            {
-                                (*mainckeys[command & 0xff]) ();
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (mainakeys[command >> 8])
-                        {
-                            (*mainakeys[command >> 8]) ();
-                        }
-                    }
-                    break;
-                }
-                break;
-            }
-
-            if (window_resized && endMain == 0) endMain = 2;
-
-            if (CurArea.messages > 0 &&
-              (!message || oldmsg != CurArea.current || CurArea.current == 0))
-            {
-                message = KillMsg(message);
-                if (CurArea.current == 0)
-                {
-                    CurArea.current = 1;
-                }
-                if (CurArea.status)
-                {
-                    message = readmsg(CurArea.current);
-                    newmsg = 1;
-                }
-            }
+            message_reading_mode();
         }
 
         if (CurArea.status && endMain != 2)
@@ -2186,3 +2203,4 @@ int main(int argc, char *argv[])
     cleanup(NULL);
     return errorlevel;
 }
+

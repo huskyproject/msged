@@ -501,7 +501,7 @@ static void MoveMsgs(unsigned long *CurrMsgn)
  *  some basic management of those messages.
  */
 
-void do_list(void)
+int do_list(void)
 {
     EVT event;
     WND *hWnd, *hCurr;
@@ -861,7 +861,7 @@ begin:
 
             case Key_Ent:
                 CurArea.current = a;
-                done = 1;
+                done = 3;
                 break;
 
             case Key_A_X:
@@ -900,8 +900,16 @@ begin:
     WndClose(hWnd);
     WndCurr(hCurr);
 
-    if (done == 2) /* resize occured, continue with rebuilding the list */
+    switch(done)
     {
-         goto begin;
+    case 1:
+        return 0;               /* exit with ESC */
+    case 2:                     /* resize occured, continue with
+                                   rebuilding the list */
+        goto begin;
+    case 3:
+        return 1;               /* exit with Enter */
     }
+
+    abort();                    /* something went wrong! */
 }
