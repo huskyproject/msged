@@ -1,0 +1,60 @@
+Hi Tobias,
+
+The new "konsole" application of KDE has the nice feature to have a background
+picture behind the text. But as soon as a specific background color is set, it
+is used instead. msged always sets a background color :-( 
+
+So Ive done a few changes to it, based on msged_latest.tar.gz of May 2 1999.
+It may be a stupid hack and its not fully tested - but it works here.
+
+Sorry, no diff.
+
+
+ansi.c:
+
+"include main.h" seems not to work, so just add these lines:
+ extern int cm[];
+ #define TR_TRAN     38          /* transparent color */
+
+In function TTScolor change:
+        printf("%d;%dm", ansi_foreground_colors[Attr&0x7],
+                   ansi_background_colors[(Attr >> 4) & 0x7]);
+to:
+    if ((Attr & 0xf0)!=cm[TR_TRAN])
+            printf("%d;%dm", ansi_foreground_colors[Attr&0x7],
+                   ansi_background_colors[(Attr >> 4) & 0x7]);
+    else
+        printf("%dm", ansi_foreground_colors[Attr&0x7]);
+
+
+config.c:
+
+Add a new "color" to "static char *cfgcolors[]":
+    "ListSelect",
+    "Transparent",
+    NULL
+ };
+
+
+main.h:
+
+Add the line:
+ #define TR_TRAN     38          /* transparent color */
+
+Add to "int cm[]":
+    BLACK | _LGREY,              /* List selected text color */
+
+    /* Transparent mask */
+    -1                           /* nothing transparent by default */
+/* This will not work if "int" is only 8 bits wide!!! */
+};
+
+
+Now you can say "Color Transparent Black _Black" to have transparent text. The
+first "Black" ist ignored, but I didnt want to change too much in the code...
+
+
+Gruss
+
+Michael
+
