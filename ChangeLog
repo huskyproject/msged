@@ -1,3 +1,27 @@
+2001-11-26 Monday 20:13  tobi
+
+	* msg.c (1.21.2.1), msged.c (1.19.2.1), msged.h (1.32.2.1),
+	textfile.c (1.13.2.1), makefile.bcd (1.13.2.2), makefile.wcd
+	(1.13.2.2): Reduced DGROUP size for 16-bit DOS
+
+2001-11-26 Monday 20:09  tobi
+
+	* fido.c (1.12.2.1), help.c (1.4.2.1), helpinfo.c (1.2.2.1), init.c
+	(1.28.2.1): Reduced DGROUP size for 16-bit DOS
+
+2001-11-26 Monday 20:00  tobi
+
+	* config.c (1.44.2.3), control.c (1.2.2.1), fconf.c (1.17.2.1):
+	Reduced DGROUP size for 16-bit DOS
+
+2001-11-26 Monday 16:24  tobi
+
+	* timezone.c (1.1.2.1): fix for dos
+
+2001-11-26 Monday 16:22  tobi
+
+	* makefile.bcd (1.13.2.1): fixed borland c for dos makefile
+
 2001-11-26 Monday 15:55  tobi
 
 	* makefile.wcd (1.13.2.1): Fix Watcom/DOS makefile.
