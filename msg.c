@@ -72,6 +72,11 @@ static int global_ctrl = 1;
 
 static UMSGID replyto = 0;      /* to ensure correct uplinks when mxx is used */
 
+/* Make Msged work with both stable and current smapi: */
+#ifndef S_IMODE
+#define S_IMODE S_IREAD | S_IWRITE
+#endif
+
 /*
  *  SquishMsgAreaOpen; Scans an area for messages, opening the message
  *  base and filling the message[] array.
