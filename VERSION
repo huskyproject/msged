@@ -1,0 +1,3 @@
+msged 6.1-current
+cvs tag: HEAD
+required: fidoconfig 1.9-current, smapi 2.5-current, huskylib 0.1-current
