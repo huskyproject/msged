@@ -1398,7 +1398,7 @@ static void StripKludges(msg * m, int *got_originline, char *origin,
 	    if (strstr(p, "\01MSGID: ") == p || strstr(p, "\01REPLY: ") == p ||
 	      strstr(p, "\01FLAGS ") == p || strstr(p, "\01PID: ") == p ||
 	      strstr(p, "\01SOT:") == p || strstr(p, "\01EOT:") == p ||
-	      strstr(p, "\01CHRS: ") == p )
+	      strstr(p, "\01CHRS: ") == p || strstr(p, "\01CODEPAGE:") == p)
 	    {
 		*p = '\0';
 	    }
