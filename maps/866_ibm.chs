@@ -1,7 +1,7 @@
 ;
 ; This file is a charset conversion module in text form.
 ;
-; This module Converts IBM CP866 to IBM CP850 (translit conversion)
+; This module Converts IBM CP866 to IBM CP437 (translit conversion)
 ;
 ; Format: ID, version, level,
 ;         from charset, to charset,
@@ -13,7 +13,7 @@
 ;
 ; cedilla = ,   ; dieresis = ..       ; acute = '
 ; grave = `     ; circumflex = ^      ; ring = o
-; tilde = ~     ; caron = v 
+; tilde = ~     ; caron = v
 ; All of these are above the character, apart from the cedilla which is below.
 ;
 ; \ is the escape character: \0 means decimal zero,
