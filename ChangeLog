@@ -1,3 +1,15 @@
+2001-07-08 Sunday 20:35  joerg.jaspert
+
+	* debian/examples (1.1): file examples was initially added on
+	branch msged-6_0-stable.
+
+2001-07-08 Sunday 20:35  joerg.jaspert
+
+	* debian/: README.Debian (1.1.2.1), changelog (1.2.2.1), control
+	(1.2.2.1), copyright (1.1.2.1), dirs (1.1.2.1), doc-base (1.1.2.1),
+	docs (1.1.2.1), examples (1.1.2.1), huskymak.cfg (1.4.2.1), rules
+	(1.4.2.1): The debian Subdir for Stable MsgED.
+
 2001-07-06 Friday 01:20  tobi
 
 	* charset.c (1.14.2.1), config.c (1.44.2.2), doc/manual/msged.texi
@@ -70,6 +82,24 @@
 
 	* filedlg.c (1.11): fixed bug with "end" key in filedialog box
 
+2001-04-21 Saturday 17:35  joerg.jaspert
+
+	* debian/: huskymak.cfg (1.4), rules (1.4): Turned debug on.
+
+2001-04-21 Saturday 17:34  joerg.jaspert
+
+	* debian/control (1.2): Changed priority
+
+2001-04-14 Saturday 17:01  joerg.jaspert
+
+	* debian/rules (1.3): Upstream makefile now makes maps-symlinks
+	without path so i dont need to make it here.
+
+2001-04-14 Saturday 17:01  joerg.jaspert
+
+	* debian/huskymak.cfg (1.3): The one and only huskymak for debian
+	:)
+
 2001-04-14 Saturday 17:00  joerg.jaspert
 
 	* maps/makefile.husky (1.13): Symlinks now without path
@@ -77,6 +107,11 @@
 2001-04-12 Thursday 22:30  joerg.jaspert
 
 	* maps/makefile.husky (1.12): Removed my changes.
+
+2001-04-12 Thursday 13:59  joerg.jaspert
+
+	* debian/: changelog (1.2), huskymak.cfg (1.2), rules (1.2): Most
+	of my changes from upstream makefile now in rules.
 
 2001-04-12 Thursday 13:58  joerg.jaspert
 
@@ -113,6 +148,13 @@
 	maps/865_iso.chs (1.1), maps/866_865.chs (1.1), maps/ibm_865.chs
 	(1.1), maps/iso_865.chs (1.1), maps/makefile (1.3),
 	maps/makefile.husky (1.11): added recoding tables for codepage 865
+
+2001-04-10 Tuesday 23:53  joerg.jaspert
+
+	* debian/: README.Debian (1.1), changelog (1.1), control (1.1),
+	copyright (1.1), dirs (1.1), doc-base (1.1), docs (1.1),
+	huskymak.cfg (1.1), rules (1.1): Files needed to build
+	debian-package
 
 2001-04-10 Tuesday 23:49  joerg.jaspert
 
