@@ -1,11 +1,13 @@
 /*
- *  ncurses.c
+ *  curses.c
  *
  *  Written by Max Khon <fjoe@iclub.nsu.ru> et al and released to the public
  *  domain.
  *
- *  Screen definitions & routines using ncurses.
+ *  Screen definitions & routines using [n]curses.
  */
+
+#ifdef USE_CURSES
 
 #include <sys/types.h>
 #include <sys/time.h>
@@ -25,6 +27,9 @@ int vrow, vcol;
 int cur_start = 0;
 int cur_end = 0;
 
+#ifdef UNIX
+volatile
+#endif
 TERM term =
 {
 	80,
@@ -209,7 +214,7 @@ int TTReadStr(unsigned short *b, int len, int row, int col)
 
 int TTScroll(int x1, int y1, int x2, int y2, int lines, int dir)
 {
-#ifdef 0
+#if 0
 	/* 
 	 *  XXX  If you can make this work - mail me
 	 *  XXX  (Seems that TTClear doesn't work properly too)
@@ -264,7 +269,7 @@ int TTScroll(int x1, int y1, int x2, int y2, int lines, int dir)
 
 int TTClear(int x1, int y1, int x2, int y2)
 {
-#ifdef 0
+#if 0
 	int height = y2-y1+1;
 	WINDOW* win;
 
@@ -524,7 +529,8 @@ int TTopen(void)
 
 	color = 0x07;
 	vrow = vcol = 0;
-	getmaxyx(stdscr, term.NRow, term.NCol);
+	term.NRow = getmaxy(stdscr);
+        term.NCol = getmaxx(stdscr);
 
 	if (has_colors()) {
 		start_color();
@@ -567,3 +573,5 @@ int dv_running(void)
 {
 	return 0;
 }
+
+#endif
