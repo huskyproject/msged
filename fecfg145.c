@@ -229,10 +229,10 @@ int read_fe_address(FEAddress *a, FILE *fp)
 
 int read_fe_sysaddress(SysAddress *a, FILE *fp)
 {
-    unsigned char buffer[FE_SYS_ADDRESS_SIZE];
+    unsigned char buffer[FE_SYS_ADDRESS_SIZE - FE_ADDRESS_SIZE];
     unsigned char *pbuf;
 
-    pbuf = buffer + FE_ADDRESS_SIZE;;
+    pbuf = buffer;
 
     if (read_fe_address(&(a->main), fp) == -1)
     {
@@ -249,7 +249,7 @@ int read_fe_sysaddress(SysAddress *a, FILE *fp)
     a->pointnet = get_word(pbuf); pbuf += 2;
     a->flags = get_dword(pbuf); pbuf += 4;
 
-    assert(pbuf - buffer == FE_SYS_ADDRESS_SIZE);
+    assert(pbuf - buffer == FE_SYS_ADDRESS_SIZE - FE_ADDRESS_SIZE);
 
     return 0;
 }
