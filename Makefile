@@ -133,17 +133,6 @@ clean:
 	-$(RM) $(RMOPT) *~
 	(cd maps && $(MAKE) -f makefile.husky clean)
 	(cd doc && cd manual && $(MAKE) -f makefile.husky clean)
-ifeq ($(DEBIAN), 1)
-	-rm -f configure-stamp
-	-rm -f build-stamp
-	-rm -rf debian/msged
-	-rm -f debian/postinst.debhelper
-	-rm -f debian/postrm.debhelper
-	-rm -f debian/prerm.debhelper
-	-rm -f debian/substvars
-	-rm -f debian/files
-endif
-
 
 distclean: clean
 	-$(RM) $(RMOPT) $(TARGET)
@@ -157,13 +146,8 @@ ifeq ($(OSTYPE), UNIX)
 install: $(TARGET) msghelp.dat testcons$(EXE)
 	-$(MKDIR) $(MKDIROPT) $(BINDIR)
 	$(INSTALL) $(IBOPT) $(TARGET) $(BINDIR)
-ifeq ($(DEBIAN), 1)
-	-$(MKDIR) $(MKDIROPT) $(DESTDIR)$(CFGDIR)
-	$(INSTALL) $(IIOPT) msghelp.dat $(DESTDIR)$(CFGDIR)
-else
 	-$(MKDIR) $(MKDIROPT) $(CFGDIR)
 	$(INSTALL) $(IIOPT) msghelp.dat $(CFGDIR)
-endif
 	(cd maps && $(MAKE) -f makefile.husky install)
 	(cd doc && cd manual && $(MAKE) -f makefile.husky install)
 	$(INSTALL) $(IBOPT) testcons$(EXE) $(BINDIR)
@@ -173,13 +157,8 @@ else
 install: $(TARGET) msghelp.dat
 	-$(MKDIR) $(MKDIROPT) $(BINDIR)
 	$(INSTALL) $(IBOPT) $(TARGET) $(BINDIR)
-ifeq ($(DEBIAN), 1)
-	-$(MKDIR) $(MKDIROPT) $(DESTDIR)$(CFGDIR)
-	$(INSTALL) $(IIOPT) msghelp.dat $(DESTDIR)$(CFGDIR)
-else
 	-$(MKDIR) $(MKDIROPT) $(CFGDIR)
 	$(INSTALL) $(IIOPT) msghelp.dat $(CFGDIR)
-endif
 	(cd maps && $(MAKE) -f makefile.husky install)
 	(cd doc && cd manual && $(MAKE) -f makefile.husky install)
 
