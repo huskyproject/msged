@@ -1,31 +1,45 @@
-# look for libs in /usr/local/lib
-LIBDIR=/usr/local/lib
+# Legacy Makefile for Linux
+# No support for the Husky build environment, but supports fidoconfig
+# Direct Termcap / ANSI terminal I/O
 
-# install programs in /usr/local/bin
-BINDIR=/usr/local/bin
+# install programs in:
+#BINDIR=/usr/local/bin
+BINDIR=~/bin
 
-# look for includes here
-INCDIR=/usr/local/include
+# where to put the recoding table
+#READMAPS=/usr/local/share/msged/readmaps.dat
+#WRITMAPS=/usr/local/share/msged/writmaps.dat
+READMAPS=~/.msged.readmaps
+WRITMAPS=~/.msged.writmaps
+
+# where to find the configuration file
+#DEFAULT_CONFIG_FILE=/usr/local/share/msged/msged.cfg
+DEFAULT_CONFIG_FILE=~/.msged
+
+# where to put the program
+#INSTDIR=/usr/local/bin
+INSTDIR=~/bin
 
 # options for installing programs
 IBOPT=-s
 
-
 CC=	gcc
-
-ifeq ($(DEBUG), 1)
-  CFLAGS=	-Wall -I$(INCDIR) -ggdb
-else
-  CFLAGS=	-Wall -I$(INCDIR) -s
-endif
-
-CDEFS=	-DUNIX -DUSE_MSGAPI -DUSE_FIDOCONFIG -DUNAME=\"LNX\"
+CFLAGS=	-Wall -I../smapi -I../fidoconfig
+CDEFS=	-DUNIX -DUSE_MSGAPI -DUSE_FIDOCONFIG -DUNAME=\"LNX\" -DREADMAPSDAT='"$(READMAPS)"' -DWRITMAPSDAT='"$(WRITMAPS)"' -DDEFAULT_CONFIG_FILE='"$(DEFAULT_CONFIG_FILE)"'
 COPT=	-O3 -fomit-frame-pointer -fstrength-reduce
-LFLAGS= -L$(LIBDIR)
+LFLAGS= -L../smapi -L../fidoconfig -s
 
 TARGET=	msged
 MSGAPI=-lsmapilnx
+# the terminfo database routines are in libncurses.a :-((( */
+TERMCAP=-lncurses
 FC=-lfidoconfig
+
+
+#If you don't have ncurses, try this, but be aware that the Linux termcap
+#database has many bugs. For example, you will lose pseudographics in the
+#xterm this way.
+#TERMCAP=-ltermcap
 
 objs=   addr.o     \
 	ansi.o     \
@@ -70,6 +84,7 @@ objs=   addr.o     \
 	quick.o    \
 	quote.o    \
 	readmail.o \
+	readtc.o   \
 	screen.o   \
 	strextra.o \
 	system.o   \
@@ -87,7 +102,7 @@ all: $(TARGET)
 	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
 
 $(TARGET): $(objs)
-	$(CC) $(COPT) $(LOPT) -o $(TARGET) $(objs) $(MSGAPI) $(FC)
+	$(CC) $(COPT) $(LFLAGS) -o $(TARGET) $(objs) $(FC) $(MSGAPI) $(TERMCAP)
 
 clean:
 	-rm *.o *~
@@ -97,4 +112,5 @@ distclean: clean
 
 install: $(TARGET)
 	install $(IBOPT) $(TARGET) $(BINDIR)
-
+	install bin/latin/readmaps.dat $(READMAPS)
+	install bin/latin/writmaps.dat $(WRITMAPS)

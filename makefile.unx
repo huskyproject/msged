@@ -1,25 +1,46 @@
-READMAPSDAT=~/home/fido/etc/msged.readmaps
-WRITMAPSDAT=~/home/fido/etc/msged.writmaps
-DEFAULTCONFIGFILE=~/.msged
+# Generic Legacy Makefile for UNIX systems
+# No support for the Husky build environment, no support for Fidoconfig
+# Direct Termcap / ANSI terminal I/O (does not work on Solaris)
 
-CC=cc
-CFLAGS=-DREADMAPSDAT=\"$(READMAPSDAT)\" -DWRITMAPSDAT=\"$(WRITMAPSDAT)\" -DDEFAULT_CONFIG_FILE=\"$(DEFAULTCONFIGFILE)\"
-CDEFS=	-DUNIX -DUSE_MSGAPI
-COPT=
-MSGDIR=	../smapi
+# install programs in:
+#BINDIR=/usr/local/bin
+BINDIR=~/bin
 
+# where to put the recoding table
+#READMAPS=/usr/local/share/msged/readmaps.dat
+#WRITMAPS=/usr/local/share/msged/writmaps.dat
+READMAPS=~/.msged.readmaps
+WRITMAPS=~/.msged.writmaps
+
+# where to find the configuration file
+#DEFAULT_CONFIG_FILE=/usr/local/share/msged/msged.cfg
+DEFAULT_CONFIG_FILE=~/.msged
+
+# where to put the program
+#INSTDIR=~/bin
+INSTDIR=~/bin
+
+# options for installing programs
+IBOPT=-s -c
+
+CC=	cc
+CFLAGS=	-Wall -I../smapi -I../fidoconfig
+CDEFS=	-DUNIX -DUSE_MSGAPI -DUNAME=\"UNX\" -DREADMAPSDAT='"$(READMAPS)"' -DWRITMAPSDAT='"$(WRITMAPS)"' -DDEFAULT_CONFIG_FILE='"$(DEFAULT_CONFIG_FILE)"'
+COPT=	-O3
+LFLAGS= -L../smapi -L../fidoconfig -s
 
 TARGET=	msged
-MSGAPI=	smapiunix
+MSGAPI=-lsmapibsd
+TERMCAP=-ltermcap
 
-objs=	addr.o     \
+objs=   addr.o     \
 	ansi.o     \
 	areas.o    \
 	bmg.o      \
 	charset.o  \
 	config.o   \
 	control.o  \
-        curses.o   \
+	curses.o   \
 	date.o     \
 	dialogs.o  \
 	dirute.o   \
@@ -55,6 +76,7 @@ objs=	addr.o     \
 	quick.o    \
 	quote.o    \
 	readmail.o \
+	readtc.o   \
 	screen.o   \
 	strextra.o \
 	system.o   \
@@ -66,10 +88,21 @@ objs=	addr.o     \
 	win.o      \
 	wrap.o
 
-# Thunderbirds are go!
+all: $(TARGET)
 
 .c.o:
-	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -I$(MSGDIR) -c $<
+	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
 
 $(TARGET): $(objs)
-	$(CC) $(COPT) -o $(TARGET) $(objs) -L$(MSGDIR) -l$(MSGAPI)
+	$(CC) $(COPT) $(LFLAGS) -o $(TARGET) $(objs) $(MSGAPI) $(TERMCAP)
+
+clean:
+	-rm *.o *~
+
+distclean: clean
+	-rm $(TARGET)
+
+install: $(TARGET)
+	install $(IBOPT) $(TARGET) $(BINDIR)
+	install bin/latin/readmaps.dat $(READMAPS)
+	install bin/latin/writmaps.dat $(WRITMAPS)

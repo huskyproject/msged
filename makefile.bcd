@@ -1,32 +1,17 @@
-# look for libs in c:\lib
-LIBDIR=c:\lib
-
-# install programs in c:\bin
-BINDIR=c:\bin
-
-# look for includes here
-INCDIR=c:\include
-
-# options for installing programs
-IBOPT=-s
-
+# Legacy Makefile for Turbo C / Borland C for DOS
+# Requires Turbo Assembler (TASM)
+# No support for the Husky build environment
 
 CC=	bcc
-
-!IF $(DEBUG) == 1
-  CFLAGS=	-w -I$(INCDIR) -ml -v
-!ELSE
-  CFLAGS=	-w -I$(INCDIR) -ml
-!ENDIF
-
-CDEFS=	-DMSDOS -DUSE_MSGAPI -DUSE_CRITICAL -DHASCORE1
-#COPT=	-O2
+CFLAGS=	-w -I..\smapi -ml -v 
+CDEFS=	-DMSDOS -DUSE_MSGAPI -DUSE_CRITICAL -DHASCORE1 -I..\smapi
+COPT=	-O2
 ASM=	tasm
-AFLAGS=	-mx
+AFLAGS=	-mx	
 ADEFS=	-DMODL=large
 
 TARGET=	msged.exe
-MSGAPI=	$(LIBDIR)\smapibcd.lib
+MSGAPI=	..\smapi\smapibcd.lib
 
 objs=	addr.obj     \
 	areas.obj    \
@@ -104,7 +89,3 @@ clean:
 
 distclean: clean
 	del $(TARGET)
-
-install: $(TARGET)
-	copy $(TARGET) $(BINDIR)
-

@@ -1,27 +1,11 @@
-# look for libs in c:\lib
-LIBDIR=c:\lib
-
-# install programs in c:\bin
-BINDIR=c:\bin
-
-# look for includes here
-INCDIR=c:\include
-
-# options for installing programs
-IBOPT=-s
-
+# Makefile for EMX GCC OMF-style on OS/2
+# No support for the Husky build environment
 
 CC=	 gcc
-
-ifeq ($(DEBUG), 1)
-  CFLAGS=	-Wall -Zomf -Zsys -g -I$(INCDIR)
-else
-  CFLAGS=	-Wall -Zomf -Zsys -s -I$(INCDIR)
-endif
-
-CDEFS=	-DOS2 -DUSE_MSGAPI
+CFLAGS=	-Wall -Zomf -Zsys -s 
+CDEFS=	-DOS2 -DUSE_MSGAPI -I../smapi
 COPT=   -O3 -fomit-frame-pointer -fstrength-reduce
-#-m486
+LFLAGS= $(CFLAGS)
 
 .SUFFIXES:
 .SUFFIXES: .c .obj
@@ -29,7 +13,7 @@ COPT=   -O3 -fomit-frame-pointer -fstrength-reduce
 TARGET=	msgedp.exe
 TMPLIB= msgedemo.lib
 LIB=    emxomfar
-MSGAPI=	$(LIBDIR)/smapiemo.lib
+MSGAPI= ../smapi/smapiemo.lib
 
 objs=	addr.obj     \
 	areas.obj    \
@@ -92,15 +76,11 @@ all: $(TARGET)
 	$(LIB) r $(TMPLIB) $@
 
 $(TARGET): $(objs)
-	$(CC) $(COPT) $(CFLAGS) -Zlinker "/pm:vio" -o $(TARGET) msged.obj $(TMPLIB) $(MSGAPI)
+	$(CC) $(COPT) $(LFLAGS) -Zlinker "/pm:vio" -o $(TARGET) msged.obj $(TMPLIB) $(MSGAPI)
 
 clean:
 	-del *.obj
-        -del *.bak
+	-del *.bak
 
 distclean: clean
 	-del $(TARGET)
-
-install: $(TARGET)
-	copy $(TARGET) $(BINDIR)
-

@@ -1,35 +1,33 @@
-# include Husky-Makefile-Config
-include ../huskymak.cfg
+# Legacy Makefile for DOS / DJGPP
+# No support for the Husky build environment.
 
 CC=	gcc
-
-ifeq ($(DEBUG), 1)
-  CFLAGS= -Wall -g -I$(INCDIR)
-else
-  CFLAGS= -Wall -s -I$(INCDIR)
-endif
-
+CFLAGS=	-Wall -I../smapi
 CDEFS=	-D__FLAT__ -DUSE_MSGAPI
+COPT=	-O3 -fomit-frame-pointer -fstrength-reduce
+LFLAGS= -L../smapi -s
 
-COPT= -O3
-# -fomit-frame-pointer -fstrength-reduce -m486
+TARGET=	msged32.exe
+MSGAPI=-lsmapidjg
 
-TARGET= msged32.exe
-MSGAPI= $(LIBDIR)/smapidjg.a
+#If you don't have ncurses, try this, but be aware that the Linux termcap
+#database has many bugs. For example, you will lose pseudographics in the
+#xterm this way.
+#TERMCAP=-ltermcap
 
-objs=	addr.o     \
+objs=   addr.o     \
 	areas.o    \
-	bmg.o	   \
+	bmg.o      \
 	charset.o  \
 	config.o   \
 	control.o  \
-	date.o	   \
+	curses.o   \
+	date.o     \
 	dialogs.o  \
 	dirute.o   \
 	dlgbox.o   \
 	dlist.o    \
 	dosasm.o   \
-	dosmisc.o  \
 	echotoss.o \
 	environ.o  \
 	fconf.o    \
@@ -40,23 +38,23 @@ objs=	addr.o     \
 	freq.o     \
 	gestr120.o \
 	getopts.o  \
-	help.o	   \
+	help.o     \
 	helpcmp.o  \
 	helpinfo.o \
 	ibmscrn.o  \
-	init.o	   \
+	init.o     \
 	keycode.o  \
-	list.o	   \
+	list.o     \
 	maintmsg.o \
 	makemsgn.o \
 	memextra.o \
-	menu.o	   \
-	misc.o	   \
-	mnu.o	   \
+	menu.o     \
+	misc.o     \
+	mnu.o      \
 	mouse4.o   \
-	msg.o	   \
+	msg.o      \
 	msged.o    \
-	mxbt.o	   \
+	mxbt.o     \
 	normalc.o  \
 	nshow.o    \
 	quick.o    \
@@ -68,10 +66,10 @@ objs=	addr.o     \
 	template.o \
 	textfile.o \
 	userlist.o \
-	vio.o	   \
-	vsev.o	   \
+	vio.o      \
+	vsev.o     \
 	vsevops.o  \
-	win.o	   \
+	win.o      \
 	wrap.o
 
 all: $(TARGET)
@@ -80,15 +78,12 @@ all: $(TARGET)
 	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
 
 $(TARGET): $(objs)
-	$(CC) $(COPT) -o $(TARGET) *.o $(MSGAPI)
+	$(CC) $(COPT) $(LFLAGS) -o $(TARGET) $(objs) $(MSGAPI)
 
 clean:
-	del *.o
-	del *.bak
+	-del *.o
+	-del *~
 
 distclean: clean
-	del $(TARGET)
-
-install: $(TARGET)
-	copy $(TARGET) $(BINDIR)
+	-del $(TARGET)
 
