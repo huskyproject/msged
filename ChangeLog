@@ -1,3 +1,8 @@
+2002-02-12 Tuesday 00:38  tobi
+
+	* readmail.c (1.44): Next attempt at fixing CHARSET kludge
+	handling.
+
 2002-02-10 Sunday 16:01  tobi
 
 	* maintmsg.c (1.8), doc/whatsnew.txt (1.72): Fix: In template text
