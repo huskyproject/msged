@@ -24,9 +24,6 @@ CFLAGS= -zq -wx -I$(INCDIR) -d2
 CFLAGS= -zq -wx -I$(INCDIR)
 !ENDIF
 
-CDEFS=	-DOS2 -DUSE_MSGAPI
-#COPT=	-oneatx -5
-
 #COPT=  -oneatx -5
 MSGAPI= $(LIBDIR)\smapi\smapiwco.lib
 
