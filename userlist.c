@@ -244,24 +244,39 @@ ADDRESS lookup(char *name, char *fn)
                 {
                     i--;
                 }
-                if (buf[i + 1] == ' ')
+                if (buf[i] == ',')
                 {
-                    i++;
+                    if (buf[i + 1] == ' ')
+                    {
+                        i++;
+                    }
+                    if (j - i + 1 > 0)
+                    {
+                        memmove(name, buf + i + 1, j - i);
+                    }
+                    k = i;
+                    if (buf[i] == ' ')
+                    {
+                        i--;
+                    }
+                    if (i > 0)
+                    {
+                        name[j - k] = ' ';
+                        memmove(name + j - k + 1, buf, k);
+                        name[j] = '\0';
+                    }
                 }
-                if (j - i + 1 > 0)
+                else
                 {
-                    memmove(name, buf + i + 1, j - i);
-                }
-                k = i;
-                if (buf[i] == ' ')
-                {
-                    i--;
-                }
-                if (i > 0)
-                {
-                    name[j - k] = ' ';
-                    memmove(name + j - k + 1, buf, k);
-                    name[j] = '\0';
+                    if (j != 0)
+                    {
+                        memcpy(name, buf, j + 1);
+                        name[j+2] = '\0';
+                    }
+                    else
+                    {
+                        name[0] = '\0';
+                    }
                 }
 
                 for(i = 0; i < found; i++)

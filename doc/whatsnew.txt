@@ -136,6 +136,9 @@ Features:
 
 Fixes:
 
+- Fixed the handling of FIDOUSER.LST in case of user entries that did not
+  contain a ",", like "Echolist".
+
 - Fixed a bug that caused Msged to sometimes trash lastread pointers in
   exactly one (mostly, but not necessarily the first *.MSG area) message area
   when exiting.
