@@ -53,7 +53,7 @@ static volatile int resize_pending = 0;
 
 static struct termios oldtios;
 
-FILE *fDebug = stderr;
+// FILE *fDebug = stderr; // SMS 991013: does not seem to be used
 
 void block_console(int min, int time)
 {
