@@ -11,11 +11,11 @@
 #include <stdlib.h>
 #include "memextra.h"
 
-
+#undef isalnum
 char *env_expand(char *line)
 { char *cpTemp;
   char var[82]; char *cpvar, *cpsrc, *cpdest;
-  int isVar=0, l=0;
+  int isVar=0, l=0, invar=0;
   size_t maxlen=2*strlen(line);
 
 start:
@@ -44,11 +44,26 @@ start:
         cpvar=var;
       }
       else
-        isVar=1;
+      {
+        isVar=1; invar = 0;
+      }
     else
       if (isVar)
-      { *(cpvar++)=*cpsrc;
-        if ((cpvar-var>=80)||((!isalnum(*cpsrc)) && (*cpsrc != '_')))
+      { int novar = 0;
+        
+        *(cpvar++) = (*cpsrc); invar++;
+        if (invar > 80)
+        {
+            novar = 1;
+        }
+        if ( ! ((*cpsrc >= 'A' && *cpsrc <= 'Z') ||
+                (*cpsrc >= 'a' && *cpsrc <= 'z') ||
+                (*cpsrc >= '0' && *cpsrc <= '9') ||
+                (*cpsrc == '_')))
+        {
+            novar = 1;
+        }
+        if (novar)
         { isVar=0; *cpvar=0;
           *(cpdest++)='%';
           if ((++l)>=maxlen) goto error;
