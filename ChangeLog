@@ -1,3 +1,26 @@
+2001-06-20 Wednesday 22:31  tobi
+
+	* doc/whatsnew.txt (1.67.2.1): adapted version in whatsnew list
+
+2001-06-20 Wednesday 22:26  tobi
+
+	* VERSION (1.1.2.1): added VERSION file for stable branch
+
+2001-06-20 Wednesday 22:26  tobi
+
+	* VERSION (1.1): file VERSION was initially added on branch
+	msged-6_0-stable.
+
+2001-06-20 Wednesday 22:21  tobi
+
+	* config.c (1.44), msged.c (1.19), nshow.c (1.11), readmail.c
+	(1.39), template.c (1.5), version.h (1.7), doc/manual/msged.texi
+	(1.54): stepped version number to 6.0
+
+2001-06-20 Wednesday 21:02  tobi
+
+	* doc/sample.tpl (1.3): removed bogus strings from sample.tpl
+
 2001-06-03 Sunday 01:12  tobi
 
 	* doc/: whatsnew.txt (1.67), manual/msged.texi (1.53): doc about
@@ -32,24 +55,6 @@
 
 	* filedlg.c (1.11): fixed bug with "end" key in filedialog box
 
-2001-04-21 Saturday 17:35  joerg.jaspert
-
-	* debian/: huskymak.cfg (1.4), rules (1.4): Turned debug on.
-
-2001-04-21 Saturday 17:34  joerg.jaspert
-
-	* debian/control (1.2): Changed priority
-
-2001-04-14 Saturday 17:01  joerg.jaspert
-
-	* debian/rules (1.3): Upstream makefile now makes maps-symlinks
-	without path so i dont need to make it here.
-
-2001-04-14 Saturday 17:01  joerg.jaspert
-
-	* debian/huskymak.cfg (1.3): The one and only huskymak for debian
-	:)
-
 2001-04-14 Saturday 17:00  joerg.jaspert
 
 	* maps/makefile.husky (1.13): Symlinks now without path
@@ -57,15 +62,6 @@
 2001-04-12 Thursday 22:30  joerg.jaspert
 
 	* maps/makefile.husky (1.12): Removed my changes.
-
-2001-04-12 Thursday 13:59  joerg.jaspert
-
-	* debian/: changelog (1.2), huskymak.cfg (1.2), rules (1.2): Most
-	of my changes from upstream makefile now in rules.
-
-2001-04-12 Thursday 13:59  joerg.jaspert
-
-	* debian/: files (1.2), substvars (1.2): Delete !
 
 2001-04-12 Thursday 13:58  joerg.jaspert
 
@@ -88,16 +84,6 @@
 	(1.38), doc/whatsnew.txt (1.65), doc/manual/msged.texi (1.52):
 	support for generating tzuztc kludge lines
 
-2001-04-11 Wednesday 22:32  joerg.jaspert
-
-	* debian/README.BUILD-DEB (1.1): Some words for package-building on
-	Debian-Systems.
-
-2001-04-11 Wednesday 22:32  joerg.jaspert
-
-	* debian/: postinst.debhelper (1.2), prerm.debhelper (1.2): Should
-	not be there, sorry :)
-
 2001-04-11 Wednesday 22:22  tobi
 
 	* maps/: iso_850.chs (1.4), iso_865.chs (1.2), iso_asc.chs (1.4),
@@ -112,14 +98,6 @@
 	maps/865_iso.chs (1.1), maps/866_865.chs (1.1), maps/ibm_865.chs
 	(1.1), maps/iso_865.chs (1.1), maps/makefile (1.3),
 	maps/makefile.husky (1.11): added recoding tables for codepage 865
-
-2001-04-10 Tuesday 23:53  joerg.jaspert
-
-	* debian/: README.Debian (1.1), changelog (1.1), control (1.1),
-	copyright (1.1), dirs (1.1), doc-base (1.1), docs (1.1), files
-	(1.1), huskymak.cfg (1.1), postinst.debhelper (1.1),
-	prerm.debhelper (1.1), rules (1.1), substvars (1.1): Files needed
-	to build debian-package
 
 2001-04-10 Tuesday 23:49  joerg.jaspert
 
@@ -614,8 +592,8 @@
 
 2000-04-24 Monday 20:43  sms
 
-	* maps/: Makefile (1.2), makefile.husky (1.7): rolled back last
-	change because of name collision
+	* maps/makefile.husky (1.7): rolled back last change because of
+	name collision
 
 2000-04-24 Monday 20:41  sms
 
@@ -623,14 +601,13 @@
 
 2000-04-24 Monday 20:39  sms
 
-	* doc/manual/: Makefile (1.2), makefile.husky (1.5): rolled back
-	last change because of name collision
+	* doc/manual/makefile.husky (1.5): rolled back last change because
+	of name collision
 
 2000-04-24 Monday 20:35  sms
 
-	* maps/Makefile (1.1), maps/makefile.husky (1.6),
-	doc/manual/Makefile (1.1), doc/manual/makefile.husky (1.4): renamed
-	makefile.husky to Makefile
+	* maps/makefile.husky (1.6), doc/manual/makefile.husky (1.4):
+	renamed makefile.husky to Makefile
 
 2000-04-23 Sunday 23:14  tobi
 
@@ -644,8 +621,7 @@
 
 2000-04-21 Friday 13:14  sms
 
-	* Makefile (1.1), makefile.husky (1.11): renamed makefile.husky to
-	Makefile
+	* Makefile (1.1): renamed makefile.husky to Makefile
 
 2000-04-16 Sunday 13:59  tobi
 
@@ -715,7 +691,7 @@
 
 2000-03-30 Thursday 16:11  tobi
 
-	* makefile.husky (1.10), winsys.h (1.10): Makefile Bugfix
+	* winsys.h (1.10): Makefile Bugfix
 
 2000-03-23 Thursday 11:41  tobi
 
@@ -729,12 +705,8 @@
 
 2000-03-19 Sunday 23:42  tobi
 
-	* makefile.husky (1.9), doc/manual/makefile.husky (1.2),
-	maps/makefile.husky (1.2): makefile fixes
-
-2000-03-19 Sunday 23:35  tobi
-
-	* makefile.husky (1.8): Makefile fix
+	* doc/manual/makefile.husky (1.2), maps/makefile.husky (1.2):
+	makefile fixes
 
 2000-03-19 Sunday 23:35  tobi
 
@@ -742,29 +714,19 @@
 
 2000-03-19 Sunday 22:29  tobi
 
-	* makefile.husky (1.7), doc/manual/makefile.husky (1.1),
-	doc/manual/msged.texi (1.31), maps/README (1.5), maps/makefile
-	(1.1), maps/makefile.husky (1.1): Enabled makefile.husky /
-	huskymak.cfg support in Msged
+	* doc/manual/makefile.husky (1.1), doc/manual/msged.texi (1.31),
+	maps/README (1.5), maps/makefile (1.1), maps/makefile.husky (1.1):
+	Enabled makefile.husky / huskymak.cfg support in Msged
 
 2000-03-13 Monday 23:47  sms
 
 	* makefile.bsd (1.17), makefile.lnx (1.18), makefile.unx (1.14):
 	updated legacy makefiles
 
-2000-03-12 Sunday 04:03  sms
-
-	* husky.bcd (1.2), husky.bco (1.2), husky.bcw (1.2), husky.bsd
-	(1.2), husky.djg (1.2), husky.emo (1.2), husky.hco (1.2), husky.ibo
-	(1.2), husky.lnx (1.3), husky.mgw (1.2), husky.qcd (1.2), husky.rxw
-	(1.2), husky.sun (1.2), husky.unx (1.2), husky.wcd (1.2), husky.wco
-	(1.2), husky.wcw (1.2), husky.wcx (1.2): removed husky.*-Makefiles
-
 2000-03-09 Thursday 17:27  sms
 
-	* fconf.c (1.8), fido.c (1.7), makefile.husky (1.6), msg.c (1.11):
-	moved smapi and fidoconfig headers to INCDIR/smapi and
-	INCDIR/fidoconfig
+	* fconf.c (1.8), fido.c (1.7), msg.c (1.11): moved smapi and
+	fidoconfig headers to INCDIR/smapi and INCDIR/fidoconfig
 
 2000-03-07 Tuesday 21:51  tobi
 
@@ -785,22 +747,9 @@
 	manual charset kludge override (pre-bound to Alt+T, new reader
 	function "selchs").
 
-2000-01-28 Friday 23:59  sms
-
-	* makefile.husky (1.5): fixed missing TAB in makefile.husky
-
 2000-01-28 Friday 21:42  sms
 
-	* fconf.c (1.7), makefile.husky (1.4): changed groups from chars to
-	strings
-
-2000-01-24 Monday 00:30  sms
-
-	* makefile.husky (1.3): updated makefile.husky
-
-2000-01-23 Sunday 00:42  sms
-
-	* makefile.husky (1.2): Updated makefile.husky and huskymak.cfg
+	* fconf.c (1.7): changed groups from chars to strings
 
 2000-01-23 Sunday 00:07  tobi
 
@@ -810,11 +759,6 @@
 
 	* readmail.c (1.25): Fixed occurence of multiple @CODEPAGE kludge
 	lines.
-
-2000-01-22 Saturday 12:00  sms
-
-	* makefile.husky (1.1): Created/Updated makefile.husky and
-	huskymak.cfg
 
 2000-01-21 Friday 22:14  tobi
 
@@ -883,10 +827,6 @@
 	(1.4), maps/swe_ibm.chs (1.4), maps/swi_ibm.chs (1.4),
 	maps/uk_ibm.chs (1.4): Upgraded Msged to support FSP 1013 WRT
 	charset kludges
-
-2000-01-18 Tuesday 22:13  sms
-
-	* husky.lnx (1.2): Added readtc.o to husky.lnx
 
 2000-01-18 Tuesday 01:58  tobi
 
@@ -1017,23 +957,13 @@
 
 1999-10-18 Monday 00:35  sms
 
-	* husky.bcd (1.1), husky.bco (1.1), husky.bcw (1.1), husky.bsd
-	(1.1), husky.djg (1.1), husky.emo (1.1), husky.hco (1.1), husky.ibo
-	(1.1), husky.lnx (1.1), husky.mgw (1.1), husky.qcd (1.1), husky.rxw
-	(1.1), husky.sun (1.1), husky.unx (1.1), husky.wcd (1.1), husky.wco
-	(1.1), husky.wcw (1.1), husky.wcx (1.1), makefile.bcd (1.9),
-	makefile.bco (1.8), makefile.bcw (1.10), makefile.bsd (1.15),
-	makefile.emo (1.9), makefile.hco (1.8), makefile.ibo (1.8),
-	makefile.lnx (1.16), makefile.mgw (1.3), makefile.qcd (1.8),
-	makefile.rxw (1.13), makefile.sun (1.7), makefile.wcd (1.8),
-	makefile.wco (1.8), makefile.wcw (1.8), makefile.wcx (1.8),
-	nohusky.bcd (1.2), nohusky.bco (1.2), nohusky.bcw (1.2),
-	nohusky.bsd (1.2), nohusky.djg (1.3), nohusky.emo (1.2),
-	nohusky.hco (1.2), nohusky.ibo (1.2), nohusky.lnx (1.2),
-	nohusky.mgw (1.2), nohusky.qcd (1.2), nohusky.rxw (1.2),
-	nohusky.sun (1.2), nohusky.wcd (1.2), nohusky.wco (1.2),
-	nohusky.wcw (1.2), nohusky.wcx (1.2), doc/README.Mak (1.2): renamed
-	makefile.* -> husky.*, nohusky.* -> makefile.*
+	* makefile.bcd (1.9), makefile.bco (1.8), makefile.bcw (1.10),
+	makefile.bsd (1.15), makefile.emo (1.9), makefile.hco (1.8),
+	makefile.ibo (1.8), makefile.lnx (1.16), makefile.mgw (1.3),
+	makefile.qcd (1.8), makefile.rxw (1.13), makefile.sun (1.7),
+	makefile.wcd (1.8), makefile.wco (1.8), makefile.wcw (1.8),
+	makefile.wcx (1.8), doc/README.Mak (1.2): renamed makefile.* ->
+	husky.*, nohusky.* -> makefile.*
 
 1999-10-17 Sunday 20:18  tobi
 
@@ -1051,12 +981,7 @@
 
 1999-10-17 Sunday 17:26  tobi
 
-	* makefile.djd (1.2), makefile.djg (1.11), nohusky.djg (1.2): djgpp
-	fixes
-
-1999-10-17 Sunday 17:14  tobi
-
-	* nohusky.djd (1.2), nohusky.djg (1.1): Fixed DJGPP makefile.
+	* makefile.djg (1.11): djgpp fixes
 
 1999-10-16 Saturday 15:32  tobi
 
@@ -1079,13 +1004,7 @@
 
 1999-10-14 Thursday 18:07  sms
 
-	* makefile.djd (1.1), makefile.djg (1.10), nohusky.bcd (1.1),
-	nohusky.bco (1.1), nohusky.bcw (1.1), nohusky.bsd (1.1),
-	nohusky.djd (1.1), nohusky.emo (1.1), nohusky.hco (1.1),
-	nohusky.ibo (1.1), nohusky.lnx (1.1), nohusky.mgw (1.1),
-	nohusky.qcd (1.1), nohusky.rxw (1.1), nohusky.sun (1.1),
-	nohusky.wcd (1.1), nohusky.wco (1.1), nohusky.wcw (1.1),
-	nohusky.wcx (1.1), doc/README.Mak (1.1): reorganized Makefiles,
+	* makefile.djg (1.10), doc/README.Mak (1.1): reorganized Makefiles,
 	read husky-common/README.Makefiles \!\!\!
 
 1999-10-14 Thursday 17:40  sms
@@ -1169,14 +1088,6 @@
 	* ansi.c (1.19), curses.c (1.3): Some changes for the curses
 	feature.
 
-1999-08-23 Monday 21:09  tobi
-
-	* contrib/: asc_iso5.chs (1.2), cp866_iso5.chs (1.2), ibm_iso5.chs
-	(1.2), iso5_asc.chs (1.2), iso5_cp866.chs (1.2), iso5_ibm.chs
-	(1.2), iso5_rufido.chs (1.2), rufido_iso5.chs (1.2): Removed
-	contributed CHS maps (the relevant part has been migrated to the
-	maps subdirectory)
-
 1999-08-23 Monday 20:43  tobi
 
 	* maps/: 866_is5.chs (1.1), README (1.3), is5_866.chs (1.1): Added
@@ -1207,13 +1118,6 @@
 
 	* config.c (1.24): Changes from Max Khon. Includes more debug
 	output, and a logic fix in the area lister path conversion.
-
-1999-08-13 Friday 14:25  tobi
-
-	* contrib/: asc_iso5.chs (1.1), cp866_iso5.chs (1.1), ibm_iso5.chs
-	(1.1), iso5_asc.chs (1.1), iso5_cp866.chs (1.1), iso5_ibm.chs
-	(1.1), iso5_rufido.chs (1.1), rufido_iso5.chs (1.1): Added Russion
-	charmaps contributed by Serguei I.Revtov
 
 1999-08-02 Monday 00:41  tobi
 
@@ -1958,9 +1862,9 @@
 1998-08-19 Wednesday 23:32  tobi
 
 	* makefile.djg (1.3, msged-te-05-second-try, msged-te-05),
-	makefile.rxw (1.3), doc/msged.tpl (1.2), doc/sample.cfg (1.1),
-	doc/sample.tpl (1.1, msged-te-05-second-try, msged-te-05),
-	doc/manual/msged.texi (1.7): Updated docs and makefiles.
+	makefile.rxw (1.3), doc/sample.cfg (1.1), doc/sample.tpl (1.1,
+	msged-te-05-second-try, msged-te-05), doc/manual/msged.texi (1.7):
+	Updated docs and makefiles.
 
 1998-08-19 Wednesday 23:31  tobi
 
@@ -2137,11 +2041,6 @@
 	* config.c (1.2): It is now possible to use more then one
 	AreafileFlags keyword.
 
-1998-07-23 Thursday 14:58  tobi
-
-	* makefile.aix (1.2): Removed makefile.aix. It is no longer
-	necessary, AIX now flawlessly compiles with makefile.unx.
-
 1998-07-23 Thursday 13:03  tobi
 
 	* doc/: whatsnew.txt (1.4), manual/msged.texi (1.3): Updated docs.
@@ -2175,10 +2074,6 @@
 	* ansi.c (1.2): Added some more keycodes for the OS/2 telnet client
 	(ANSI)
 
-1998-07-16 Thursday 11:18  tobi
-
-	* makefile.aix (1.1): Added special makefile for AIX.
-
 1998-07-10 Friday 19:49  tobi
 
 	* doc/manual/makefile (1.2): Fixed a bug in the info makefile.
@@ -2194,7 +2089,6 @@
 1998-07-01 Wednesday 23:43  tobi
 
 	* makefile.bsd (1.4), makemsgn.c (1.2), readmail.c (1.2),
-	doc/makefile (1.2), doc/msged.texi (1.2), doc/texinfo.tex (1.2),
 	doc/whatsnew.txt (1.2): Fixed a segmenation violation when chaning
 	internet-gated messages.
 
@@ -2211,11 +2105,9 @@
 
 1998-07-01 Wednesday 00:12  tobi
 
-	* msged.cfg (1.2), readmaps.dat (1.2), writmaps.dat (1.2),
-	bin/ibmpc/readmaps.dat (1.3), bin/ibmpc/writmaps.dat (1.3),
-	bin/latin/readmaps.dat (1.3), bin/latin/writmaps.dat (1.3),
-	maps/makemaps (1.2), maps/readmaps.dat (1.2), maps/writmaps.dat
-	(1.2): cleaned up a bit
+	* bin/: ibmpc/readmaps.dat (1.3), ibmpc/writmaps.dat (1.3),
+	latin/readmaps.dat (1.3), latin/writmaps.dat (1.3): cleaned up a
+	bit
 
 1998-07-01 Wednesday 00:06  tobi
 
@@ -2229,47 +2121,32 @@
 
 1998-06-30 Tuesday 23:46  tobi
 
-	* addr.c (1.1), addr.h (1.1), ansi.c (1.1), areas.c (1.1), areas.h
-	(1.1), bmg.c (1.1), bmg.h (1.1), charset.c (1.1), charset.h (1.1),
-	config.c (1.1), config.h (1.1), control.c (1.1), critical.asm
-	(1.1), critical.h (1.1), date.c (1.1), date.h (1.1), dialogs.c
-	(1.1), dialogs.h (1.1), dirute.c (1.1), dirute.h (1.1), dlgbox.c
-	(1.1), dlist.c (1.1), dlist.h (1.1), dosasm.c (1.1), dosasm.h
-	(1.1), dosmisc.c (1.1), dosmisc.h (1.1), echotoss.c (1.1),
-	echotoss.h (1.1), editmail.h (1.1), environ.c (1.1), environ.h
-	(1.1), fecfg145.h (1.1), fido.c (1.1), fido.h (1.1), freq.c (1.1),
-	getopts.c (1.1), getopts.h (1.1), help.c (1.1), help.h (1.1),
-	helpcmp.c (1.1), helpcmp.h (1.1), helpinfo.c (1.1), helpinfo.h
-	(1.1), ibmscrn.c (1.1), init.c (1.1), keycode.c (1.1), keycode.h
-	(1.1), keys.h (1.1), list.c (1.1), list.h (1.1), main.h (1.1),
-	maincmds.h (1.1), maintmsg.c (1.1), maintmsg.h (1.1), makefile.bcd
-	(1.1), makefile.bco (1.1), makefile.bsd (1.1), makefile.djg (1.1),
+	* addr.c (1.1), addr.h (1.1), ansi.c (1.1), areas.c (1.1), bmg.c
+	(1.1), charset.c (1.1), charset.h (1.1), config.c (1.1), config.h
+	(1.1), control.c (1.1), date.c (1.1), date.h (1.1), dirute.c (1.1),
+	dirute.h (1.1), dosasm.c (1.1), dosasm.h (1.1), echotoss.c (1.1),
+	editmail.h (1.1), environ.c (1.1), fecfg145.h (1.1), fido.c (1.1),
+	fido.h (1.1), freq.c (1.1), help.c (1.1), help.h (1.1), helpcmp.c
+	(1.1), helpinfo.c (1.1), ibmscrn.c (1.1), init.c (1.1), keycode.c
+	(1.1), list.c (1.1), list.h (1.1), main.h (1.1), maincmds.h (1.1),
+	maintmsg.c (1.1), maintmsg.h (1.1), makefile.bcd (1.1),
+	makefile.bco (1.1), makefile.bsd (1.1), makefile.djg (1.1),
 	makefile.emo (1.1), makefile.hco (1.1), makefile.lnx (1.1),
 	makefile.qcd (1.1), makefile.rxw (1.1), makefile.unx (1.1),
 	makefile.wcd (1.1), makefile.wco (1.1), makefile.wcw (1.1),
-	makefile.wcx (1.1), makemsgn.c (1.1), makemsgn.h (1.1), malloc16.c
-	(1.1), malloc16.h (1.1), mcompile.h (1.1), memextra.c (1.1),
-	memextra.h (1.1), menu.c (1.1), menu.h (1.1), misc.c (1.1), misc.h
-	(1.1), mnu.c (1.1), mouse4.c (1.1), mprotos.h (1.1), msg.c (1.1),
-	msg.h (1.1), msged.c (1.1), msged.cfg (1.1), msged.h (1.1),
-	msghelp.src (1.1), mxbt.c (1.1), mxbt.h (1.1), nedit.h (1.1),
-	normal.h (1.1), normalc.c (1.1), nshow.c (1.1), nshow.h (1.1),
-	os2scr.c (1.1), pacific.c (1.1), patmat.c (1.1), patmat.h (1.1),
-	quick.c (1.1), quick.h (1.1), quote.c (1.1), quote.h (1.1),
-	rdirent.h (1.1), readmail.c (1.1), readmail.h (1.1), readmaps.dat
-	(1.1), rfind1st.c (1.1), rfind1st.h (1.1), rmi.h (1.1), sasc.c
-	(1.1), screen.c (1.1), screen.h (1.1), spawn.asm (1.1), spawn.h
-	(1.1), specch.h (1.1), strextra.c (1.1), strextra.h (1.1), system.c
-	(1.1), system.h (1.1), template.c (1.1), template.h (1.1),
-	textfile.c (1.1), textfile.h (1.1), unused.h (1.1), userlist.c
-	(1.1), userlist.h (1.1), version.h (1.1), vio.c (1.1), vio.h (1.1),
-	vsev.c (1.1), vsev.h (1.1), vsevops.c (1.1), vsevops.h (1.1), win.c
-	(1.1), winntscr.c (1.1), winsys.h (1.1), wrap.c (1.1), wrap.h
-	(1.1), writmaps.dat (1.1), doc/README (1.1), doc/makefile (1.1),
-	doc/msged.texi (1.1), doc/msged.tpl (1.1), doc/scheme.001 (1.1),
-	doc/scheme.002 (1.1), doc/scheme.003 (1.1), doc/scheme.004 (1.1),
-	doc/texinfo.tex (1.1), doc/whatsnew.txt (1.1), doc/manual/makefile
-	(1.1), doc/manual/msged.texi (1.1), doc/manual/texinfo.tex (1.1),
+	makefile.wcx (1.1), makemsgn.c (1.1), memextra.c (1.1), menu.c
+	(1.1), menu.h (1.1), misc.c (1.1), misc.h (1.1), mnu.c (1.1),
+	mprotos.h (1.1), msg.c (1.1), msg.h (1.1), msged.c (1.1), msged.h
+	(1.1), msghelp.src (1.1), nedit.h (1.1), normal.h (1.1), normalc.c
+	(1.1), nshow.c (1.1), os2scr.c (1.1), quick.c (1.1), quick.h (1.1),
+	quote.c (1.1), rdirent.h (1.1), readmail.c (1.1), readmail.h (1.1),
+	screen.c (1.1), spawn.asm (1.1), specch.h (1.1), strextra.c (1.1),
+	strextra.h (1.1), system.c (1.1), template.c (1.1), textfile.c
+	(1.1), textfile.h (1.1), userlist.c (1.1), version.h (1.1),
+	vsevops.c (1.1), win.c (1.1), winntscr.c (1.1), winsys.h (1.1),
+	wrap.c (1.1), wrap.h (1.1), doc/scheme.001 (1.1), doc/scheme.002
+	(1.1), doc/scheme.003 (1.1), doc/scheme.004 (1.1), doc/whatsnew.txt
+	(1.1), doc/manual/makefile (1.1), doc/manual/msged.texi (1.1),
 	bin/ibmpc/readmaps.dat (1.1), bin/ibmpc/writmaps.dat (1.1),
 	bin/latin/readmaps.dat (1.1), bin/latin/writmaps.dat (1.1),
 	maps/README (1.1), maps/can_ibm.chs (1.1), maps/dut_ibm.chs (1.1),
@@ -2277,9 +2154,30 @@
 	(1.1), maps/ibm_asc.chs (1.1), maps/ibm_iso.chs (1.1),
 	maps/ibm_mac.chs (1.1), maps/ibm_swe.chs (1.1), maps/ibm_vt1.chs
 	(1.1), maps/iso_asc.chs (1.1), maps/iso_ibm.chs (1.1),
-	maps/itl_ibm.chs (1.1), maps/mac_ibm.chs (1.1), maps/makemaps
-	(1.1), maps/makemaps.c (1.1), maps/nor_ibm.chs (1.1),
-	maps/prt_ibm.chs (1.1), maps/readmaps.dat (1.1), maps/spn_ibm.chs
-	(1.1), maps/swe_ibm.chs (1.1), maps/swi_ibm.chs (1.1),
-	maps/uk_ibm.chs (1.1), maps/writmaps.dat (1.1): Initial revision
+	maps/itl_ibm.chs (1.1), maps/mac_ibm.chs (1.1), maps/makemaps.c
+	(1.1), maps/nor_ibm.chs (1.1), maps/prt_ibm.chs (1.1),
+	maps/spn_ibm.chs (1.1), maps/swe_ibm.chs (1.1), maps/swi_ibm.chs
+	(1.1), maps/uk_ibm.chs (1.1): Initial revision
+
+1998-06-30 Tuesday 23:46  tobi
+
+	* areas.h (1.1.1.1), bmg.h (1.1.1.1), critical.asm (1.1.1.1),
+	critical.h (1.1.1.1), dialogs.c (1.1.1.1), dialogs.h (1.1.1.1),
+	dlgbox.c (1.1.1.1), dlist.c (1.1.1.1), dlist.h (1.1.1.1), dosmisc.c
+	(1.1.1.1), dosmisc.h (1.1.1.1), echotoss.h (1.1.1.1), environ.h
+	(1.1.1.1), getopts.c (1.1.1.1), getopts.h (1.1.1.1), helpcmp.h
+	(1.1.1.1), helpinfo.h (1.1.1.1), keycode.h (1.1.1.1), keys.h
+	(1.1.1.1), makemsgn.h (1.1.1.1), malloc16.c (1.1.1.1), malloc16.h
+	(1.1.1.1), mcompile.h (1.1.1.1), memextra.h (1.1.1.1), mouse4.c
+	(1.1.1.1), mxbt.c (1.1.1.1), mxbt.h (1.1.1.1), nshow.h (1.1.1.1),
+	pacific.c (1.1.1.1), patmat.c (1.1.1.1), patmat.h (1.1.1.1),
+	quote.h (1.1.1.1), rfind1st.c (1.1.1.1), rfind1st.h (1.1.1.1),
+	rmi.h (1.1.1.1), sasc.c (1.1.1.1), screen.h (1.1.1.1), spawn.h
+	(1.1.1.1), system.h (1.1.1.1), template.h (1.1.1.1), unused.h
+	(1.1.1.1), userlist.h (1.1.1.1), vio.c (1.1.1.1), vio.h (1.1.1.1),
+	vsev.c (1.1.1.1), vsev.h (1.1.1.1), vsevops.h (1.1.1.1), doc/README
+	(1.1.1.1), doc/manual/texinfo.tex (1.1.1.1) (utags:
+	msged-te-05-second-try, msged_te_05_pre, msged-te-05): Initial
+	checkin of MsgEd TE to the LINUX.DEVELOP.GER CVS server. This is a
+	pre-release of MsgEd TE 05 in closed beta statium.
 
