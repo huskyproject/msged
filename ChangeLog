@@ -1,3 +1,14 @@
+2003-03-09 Sunday 18:13  os2tobi
+
+	* makefile.unx (1.19): fixed makefile.unx
+
+2003-03-09 Sunday 17:21  os2tobi
+
+	* Makefile (1.18), dirute.c (1.16), dirute.h (1.14), fido.c (1.16),
+	filedlg.c (1.14), freq.c (1.8), msg.c (1.28), quick.c (1.8),
+	readmail.c (1.48), strextra.h (1.6), textfile.c (1.16), timezone.c
+	(1.4), wrap.c (1.14), doc/todo.txt (1.32): adaptions for huskylib
+
 2003-02-04 Tuesday 09:03  os2tobi
 
 	* curses.c (1.11), doc/whatsnew.txt (1.78): Support terminal resize
