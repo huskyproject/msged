@@ -120,4 +120,3 @@ void query_termcap(int what)
     }
 }
 #endif
-
