@@ -4,8 +4,6 @@ TODO-List for Msged
 Category 1: Will certainly be implemented until next release
 ============================================================
 
-- Write docs about grouping. Fix grouping !?
-
 - Fix: Maxx and Maxy do not currently override termcap :-(
 
 - Fix: Sascha reports crashes when resizing terminal window
