@@ -283,7 +283,7 @@ unsigned int TTGetKey(void)
     pki->chChar = pki->chScan = 0;
     KbdCharIn(pki, IO_WAIT, 0);
 
-    if (pki->chChar == 0xe0)
+    if (pki->chChar == 0xe0 && (pki->fbStatus & 2))
     {
         if (pki->chScan)
         {
@@ -304,7 +304,7 @@ unsigned int TTGetKey(void)
             }
         }
     }
-    if (pki->chScan == 0xe0)
+    if (pki->chScan == 0xe0 && (pki->fbStatus & 2))
     {
         if (!pki->chChar)
         {
