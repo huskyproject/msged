@@ -20,6 +20,11 @@ Fixes:
 
 - Redraw problems in dialog box buttons fixed.
 
+- In template text in forwarded and redirected messages, the areatag was
+  filled in incorrectly if the area grouping feature (group separators etc.)
+  was used.
+
+
 Features, Changes and Fixes in Msged 6.0.0
 ------------------------------------------
 
