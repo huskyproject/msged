@@ -141,7 +141,7 @@ long SquishMsgAreaOpen(AREA * a)
         }
     }
 
-    sprintf(work, "%s.sql", a->path);
+    sprintf(work, "%s.%s", a->path, ((a->msgtype == JAM) ? "jlr" : "sql"));
     sql = sopen(work, O_BINARY | O_RDONLY, SH_DENYNO, S_IMODE);
     if (sql != -1)
     {
@@ -1098,7 +1098,7 @@ int SquishAreaSetLast(AREA * a)
 
     if (Ahandle != NULL)
     {
-        sprintf(work, "%s.sql", a->path);
+	sprintf(work, "%s.%s", a->path, ((a->msgtype == JAM) ? "jlr":"sql"));
 
         fd = sopen(work, O_BINARY | O_RDWR, SH_DENYNO, S_IMODE);
         if (fd == -1)
