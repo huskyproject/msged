@@ -721,11 +721,13 @@ static void parse_fc_line(char *line, int check_type)
 static void read_fidoconfig_file (char *filename, int check_type)
 {
     FILE *f = fopen(filename, "r");
-    static char line[2048]; /* uh, oh, care for reentrance! */
+    static char *line = NULL; /* uh, oh, care for reentrance! */
     char *start;
     char *expanded_line;
     size_t l;
     int c;
+
+    if (line == NULL) line = xmalloc(2048);
 
     if (f == NULL)
     {
@@ -734,7 +736,7 @@ static void read_fidoconfig_file (char *filename, int check_type)
         return;
     }
 
-    while(fgets(line, sizeof(line), f) != NULL)
+    while(fgets(line, 2048, f) != NULL)
     {
         l = strlen(line);
 
