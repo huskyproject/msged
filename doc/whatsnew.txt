@@ -15,6 +15,10 @@ Changes:
 
   Areafileflags u
 
+  (If you are upgrading from some other MsgEd version than MsgEd TE 04,
+  you will also have to do quite some other changes.  Read the manual for
+  this.)
+
 - The "defaultnewsflag" and "defaultuucpflag" switches that had been
   introduced with MsgEd TE have been removed.  You can now control these
   features with the Areafileflags keyword (see below).
@@ -23,6 +27,11 @@ Changes:
 
 
 Features:
+
+- Added character set translation tables for the CP850 charset, which
+  is the default character set on national German editions of OS/2,
+  Windows and DOS. (Most users change it to 437, though, which is
+  equivalent to the IBMPC charset kludge).
 
 - In the Unix version, you can now press Ctrl+L to redraw the screen
   (in case it got corrupted by a syslogd message or similar).
@@ -216,9 +225,7 @@ Features:
 
 Fixes:
 
-- Unix version: Fixed Alt+<digit> keystrokes; fixed segmentation
-  violation on unknown control key combination; fixed F1..F10 on FreeBSD
-  syscons.
+- Reworked the way error messages are printed on startup a little bit.
 
 - Fixed segmentation violation when quoting mails that already contain
   quotes where the quote character ('>') is in the very first column.

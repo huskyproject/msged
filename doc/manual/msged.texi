@@ -38,9 +38,10 @@ Fidonet Message Reader and Editor Software for OS/2, Windows, DOS and Unix.
 * Advanced Concepts::           Advanced features and concepts.
 * Keyboard Reference::          How to use and change the key combinations.
 * Configuration Reference::     Explanation of the configuration file.
-* Compiling::                   Instructions for recompiling the source code.
-* Keyword Index::               Index of Configuration File keywords
-* KeyFuncs Index::              Index of editor and reader keyboard functions.
+* Compiling::                   
+* Concept Index::               
+* Keyword Index::               
+* Keyboard Indices::            
 @end menu
 @end ifinfo
 
@@ -76,6 +77,17 @@ possibly also be migrated to the mains team MsgEd over time. There is no
 "rivalry" between Kim and me, it is just that we have a little different
 goals in mind and therefore decided to maintain separate streams of MsgEd.
 
+If you like @value{MSGED} and start to use it as your everyday Fidonet
+editor, please drop me a note that you do so at @samp{Tobias Ernst @
+2:2476/418} or at @samp{tobi@@bland.fido.de}. I originally started to work on
+@value{MSGED} to create a Fidonet editor that fulfilled some special personal
+needs of mine. Since then, things evolved and I saw myself doing a lot of
+work that I would not have done just for my own needs. Writing this
+documentation is one such example, porting to Windows NT another. If I
+continue to do this work in the future and add new features to @value{MSGED}
+will strongly depend on how much feedback I receive from users that like and
+use @value{MSGED}. Therefore: Don't be shy - drop me a mail. :-)
+
 @node Installation, Introduction, Overview, Top
 @chapter Installation Procedures and Release Notes
 This chapter provides you with information that is necessary to successfully
@@ -92,13 +104,16 @@ UNIX environments.
 * Distribution Archives::       Which archives do I need?
 * Non-Unix Installation::       Installing @value{MSGED} on OS/2, DOS or Windows
 * UNIX installation::           Installing @value{MSGED} on Linux or Unix
+* Network Notes::               Using Fido software in a network environment.
+* Known Bugs::                  Known bugs and shortcomings of @value{MSGED}
+* Contact::                     Contacting the author, support, bug reports.
 @end menu
 
 @node Distribution Archives, Non-Unix Installation, Installation, Installation
 @section Which Distribution Archives do I need?
 @value{MSGED} @value{VERSION} is shipped in various distribution
 archives. This section describes the contents of each. You normally do only
-need one file containing th executable and documentation for your platform,
+need one file containing the executable and documentation for your platform,
 and maybe the file that contains the printable version of the documentation.
 
 @table @file
@@ -182,6 +197,14 @@ Create a subdirectory like for example @file{C:\MSGED}, change into this
 subdiretory, and unzip the distribution archive. Be sure to use the @samp{-d}
 option when unzipping the archive, because some archives contain
 subdirectories. (You might already have done this).
+
+@item
+Find out which codepage you are using by issueing the @code{CHCP} command. If
+it is 437, you do not have to take any action. If it is 850, you have to
+renamde @file{????maps.dat} to @file{????.437} (for backup purposes) and then
+you must rename @file{????maps.850} to @file{????maps.dat}. Alternatively,
+you could consider writing a batch file that first calls @code{CHCP 437} and
+then calls the @value{MSGED} executable.
 
 @item
 Rename the file @file{sample.cfg} to @file{msged.cfg} and modify it according
@@ -274,17 +297,17 @@ standalone executable that does not require any runtime DLLs.
 @end itemize
 
 
-@node UNIX installation,  , Non-Unix Installation, Installation
+@node UNIX installation, Network Notes, Non-Unix Installation, Installation
 @section Installation on Linux, FreeBSD, or other Unixes
 This section provides information on installing @value{MSGED} on Linux,
 FreeBSD or any other Unix-like system.
 
 @menu
-* UNIX Installation Procedure::   How to install @value{MSGED}.
-* Notes on UNIX terminal I/O::    How @value{MSGED} handles the terminal.
+* UNIX Installation Procedure::  How to install @value{MSGED}.
+* Notes on UNIX terminal I/O::  How @value{MSGED} handles the terminal.
 * Notes on UNIX keyboard input::  Escape Meta Alt Control Shift ;-)
 * Notes on Big Endian Hardware::  Running @value{MSGED} on RISC processors.
-* Colors in the Unix version::    How to enable colors.
+* Colors in the Unix version::  How to enable colors.
 @end menu
 
 @node UNIX Installation Procedure, Notes on UNIX terminal I/O, UNIX installation, UNIX installation
@@ -372,28 +395,37 @@ descriptions of each keyword that can be used in this file.
 You should now refer to the Unix specific release notes found below
 before trying to start @value{MSGED}. They can save you from a lot
 of headaches ;-).
-@c FIXME add xref
 
+@item
+Also, if you plan to share a message base between Non-Unix and Unix systems,
+you absolutely must read the chapter devoted to problems with shared message
+bases in heterogenous networks (@pxref{Network Notes,,Using Fidonet software
+in network environments}).
 @end enumerate
 
 @node Notes on UNIX terminal I/O, Notes on UNIX keyboard input, UNIX Installation Procedure, UNIX installation
 @subsection How Terminal I/O is handled on Unix
-@value{MSGED} does not use termcap, terminfo, or anything. @value{MSGED} is
-not linked to any curses library. The way that @value{MSGED} uses to create
-its full screen interface is to emit ANSI x3.64 character control
-sequences. This is a common subset of control sequences that is recognised,
-among others, by VT52, VT100, VT200 and higher VTxxx terminals, by xterm, by
-the FreeBSD and the Linux console, by the OS/2 telnet program, and others. I
-have tested this on several Unix boxes and it worked remarkably
-well. For optimum results, you should use the @file{scheme.004} color scheme
-file found in the @file{doc/} resp. @file{samples/} subdirectory. If you have
-problems seeing the cursor in an xterm, you should start the xterm with the
-option @samp{-cr white}.
+@cindex TERM variable
+@cindex repainting the screen (UNIX only)
+@value{MSGED} does neither use the curses library for most of its tasks, nor
+does it make use of termcap or terminfo data bases. The way that
+@value{MSGED} uses to create its full screen interface is to emit ANSI x3.64
+character control sequences. This is a common subset of control sequences
+that is recognised, among others, by VT52, VT100, VT200 and higher VTxxx
+terminals, by xterm, by the FreeBSD and the Linux console, by the OS/2 telnet
+program, and others.  In order to enable special features like color support
+based on the @code{TERM} variable, you can use @code{IF} constructs in the
+configuration file, as shown in the sample configuration file.
 
-However, this will of course not work on all possible Unix installations. In
-the future, I might consider to add a curses port. Until then, if you have
-any problems with the terminal routinesay of @value{MSGED}, please get in
-contact with me so that I can fix it.
+I have tested this on several Unix boxes and it worked remarkably well. For
+optimum results, you should use the @file{scheme.004} color scheme file found
+in the @file{doc/} resp. @file{samples/} subdirectory. If you have problems
+seeing the cursor in an xterm, you should start the xterm with the option
+@samp{-cr white}.
+
+If the display is corruped by system log daemon messages or similar, you can
+at any time during program execution press @key{Ctrl}-@key{L} to redraw the
+screen.
 
 @node Notes on UNIX keyboard input, Notes on Big Endian Hardware, Notes on UNIX terminal I/O, UNIX installation
 @subsection Special Notes on Keyboard Input
@@ -496,7 +528,298 @@ The sample color scheme file @file{color.004}, that you copied to
 @file{~/.msged.colors} during the installation process, contains color
 settings with sensible values. If, after adding the two lines from the
 example above to your configuration file, parts of the screen or message text
-are invisible, your terminal probably does not correctly support ANSI color codes.
+are invisible, your terminal probably does not correctly support ANSI color
+codes.
+
+
+@node Network Notes, Known Bugs, UNIX installation, Installation
+@section Using @value{MSGED} and other Fido software in networked environments
+@cindex Samba
+@cindex Peer Network
+@cindex NFS
+@cindex Lan Manager
+@cindex access synchronization
+@cindex synchronizing message base access
+@cindex record locks
+@cindex locks, on the message base
+@cindex voluntary locks
+Sysops that have more than one computer often use network filesystems like
+SMB (also known as Lan Manager, OS/2 peer services, the Windows Network, et
+cetera), Novell or NFS to share their message base among multiple computers.
+Depending on your environment, there are some problems buried into this
+approach that might cause hidden data loss and might be unaware to you. These
+problems are not specific to @value{MSGED}, but pertain to @emph{any} Fidonet
+software that uses the Squish, JAM or Hudson message base format. I feel
+enforced to devote a section of this documentation to these problems to save
+you from encoutering severe unexpected problems in your installation,
+especially as with the addition of Linux or Unix to such a network, the
+problems tend to increase dramatically.
+
+@menu
+* Access Synchronisation::      Description of the general problem.
+* Samba::                       Access Sync. with Lan Manager / Samba
+* NFS::                         Access Synchronisation with NFS
+* Novell::                      Access Synchronisation with Novell
+* Network Essence::             Conclusions to draw from this chapter
+@end menu
+
+@node Access Synchronisation, Samba, Network Notes, Network Notes
+@subsection Description of the Problem: Why we need access synchronisation.
+The issue that we are talking about is access synchronisation.  In a
+multi-tasking or networked environment, it happens that two or more programs
+simultaneously access the message base. Therefore, the Squish Message API
+(this is the piece of software that all Fidonet programs internally use to
+access the message base files) needs a way to ensure that no other Fidonet
+program can gain access to the message base file while itself is doing vital
+modifications on it. Otherwise, data could be screwed up or even lost if two
+programs would modify the same file simultaneously.
+
+As long as your message base resides on a single computer, you do not have a
+big problem with access synchronisation. On OS/2, Windows NT and DOS, access
+synchronisation is done via so called @dfn{record locks}, which works
+reliably. On Linux and other Unix system, access control is performed using
+so called @dfn{voluntary locks} by all programs that use the @file{SMAPI}
+edition of the Squish Message API. This is not as safe as the "record locks"
+feature. Voluntary locks can only synchronize programs that use them,
+i.E. programs that use the @file{SMAPI}, like @value{MSGED} or hpt. If you
+wish to use other Fidonet programs on Unix, you should ask the author if he
+employs voluntary locks for access synchronisation. If he doesn't, do not use
+his software.
+
+Things get more complicated in a networked environment, because there, not
+only different applications have to synchronize among themselves, but
+different computers also have to be synchronized. Or in other words, the
+network file system that you use must correctly propagate record and/or
+voluntary locks that have been set on one computer to all other computers.
+
+@node Samba, NFS, Access Synchronisation, Network Notes
+@subsection Access synchronisation on a Lan Manager (SMB) network.
+The SMB network protocol (also known as Lan Manager protocol, or OS/2 Peer
+Network, or Windows network), in principle, has support for propagating
+record locks over the net. Tests proved that it works quite well in all
+systems except Linux (Unix). This means that as long as your network only has
+OS/2, Windows 3.11/95/NT and DOS (with @file{SHARE.EXE} loaded) systems, you
+do not have to worry about access synchronization.
+
+If you add a Linux box to a SMB network, things get more complicated. For
+adding Linux to a SMB network, the Samba program is used. The Samba server
+(as of version 1.9.18.p8, which has been used for all tests described below)
+has some support for record locks, but it has restrictions. The Samba server
+will not grant a program running on computer A access to a message base file
+while a program running on computer B has placed a record lock on this
+file. However, it will frankly grant a second program running on computer B
+access to this file even while the first program running on computer B still
+has a lock on this file. This is frankly a bug in the Samba server. It hope
+it will get fixed in further releases. - A further shortcoming of the samba
+server is that it does not convert voluntary locks placed on the Unix side
+into record locks visible on the OS2/DOS/Windows side. This means that any
+OS/2 program, for example, can always access the message base file even if a
+Linux program holds a lock on the file.
+
+Also, neither of the available samba clients (smbfs, rumba) have support for
+propagating voluntary locks as record locks.
+
+The essence of this is: @emph{You cannot savely share a message base between
+Linux/Unix and Non-Unix systems using Samba}. All you can do is place the
+message base on a Samba server @emph{if} you assure that no other Linux
+program accesses the message base, and that only OS/2, DOS and Windows
+clients connect to the Samba server, and further more that on those clients,
+only one program at a time tries to access the message base (that is: a
+client with a multitasking OS that runs the tosser must not have any editor
+installed, and you should never start up two editors simultaneously on any
+client).
+
+This is harsh, but true. Write mails to the programmers of Samba
+and beg them to fix the problem with multiple programs on one clients, and to
+implement the feature to convert voluntary locks on Unix side into record
+locks on Non-Unix side. Perhaps the situation will then change in the future.
+
+@node NFS, Novell, Samba, Network Notes
+@subsection Access synchronisation on NFS
+As for NFS, NFS itself does not support any kind of access synchronization at
+all (!). Access synchronization on NFS is performed using an additional daemon
+software called @file{rpc.lockd}. So if you have a NFS server that has a
+functional @file{rpc.lockd} daemon @emph{and} all NFS clients support the
+rpc.lockd protocol, then you can use NFS to share a message base between
+multiple computers. The bad news is that I have not seen a working
+@file{rpc.lockd} on either FreeBSD or Linux, and at least the NFS client for
+OS/2 (as probably all other Non-Unix NFS clients) does not support the
+rpc.lockd protocol. If you want rpc.lockd to work, you currently must use AIX
+or Digital Unix or maybe also some other commercial Unix. Not an option for the
+home user, I fear.
+
+The essence is: @emph{You cannot use NFS to share a message base between
+multiple computers}.
+
+@node Novell, Network Essence, NFS, Network Notes
+@subsection Access synchronization on Novell networks
+Finally for Novell: I do not have any information on Novell networks. I
+suppose that they natively do support record locking, but I do not know if or
+how the existing Novell clients for Linux/Unix do support it.
+
+@node Network Essence,  , Novell, Network Notes
+@subsection The essence of this section about network usage is:
+@enumerate
+@item
+You can savely share a message base among multiple computers in a Lan Manager
+(OS/2 Peer, Windows Network, SMB Network, ...) network as long as no Linux
+or Unix computer is involved.
+
+@item
+You can place the message base on a Linux/Unix fileserver running samba only
+as long as no fidonet software is running on the file server, no Linux or
+Unix client is involved, and all other clients take care that only one
+Fidonet program at a time is being run. (This includes not only the tosser
+and maintenance programs, but also the mail editor itself).
+
+@item
+There currently is not any way to savely share a Squish, JAM or Hudson
+message base between computers if any of the computers is a Linux or Unix
+machine. If you want to run Fido on the Linux box, the Linux box has to have
+its own messagebase (usually meaning that you must install it as sysop point
+or similar). 
+@end enumerate
+
+If you do not obey to these three rules, you sooner or later will experiences
+loss or corruption of mails and mail areas. Sorry to say so.
+
+But what if you absolutely have to share a message base between multiple
+Linux/Unix or Linux/Unix and Non-Unix computers? There is only one solution
+to this problem: Use a message base format that does not require access
+synchronisation. While the Squish, JAM and Hudson message base formats to
+require access synchronisation because they store multiple mails in a single
+file, the Fido *.MSG (also known as Opus) message base format does not have
+this restriction because each mail is stored in a separate file. So Fido
+*.MSG presently is the only way to go if you want to share your message base
+between Linux/Unix and Non-Unix or other Unix computers.
+
+
+@node Known Bugs, Contact, Network Notes, Installation
+@section Known Bugs and Non-Features
+This sections lists some shortcomings of the current release
+@value{MSGED} @value{VERSION}. Please do not complain to me about these
+problems, I am well aware of the problems and will try to solve them in the
+future to the best of my possibility. (If, on the other hand, you want to fix
+these problems on your own, go ahead and send me the changes you made. They
+will be greatly appreciated.).
+
+@itemize @bullet
+@item
+The documentation is lacking a chapter that provides the beginner with a
+quick overview on how to use @value{MSGED}
+
+@item
+Version 7 nodelist lookup is not always working correctly (if two sysops
+accidentally have the same name, it simply yields by random the nodenumber of
+the one or the other, but does not let you select between the two of them)
+and is lacking a lot of features. It is suggested that as long as things are
+like that, you instruct your nodelist compiler to generate a
+@file{FIDOUSER.LST} listing file. @xref{UserList,,The @code{UserList}
+Keyword}, for more information.
+
+@item
+The Windows NT version does not allow entry of special characters by ASCII
+code using the @key{Alt}-@var{numeric keypad} - Method. Also, under Windows
+95, you must use @key{AltGr} to create special characters. 
+@key{Ctrl}+@key{Alt} will not work.
+
+@end itemize
+
+@node Contact,  , Known Bugs, Installation
+@section Support, Contacting the Author, Reporting Bugs, Contributing Code
+There are numerous reasons why you might wish to establish contact with me,
+the author of @value{MSGED}.
+
+@enumerate
+@item
+You have decided to use @value{MSGED} on a regular basis. In this case,
+please do send me an e-mail at the address listed below. How much time I will
+spend on developing @value{MSGED} in the future will heavily depend on the
+number of mails I receive from users that tell me that they do use
+@value{MSGED}.
+
+@item
+You have a general questions on how to configure or on how to use a certain
+feature of @value{MSGED}. In other words, you need support. In this case,
+you'd best post your question to one of the following echos:
+
+@table @code
+@item MSGED_ECHO
+The international MsgEd conference. English is the preferred language here.
+@item OS2BBS.GER
+This German echo covers OS/2 Fidonet software. I monitor it regularly.
+@item OS2NET.BBS.GER
+The equivalent of OS2.BBS.GER in the German OS/2 net. I monitor it regularly.
+@end table
+
+If you do not have access to any of these echos, you may of course also
+contact me via netmail or e-mail at the addresses listed below.
+
+@item
+You want to report a bug. There are two sorts of bugs:
+
+@enumerate a
+@item Normal bugs.
+You think that a certain function of @value{MSGED} does not work as expected,
+e.g. it is producing garbage, or doing strange things, or similar. In this
+case, either post to the echos listed above, or contact me via
+netmail. Please do supply all information that is necessary to understand
+your problem.
+
+@item Fatal bugs.
+A fatal bug occurs if @value{MSGED} crashes. Depending on your operating
+system, the symptom might be a core dump, or a SYS 3175, or a general
+protection fault, or a system lockup, or a spontaneous reboot. I do consider
+a crash untolerable. No matter how stupid things you do, you should not be
+able to crash @value{MSGED}.
+
+If you are running the precompiled Linux binary, reporting a fatal bug is
+exceptionally easy. If you experience a crash, simply send me the @file{core}
+file that has been generated. You do not need to try to reproduce it or write
+estensive descriptions. Simply send the @file{core} file, and in most
+circumstances I will be able to fix the problem.
+
+If you are running any other binary version (like OS/2, DOS, Winodws), you
+will not get a core file on a crash. (On OS/2, you can write me a mail and
+ask me for sending you a debugging executable. This will require the EMX
+runtime, but generate @file{core} files just like the Unix version
+does. On DOS and windows, you do not have this option). Write down as much
+information as you can, try to find a way to reproduce the crash and contact
+me at the addresses below.
+@end enumerate
+
+@item You want to contribute to @value{MSGED}.
+If you are a programmer and have fixed a problem in @value{MSGED} on your
+own, please submit your changes to me. The preferred way for doing so is to
+send me a difference file in GNU diff format. Your work will be highly
+appreceated and honored in an appropriate place.
+
+If you want to write a new feature for @value{MSGED}, please contact me
+beforehand to avoid that we do duplicate work. Again, I will appreciate and
+honor eny efforts done by you. Please note that for writing a @value{MSGED}
+enhancement, you should be familiar with C. Also, @value{MSGED} uses a
+special indentaion style throughout the source code, that I would like you to
+adhere to.
+@end enumerate
+
+So here are my addresses if you want to get in contact with me:
+
+@itemize @bullet
+@item Fidonet:
+Tobias Ernst @ 2:2476/418
+
+@item e-mail:
+tobi@@bland.fido.de
+
+@item Telefax:
++49 711 5000184
+
+@end itemize
+
+
+
+
+
 
 @node Introduction, Advanced Concepts, Installation, Top
 @chapter A quick tour through @value{MSGED}
@@ -517,11 +840,165 @@ chapter will introduce you into some advanced concepts in
 Fidonet-Internet gateway, how to use eight bit character sets, and similar.
 
 @menu
+* Exporting and Printing::      Exporting mails to text files or printers.
 * Special Characters::          Special Characters and FSC 0054 Charset Kludges
 * Internet Gateways::           Using @value{MSGED} for e-mail correspondance.
 @end menu
 
-@node Special Characters, Internet Gateways, Advanced Concepts, Advanced Concepts
+@node Exporting and Printing, Special Characters, Advanced Concepts, Advanced Concepts
+@section Exporting Mails to Text Files or Printer
+@cindex exporting a mail
+This section tells you how to export mails to text files that you can than
+use for various purposes like importing into a text processor, as well as how
+to print mails. While this as it self is not a very advanced feature, the
+file export menu in @value{MSGED} has some hidden features to control the
+format of the exported mail that might not be aware to you. Also, most users
+might not know that they can use the file export menu to print mails.
+
+@menu
+* Exporting Basics::            
+* Export Formats::              
+* Printing::                    
+@end menu
+
+@node Exporting Basics, Export Formats, Exporting and Printing, Exporting and Printing
+@subsection How to use the Mail Export Feature
+When you are in message reading mode, you can press @key{Alt}-@key{W} in
+order to invoke the mail export dialog. This dialog looks like this:
+
+@example
+*---------------------- Export File ----------------------*
+| Name of file to export?                                 |
+| mail.txt                                                |
+|                      Ok    !   Cancel  !                |
+|                   **********  **********                |
+*---------------------------------------------------------*
+@end example
+
+It seems very simple to use at first glance. Simply write a name of a file to
+export the mail to into the dialog field and then press @key{Enter} to start
+the action. 
+
+And indeed you can export mails in this way. Mails that have been exported in
+this way are suitable to be re-imported into @value{MSGED} by pressing
+@key{Alt}-@key{R} when you are in the internal message editor. This is often
+useful when you want to copy a part of a mail and insert it into a new
+message you are composing.
+
+However, if you look at the file that has been generated with a text editor,
+the result will be dissatisfying. Read on below to find out why.
+
+@node Export Formats, Printing, Exporting Basics, Exporting and Printing
+@cindex format, of exported mail
+@subsection Controlling the Format of the Exported Message
+By default, @value{MSGED} exports a message in @dfn{raw message format}, also
+called @dfn{MsgEd format}. This format saves the mail raw as it is stored in
+the message base, which means that line feeds will only be placed after each
+@emph{paragraph}. This format is well suited if you later want to import the
+mail into the internal message editor, because it well exactly keep the
+paragraph format of the message. However, it is not suitable for printing or
+editing the file with a normal text editor, because there, you will only see
+one very long line per paragraph, which is mostly not what you wanted to
+have.
+
+If you want to print the file with the exported message or to view it with a
+normal text editor, you must instruct @value{MSGED} to export the file in the
+@dfn{text format}. In text format, the message will be saved in a
+line-wrapped form, that is, the file will look just like the mail that you
+see on screen in message reading mode, with a linefeed placed after each
+line. You instruct @value{MSGED} to export a mail in text format by appending
+@samp{,t} to the file name like in this example:
+
+@example
+*---------------------- Export File ----------------------*
+| Name of file to export?                                 |
+| mail.txt,t                                              |
+|                      Ok    !   Cancel  !                |
+|                   **********  **********                |
+*---------------------------------------------------------*
+@end example
+
+This format is well suited for printing and editing.
+
+@value{MSGED} also has some other formats for exporting mails. All of them
+are invoked by placing a comma and the corresponding letter after the file
+name. Here is a complete list:
+
+@table @samp
+@item ,t
+Text mode. Place a line feed after each line. Well suited for printing or
+editing with a standard text editor.
+@item ,m
+Raw message mode. This is your choice if you later wish to re-import the
+message into the internal message editor.
+@item ,q
+Quoted mode. This is like text mode, but each line will be prefixed with the
+quote string.
+@end table
+
+If you cannot remember this format characters, you can also ask @value{MSGED}
+to present you a menu with all possible export formats by putting a
+questionmark @emph{in front of} the file name like in this example:
+
+@example
+*---------------------- Export File ----------------------*
+| Name of file to export?                                 |
+| ?mail.txt                                               |
+|                      Ok    !   Cancel  !                |
+|                   **********  **********                |
+*---------------------------------------------------------*
+@end example
+
+@node Printing,  , Export Formats, Exporting and Printing
+@subsection Printing Mails
+@cindex printing
+@cindex piping
+
+The message export facility can also be used to print a message. On all
+systems except Unix, this is done by printing to the special printer device
+called @file{PRN}. That is, in order to print a mail, press @key{Alt}-@key{W}
+and enter @file{PRN} as name of the file to export the message to. Do not
+forget to enter @samp{,t} after the file name in order to switch to text mode
+(only text mode will yield good results for printing a mail):
+
+@example
+@r{Example for printing on OS/2, DOS or Windows:}
+*---------------------- Export File ----------------------*
+| Name of file to export?                                 |
+| PRN,t                                                   |
+|                      Ok    !   Cancel  !                |
+|                   **********  **********                |
+*---------------------------------------------------------*
+@end example
+
+On Unix, printing is performed by piping the mail into the lpr
+program. Fortunately, @value{MSGED} also supports piping. Simply prefix the
+``filename'' with a pipe character (the broken vertical bar), and the rest of
+the string (except for the comma and the format character) will be
+interpreted as a command to be executed by the shell. Again, do not forget to
+switch to text mode by appending @samp{,t} to the command.
+
+@example
+@r{Example for printing on Unix:}
+*---------------------- Export File ----------------------*
+| Name of file to export?                                 |
+| |lpr - ,t                                               |
+|                      Ok    !   Cancel  !                |
+|                   **********  **********                |
+*---------------------------------------------------------*
+@end example
+
+You can of course also use the pipe character for piping mails through other
+programs than lpr. For example, you could pipe cooking recipes from an
+echomail area devoted to cooking through a perl or rexx script that archives
+them in a database.
+
+As a side note, piping does also work in the OS/2 and Windows versios of
+@value{MSGED} if they have been compiled with a GNU compiler supporting the
+@code{popen} command. (The binary versions that I have released are).
+
+
+@node Special Characters, Internet Gateways, Exporting and Printing, Advanced Concepts
 @section Using Special Characters - The FSC 0054 Charset Kludge
 @cindex FSC 0054
 @cindex special characters
@@ -536,9 +1013,9 @@ special characters via Fidonet.
 
 @menu
 * Charset Kludges for the Impatient::  Read this to get it to work quickly.
-* Problems with Special Characters::   Description of the general problem.
-* Special Characters in Fidonet::      FSC/FTS proposal to solve the problem.
-* MsgEd TE and Special Characters::    How @value{MSGED} implements FSC 0054.
+* Problems with Special Characters::  Description of the general problem.
+* Special Characters in Fidonet::  FSC/FTS proposal to solve the problem.
+* MsgEd TE and Special Characters::  How @value{MSGED} implements FSC 0054.
 @end menu
 
 @node Charset Kludges for the Impatient, Problems with Special Characters, Special Characters, Special Characters
@@ -578,14 +1055,16 @@ In contrast to the standard 7 bit ASCII character set, which is a single
 character set used by nearly all computer systems, there exist several
 pseudo-standard character sets that are 8 bits wide. All of them contain
 ASCII as an subset, but they all differ in how they encode special
-characters. DOS and OS/2 computers typically use the IBM PC character
-set. Unix computers and the Amiga typically use the ISO8859 character set,
-also known as Latin-1. Windows uses IBM PC for console applications, but
-ISO8859 for graphical applications. The Macintosh uses the Macintosh
-character set. The consequence of this is clear: If you write a text on a
-Unix or Windows computer using special characters like accented letters or
-umlauts, you cannot expect it to be properly displayed on a DOS or OS/2
-computer, and vice versa, unless special measures are taken.
+characters. DOS and OS/2 computers typically use the IBM PC character set,
+but even there, dependent on what country you live in, there are several
+different code pages of the IBM PC character set. Unix computers and the
+Amiga typically use the ISO8859 character set, also known as Latin-1. Windows
+uses IBM PC for console applications, but ISO8859 for graphical
+applications. The Macintosh uses the Macintosh character set. The consequence
+of this is clear: If you write a text on a Unix or Windows computer using
+special characters like accented letters or umlauts, you cannot expect it to
+be properly displayed on a DOS or OS/2 computer, and vice versa, unless
+special measures are taken.
 
 @node Special Characters in Fidonet, MsgEd TE and Special Characters, Problems with Special Characters, Special Characters
 @subsection How has this problem been solved in Fidonet?
@@ -636,15 +1115,27 @@ will be notified that the FSC 0054 character set translation engine has been
 activated when @value{MSGED} starts.
 
 It is important that you use the correct @file{READMAPS.DAT} and
-@file{WRITMAPS.DAT} files that have been shipped with the executable, because
-these files are tailored to the charcter set that you are using locally: The
-OS/2, DOS and Windows versions of @value{MSGED} ship with a pair of
-@file{READMAPS.DAT} and @file{WRITMAPS.DAT} that is intend for use with
-computers that use the IBMPC character set, while the Linux version ships
-with a pair of @file{READMAPS.DAT} and @file{WRITMAPS.DAT} that are tailored
-to computers that use the ISO 8859 character set (Latin-1). (Some Linux boxes
-use IBMPC, codepage 437, or even 850, instead, but I strongly suggest that
-you change your system configuration to use ISO 8859 in that case!).
+@file{WRITMAPS.DAT} files, because these files are tailored to the charcter
+set that you are using locally: The OS/2, DOS and Windows versions of
+@value{MSGED} ship with a pair of @file{READMAPS.DAT} and @file{WRITMAPS.DAT}
+that are tailored for the IBMPC codepage 437 (international). In order to
+find out if you are using codepage 437, you can use the @file{CHCP} command
+with no arguments. If you are not using codepage 437, you should write a
+batch file that first calls @file{CHCP 437} before calling @value{MSGED}. If
+you are using codepage 850, you might alternatively also delete
+@file{READMAPS.DAT} and @file{WRITMAPS.DAT} and then copy renamd the files
+@file{READMAPS.850} and @file{WRITMAPS.850} to @file{READMAPS.DAT} and
+@file{WRITMAPS.DAT}. These files are tailored for codepage 850.
+
+The Linux version ships with a pair of @file{READMAPS.DAT} and
+@file{WRITMAPS.DAT} that are tailored to computers that use the ISO 8859
+character set (Latin-1). (Some Linux boxes use IBMPC, codepage 437, or even
+850, instead, but I strongly suggest that you change your system
+configuration to use ISO 8859 in that case!).
+
+If you have the source code distribution of @value{MSGED}, the @file{bin}
+subdiretory contains @file{readmaps.dat} and @file{writmaps.dat} files for
+all supported code pages.
 
 The following table lists all level 2 character sets that @value{MSGED}
 understands (meaning all character sets that are defined in the
@@ -653,9 +1144,11 @@ understands (meaning all character sets that are defined in the
 @example
 @@CHRS-Kludge: | Conventional Name:   | Used by these computers:
 --------------+----------------------+---------------------------
-IBMPC         | IBM PC, Codepage 437 | DOS, OS/2, Windows console
 LATIN-1       | ISO 8859-1           | Unix, Amiga, Windows GUI
 MAC           | MAC                  | Macintosh computers
+IBMPC         | IBM PC, Codepage 437 | DOS, OS/2, Windows console
+CP850         | IBM PC, Codepage 850 | National German editions of
+              |                      |   DOS, OS/2 and Windows.
 @end example
 
 These are the character sets that are used in the Western World. I would like
@@ -674,21 +1167,21 @@ character set when you save them.
 If you want to retain special characters in your mail by adding a charset
 kludge, you have to do two things. First, you have to define which character
 set to use for saving your mails (it must not necessarily be the character
-set that you are using locally). @xref{OutputCharset,,The
-@code{OutputCharset} Keyword}, for information on how to do this. In most
-cases, you will simply want to add the following line to your configuration
-file:
+set that you are using locally, but you should not use
+@code{CP850}). @xref{OutputCharset,,The @code{OutputCharset} Keyword}, for
+information on how to do this. In most cases, you will simply want to add the
+following line to your configuration file:
 
 @example
 OutputCharset IBMPC
 @end example
 
-Then, you have to tell @value{MSGED} in which areas it is allowable to send
-mails with special characters and charset kludges. @value{MSGED} will only
-write special characters into areas that have the @samp{8} flag set. If you
-are importing your message area configuration from a tosser configuration
-file, you can simply put the following line to the beginning of your
-configuration file:
+This will even work when you have a Linux box. Then, you have to tell
+@value{MSGED} in which areas it is allowable to send mails with special
+characters and charset kludges. @value{MSGED} will only write special
+characters into areas that have the @samp{8} flag set. If you are importing
+your message area configuration from a tosser configuration file, you can
+simply put the following line to the beginning of your configuration file:
 
 @example
 AreaFileFlags 8
@@ -3535,7 +4028,7 @@ probably won't hurt you. On the other hand, you should only use
 the moderators of the echo areas that you are posting in do not forbid
 8-bit-codes.
 
-@node Compiling, Keyword Index, Configuration Reference, Top
+@node Compiling, Concept Index, Configuration Reference, Top
 @appendix Compiling the Source Code
 @cindex source code
 @cindex compiling the source code
@@ -3630,8 +4123,9 @@ The following compilers and target operating systems are supported:
 @example
 Makefile     | Platform                 
 -------------+-----------------------------------------
-makefile.bcd | DOS with Borland C 3.1 or Turbo C  
-makefile.bco | OS/2 with Borland C 2.0  
+makefile.bcd | DOS with Borland C++ 3.1 or Turbo C  
+makefile.bco | OS/2 with Borland C 2.0
+makefile.bcw | Windows 95/NT with Borland C++ 4.0
 makefile.djg | DOS/386 with DJGPP GCC 2.7.2
 makefile.emo | OS/2 with EMX 0.9c GCC 2.7.2
 makefile.ibo | OS/2 with IBM CSET/2 and maybe also VAC++
@@ -3739,7 +4233,7 @@ Finally, you may want to create the documentation in your favourite output
 format. This requires quite some prerequisite software to be installed on
 your system, so you probably might simply want to grab @file{MSGTE5_M.ZIP}.
 
-But if you really wnat to compile the manual by hand, proceed as follows:
+But if you really want to compile the manual by hand, proceed as follows:
 Change to the @file{doc/manual} subdirectory:
 
 @example
@@ -3785,19 +4279,13 @@ You have now created all files that are necessary to install
 @value{MSGED}. @xref{Installation,,Installation Procedures and Release
 Notes}, for information on how to install these files.
 
-@node Keyword Index, KeyFuncs Index, Compiling, Top
-@unnumbered Configuration File Keyword Index
+@node Concept Index, Keyword Index, Compiling, Top
+@appendix General Index
+@printindex cp
 
+@node Keyword Index, Keyboard Indices, Concept Index, Top
+@appendix Configuration File Keyword Index
 @printindex fn
-
-@node KeyFuncs Index,  , Keyword Index, Top
-@unnumbered Keyboard Functions Indices
-
-@section Reader Keyboard Functions Index
-@printindex kr
-
-@section Editor Keyboard Functions Index
-@printindex ke
 
 @contents
 @bye
