@@ -299,7 +299,9 @@ struct _sv
                                 /* flag is set */
     char *sort_criteria;        /* sort criteria for areas */
     char *special_characters;   /* allowed ASCII codes >= 128 */
-    char *freqarea;             /* area tag for area to make f.req. in */
+    char *freqarea;             /* area tag for area to make f.req.in */
+    char *input_charset;        /* charset  assumed when reading mail
+                                   without CHRS kludge. */
 };
 
 /* These are the system switches, for access across the system */
@@ -364,6 +366,7 @@ struct _swv
     int useoriginlines;         /* add origin lines in echomail? */
     int edittearlines;          /* add tearlines to template message */
     int editoriginlines;        /* add originlines to template message */
+    int squish_lock;            /* Lock message base for greater speed */
 };
 
 #ifndef INCL_MAIN
