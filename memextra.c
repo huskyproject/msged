@@ -9,9 +9,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include "addr.h"
-#include "nedit.h"
-#include "msged.h"
 #include "memextra.h"
 
 static char msg_alloc_fail[] =
@@ -24,6 +21,8 @@ static char msg_realloc_fail[] =
 
 static char msg_free_fail[] =
 "*** Memory deallocation failure (attempted to free null pointer)\n";
+
+extern void cleanup(char *, ...);
 
 void *xmalloc(size_t size)
 {
