@@ -319,7 +319,7 @@ static void reply_msg(int type)
 
     /* find a matching destination aka from the origin zone */
 
-    if (!(type & MT_NEW) && m->to.zone != m->from.zone)
+    if (CurArea.netmail && (!(type & MT_NEW) && (m->to.zone != m->from.zone)))
     {
         for (i = 0; i < SW->aliascount; i++)
         {
