@@ -51,6 +51,60 @@
 
 #define TEXTLEN 2048
 
+/* this routine expands tabs in imported files and filters out
+   other control characters */
+
+void filter_buffer(char *buf, int size)
+{
+    char tempbuf[TEXTLEN];
+    char *s = tempbuf;
+    char *d = buf;
+    int y = 0, i=0;
+
+    if (size)
+    {
+        memmove(tempbuf, buf, size);
+        tempbuf[size-1] = '\0';
+
+        for (;*s && (size - 1);s++)
+        {
+            if (*s < ' ')
+            {
+                switch (*s)
+                {
+                case '\t':
+                    i = (((y >> 3) + 1) << 3) - y;
+                    while (size - 1 && i)
+                    {
+                        *d++ = ' ';
+                        y++;
+                        size--;
+                        i--;
+                    }
+                    break;
+                case '\n':
+                    *d++='\n';
+                    y++;
+                    size--;
+                    break;
+                default:
+                    *d++=' ';
+                    y++;
+                    size--;
+                    break;
+                }
+            }
+            else
+            {
+                *d++ = *s;
+                y++;
+                size--;
+            }
+        }
+    }
+    *d = '\0';
+}
+
 void import(LINE * l)
 {
     char *fn;
@@ -107,6 +161,8 @@ void import(LINE * l)
 
         while (fgets(line, sizeof line, fp) != NULL)
         {
+            filter_buffer(line, sizeof line);
+            
             if (l->text != NULL)
             {
                 n = xcalloc(1, sizeof *n);

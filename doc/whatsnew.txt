@@ -145,6 +145,8 @@ Features:
 
 Fixes:
 
+- Fixed crashes on importing text files that contained tabulator characters.
+
 - Reduced the memory requirements of a Borland compiled DOS executable
   considerably in case of a lot of "Alias" definitions. Again the realloc()
   problem.
