@@ -91,7 +91,7 @@ clean:
 
 distclean: clean
 	-$(RM) $(TARGET)
-        -$(RM) msghelp.dat
+	-$(RM) msghelp.dat
 
 install: $(TARGET)
 	$(INSTALL) $(IBOPT) $(TARGET) $(BINDIR)
