@@ -8,6 +8,10 @@ Changes:
 
 Features:
 
+- (by Max Khon) The "curses" display driver (use -DUSE_CURSES when 
+  compiling to get this) now supports detection of terminal resize 
+  and pseudographics drawing.
+
 - "Switch XXLTearline on" by A. Ilchenko. If you set this, you can have a
   tearline of up to 79 characters (instead of 35), and the Unix version will
   print system information in the tearline. But be aware that this violates
@@ -18,7 +22,7 @@ Fixes:
 - Fix display problems (uncontrolled scrolling) in cygwin terminal and
   on FreeBSD console. On some other terminals (e.g. MacOS X Terminal.app)
   this will cause a new bug: the character in the bottom right corner will
-  have the wrong color. But that's better than Msged not wokring in some 
+  have the wrong color. But that's better than Msged not worÌing in some 
   other terminals at all. 
 
 - Fix coredump on Unix if "set statbar off" is configured.
