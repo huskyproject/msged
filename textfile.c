@@ -53,6 +53,8 @@ void import(LINE * l)
     LINE *n;
     int ret;
 
+    fn[0] = '\0';
+
     ret = GetString(" Import File ", "Name of file to import?", fn, PATHLEN);
 
     TTCurSet(1);
