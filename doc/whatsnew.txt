@@ -26,6 +26,10 @@ Changes:
 Features:
 =========
 
+- The UNIX version now draws pseudographics (instead of the ugly minus plus
+  pipe graphics that was used previously) if the termcap entry suggests that
+  the terminal can do it. Looks much nicer than before.
+
 - JAM Support. Still experimental. Thanks to Fedor Lizunkov.
 
 - Character set translate now does not only recode the mail text, but also
