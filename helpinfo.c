@@ -146,6 +146,7 @@ void helpinfo(int argc, char *argv[])
     curr = 0;
     while (curr < numTopics)
     {
-        helpinfoDoHelp(curr++);
+        helpinfoDoHelp(curr);
+        curr++;
     }
 }

@@ -317,7 +317,7 @@ static void reply_msg(int type)
         m->msgnum = MsgnToUid(CurArea.messages) + 1;
     }
 
-    /* find a matching destination aka from the origin zone */
+    /* find a origin aka matching the destination zone for netmails */
 
     if (CurArea.netmail && (!(type & MT_NEW) && (m->to.zone != m->from.zone)))
     {
@@ -1458,8 +1458,8 @@ int EditHeader(msg * m)
             {
                 ch = ChangeAddress(&m->to, 2, (m->isto) ? strlen(m->isto) : 0);
             }
-/* AKA-Matching */
-            if (m->from.zone != m->to.zone)     /* wrong zone in "from" */
+/* AKA-Matching, only for netmails */
+            if (CurArea.netmail && (m->from.zone != m->to.zone)) /* wrong zone in "from" */
             {
                 for (i = 0; i < SW->aliascount; i++)
                 {

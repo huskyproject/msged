@@ -456,14 +456,16 @@ void hex_dump(void)
             pos2++;
             if (x % 4 == 3)
             {
-                *(prtln + pos1++) = ' ';
+                *(prtln + pos1) = ' ';
+                pos1++;
             }
             if (x % 16 == 15)
             {
                 fprintf(ofp, "%s\n", prtln);
             }
             x++;
-            c = cur->text[i++];
+            c = cur->text[i];
+            i++;
         }
 
         cur = cur->next;

@@ -957,7 +957,8 @@ static void trans_token(char *line, int maxlen, msg *m)
 	switch (toupper(*cp))
 	{
 	case '@':                      /* escaped @ character */
-	    strcat(line + (linelen++), "@");
+	    strcat(line + (linelen), "@");
+	    linelen++;
 	    break;
 	case 'N':                      /* insert full name */
 	    linelen += sprintf(line + linelen, "%-.*s",
@@ -1689,7 +1690,8 @@ int writemsg(msg * m)
 	{
 	    if (SW->msgids)
 	    {
-		sprintf(text, "\01MSGID: %s %08lx\r", show_address(&from), now++);
+		sprintf(text, "\01MSGID: %s %08lx\r", show_address(&from), now);
+		now++;
 		curr = InsertAfter(curr, text);
 	    }
 	}

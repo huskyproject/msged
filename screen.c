@@ -53,7 +53,8 @@ unsigned int GetKey(void)
     {
         if (*macro)
         {
-            return *(macro++);
+            macro++;
+            return *(macro - 1);
         }
         macro = NULL;
     }
@@ -76,7 +77,8 @@ unsigned int GetKey(void)
     {
         if (*macro)
         {
-            return *(macro++);
+            macro++;
+            return *(macro-1);
         }
 
         macro = NULL;
