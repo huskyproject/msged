@@ -73,6 +73,7 @@ int bdos(int func, unsigned reg_dx, unsigned char reg_al);
 #include "date.h"
 #include "echotoss.h"
 #include "mctype.h"
+#include "help.h"
 
 #define rand_number(num) ((int) (((long) rand()) % (num)))
 

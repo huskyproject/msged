@@ -178,7 +178,7 @@ int TTReadStr(unsigned long *b, int len, int row, int col)
     int i;
     unsigned short * bc = (unsigned short *)b;
 
-    VIOgetra(col, row, col + len - 1, row, b);
+    VIOgetra(col, row, col + len - 1, row, bc);
     for (i = len - 1;  i >= 0; i--)
     {
         b[i] = MAKECELL(bc[i] & 0xFF, (bc[i] >> 8) & 0xFF);
