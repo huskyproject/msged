@@ -4,9 +4,9 @@ include ../huskymak.cfg
 CC=	gcc
 
 ifeq ($(DEBUG), 1)
-  CFLAGS=	-Wall -I$(INCDIR) -g
+  CFLAGS=	-Wall -I$(INCDIR) -I../smapi -g
 else
-  CFLAGS=	-Wall -I$(INCDIR) -s
+  CFLAGS=	-Wall -I$(INCDIR) -I../smapi -s
 endif
 
 CDEFS=	-DUNIX -DUSE_MSGAPI -DUNAME=\"BSD\" -DUSE_FIDOCONFIG
@@ -85,5 +85,5 @@ distclean: clean
 	-rm $(TARGET)
 
 install: $(TARGET)
-	install $(IBOPT) $(TARGET) $(BINDIR)
+	install -c $(IBOPT) $(TARGET) $(BINDIR)
 
