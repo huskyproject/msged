@@ -29,7 +29,7 @@
 @node Top, Overview, (dir), (dir)
 @top @value{MSGED}
 This document describes @value{MSGED} @value{VERSION}, a Public Domain
-Fidonet Message Reader and Editor Software for OS/2, DOS and Unix.
+Fidonet Message Reader and Editor Software for OS/2, Windows, DOS and Unix.
 
 @menu
 * Overview::                    What is @value{MSGED}?
@@ -123,12 +123,13 @@ This archive contains a statically linked, pre-compiled Linux executable,
 sample configuration files and a manual in HTML format.
 
 @item MSGTE5_M.ZIP
-This archive contains the manual for @value{MSGED} in Adobe Acrobat (PDF)
-format. If you intend to print the documentation of @value{MSGED} then you
-should get this file, because printing the PDF version of the manual using
-Adobe Acrobat Reader (which is available on www.adobe.com at no charge) will
-result in the best possible output that looks much nicer than if you would
-print the HTML or plain text documentations.
+This archive contains the manual for @value{MSGED} in Adobe Acrobat (PDF) and
+in HTML format. If you intend to print the documentation of @value{MSGED}
+then you should get this file and use the PDF version, because printing the
+PDF version of the manual using Adobe Acrobat Reader (which is available on
+www.adobe.com at no charge) will result in the best possible output that
+looks much nicer than if you would print the HTML or plain text
+documentations.
 
 @item MSGTE5_S.ZIP
 This archive contains the complete C source code for @value{MSGED},
@@ -407,7 +408,7 @@ or in an xterm.
 As for the @key{Alt} keys (@key{Alt}-@key{X} and so on): @value{MSGED} tries
 to recognize all sorts of ways in which clients reflect @key{Alt} or
 @key{Meta} key combinations. If that still does not work on your console,
-besides contacting me so that I can fix it, you can emulate an @key{Alt} key@c 
+besides contacting me so that I can fix it, you can emulate an @key{Alt} key 
 with the @key{Esc} key: If you press and release the @key{Esc} key and then
 press a letter, @value{MSGED} will treat this as if you pressed @key{Alt} and
 that letter. However, you have to do this fast, because if no key is pressed
@@ -417,7 +418,7 @@ used in @value{MSGED}.
 
 Some other key combinations, like @key{Ctrl}-@key{Left} and so on, are not
 reproducable in an xterm or on a Unix console at all. Therefore, the sample
-documentation file @file{sample.cfg} contains a bunch of settings that puts
+configuration file @file{sample.cfg} contains a bunch of settings that puts
 the functions that are by default bound to key combinations that cannot be
 keyed on Unix to other key combinations.
 
@@ -458,8 +459,8 @@ the Fido *.MSG routines
 the routines for reading a @file{fastecho.cfg} configuration file.
 @end itemize
 
-This means that you presently must restrict yourself to a Squish message bas
-eand a @file{squish.cfg} configuration file if you want to run @value{MSGED}
+This means that you presently must restrict yourself to a Squish message base
+and a @file{squish.cfg} configuration file if you want to run @value{MSGED}
 on big endian hardware.
 
 @node Colors in the Unix version,  , Notes on Big Endian Hardware, UNIX installation
@@ -482,7 +483,10 @@ Include ~/.msged.colors  # include the color configuration
 Of course you need a terminal that supports ANSI color codes. Among others,
 these are the Linux console (but not the Linux xterm!), the FreeBSD console,
 the "color-xterm" or "xterm-color" or "nxterm" terminal emulators, and the
-FreeBSD xterm.
+FreeBSD xterm. You can use Conditionals to switch the @code{Colors} switch
+either on or off depending on the @code{TERM}
+variable. @xref{Conditionals,,Conditional Statements in the Configuration
+File}, for more information.
 
 The sample color scheme file @file{color.004}, that you copied to
 @file{~/.msged.colors} during the installation process, contains color
@@ -1504,11 +1508,14 @@ avilable keywords and switches in alphabetical order.
 * Syntax::                      Configuration file syntax
 * Keywords::                    Keywords for use in the configuration file.
 * Switches::                    Switches for use in the configuration file.
+* Conditionals::                Conditional Statements (IF/ELSE/ENDIF).
 * Area Definitions::            How to define message areas
 @end menu
 
 @node Syntax, Keywords, Configuration Reference, Configuration Reference
 @section Configuration File Syntax
+@cindex environment variables, using 
+@cindex comments, configuration file
 Each line in the configuration file should start with a keyword. Each
 keyword can be followed by one or more parameters.
 
@@ -1518,14 +1525,19 @@ keyword.
 @c (@pxref{switch,,The @code{switch} Keyword}) FIXME
 Switches really are just parameters to a special keyword.
 
-When parsing the config file, everything that follows a semicolon until
-the end of the current line is treated as a comment.
+When parsing the config file, lines that start with a semicolon or with a
+semicolon preceeded only by whitespace are treated as comments .
 
 Within the configuration file, you may use environment
 variables. Enclose the name of the environment variable within percent
 signs. For example, if you give a command like @samp{"Areafile
 %MAILBOX%\squish\squish.cfg"}, the string @samp{%MAILBOX%} would be
 replaced with the value of the environment varaible @samp{MAILBOX}.
+
+You can also disable or enable certain parts of the configuration file based
+on the value of environment variables or on the operating system by
+using Conditionals. @xref{Conditionals, Conditional Statements in the
+Configuration File}, for more information.
 
 @node Keywords, Switches, Syntax, Configuration Reference
 @section Configuration File Keywords
@@ -2746,7 +2758,7 @@ should specify @samp{UucpName *}, which tells @value{MSGED} that the gateway
 software allows any name to be put into the FTN header field.
 
 
-@node Switches, Area Definitions, Keywords, Configuration Reference
+@node Switches, Conditionals, Keywords, Configuration Reference
 @section Switches
 @cindex Switch
 @findex switches
@@ -2807,6 +2819,22 @@ are using an external editor, ChopQuote has no effect.  When set to off, all
 quoted lines are saved, regardless of their location in the message.  Note
 that you can also manually chop quotes by pressing
 @key{Alt}-@key{L}. Default: Off.
+
+@item BS127
+@findex BS127
+@cindex backspace, on Linux console
+Most UNIX consoles (xterm, syscons, and many others) return the ASCII code 8
+(@key{Ctrl}+@key{H}) if you press the backspace key, and ASCII code 127 or an
+extended escape sequence if you press the @key{Del} key. However, there are
+some exceptions, notably the Linux system console. The Linux console returns
+ASCII code 127 if you press the backspace key. The result is that the
+backspace key behaves like @key{Del} in @value{MSGED}, i.E. it deletes the
+character under the cursor instead of the character on the left. As this is
+probably not what you want, you can change this behaviour by switching the
+@code{BS127} switch on. You will probably want to enclose the @code{Switch
+BS127 On} statement in a Conditional that tests if the @code{TERM}
+environment variable is set to @code{Linux}. @xref{Conditionals,,Conditional
+Statements in the Configuration File}, for more information. Default: Off:
 
 @item Colors
 @findex Colors
@@ -3105,7 +3133,209 @@ information in the tera line. Default: Off.
 
 @end table
 
-@node Area Definitions,  , Switches, Configuration Reference
+@node Conditionals, Area Definitions, Switches, Configuration Reference
+@section Conditional Statements in the Configuration File
+@cindex Conditionals
+@cindex environment variables, testing
+If you use @value{MSGED} with the same configuration file on different
+operating systems, you will probably want to make some settings in the
+configuration file dependent on the environment you are currently running
+in. This is where @dfn{Conditionals} come into place. A Conditional can be
+used to include a certain part of the configuration file only if a certain
+version (OS/2, DOS, ...) of MsgEd is running, or only if an environment
+variable has a certain value.
+
+@menu
+* Statements: cond-statements.        Formulating Conditional Statements.
+* Conditions: cond-conditions.        Conditions that can be tested.
+* Examples:   cond-examples.          Usage examples for Conditionals.
+@end menu
+
+@node cond-statements, cond-conditions, Conditionals, Conditionals
+@subsection Formulating Conditional Statements
+The easiest form of a Conditional is as follows:
+
+@example
+IF @var{condition}
+  @var{configuration statements @dots{}}
+ENDIF
+@end example
+
+The @var{condition} parameter can simply be an operating system name like
+@samp{OS/2} or @samp{Linux}. You will soon see other conditions that can be
+formulated (@pxref{cond-conditions, Conditions that can be tested}). For the
+moment, we will always use operating system names as conditions.
+
+For example, the following statement will only be evaluated on OS/2:
+
+@example
+IF OS2
+   Editor c:\boxer\b2.exe
+ENDIF
+@end example
+
+In addition, you can specify that an alternate block of statements should be
+evaluated if the condition was not true:
+
+@example
+IF OS2
+   ;OS/2 version of the Boxer Editor
+   Editor c:\boxer\b2.exe
+ELSE
+   ;DOS version of the Boxer Editor
+   Editor c:\boxer\b.exe
+ENDIF
+@end example
+
+If you want to test for multiple configurations, the ELSEIF statement is
+handy. Instead of writing a complicated statement like
+
+@example
+IF OS2
+  Editor c:\boxer\b2.exe
+ELSE
+  IF UNIX
+    Editor /usr/bin/vi
+  ELSE
+    ;Must be DOS
+    EDITOR c:\boxer\b.exe
+  ENDIF
+ENDIF
+@end example
+
+you can simply write:
+
+@example
+IF OS2
+  Editor c:\boxer\b2.exe
+ELSEIF UNIX
+  Editor /usr/bin/vi
+ELSE
+  Editor c:\boxer\b.exe
+ENDIF
+@end example
+
+For compatibility with other Fidonet editors, the @code{ELIF} command can be
+used instead of the @code{ELSEIF} command.
+
+As you might already have guessed from the examples, conditionals can be
+nested down to any depth, that is, inside an @code{IF} - @code{ENDIF} -
+block, you can start another @code{IF} block, and so on.
+
+
+@node cond-conditions, cond-examples, cond-statements, Conditionals
+@subsection Conditions that can be tested
+We already saw that operating system names can be used as conditions for the
+@code{IF} command. Below, you see the complete list of conditions that can be
+used:
+
+@table @code
+@item IF OS2
+@itemx IF OS/2
+These conditions are true if you are running the OS/2 version of @value{MSGED}
+
+@item IF DOS
+These conditions are true if you are running any DOS version (16 bit or 32
+bit) of @value{MSGED}.
+
+@item IF DOS16
+This condition is true if you are running the standard 16 bit DOS version of
+@value{MSGED}.
+
+@item IF 386
+This condition is true if you are running the 32 bit DOS version of @value{MSGED}.
+
+@item IF W32
+This condition is true if you are running the Windows 95/98/NT version of
+@value{MSGED}.
+
+@item IF UNIX
+This condition is true if you are running any Unix version (Linux, FreeBSD,
+AIX, Rhapsody, ...) of @value{MSGED}.
+
+@item IF LINUX
+This condition is true for any version of @value{MSGED} that announces itself
+as @samp{MsgEd/LNX TE}.
+
+@item IF 0
+This condition is always false. It is useful if you want to disable a large
+part of the configuration file, but do neither want to erase it nor to place
+semicolons in front of each line. Simply place @code{IF 0} and @code{ENDIF}
+around such a part of the configuration file.
+
+@item IF 1
+This condition is always true.
+
+@item IF @var{variable}=@var{value}
+This condition is true if the specified environment @var{variable} has the
+specified @var{value}. For example, on OS/2, @code{IF HOSTNAME=mycomputer}
+will be true only if you have @code{set HOSTNAME=mycomputer} in your
+@file{config.sys} file, or if you have given the @code{set
+HOSTNAME=mycomputer} command on the command line before starting
+@value{MSGED}.
+
+@end table
+
+@node cond-examples,  , cond-conditions, Conditionals
+@subsection Usage example for Conditionals
+Here are some more useful examples for Conditionals in the configuration
+file:
+
+@table @asis
+@item Specifying a swap file for the 16 bit version:
+@example
+IF DOS16
+  Swappath c:\temp\msged.swp
+ENDIF
+@end example
+
+@item Selecting the proper Origin string:
+@example
+IF OS2
+  Origin "Warp 4, Mister Sulu!"
+ELSEIF W32
+  Origin "My employer forces me to use Windows ..."
+ELSEIF DOS
+  Origin "DOSwidanja!"
+ELSEIF UNIX
+  IF LINUX
+    Origin "Penguins ahead!"
+  ELSE
+    Origin "UNIX - a professional's choice"
+  ENDIF
+ENDIF
+@end example
+
+@item Fine-tuning the terminal setup on Unix
+@example
+IF UNIX
+
+  ;By default, switch colors off (might cause problems with
+  ;VT100 and xterm), as well as shadows (too slow)
+
+  Switch Shadows Off
+  Switch Colors Off
+
+  IF TERM=linux
+    ;The peculiarities of the Linux console ...
+    switch bs127 on
+    switch colors on
+  ENDIF
+
+  IF TERM=vt220
+    switch colors on
+  ENDIF
+
+  IF TERM=ansi
+    switch colors on
+  ENDIF
+
+ENDIF
+@end example
+
+@end table
+
+@node Area Definitions,  , Conditionals, Configuration Reference
 @section Defining Message Areas
 @cindex definining message areas
 @cindex message area definition

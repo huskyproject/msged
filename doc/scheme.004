@@ -1,5 +1,8 @@
 ;-----------------------------------------------------------------------------
-; Sample Msged color scheme - this one should look good in an xterm.
+; Sample Msged color scheme - this one should look good an UNIX systems.
+; Please note that for Linux and UNIX, you have to put
+;   Switch Colors On
+; into your configuration file in order to enable color display.
 ;-----------------------------------------------------------------------------
 
 ;-----------------------------------------------------------------------------

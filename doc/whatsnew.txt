@@ -24,13 +24,33 @@ Changes:
 
 Features:
 
+- Conditionals: You can use IF, ELSE, ELIF, ELSEIF and ENDIF to skip
+  or only include certain parts of the configurations based on the values
+  of environment variables or on the operating system. See the section about
+  Conditionals in the documentation for a full explanation. Quick usage
+  example:
+
+  IF OS2
+    Origin "OS/2 is great!"
+  ELIF UNIX
+    Origin "Unix - a professional's choice!"
+    IF TERM=linux
+      ;special switch for the Linux system console
+      Switch BS127 On
+    ENDIF
+  ELIF W32
+    Origin "My employer forces me to use Windows ..."
+  ELSE
+    Origin "Good old DOS ..."
+  ENDIF
+
 - In the message list mode, you can now press '+' to select all messages
   and '-' to deselect all messages of that area.
 
 - Changes to the behaviour of Alt+M in message listing mode when multiple
   messages are selected: MsgEd will now ask you where to move, copy or
-  forward the message to *only* *once* and then move all marked message to 
-  the same location. This allows you to easily move the large numbers of mail 
+  forward the message to *only* *once* and then move all marked message to
+  the same location. This allows you to easily move the large numbers of mail
   (e.g. a whole folder) from one location to another. Every mesage that has
   been processed will be deselected, so that if you interrupt the moving
   process for some reason, you can easily continue it afterwards because
@@ -45,14 +65,14 @@ Features:
   as long as it is open in MsgEd TE. So if you are accustomed to leaving
   MsgEd TE open even when going away, you should better leave this switch
   off. - Note that this switch has nothing to do with data integrity
-  concerns. MsgEd will of course lock the Squish Message Base when writing 
+  concerns. MsgEd will of course lock the Squish Message Base when writing
   a message in order to insure data integrity even if the SquishLock switch
   is turned off. - The default value of the SquishLock switch is Off (in
   contrast to the mainstream MsgEd 4.30, where it is on by default).
 
 - New keyword: AssumeCharset. You can specify a character set that should
   be assumed if a mail with special characters in it is read that does not
-  have a CHRS kludge. The most reasonable use of this keyword is to specify 
+  have a CHRS kludge. The most reasonable use of this keyword is to specify
   "AssumeCharset IBMPC", because 98% of the mails with special characters
   but without charset kludge are written in the IBMPC charset ...
   If you do not use this keyword to assume a default character set, all
@@ -78,7 +98,7 @@ Features:
   keep kompatible with the old Alt+W feature.
 
   Piping does only work in the Unix version and in the EMX-compiled OS/2
-  version of MsgEd. 
+  version of MsgEd.
 
 - Origin shuffling:  You can now repeat the Origin keyword as often as
   desired.  MsgEd will select a random origin line each time when you write a
@@ -185,6 +205,10 @@ Features:
 - Ported MsgEd to Unix.
 
 Fixes:
+
+- The online help (F1, Alt+H) is no also available in the area list screen
+  (which is the first screen that a new user sees ...) and the file request
+  menu.
 
 - Pressing Alt+H did not always show the help screen in the 16 bit DOS
   version.
