@@ -38,6 +38,7 @@
 #include "memextra.h"
 #include "bmg.h"
 #include "fecfg145.h"
+#include "gestr120.h"
 #include "version.h"
 #include "nshow.h"
 #include "readmail.h"
@@ -364,12 +365,12 @@ static char *cfgswitches[] =
  * UNIX shell expansion rules: A ~ followed by a slash / is the home
  * directory (which will be fetched from the HOME environment
  * variable, which even works on OS/2 or NT), a ~ followed by
- * something different is the home directory of the user named 
+ * something different is the home directory of the user named
  * "something different", eg ~tobi/ will expand to the home directory
  * of the user "tobi". The latter only works on Unix.
- * 
+ *
  */
- 
+
 char *shell_expand(char *str)
 {
     char *slash = NULL, *ret = NULL, c;
@@ -397,7 +398,7 @@ char *shell_expand(char *str)
     if (str[1] == '\0')
     {
         pfix = getenv("HOME");
-#ifdef UNIX        
+#ifdef UNIX
         if (pfix == NULL)
         {
             pw = getpwuid(getuid());
@@ -1006,17 +1007,17 @@ static FILE *fileopen(char *env, char *cfn)
     FILE *fp;
     char *fenv = NULL;
     char *fcfn = NULL;
-           
+
     if (env != NULL)
     {
         fenv = shell_expand(xstrdup(env));
     }
-    
+
     if (cfn != NULL)
     {
         fcfn = shell_expand(xstrdup(cfn));
     }
-    
+
     if (fcfn != NULL)
     {
         fp = fopen(fcfn, "r");
@@ -1055,7 +1056,7 @@ static unsigned int *parse_macro(char *macro)
     {
         if (*macro == '^')
         {
-            *t++ = (unsigned int)(*(macro + 1) == '^') ? '^' : toupper(*(macro + 1) - 64);
+            *t++ = (unsigned int)(*(macro + 1) == '^') ? '^' : (toupper(*(macro + 1)) - 64);
             macro += 2;
         }
         else if (*macro == '\\')
@@ -1327,14 +1328,13 @@ static void checkareas(char *areafile)
         else
         {
             a.path = xstrdup(tokens[0]);
+            kill_trail_slash(a.path);
+            a.path = pathcvt(a.path);
         }
 
         a.tag = xstrdup(tokens[1]);
         a.description = xstrdup(tokens[1]);
         a.addr.notfound = 1;
-
-        kill_trail_slash(a.path);
-        a.path = pathcvt(a.path);
 
         if (tokens[2] != NULL && strlen(tokens[2]) >= 7)
         {
@@ -1411,42 +1411,41 @@ static void check_fastecho(char *areafile)
 
     ST->fecfgpath = xstrdup(areafile);
 
-    if (fread(&feconfig, sizeof feconfig, 1, fp) != 1)
+    if (read_fe_config(&feconfig, fp) == -1)
     {
         return;
     }
 
     /* preload the AKAs */
 
-    fseek(fp, sizeof feconfig, SEEK_SET);
-    curofs = (dword) sizeof feconfig; found=0;
+    fseek(fp, FE_CONFIG_SIZE, SEEK_SET);
+    curofs = (dword) FE_CONFIG_SIZE; found=0;
 
-    while (curofs < sizeof feconfig + feconfig.offset)
+    while (curofs < FE_CONFIG_SIZE + feconfig.offset)
     {
-        if (fread(&feexthdr, sizeof feexthdr, 1, fp) != 1)
+        if (read_fe_extension_header(&feexthdr, fp) == -1)
         {
             return;
         }
         curofs += sizeof feexthdr;
         if (feexthdr.type == EH_AKAS)
         {
-          cnt = 0; found = 1;
-          do
+            cnt = 0; found = 1;
+            do
             {
-               if (fread(feakas + cnt, sizeof feakas[0], 1, fp) != 1)
-               {
-                   return;
-               }
-               curofs += sizeof feakas[0]; cnt++;
-           }
-           while (cnt < feconfig.AkaCnt);
+                if (read_fe_sysaddress(feakas + cnt, fp) == -1)
+                {
+                    return;
+                }
+                curofs += FE_SYS_ADDRESS_SIZE; cnt++;
+            }
+            while (cnt < feconfig.AkaCnt);
         }
         else
         {
-           fseek(fp, feexthdr.offset, SEEK_CUR);
-           curofs += feexthdr.offset;
+            fseek(fp, feexthdr.offset, SEEK_CUR);
+            curofs += feexthdr.offset;
         }
-
     }
     if (!found)  /* no EH_AKAS header !? */
     {
@@ -1487,7 +1486,7 @@ static void check_fastecho(char *areafile)
 
     /* Scan for echomail and secondary netmail areas */
 
-    fseek(fp, (dword)(sizeof feconfig) + feconfig.offset + feconfig.NodeCnt *
+    fseek(fp, (dword)FE_CONFIG_SIZE + feconfig.offset + feconfig.NodeCnt *
       feconfig.NodeRecSize, SEEK_SET);
 
     for (i = 0; i < feconfig.AreaCnt; i++)
@@ -1501,7 +1500,7 @@ static void check_fastecho(char *areafile)
             fflush(stdout);
         }
 
-        if(fread(&fearea, sizeof fearea, 1, fp) != 1)
+        if(read_fe_area(&fearea, fp) == -1)
         {
             return;
         }
@@ -1515,27 +1514,27 @@ static void check_fastecho(char *areafile)
 
         memset(&a, 0, sizeof a);
         a.msgtype = FIDO;
-        a.group = (fearea.info.akagroup & 0xff00) >> 8;
+        a.group = fearea.info.group;
         a.echomail = 1;
         a.netmail = 0;
         a.addr.notfound = 0;
         a.addr.fidonet = 1;
-        a.addr.zone = feakas[fearea.info.akagroup & 0xff].main.zone;
-        a.addr.net = feakas[fearea.info.akagroup & 0xff].main.net;
-        a.addr.node = feakas[fearea.info.akagroup & 0xff].main.node;
-        a.addr.point = feakas[fearea.info.akagroup & 0xff].main.point;
-        if (feakas[fearea.info.akagroup & 0xff].domain)
+        a.addr.zone = feakas[fearea.info.aka].main.zone;
+        a.addr.net = feakas[fearea.info.aka].main.net;
+        a.addr.node = feakas[fearea.info.aka].main.node;
+        a.addr.point = feakas[fearea.info.aka].main.point;
+        if (feakas[fearea.info.aka].domain)
         {
-            if (*feakas[fearea.info.akagroup & 0xff].domain)
+            if (*feakas[fearea.info.aka].domain)
             {
                 a.addr.domain =
-                  xstrdup(feakas[fearea.info.akagroup & 0xff].domain);
+                  xstrdup(feakas[fearea.info.aka].domain);
             }
         }
 
         /* storage type: QBBS, etc... */
-        storage = fearea.flags.flags & 0x0f;
-        atype = (fearea.flags.flags & 0xf0) >> 4;
+        storage = fearea.flags.storage;
+        atype = fearea.flags.atype;
 
         if (atype == AREA_NETMAIL)
         {
@@ -1770,6 +1769,240 @@ static void check_squish(char *areafile)
 
     release(buffer);
     fclose(fp);
+}
+
+/* check_gecho - reads the areas in a GEcho configuration file.
+   tested with GEcho 1.20/Pro (might work with other versions). */
+
+static void check_gecho(char *areafile)
+{
+    static AREA a;              /* current area */
+    char *fn;                   /* file name */
+    FILE *fp;                   /* file handle */
+    LOOKUPTABLE *ltable;        /* for description charset conversion */
+    char *tempdsc;
+
+    static char progress_indicators[4] =
+    {'-', '\\', '|', '/'};
+
+    SETUP_GE     Setup;
+    AREAFILE_HDR AreaHdr;
+    AREAFILE_GE  Area;
+    word         arearecsize, i;
+
+    if (alias == NULL)
+    {
+        printf("\r\aError! Primary address must be defined.\n");
+        exit(-1);
+    }
+
+    if (user_list[0].name == NULL)
+    {
+        printf("\r\aError! Name must be defined.\n");
+        exit(-1);
+    }
+
+    /* printf("Reading GEcho configuration... "); */
+
+
+    /* read SETUP.GE (we need AKAs and netmail path) */
+
+    kill_trail_slash(areafile);
+    fn = xmalloc(strlen(areafile) + 10);
+    sprintf(fn, "%s\\SETUP.GE", areafile);
+    fn = pathcvt(fn);
+    fp = fopen(fn, "rb");
+    release(fn);
+    if (fp == NULL)
+    {
+        return;
+    }
+
+    if (read_setup_ge(&Setup, fp) == -1)
+    {
+        /* cannot read setup */
+        return;
+    }
+
+    fclose(fp);
+
+    if (Setup.sysrev != GE_THISREV)
+    {
+        /* bad setup file version */
+        return;
+    }
+
+
+    /* set up GEcho netmail folder (if it exists) */
+
+    if (*Setup.mailpath)
+    {
+        memset(&a, 0, sizeof a);
+        a.msgtype = FIDO;
+        a.group = -1;
+        a.netmail = 1;
+        a.priv = 1;
+        a.addr.fidonet = 1;
+        a.addr.zone = Setup.aka[0].zone;
+        a.addr.net = Setup.aka[0].net;
+        a.addr.node = Setup.aka[0].node;
+        a.addr.point = Setup.aka[0].point;
+        a.tag = xstrdup("NETMAIL");
+        a.description = xstrdup("NETMAIL - GEcho Netmail Folder");
+        a.path = pathcvt(xstrdup(Setup.mailpath));
+        kill_trail_slash(a.path);
+        applyflags (&a, areafileflags);
+        AddArea(&a);
+    }
+
+
+    /* read AREAFILE.GE (scan for echomail and secondary netmail areas) */
+
+    fn = xmalloc(strlen(areafile) + 13);
+    sprintf(fn, "%s\\AREAFILE.GE", areafile);
+    fn = pathcvt(fn);
+    fp = fopen(fn, "rb");
+    release(fn);
+    if (fp == NULL)
+    {
+        return;
+    }
+
+    ltable = get_readtable("IBMPC", 2);
+                                /* we assume that area descriptions
+                                   are always in the IBMPC charset. */
+
+    if (read_areafile_hdr(&AreaHdr, fp) == -1)
+    {
+        /* cannot read areafile header */
+        return;
+    }
+
+    if ((AreaHdr.hdrsize < AREAFILE_HDR_SIZE) ||
+        (AreaHdr.recsize < AREAFILE_GE_SIZE))
+    {
+        /* incompatible areafile format */
+        return;
+    }
+
+    arearecsize = AreaHdr.recsize + (AreaHdr.maxconnections * CONNECTION_SIZE);
+
+    for (i = 0; 1 == 1; i++) /* repeat until break */
+    {
+        /* print an indicator every sixteen areas */
+        if ((i & 15) == 0)
+        {
+            printf("%c\b", progress_indicators[(i >> 4) & 3]);
+            fflush(stdout);
+        }
+
+        fseek(fp, AreaHdr.hdrsize + arearecsize * i, SEEK_SET);
+
+        if (read_areafile_ge(&Area, fp) == -1)
+        {
+            /* no more areas */
+            break;
+        }
+
+        if ((Area.options & REMOVED) == 0)
+        {
+            memset(&a, 0, sizeof a);
+
+            switch (Area.areaformat)
+            {
+            case FORMAT_SDM:    /* *.MSG */
+                {
+                    a.msgtype = FIDO;
+                    break;
+                }
+            case FORMAT_HMB:    /* Hudson Message Base */
+                {
+                    a.msgtype = QUICK;
+                    break;
+                }
+#ifdef USE_MSGAPI
+            case FORMAT_SQUISH: /* Squish 2.0 */
+                {
+                    a.msgtype = SQUISH;
+                    break;
+                }
+#endif
+            case FORMAT_JAM:    /* Joaquim-Andrew-Mats message base proposal */
+            case FORMAT_PCB:    /* PCBoard 15.0 */
+            case FORMAT_WC:     /* Wildcat! 4.0 */
+            default:
+                {
+                    continue;   /* not supported */
+                }
+            }
+
+            switch (Area.areatype)
+            {
+            case NETMAIL:
+                {
+                    a.netmail = 1;
+                    a.priv = 1;
+                    break;
+                }
+            case LOCAL:
+                {
+                    a.local = 1;
+                    break;
+                }
+            case ECHOMAIL:
+            case PERSONAL:
+            case BADECHO:
+            default:
+                {
+                    a.echomail = 1;
+                    break;
+                }
+            }
+
+            if (a.msgtype == QUICK)
+            {
+                a.board = Area.areanumber;
+            }
+            else
+            {
+                a.path = pathcvt(xstrdup(Area.path));
+                kill_trail_slash(a.path);
+            }
+
+            a.addr.fidonet = 1;
+            a.addr.zone = Setup.aka[Area.pkt_origin].zone;
+            a.addr.net = Setup.aka[Area.pkt_origin].net;
+            a.addr.node = Setup.aka[Area.pkt_origin].node;
+            a.addr.point = Setup.aka[Area.pkt_origin].point;
+
+            a.group = Area.group;
+
+            a.tag = xstrdup(Area.name);
+            strupr(a.tag);
+
+            if (*Area.comment)
+            {
+                tempdsc = translate_text(Area.comment, ltable);
+                strip_control_chars(tempdsc);
+                a.description =
+                    xmalloc(strlen(Area.name) + strlen(tempdsc) + 4);
+
+                sprintf (a.description, "%s - %s", Area.name, tempdsc);
+                release(tempdsc);
+            }
+            else
+            {
+                a.description = xstrdup(Area.name);
+            }
+
+            applyflags(&a, areafileflags);
+            AddArea(&a);
+        }
+    }
+
+    fclose(fp);
+
+    /* printf("Done.\n"); */
 }
 
 
@@ -2037,6 +2270,11 @@ void do_areafile(char *value)
         areas_type = FASTECHO;
     }
 
+    if (toupper(*tokens[0]) == 'G')
+    {
+        areas_type = GECHO;
+    }
+
     if (tokens[1])
     {
         char *temp;
@@ -2048,6 +2286,10 @@ void do_areafile(char *value)
         else if (areas_type == FASTECHO)
         {
             check_fastecho(temp);
+        }
+        else if (areas_type == GECHO)
+        {
+            check_gecho(temp);
         }
         else
         {
@@ -2132,7 +2374,7 @@ static void areasort(void)
 }
 
 
- /* 
+ /*
   * The struct s_conditional saves information about the IF conditional
   * block that is currently being parsed.
   */
@@ -2141,7 +2383,7 @@ static void areasort(void)
 #define FALSECOND 0
 #define NOCOND -1    /* generally disabled IF block because of
                         surrounding false condition */
-  
+
 struct s_conditional
 {
     int condition;  /* true or false? */
@@ -2174,7 +2416,7 @@ int evaluate_condition(char *condition, int line_no)
         goto syntax_error;
     }
 
-    equal = strchr(condition, '='); 
+    equal = strchr(condition, '=');
     firstword = strtok(condition, "= \t\n\r");
     secondword = strtok(NULL, "= \t\n\r");
 
@@ -2218,7 +2460,7 @@ int evaluate_condition(char *condition, int line_no)
         {
             firstword = "LNX"; /* GoldEd compatibility */
         }
-           
+
         return (stristr(OSID, firstword) != NULL);
     }
 
@@ -2295,7 +2537,7 @@ static void func_elif(int condition, int line_no)
         }
     }
 }
-        
+
 static void func_endif(int line_no)
 {
     struct s_conditional *pc = cur_cond;
@@ -2312,7 +2554,7 @@ static void func_endif(int line_no)
         new_condition();
     }
 }
-        
+
 
 /*
  *  Handles an entire config file.
@@ -2401,7 +2643,7 @@ static void parseconfig(FILE * fp)
             func_else(line_num);
             verb = -2;  /* skip next switch block */
             break;
-            
+
         case CFG_ENDIF:
             func_endif(line_num);
             verb = -2;  /* skip next switch block */
@@ -2929,7 +3171,7 @@ static void parseconfig(FILE * fp)
                                              strlen(areafileflags) +
                                              strlen(value) + 1 );
                     s = areafileflags + strlen(areafileflags);
-                    
+
                     for (; *value; value++)
                     {
                         if (strchr(areafileflags, *value) == NULL)
@@ -2960,7 +3202,7 @@ static void parseconfig(FILE * fp)
 
         case -2:   /* skip */
             break;
-            
+
         case -1:
         default:
             printf("\r\aLine %d: Unknown configuration keyword: '%s'\n",
@@ -3112,6 +3354,10 @@ void opening(char *cfgfile, char *areafile)
         else if (areas_type == FASTECHO)
         {
             check_fastecho(areafile);
+        }
+        else if (areas_type == GECHO)
+        {
+            check_gecho(areafile);
         }
         else
         {
