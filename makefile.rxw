@@ -1,6 +1,6 @@
 CC=     gcc
-CFLAGS= -Wall -pedantic -D__RSXNT__ -g
-CDEFS=  -D__NT__ -DWINNT  -DUSE_MSGAPI -DNO_SQUISH_LOCKING
+CFLAGS= -Wall -pedantic -D__RSXNT__
+CDEFS=  -D__NT__ -DWINNT  -DUSE_MSGAPI 
 MSGDIR= ..\smapi
 
 
