@@ -139,6 +139,8 @@ Features:
 
 Fixes:
 
+- Fix for NT version: Ctrl+C does no longer kill MsgEd.
+
 - Tons of bugfixes in the special verison of the Squish Message API that
   is used to build MsgEd TE. I can't list them all (particularly, the
   OS/2 executable delivered with TE 04 did NOT lock the message base
@@ -169,6 +171,8 @@ Fixes:
   This also fixes the problem that sometimes the sender's AKA was switched
   to an AKA in his gateway's zone in echomail areas where that zone was
   unknown.
+
+- Fix for NT version: AltGr - keys (German keyboard) are now working.
 
 - When selecting something in a SelBox, like for example selecting which
   reply to jump to when pressing Ctrl+Left, and some other cases, garbage

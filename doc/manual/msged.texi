@@ -406,10 +406,10 @@ be given in the following section (@pxref{Redefining the Keyboard,,Redefining
 the Keyboard bindings}).
 
 @menu
-* Cursor Movement::             
-* Killing Text::                
-* Text Block Commands::         
-* Misc. Editor Commands::       
+* Cursor Movement::          Keystrokes for moving the cursor.
+* Killing Text::             Keystrokes for deleting text.
+* Text Block Commands::      Keystrokes for cut and paste functionality.   
+* Misc. Editor Commands::    Other functions like saving, importing, etc.
 @end menu
 
 @node Cursor Movement, Killing Text, Editor Keystrokes, Editor Keystrokes
@@ -552,11 +552,28 @@ position.
 Any anchors that have been dropped with the @code{anchor} function will be
 removed, that is, any previously highlighted text will again be displayed
 normally.
+
 @end table
 
 @node Misc. Editor Commands,  , Text Block Commands, Editor Keystrokes
 @subsection Miscellaneous Editor Functions
-STILL MISSING - FIXME!
+
+@table @asis
+@item Function: @code{abort}, pre-bound to: @key{ESC}
+Aborts the current message without saving.
+
+@item Function: @code{bytecount}, pre-bound to: @kbd{@key{Alt}-@key{B}}
+Displays the number of bytes and the quote ratio in the current message.
+
+@item Function: @code{edithdr}, pre-bound to: @kbd{@key{Alt}-@key{E}}
+Lets you edit the header of the message (receipient, sender and subject
+information) in case you made an error when first entering the header.
+
+STILL INCOMPLETE - FIXME!
+
+@end table
+
+
 
 @node Redefining the Keyboard,  , Editor Keystrokes, Keyboard Reference
 @section Redefining the Keyboard Bindings
