@@ -66,7 +66,7 @@ void ShowButton(button * b)
         ublock[0] = SC16;
         WndWriteStr(b->x + len, b->y, b->battr | F_ALTERNATE, (char *)ublock);
 
-        memset(text, SC17, sizeof(255));
+        memset(text, SC17, 255);
         *(text + len) = '\0';
         WndPutsn(b->x + 1, b->y + 1, len, b->battr | F_ALTERNATE, text);
 
