@@ -1,3 +1,13 @@
+2002-11-08 Friday 20:42  os2tobi
+
+	* quick.c (1.6): fixed bug in Hudson routines introduced by last
+	update
+
+2002-11-07 Thursday 22:29  os2tobi
+
+	* quick.c (1.5), doc/whatsnew.txt (1.74): fixed hudson for non-DOS
+	platforms
+
 2002-11-06 Wednesday 10:26  os2tobi
 
 	* msg.c (1.26): unapplied patch to use JLR files, because the JLR
