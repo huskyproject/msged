@@ -1,3 +1,7 @@
+2002-03-02 Saturday 10:07  tobi
+
+	* doc/todo.txt (1.31): updated todo
+
 2002-02-25 Monday 22:02  pas
 
 	* readmail.c (1.45): Extra closing parenthesis removed, caused
