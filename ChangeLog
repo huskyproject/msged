@@ -1,3 +1,8 @@
+2003-01-09 Thursday 12:57  stas_degteff
+
+	* doc/manual/makefile.husky (1.9): set permissions for install
+	documentations & libraries. Patch from Max Khon <fjoe@iclub.nsu.ru>
+
 2002-11-25 Monday 09:00  mche
 
 	* fconf.c (1.21), fido.c (1.14): s_addr --> hs_addr
