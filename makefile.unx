@@ -19,17 +19,18 @@ DEFAULT_CONFIG_FILE=~/.msged
 INCDIR=..
 
 # options for installing programs
-IBOPT=-s -c
+IBOPT= -c
 
 CC=	cc
-CFLAGS=	-I$(INCDIR)
+CFLAGS=	-I$(INCDIR) -I$(INCDIR)/huskylib
 CDEFS=	-DUNIX -DUSE_MSGAPI -DUNAME=\"UNX\" -DREADMAPSDAT='"$(READMAPS)"' -DWRITMAPSDAT='"$(WRITMAPS)"' -DDEFAULT_CONFIG_FILE='"$(DEFAULT_CONFIG_FILE)"'
 COPT=	-O3
-LFLAGS= -L../smapi -L../fidoconfig -s
+LFLAGS= -L../smapi -L../huskylib 
 
 TARGET=	msged
-MSGAPI=-lsmapiunix
-TERMCAP=-ltermcap
+MSGAPI=-lsmapiunix -lhuskylib
+TERMCAP=-lcurses
+#termcap
 
 objs=   addr.o     \
 	ansi.o     \
