@@ -88,8 +88,8 @@ ADDRESS lookup(char *name, char *fn)
         fureclen = strlen(buf);
 #ifndef UNIX
         fureclen++;  /* take the \r character into account */
-        i++;
-#endif        
+    /*    i++; */
+#endif
     }
     high = filelen(fp) / fureclen;
     low = 0;
@@ -116,7 +116,7 @@ ADDRESS lookup(char *name, char *fn)
                 {
                     return tmpAddr;
                 }
-                SendMsgWnd("Press Esc to stop", 1);                
+                SendMsgWnd("Press Esc to stop", 1);
 
                 /* seek backwards to find the first match */
                 while (result == 0)
@@ -194,7 +194,7 @@ ADDRESS lookup(char *name, char *fn)
                                                 sizeof(char *) * lookupmax);
                         }
                     }
-                    
+
                     nodeinfo[found++] = xstrdup(buf);
                     if (fgets(buf, sizeof buf, fp) == NULL)
                     {
@@ -210,8 +210,8 @@ ADDRESS lookup(char *name, char *fn)
                 }
                 nodeinfo[found++] = NULL;
 
-                CloseMsgWnd();                
-                
+                CloseMsgWnd();
+
 
                 result = DoMenu(8, 7, 8+61,
                                 (5 + found > maxy - 4) ? maxy - 4 : 5 + found,
@@ -271,7 +271,7 @@ ADDRESS lookup(char *name, char *fn)
                     }
                     xfree(nodeinfo[i]);
                 }
-                
+
                 p = buf + strlen(buf) - 1;
                 while ((p >= buf) && (isspace(*p)))
                 {
