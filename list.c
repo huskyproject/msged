@@ -27,6 +27,7 @@
 #include "list.h"
 #include "screen.h"
 #include "charset.h"
+#include "config.h"
 
 static int long_subj;
 static int display_address = 1;
