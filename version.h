@@ -8,8 +8,8 @@
 #define __VERSION_H__
 
 #define VERNUM "6.0"
-#define VERPATCH ".1"
-#define VERBRANCH "-release"
+#define VERPATCH ".2"
+#define VERBRANCH "-stable"
 #define VERPROJECT "TE"
 
 #ifdef MSDOS
