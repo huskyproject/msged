@@ -35,7 +35,9 @@ TARGET=	msged$(EXE)
 ifeq ($(OSTYPE), UNIX)
   osobjs=	ansi$(OBJ) \
 		readtc$(OBJ)
-  OSLIBS=-l$(TERMCAP)
+  ifneq ("$(TERMCAP)", "")
+    OSLIBS=-l$(TERMCAP)
+  endif
 endif
 ifeq ($(OSTYPE), OS2)
   osobjs=	os2scr$(OBJ) \
