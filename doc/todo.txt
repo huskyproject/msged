@@ -10,8 +10,13 @@ Category 1: Will certainly be implemented until next release
 
 - Fix: Maxx and Maxy do not currently override termcap :-(
 
+- Fix: Sascha reports crashes when resizing terminal window
+
 Category 2: Might be implemented, but volunteers are always very welcome!
 =========================================================================
+
+- different Quote templates for different area groups (for quoting with ">"
+  in gated newsgroups, but with "TE>" in fido echos)  
 
 - Background attribute "transparent", for the new kconsole feature
   (background images). Patch that has already been submitted is not nice,
