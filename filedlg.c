@@ -594,6 +594,10 @@ int ShowFiles(int maxfiles, struct CURFILE *retdir, int *current)
                 curtop = 0;
             }
             cur = curtop + depth;
+            if (cur > maxfiles)
+            {
+                cur = maxfiles;
+            }
             prnflag = 1;
             break;
 
