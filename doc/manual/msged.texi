@@ -1450,7 +1450,10 @@ The keyboard setup of the Arealist Screen cannot be modified by the user.
 @node Reader Keystrokes, Editor Keystrokes, Arealist Keystrokes, Keyboard Reference
 @section Keyboard Commands and Functions in Message Reading mode
 When you press @key{Enter} or @key{Right} in the arealist screen, you will
-enter message reading mode. In this mode, one message is displayed at a
+enter message reading mode. (An exception to this is if you have turned the
+@code{DirectList} switch on. @xref{List of Switches,,List of available
+switches}, for more details. In this case, you will enter the message list
+mode instead). In the message reading mode, one message is displayed at a
 time. You can scroll through the message, write new messages, jump to other
 messages of the same message area, jump to other message areas, and invoke
 numerous special functions.
@@ -3521,6 +3524,12 @@ arrived on your system will be displayed on the right side of the
 header information block below the date written information. You might want
 to turn this off if your tosser should not fill in this date field
 correctly. Default: On.
+
+@item DirectList
+@findex DirectList
+If you turn this switch on, you will directly drop into the message listing
+mode when entering a message area, instead of the individual message reading
+mode. Default: Off.
 
 @item DMore
 @findex DMore
