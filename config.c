@@ -1464,8 +1464,12 @@ static void checkareas(char *areafile)
         }
         else if (*s == '!')
         {
+#if MSGAPI_VERSION < 2
+            continue;
+#else            
             sq = 2;
             s++;
+#endif            
         }
         else
         {
@@ -1527,9 +1531,11 @@ static void checkareas(char *areafile)
         case 1:
             a.msgtype = SQUISH;
             break;
+#if MSGAPI_VERSION >= 2            
         case 2:
             a.msgtype = JAM;
             break;
+#endif            
         }
 #endif
 
@@ -1800,7 +1806,11 @@ static void check_fastecho(char *areafile)
         }
         else if (storage == FE_JAM)
         {
+#if MSGAPI_VERSION < 2
+            continue;
+#else
             sq = 2;
+#endif            
         }
         else
         {
@@ -1843,9 +1853,11 @@ static void check_fastecho(char *areafile)
         case 1:
             a.msgtype = SQUISH;
             break;
+#if MSGAPI_VERSION >= 2
         case 2:
             a.msgtype = JAM;
             break;
+#endif        
         }
 #endif
         applyflags(&a, areafileflags);
@@ -2183,11 +2195,13 @@ static void check_gecho(char *areafile)
                     a.msgtype = SQUISH;
                     break;
                 }
+#if MSGAPI_VERSION >= 2            
             case FORMAT_JAM:    /* Joaquim-Andrew-Mats message base proposal */
                 {
                     a.msgtype = JAM;
                     break;
                 }
+#endif            
 #endif
             case FORMAT_PCB:    /* PCBoard 15.0 */
             case FORMAT_WC:     /* Wildcat! 4.0 */
@@ -2357,9 +2371,11 @@ static void parsemail(char *keyword, char *value)
     case 's':
         a.msgtype = SQUISH;
         break;
+#if MSGAPI_VERSION >= 2        
     case 'j':
         a.msgtype = JAM;
         break;
+#endif        
 #endif
     }
 
@@ -3399,7 +3415,9 @@ static void parseconfig(FILE * fp)
         case CFG_FIDO:
         case CFG_SQUISH:
         case CFG_QUICK:
+#if MSGAPI_VERSION >= 2
         case CFG_JAM:
+#endif            
             parsemail(keyword, value);
             break;
 
