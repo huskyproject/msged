@@ -6,6 +6,8 @@ Category 1: Will certainly be implemented until next release
 
 - Document Fidoconfig stuff
 
+- Write docs about grouping
+
 - Fix: Maxx and Maxy do not currently override termcap :-(
 
 Category 2: Might be implemented, but volunteers are always very welcome!
