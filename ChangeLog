@@ -1,3 +1,8 @@
+2002-11-06 Wednesday 10:26  os2tobi
+
+	* msg.c (1.26): unapplied patch to use JLR files, because the JLR
+	format is different from the SQL format ...
+
 2002-11-05 Tuesday 13:40  mche
 
 	* strextra.c (1.5), strextra.h (1.5): first attempt of making msged
