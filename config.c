@@ -1,5 +1,5 @@
 /*
- *  CONFIG.C
+ *  config.C
  *
  *  Written on 30-Jul-90 by jim nutt.  Changes on 10-Jul-94 by John Dennis.
  *  Released to the public domain.
@@ -110,6 +110,11 @@ static char *cfgverbs[] =
     "AreaFileFlags",
     "FreqArea",  /* now 51, should be 51 if possible */
     "AssumeCharset",
+    "If",
+    "Else",
+    "Elif",
+    "Elseif",
+    "Endif",
     NULL
 };
 
@@ -166,6 +171,11 @@ static char *cfgverbs[] =
 #define CFG_AREAFILEFLAGS  50
 #define CFG_FREQAREA       51
 #define CFG_ASSUMECHARSET  52
+#define CFG_IF             53
+#define CFG_ELSE           54
+#define CFG_ELIF           55
+#define CFG_ELSEIF         56
+#define CFG_ENDIF          57
 
 static struct colorverb colortable[] =
 {
@@ -291,6 +301,7 @@ static char *cfgswitches[] =
     "EditOriginLines",
     "Colors",
     "Shadows",
+    "BS127",
     "SquishLock",
     NULL
 };
@@ -335,7 +346,8 @@ static char *cfgswitches[] =
 #define CFG_SW_EDITORIGINLINES      37
 #define CFG_SW_COLORS               38
 #define CFG_SW_SHADOWS              39
-#define CFG_SW_SQUISH_LOCK          40 /* should be 45 */
+#define CFG_SW_BS127                40
+#define CFG_SW_SQUISH_LOCK          41 /* should be 45 */
 
 #ifdef UNIX
 #include <sys/types.h>
@@ -860,6 +872,10 @@ void AssignSwitch(char *swtch, int OnOff)
         wnd_suppress_shadows = !(OnOff);
         break;
 
+    case CFG_SW_BS127:
+        wnd_bs_127 = OnOff;
+        break;
+
     case CFG_SW_SQUISH_LOCK:
         SW->squish_lock = OnOff;
         break;
@@ -911,6 +927,12 @@ void parse_tokens(char *str, char *tokens[], int num)
     int i = 0;
     char *s = str;
     int done = 0;
+
+    if (str == NULL)
+    {
+        tokens[0] = NULL;
+        return;
+    }
 
     while (!done && i < num)
     {
@@ -2098,6 +2120,187 @@ static void areasort(void)
 }
 
 
+ /* 
+  * The struct s_conditional saves information about the IF conditional
+  * block that is currently being parsed.
+  */
+
+#define TRUECOND 1
+#define FALSECOND 0
+#define NOCOND -1    /* generally disabled IF block because of
+                        surrounding false condition */
+  
+struct s_conditional
+{
+    int condition;  /* true or false? */
+    int branch; /* 0: then, 1: else */
+    int line_no;
+    struct s_conditional *last;
+} *cur_cond = NULL;
+
+  /*
+   * cond_deleted is set to 1 if we are reading a block that is not to
+   * be parsed (except for IF, ELSE, ELIF, ENDIF) because the
+   * introducing conditional was false.
+   */
+
+static int cond_deleted = 0;
+
+  /*
+   * evaluate a IF or ELSEIF condition
+   */
+
+int evaluate_condition(char *condition, int line_no)
+{
+    char *firstword;
+    char *secondword;
+    char *equal;
+    char *eval;
+
+    if (condition == NULL)
+    {
+        goto syntax_error;
+    }
+
+    equal = strchr(condition, '='); 
+    firstword = strtok(condition, "= \t\n\r");
+    secondword = strtok(NULL, "= \t\n\r");
+
+    if (equal == NULL && secondword != NULL)
+    {
+        goto syntax_error;
+    }
+
+    if (secondword == NULL)
+    {
+        secondword = "";
+    }
+
+    if (equal)  /* comparison of env variables */
+    {
+        eval = getenv(firstword);
+        if (eval == NULL)
+        {
+            eval = "";
+        }
+        if (!stricmp(eval, secondword))
+        {
+            return TRUECOND;
+        }
+        else
+        {
+            return FALSECOND;
+        }
+    }
+    else        /* test for operating system */
+    {
+        if (!stricmp(firstword, "0"))
+        {
+            return 0;
+        }
+        else if (!stricmp(firstword, "1"))
+        {
+            return 1;
+        }
+        else if (!stricmp(firstword, "LINUX"))
+        {
+            firstword = "LNX"; /* GoldEd compatibility */
+        }
+           
+        return (stristr(OSID, firstword) != NULL);
+    }
+
+ syntax_error:
+    printf ("\nLine %d: Syntax error in IF/ELIF condition.\n", line_no);
+    return FALSECOND;
+}
+
+  /*
+   * functions for handling conditions
+   */
+
+static void new_condition(void)
+{
+    if ((cur_cond == NULL) ||
+        (cur_cond->condition == TRUECOND && cur_cond->branch == 0) ||
+        (cur_cond->condition == FALSECOND && cur_cond->branch == 1))
+    {
+        cond_deleted = 0;
+    }
+    else
+    {
+        cond_deleted = 1;
+    }
+}
+
+static void func_if(int condition, int line_no)
+{
+    struct s_conditional *pc = xmalloc(sizeof(struct s_conditional));
+
+    pc->branch = 0;
+    pc->condition = cond_deleted ? NOCOND: condition;
+    pc->line_no = line_no;
+    pc->last = cur_cond;
+    cur_cond = pc;
+
+    new_condition();
+}
+
+static void func_else(int line_no)
+{
+    if (cur_cond == NULL)
+    {
+        printf ("\nLine %d: ELSE without preceding IF keyword found.\n",
+                line_no);
+    }
+    else
+    {
+        cur_cond->branch = 1;
+        new_condition();
+    }
+}
+
+static void func_elif(int condition, int line_no)
+{
+    if (cur_cond == NULL)
+    {
+        printf ("\nLine %d: ELSEIF without preceding IF keyword found.\n",
+                line_no);
+    }
+    else
+    {
+        if (cur_cond->branch == 0)
+        {
+            if (cur_cond->condition == FALSECOND)
+            {
+                cur_cond->condition = condition;
+            }
+            else
+            {
+                cur_cond->branch = 1;
+            }
+            new_condition();
+        }
+    }
+}
+        
+static void func_endif(int line_no)
+{
+    struct s_conditional *pc = cur_cond;
+
+    if (cur_cond == NULL)
+    {
+        printf ("\nLine %d: ENDIF without preceding IF found.\n",
+                line_no);
+    }
+    else
+    {
+        cur_cond = pc->last;
+        xfree(pc);
+        new_condition();
+    }
+}
+        
 
 /*
  *  Handles an entire config file.
@@ -2114,6 +2317,7 @@ static void parseconfig(FILE * fp)
     char *s = NULL;
     char *tokens[20];
     int i = 0, line_num = 0;
+    int verb;
 
     memset(raw_buffer, 0, TEXTLEN);
 
@@ -2126,7 +2330,7 @@ static void parseconfig(FILE * fp)
 
         if (fgets(raw_buffer, TEXTLEN, fp) == NULL)
         {
-            return;
+            break;
         }
         buffer = env_expand(raw_buffer); /* expand %ENVIRONMENT% variables */
 
@@ -2165,12 +2369,42 @@ static void parseconfig(FILE * fp)
             }
         }
 
-        switch (GetVerbNum(keyword))
+        verb = GetVerbNum(keyword);
+        switch (verb)
         {
-        case -1:
-            printf("\nUnknown configuration keyword: '%s'\n", keyword);
+        case CFG_IF:
+            parse_tokens(value, tokens, 3);
+            func_if(evaluate_condition(value, line_num), line_num);
+            verb = -2;  /* skip next switch block */
             break;
 
+        case CFG_ELIF:
+        case CFG_ELSEIF:
+            parse_tokens(value, tokens, 3);
+            func_elif(evaluate_condition(value, line_num), line_num);
+            verb = -2;  /* skip next switch block */
+            break;
+
+        case CFG_ELSE:
+            func_else(line_num);
+            verb = -2;  /* skip next switch block */
+            break;
+            
+        case CFG_ENDIF:
+            func_endif(line_num);
+            verb = -2;  /* skip next switch block */
+            break;
+
+        default:;
+        }
+
+        if (cond_deleted)
+        {
+            verb = -2;
+        }
+
+        switch (verb)
+        {
         case CFG_NAME:
             parse_tokens(value, tokens, 3);
             if (tokens[0] != NULL)
@@ -2712,12 +2946,22 @@ static void parseconfig(FILE * fp)
             }
             break;
 
+        case -2:   /* skip */
+            break;
+            
+        case -1:
         default:
-            printf("\nUnknown configuration keyword: '%s'\n", keyword);
+            printf("\nLine %d: Unknown configuration keyword: '%s'\n",
+                   line_num, keyword);
             break;
         }
         release(buffer);
         memset(raw_buffer, 0, TEXTLEN);
+    }
+    if (cur_cond != NULL)
+    {
+        printf ("\nIF block started on line %d has no matching ENDIF!\n",
+                cur_cond->line_no);
     }
 }
 
