@@ -40,6 +40,7 @@
 unsigned char Dbdr[6] = {SC1, SC2, SC3, SC4, SC5, SC6};
 unsigned char Sbdr[6] = {SC7, SC8, SC9, SC10, SC11, SC12};
 
+int wnd_bs_127 = 0;           /* Is ASCII 127 backspace on ANSI console ? */
 int wnd_suppress_shadows = 0; /* do not suppress window shadows */
 #ifdef UNIX
 int wnd_force_monochrome = 1;

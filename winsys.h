@@ -243,5 +243,6 @@ unsigned int MnuGetMsg(EVT * event, unsigned long wid);
 
 extern int wnd_suppress_shadows;
 extern int wnd_force_monochrome;
+extern int wnd_bs_127;
 
 #endif
