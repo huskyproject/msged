@@ -21,7 +21,7 @@ msged.dvi: msged.texi
 msged.info: msged.texi
 	makeinfo --no-split  msged.texi
 
-msged.doc:
+msged.doc: msged.texi
 	texi2txt msged.texi
 
 almostclean:
