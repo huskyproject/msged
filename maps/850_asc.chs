@@ -116,7 +116,7 @@ C u		; currency sign
 \0 E		; E circonflex
 E e		; E dieresis
 \0 E		; E grave
-\0 i		; i without dot
+E U		; Euro currency sign
 \0 I		; I acute
 \0 I		; I circonflex
 \0 I		; I dieresis

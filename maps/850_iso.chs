@@ -115,7 +115,7 @@ F l             ; 159 9F dutch guilder sign (ibm437 159)
 \0 \xCA         ; 210 D2 latin capital letter e with circumflex
 \0 \xCB         ; 211 D3 latin capital letter e with diaeresis
 \0 \xD4         ; 212 D4 latin capital letter e with grave
-\0 i            ; 213 D5 latin small letter i dotless
+E U             ; 213 D5 Euro currency sign
 \0 \xCD         ; 214 D6 latin capital letter i with acute
 \0 \xCE         ; 215 D7 latin capital letter i with circumflex
 \0 \xCF         ; 216 D8 latin capital letter i with diaeresis
