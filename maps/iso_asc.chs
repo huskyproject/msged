@@ -30,7 +30,7 @@
 LATIN-1         ; from set
 ASCII           ; to set
 ;
-\0 \d128        ; (missing) These codes are unused in the LATIN-1 set.
+E U             ; (missing) Euro currency sign in Windows ANSI
 \0 \d129        ; (missing) For transparency, these are not mapped.
 \0 \d130        ; (missing)
 \0 \d131        ; (missing) 4

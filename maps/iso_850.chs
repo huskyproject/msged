@@ -30,7 +30,7 @@
 LATIN-1         ; from set
 CP850           ; to set
 ;
-\0 \d128        ; 128 80 (missing) These codes are unused in the LATIN-1 set.
+\0 \xD5         ; 128 80 Euro currency sign in Windows ANSI, unused in ISO
 \0 \d129        ; 129 81 (missing) For transparency, these are not mapped.
 \0 \d130        ; 130 82 (missing)
 \0 \d131        ; 131 83 (missing) 4

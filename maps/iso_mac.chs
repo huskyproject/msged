@@ -30,7 +30,7 @@
 Latin-1		; from set
 MAC		; to set
 ;
-\0 ?		; (missing) these codes are unused
+E U		; (missing) Euro currency sign in Windows ANSI
 \0 ?		; (missing)
 \0 ?		; (missing)
 \0 ?		; (missing) 4
