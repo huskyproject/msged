@@ -1,3 +1,7 @@
+2001-05-25 Friday 08:33  tobi
+
+	* makefile.lnx (1.22): fixed lnx makefile
+
 2001-05-02 Wednesday 00:32  tobi
 
 	* .cvs2cl (1.1): initiated the automatic ChangeLog feature
