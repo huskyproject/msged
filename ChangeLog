@@ -1,3 +1,8 @@
+2002-02-12 Tuesday 00:55  tobi
+
+	* readmail.c (1.39.2.4), doc/whatsnew.txt (1.67.2.4): Next attempt
+	at fixing CHARSET kludge handling.
+
 2002-02-10 Sunday 16:24  tobi
 
 	* VERSION (1.1.2.5), version.h (1.7.2.4): stepped version number
