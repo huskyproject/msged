@@ -1,5 +1,15 @@
-# include Husky-Makefile-Config
-!include ..\huskymak.cfg
+# look for libs in c:\lib
+LIBDIR=c:\lib
+
+# install programs in c:\bin
+BINDIR=c:\bin
+
+# look for includes here
+INCDIR=c:\include
+
+# options for installing programs
+IBOPT=-s
+
 
 CC=	wcl386
 
@@ -79,7 +89,7 @@ $(TARGET): $(objs)
 
 clean:
 	del *.obj
-	del *.bak
+        del *.bak
 
 distclean: clean
 	del $(TARGET)

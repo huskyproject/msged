@@ -1,13 +1,23 @@
 # Makefile for building a Windows 95/NT verison of MsgEd using
 # Borland C++ 4.0
 
-# include Husky-Makefile-Config
-!include ..\huskymak.cfg
+# look for libs in c:\lib
+LIBDIR=c:\lib
+
+# install programs in c:\bin
+BINDIR=c:\bin
+
+# look for includes here
+INCDIR=c:\include
+
+# options for installing programs
+IBOPT=-s
+
 
 #CC=     BCC
 CC=      BCC32
 
-!IF $(DEBUG) == 1
+!IF ($(DEBUG), 1)
 CFLAGS= -WC -v -I$(INCDIR)
 !ELSE
 CFLAGS= -WC -I$(INCDIR)
@@ -89,7 +99,7 @@ $(TARGET): $(OBJS)
 
 clean:
 	del *.obj
-	del *.bak
+        del *.bak
 
 distclean: clean
 	del $(TARGET)

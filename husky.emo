@@ -1,29 +1,25 @@
-# look for libs in c:\lib
-LIBDIR=c:\lib
+# include Husky-Makefile-Config
+include ../huskymak.cfg
 
-# install programs in c:\bin
-BINDIR=c:\bin
+CC=	 gcc
 
-# look for includes here
-INCDIR=c:\include
+ifeq ($(DEBUG), 1)
+  CFLAGS=	-Wall -Zomf -Zsys -g -I$(INCDIR)
+else
+  CFLAGS=	-Wall -Zomf -Zsys -s -I$(INCDIR)
+endif
 
-# options for installing programs
-IBOPT=-s
+CDEFS=	-DOS2 -DUSE_MSGAPI
+COPT=   -O3 -fomit-frame-pointer -fstrength-reduce
+#-m486
 
-
-CC=     bcc
-
-!IF $(DEBUG) == 1
-CFLAGS= -w -I$(INCDIR) -v
-!ELSE
-CFLAGS= -w -I$(INCDIR)
-!ENDIF
-
-CDEFS=  -DOS2 -DUSE_MSGAPI
-#COPT=  -O2
+.SUFFIXES:
+.SUFFIXES: .c .obj
 
 TARGET=	msgedp.exe
-MSGAPI=	$(LIBDIR)\smapibco.lib
+TMPLIB= msgedemo.lib
+LIB=    emxomfar
+MSGAPI=	$(LIBDIR)/smapiemo.lib
 
 objs=	addr.obj     \
 	areas.obj    \
@@ -83,16 +79,17 @@ all: $(TARGET)
 
 .c.obj:
 	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
+	$(LIB) r $(TMPLIB) $@
 
 $(TARGET): $(objs)
-	$(CC) $(COPT) -e$(TARGET) *.obj $(MSGAPI)
+	$(CC) $(COPT) $(CFLAGS) -Zlinker "/pm:vio" -o $(TARGET) msged.obj $(TMPLIB) $(MSGAPI)
 
 clean:
-	del *.obj
-        del *.bak
+	-del *.obj
+	-del *.bak
 
 distclean: clean
-	del $(TARGET)
+	-del $(TARGET)
 
 install: $(TARGET)
 	copy $(TARGET) $(BINDIR)

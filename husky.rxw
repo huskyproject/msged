@@ -14,7 +14,8 @@
 # BORLAND C++ 4.0 OR HIHGER WITH MAKEFILE.BCW
 
 # Makefile for building a Windows 95/NT verison of MsgEd using
-# the MINGW32 Compiler.
+# the RSXNT GNU compiler. This can be used to either compile MsgEd
+# on a Windows box or to cross-compile from an OS/2 machine.
 
 # Note: If the final linkage fails with the linker complaining about
 # multiple definitions of "_func_rsxnt_wait_debuggee", you are experiencing
@@ -22,36 +23,26 @@
 # library, or simply leave out the "-Zsys" switch  (at the expense that
 # the resulting executable then requires RSXNT.DLL at runtime)
 
-# look for libs in c:\lib
-LIBDIR=c:\lib
-
-# install programs in c:\bin
-BINDIR=c:\bin
-
-# look for includes here
-INCDIR=c:\include
-
-# options for installing programs
-IBOPT=-s
-
+# include Husky-Makefile-Config
+include ../huskymak.cfg
 
 CC=     gcc
 
 ifeq ($(DEBUG), 1)
-  CFLAGS= -Wall -pedantic -I$(INCDIR) -g
+  CFLAGS= -Wall -pedantic -Zwin32 -I$(INCDIR) -g
 else
-  CFLAGS= -Wall -pedantic -I$(INCDIR) -s
+  CFLAGS= -Wall -pedantic -Zwin32 -I$(INCDIR) -s
 endif
 
-CDEFS=  -D__NT__ -DWINNT  -DUSE_MSGAPI -D__MINGW32__
-LFLAGS= -L$(LIBDIR)
+CDEFS=  -D__NT__ -DWINNT  -DUSE_MSGAPI
+LFLAGS= -Zwin32 -Zsys -s
 COPT=
 
 
-TARGET= msgednta.exe
-# TMPLIB= msgedmgw.a
-# LIB=    ar
-MSGAPI= $(LIBDIR)/smapimgw.a
+TARGET= msgednt.exe
+TMPLIB= msgedrxw.a
+LIB=    ar
+MSGAPI= $(LIBDIR)/smapirxw.a
 
 objs=   addr.o     \
 	areas.o    \
@@ -110,18 +101,18 @@ all: $(TARGET)
 
 .c.o:
 	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
-#	$(LIB) r $(TMPLIB) $@
+	$(LIB) r $(TMPLIB) $@
 
 $(TARGET): $(objs)
-	$(CC) $(LFLAGS) -o $(TARGET) $(objs) $(MSGAPI)
+	$(CC) $(LFLAGS) -o $(TARGET) msged.o $(TMPLIB) $(MSGAPI)
 
 clean:
-	del *.obj
-	del *.bak
+	-cmd /c del *.o
+	-cmd /c del *.bak
 
 distclean: clean
-	del $(TARGET)
+	-cmd /c del $(TARGET)
 
 install: $(TARGET)
-	copy $(TARGET) $(BINDIR)
+	cmd /c copy $(TARGET) $(BINDIR)
 

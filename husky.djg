@@ -1,15 +1,5 @@
-# look for libs in c:\lib
-LIBDIR=c:\lib
-
-# install programs in c:\bin
-BINDIR=c:\bin
-
-# look for includes here
-INCDIR=..\smapi
-
-# options for installing programs
-IBOPT=-s
-
+# include Husky-Makefile-Config
+include ../huskymak.cfg
 
 CC=	gcc
 

@@ -1,29 +1,22 @@
-# look for libs in c:\lib
-LIBDIR=c:\lib
+# include Husky-Makefile-Config
+!include ../huskymak.cfg
 
-# install programs in c:\bin
-BINDIR=c:\bin
-
-# look for includes here
-INCDIR=c:\include
-
-# options for installing programs
-IBOPT=-s
-
-CC=	wcl386
+CC=	wcl
 
 !IF $(DEBUG) == 1
-  CFLAGS=	-zq -wx -I$(INCDIR) -d2
+  CFLAGS=	-zq -wx -ml -k8192 -I$(INCDIR) -d2
 !ELSE
-  CFLAGS=	-zq -wx -I$(INCDIR)
+  CFLAGS=	-zq -wx -ml -k8192 -I$(INCDIR)
 !ENDIF
 
-CDEFS=	-DUSE_MSGAPI
-#COPT=	-oneatx -5
-PMWDIR=	\pmw
+CDEFS=	-DUSE_MSGAPI -DUSE_CRITICAL
+#COPT=	-oneatx
+ASM=	wasm
+AFLAGS=	-zq
+ADEFS=	-DWATCOM
 
-TARGET=	msged32.exe
-MSGAPI=	$(LIBDIR)\smapiwcx.lib
+TARGET=	msged.exe
+MSGAPI=	$(LIBDIR)\smapiwcd.lib
 
 objs=	addr.obj     \
 	areas.obj    \
@@ -31,6 +24,7 @@ objs=	addr.obj     \
 	charset.obj  \
 	config.obj   \
 	control.obj  \
+	critical.obj \
 	date.obj     \
 	dialogs.obj  \
 	dirute.obj   \
@@ -40,8 +34,8 @@ objs=	addr.obj     \
 	dosmisc.obj  \
 	echotoss.obj \
 	environ.obj  \
-	fecfg145.obj \
 	fconf.obj    \
+	fecfg145.obj \
 	fido.obj     \
 	filedlg.obj  \
 	flags.obj    \
@@ -71,6 +65,7 @@ objs=	addr.obj     \
 	quote.obj    \
 	readmail.obj \
 	screen.obj   \
+	spawn.obj    \
 	strextra.obj \
 	system.obj   \
 	template.obj \
@@ -84,16 +79,18 @@ objs=	addr.obj     \
 
 all: $(TARGET)
 
+.asm.obj:
+	$(ASM) $(AFLAGS) $(ADEFS) $<
+
 .c.obj:
 	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
 
 $(TARGET): $(objs)
-	$(CC) $(COPT) -k8192 -fe=$(TARGET) *.obj $(MSGAPI)
-	$(PMWDIR)\pmwbind -r -s$(PMWDIR)\pmodew.exe $(TARGET)
+	$(CC) $(COPT) -fe=$(TARGET) *.obj $(MSGAPI)
 
 clean:
 	del *.obj
-        del *.bak
+	del *.bak
 
 distclean: clean
 	del $(TARGET)

@@ -1,13 +1,23 @@
-# include Husky-Makefile-Config
-!include ..\huskymak.cfg
+# look for libs in c:\lib
+LIBDIR=c:\lib
+
+# install programs in c:\bin
+BINDIR=c:\bin
+
+# look for includes here
+INCDIR=c:\include
+
+# options for installing programs
+IBOPT=-s
+
 
 CC=	qcl
 
-!IF $(DEBUG) == 1
+ifeq ($(DEBUG), 1)
   CFLAGS=	-W4 -AL -I$(INCDIR) -g
-!ELSE
+else
   CFLAGS=	-W4 -AL -I$(INCDIR) -s
-!ENDIF
+endif
 
 CDEFS=	-DMSDOS -DUSE_MSGAPI -DUSE_CRITICAL
 #COPT=	-Ox
@@ -90,7 +100,7 @@ $(TARGET): $(objs)
 
 clean:
 	del *.obj
-	del *.bak
+        del *.bak
 
 distclean: clean
 	del $(TARGET)

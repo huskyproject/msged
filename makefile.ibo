@@ -1,7 +1,17 @@
 # Makefile for IBM CSet on OS/2
 
-# include Husky-Makefile-Config
-include ..\huskymak.cfg
+# look for libs in c:\lib
+LIBDIR=c:\lib
+
+# install programs in c:\bin
+BINDIR=c:\bin
+
+# look for includes here
+INCDIR=c:\include
+
+# options for installing programs
+IBOPT=-s
+
 
 CC=     icc
 
@@ -91,7 +101,7 @@ $(TARGET): $(objs1) $(objs2) $(objs3) $(objs4) icc.cfg
 
 clean:
 	del *.obj
-	del *.bak
+        del *.bak
 
 distclean: clean
 	del $(TARGET)

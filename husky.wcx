@@ -1,41 +1,22 @@
-# Makefile for building a Windows 95/NT verison of MsgEd using
-# Borland C++ 4.0
+# include Husky-Makefile-Config
+include ..\huskymak.cfg
 
-# look for libs in c:\lib
-LIBDIR=c:\lib
+CC=	wcl386
 
-# install programs in c:\bin
-BINDIR=c:\bin
-
-# look for includes here
-INCDIR=c:\include
-
-# options for installing programs
-IBOPT=-s
-
-
-#CC=     BCC
-CC=      BCC32
-
-!IF ($(DEBUG), 1)
-CFLAGS= -WC -v -I$(INCDIR)
+!IF $(DEBUG) == 1
+  CFLAGS=	-zq -wx -I$(INCDIR) -d2
 !ELSE
-CFLAGS= -WC -I$(INCDIR)
+  CFLAGS=	-zq -wx -I$(INCDIR)
 !ENDIF
 
-CDEFS=  -D__NT__ -DWINNT  -DUSE_MSGAPI
-LFLAGS= -WC
-COPT=
+CDEFS=	-DUSE_MSGAPI
+#COPT=	-oneatx -5
+PMWDIR=	\pmw
 
+TARGET=	msged32.exe
+MSGAPI=	$(LIBDIR)\smapiwcx.lib
 
-TARGET= msgednt.exe
-TMPLIB= msgedbcw.lib
-LIB=    tlib
-MSGAPI= $(LIBDIR)\smapibcw.lib
-
-default: $(TARGET)
-
-OBJS=   addr.obj     \
+objs=	addr.obj     \
 	areas.obj    \
 	bmg.obj      \
 	charset.obj  \
@@ -46,10 +27,12 @@ OBJS=   addr.obj     \
 	dirute.obj   \
 	dlgbox.obj   \
 	dlist.obj    \
+	dosasm.obj   \
+	dosmisc.obj  \
 	echotoss.obj \
 	environ.obj  \
-	fconf.obj    \
 	fecfg145.obj \
+	fconf.obj    \
 	fido.obj     \
 	filedlg.obj  \
 	flags.obj    \
@@ -59,6 +42,7 @@ OBJS=   addr.obj     \
 	help.obj     \
 	helpcmp.obj  \
 	helpinfo.obj \
+	ibmscrn.obj  \
 	init.obj     \
 	keycode.obj  \
 	list.obj     \
@@ -68,6 +52,7 @@ OBJS=   addr.obj     \
 	menu.obj     \
 	misc.obj     \
 	mnu.obj      \
+	mouse4.obj   \
 	msg.obj      \
 	msged.obj    \
 	mxbt.obj     \
@@ -82,24 +67,24 @@ OBJS=   addr.obj     \
 	template.obj \
 	textfile.obj \
 	userlist.obj \
+	vio.obj      \
 	vsev.obj     \
 	vsevops.obj  \
 	win.obj      \
-	winntscr.obj \
 	wrap.obj
 
 all: $(TARGET)
 
 .c.obj:
 	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
-	$(LIB) $(TMPLIB) -+$@
 
-$(TARGET): $(OBJS)
-	$(CC) $(LFLAGS) -e$(TARGET) msged.obj $(TMPLIB) $(MSGAPI)
+$(TARGET): $(objs)
+	$(CC) $(COPT) -k8192 -fe=$(TARGET) *.obj $(MSGAPI)
+	$(PMWDIR)\pmwbind -r -s$(PMWDIR)\pmodew.exe $(TARGET)
 
 clean:
 	del *.obj
-        del *.bak
+	del *.bak
 
 distclean: clean
 	del $(TARGET)

@@ -1,33 +1,22 @@
-# look for libs in /usr/local/lib
-LIBDIR=/usr/local/lib
-
-# install programs in /usr/local/bin
-BINDIR=/usr/local/bin
-
-# look for includes here
-INCDIR=/usr/local/include
-
-# options for installing programs
-IBOPT=-s
-
+# include Husky-Makefile-Config
+include ../huskymak.cfg
 
 CC=	gcc
 
 ifeq ($(DEBUG), 1)
-  CFLAGS=	-Wall -I$(INCDIR) -ggdb
+  CFLAGS=	-Wall -I$(INCDIR) -I../smapi -g
 else
-  CFLAGS=	-Wall -I$(INCDIR) -s
+  CFLAGS=	-Wall -I$(INCDIR) -I../smapi -s
 endif
 
-CDEFS=	-DUNIX -DUSE_MSGAPI -DUSE_FIDOCONFIG -DUNAME=\"LNX\"
-COPT=	-O3 -fomit-frame-pointer -fstrength-reduce
-LFLAGS= -L$(LIBDIR)
+CDEFS=	-DUNIX -DUSE_MSGAPI -DUNAME=\"BSD\" -DUSE_FIDOCONFIG
+COPT=	-O2
 
 TARGET=	msged
-MSGAPI=-lsmapilnx
-FC=-lfidoconfig
+MSGAPI=	smapibsd
+FC    = fidoconfig
 
-objs=   addr.o     \
+objs=	addr.o     \
 	ansi.o     \
 	areas.o    \
 	bmg.o      \
@@ -42,7 +31,7 @@ objs=   addr.o     \
 	dlist.o    \
 	echotoss.o \
 	environ.o  \
-	fconf.o    \
+	fconf.o	   \
 	fecfg145.o \
 	fido.o     \
 	filedlg.o  \
@@ -87,7 +76,7 @@ all: $(TARGET)
 	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
 
 $(TARGET): $(objs)
-	$(CC) $(COPT) $(LOPT) -o $(TARGET) $(objs) $(MSGAPI) $(FC)
+	$(CC) $(COPT) -o $(TARGET) $(objs) -L$(LIBDIR) -l$(MSGAPI) -l$(FC)
 
 clean:
 	-rm *.o *~
@@ -96,5 +85,5 @@ distclean: clean
 	-rm $(TARGET)
 
 install: $(TARGET)
-	install $(IBOPT) $(TARGET) $(BINDIR)
+	install -c $(IBOPT) $(TARGET) $(BINDIR)
 

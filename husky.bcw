@@ -1,47 +1,41 @@
-# look for libs in c:\lib
-LIBDIR=c:\lib
+# Makefile for building a Windows 95/NT verison of MsgEd using
+# Borland C++ 4.0
 
-# install programs in c:\bin
-BINDIR=c:\bin
+# include Husky-Makefile-Config
+!include ..\huskymak.cfg
 
-# look for includes here
-INCDIR=c:\include
+#CC=     BCC
+CC=      BCC32
 
-# options for installing programs
-IBOPT=-s
+!IF $(DEBUG) == 1
+CFLAGS= -WC -v -I$(INCDIR)
+!ELSE
+CFLAGS= -WC -I$(INCDIR)
+!ENDIF
+
+CDEFS=  -D__NT__ -DWINNT  -DUSE_MSGAPI
+LFLAGS= -WC
+COPT=
 
 
-CC=	wcl
+TARGET= msgednt.exe
+TMPLIB= msgedbcw.lib
+LIB=    tlib
+MSGAPI= $(LIBDIR)\smapibcw.lib
 
-ifeq ($(DEBUG), 1)
-  CFLAGS=	-zq -wx -ml -k8192 -I$(INCDIR) -d2
-else
-  CFLAGS=	-zq -wx -ml -k8192 -I$(INCDIR)
-endif
+default: $(TARGET)
 
-CDEFS=	-DUSE_MSGAPI -DUSE_CRITICAL
-#COPT=	-oneatx
-ASM=	wasm
-AFLAGS=	-zq
-ADEFS=	-DWATCOM
-
-TARGET=	msged.exe
-MSGAPI=	$(LIBDIR)\smapiwcd.lib
-
-objs=	addr.obj     \
+OBJS=   addr.obj     \
 	areas.obj    \
 	bmg.obj      \
 	charset.obj  \
 	config.obj   \
 	control.obj  \
-	critical.obj \
 	date.obj     \
 	dialogs.obj  \
 	dirute.obj   \
 	dlgbox.obj   \
 	dlist.obj    \
-	dosasm.obj   \
-	dosmisc.obj  \
 	echotoss.obj \
 	environ.obj  \
 	fconf.obj    \
@@ -55,7 +49,6 @@ objs=	addr.obj     \
 	help.obj     \
 	helpcmp.obj  \
 	helpinfo.obj \
-	ibmscrn.obj  \
 	init.obj     \
 	keycode.obj  \
 	list.obj     \
@@ -65,7 +58,6 @@ objs=	addr.obj     \
 	menu.obj     \
 	misc.obj     \
 	mnu.obj      \
-	mouse4.obj   \
 	msg.obj      \
 	msged.obj    \
 	mxbt.obj     \
@@ -75,32 +67,29 @@ objs=	addr.obj     \
 	quote.obj    \
 	readmail.obj \
 	screen.obj   \
-	spawn.obj    \
 	strextra.obj \
 	system.obj   \
 	template.obj \
 	textfile.obj \
 	userlist.obj \
-	vio.obj      \
 	vsev.obj     \
 	vsevops.obj  \
 	win.obj      \
+	winntscr.obj \
 	wrap.obj
 
 all: $(TARGET)
 
-.asm.obj:
-	$(ASM) $(AFLAGS) $(ADEFS) $<
-
 .c.obj:
 	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
+	$(LIB) $(TMPLIB) -+$@
 
-$(TARGET): $(objs)
-	$(CC) $(COPT) -fe=$(TARGET) *.obj $(MSGAPI)
+$(TARGET): $(OBJS)
+	$(CC) $(LFLAGS) -e$(TARGET) msged.obj $(TMPLIB) $(MSGAPI)
 
 clean:
 	del *.obj
-        del *.bak
+	del *.bak
 
 distclean: clean
 	del $(TARGET)

@@ -1,33 +1,23 @@
-# look for libs in /usr/local/lib
-LIBDIR=/usr/local/lib
-
-# install programs in /usr/local/bin
-BINDIR=/usr/local/bin
-
-# look for includes here
-INCDIR=/usr/local/include
-
-# options for installing programs
-IBOPT=-s
-
+# include Husky-Makefile-Config
+include ../huskymak.cfg
 
 CC=	gcc
 
 ifeq ($(DEBUG), 1)
-  CFLAGS= -O3 -I$(INCDIR) -g
+  CFLAGS=	-Wall -I$(INCDIR) -ggdb
 else
-  CFLAGS= -O3 -I$(INCDIR) -s
+  CFLAGS=	-Wall -I$(INCDIR) -s
 endif
 
-CDEFS=	-DUNIX -DUSE_MSGAPI -DUSE_FIDOCONFIG
-COPT=
-LOPT= -L$(LIBDIR)
-LIBRARIES=	-lfidoconfig -lsmapisun -lcurses
+CDEFS=	-DUNIX -DUSE_MSGAPI -DUSE_FIDOCONFIG -DUNAME=\"LNX\"
+COPT=	-O3 -fomit-frame-pointer -fstrength-reduce
+LFLAGS= -L$(LIBDIR)
 
 TARGET=	msged
-MSGAPI=	smapisun
+MSGAPI=-lsmapilnx
+FC=-lfidoconfig
 
-objs=	addr.o     \
+objs=   addr.o     \
 	ansi.o     \
 	areas.o    \
 	bmg.o      \
@@ -87,7 +77,7 @@ all: $(TARGET)
 	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
 
 $(TARGET): $(objs)
-	$(CC) $(COPT) -o $(TARGET) $(objs) $(LOPT) $(LIBRARIES)
+	$(CC) $(COPT) $(LFLAGS) -o $(TARGET) $(objs) $(MSGAPI) $(FC)
 
 clean:
 	-rm *.o *~

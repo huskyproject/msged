@@ -1,31 +1,21 @@
-# look for libs in c:\lib
-LIBDIR=c:\lib
+# include Husky-Makefile-Config
+!include ..\huskymak.cfg
 
-# install programs in c:\bin
-BINDIR=c:\bin
+CC=     bcc
 
-# look for includes here
-INCDIR=c:\include
+!IF $(DEBUG) == 1
+CFLAGS= -w -I$(INCDIR) -v
+!ELSE
+CFLAGS= -w -I$(INCDIR)
+!ENDIF
 
-# options for installing programs
-IBOPT=-s
-
-
-CC=	hc
-
-ifeq ($(DEBUG), 1)
-  CFLAGS=	-w4 -Hmscerr -I$(INCDIR) -g
-else
-  CFLAGS=	-w4 -Hmscerr -I$(INCDIR) -s
-endif
-
-CDEFS=	-DOS2 -DUSE_MSGAPI
-COPT=	-O3
+CDEFS=  -DOS2 -DUSE_MSGAPI
+#COPT=  -O2
 
 TARGET=	msgedp.exe
-MSGAPI=	$(LIBDIR)\smapihco.lib
+MSGAPI=	$(LIBDIR)\smapibco.lib
 
-objs=   addr.obj     \
+objs=	addr.obj     \
 	areas.obj    \
 	bmg.obj      \
 	charset.obj  \
@@ -85,11 +75,11 @@ all: $(TARGET)
 	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
 
 $(TARGET): $(objs)
-	$(CC) $(COPT) -o $(TARGET) $(objs) $(MSGAPI)
+	$(CC) $(COPT) -e$(TARGET) *.obj $(MSGAPI)
 
 clean:
 	del *.obj
-        del *.bak
+	del *.bak
 
 distclean: clean
 	del $(TARGET)

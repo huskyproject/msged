@@ -1,32 +1,19 @@
-# look for libs in c:\lib
-LIBDIR=c:\lib
+# include Husky-Makefile-Config
+!include ..\huskymak.cfg
 
-# install programs in c:\bin
-BINDIR=c:\bin
-
-# look for includes here
-INCDIR=c:\include
-
-# options for installing programs
-IBOPT=-s
-
-
-CC=	bcc
+CC=	wcl386
 
 !IF $(DEBUG) == 1
-  CFLAGS=	-w -I$(INCDIR) -ml -v
+  CFLAGS=	-zq -wx -I$(INCDIR) -d2
 !ELSE
-  CFLAGS=	-w -I$(INCDIR) -ml
+  CFLAGS=	-zq -wx -I$(INCDIR)
 !ENDIF
 
-CDEFS=	-DMSDOS -DUSE_MSGAPI -DUSE_CRITICAL -DHASCORE1
-#COPT=	-O2
-ASM=	tasm
-AFLAGS=	-mx
-ADEFS=	-DMODL=large
+CDEFS=	-DOS2 -DUSE_MSGAPI
+#COPT=	-oneatx -5
 
-TARGET=	msged.exe
-MSGAPI=	$(LIBDIR)\smapibcd.lib
+TARGET=	msgedp.exe
+MSGAPI=	$(LIBDIR)\smapiwco.lib
 
 objs=	addr.obj     \
 	areas.obj    \
@@ -34,14 +21,11 @@ objs=	addr.obj     \
 	charset.obj  \
 	config.obj   \
 	control.obj  \
-	critical.obj \
 	date.obj     \
 	dialogs.obj  \
 	dirute.obj   \
 	dlgbox.obj   \
 	dlist.obj    \
-	dosasm.obj   \
-	dosmisc.obj  \
 	echotoss.obj \
 	environ.obj  \
 	fconf.obj    \
@@ -55,33 +39,31 @@ objs=	addr.obj     \
 	help.obj     \
 	helpcmp.obj  \
 	helpinfo.obj \
-	ibmscrn.obj  \
 	init.obj     \
 	keycode.obj  \
 	list.obj     \
 	maintmsg.obj \
 	makemsgn.obj \
+	malloc16.obj \
 	memextra.obj \
 	menu.obj     \
 	misc.obj     \
 	mnu.obj      \
-	mouse4.obj   \
 	msg.obj      \
 	msged.obj    \
 	mxbt.obj     \
 	normalc.obj  \
 	nshow.obj    \
+	os2scr.obj   \
 	quick.obj    \
 	quote.obj    \
 	readmail.obj \
 	screen.obj   \
-	spawn.obj    \
 	strextra.obj \
 	system.obj   \
 	template.obj \
 	textfile.obj \
 	userlist.obj \
-	vio.obj      \
 	vsev.obj     \
 	vsevops.obj  \
 	win.obj      \
@@ -89,18 +71,15 @@ objs=	addr.obj     \
 
 all: $(TARGET)
 
-.asm.obj:
-	$(ASM) $(AFLAGS) $(ADEFS) $<
-
 .c.obj:
 	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
 
 $(TARGET): $(objs)
-	$(CC) $(COPT) $(CFLAGS) -e$(TARGET) *.obj $(MSGAPI)
+	$(CC) $(COPT) -fe=$(TARGET) $(objs) $(MSGAPI)
 
 clean:
 	del *.obj
-        del *.bak
+	del *.bak
 
 distclean: clean
 	del $(TARGET)

@@ -1,31 +1,24 @@
-# look for libs in c:\lib
-LIBDIR=c:\lib
+# Makefile for IBM CSet on OS/2
 
-# install programs in c:\bin
-BINDIR=c:\bin
+# include Husky-Makefile-Config
+include ..\huskymak.cfg
 
-# look for includes here
-INCDIR=c:\include
+CC=     icc
 
-# options for installing programs
-IBOPT=-s
+ifeq ($(DEBUG), 1)
+  CFLAGS= -Sp1 -W2 -Q /I$(INCDIR) -g
+else
+  CFLAGS= -Sp1 -W2 -Q /I$(INCDIR) -s
+endif
 
-
-CC=	wcl386
-
-!IF $(DEBUG) == 1
-  CFLAGS=	-zq -wx -I$(INCDIR) -d2
-!ELSE
-  CFLAGS=	-zq -wx -I$(INCDIR)
-!ENDIF
-
-CDEFS=	-DOS2 -DUSE_MSGAPI
-#COPT=	-oneatx -5
+CDEFS=  -DOS2 -DUSE_MSGAPI
+#COPT=  -O
 
 TARGET=	msgedp.exe
-MSGAPI=	$(LIBDIR)\smapiwco.lib
+default: $(TARGET)
+MSGAPI=	$(LIBDIR)\smapiibo.lib
 
-objs=	addr.obj     \
+objs1=	addr.obj     \
 	areas.obj    \
 	bmg.obj      \
 	charset.obj  \
@@ -40,8 +33,8 @@ objs=	addr.obj     \
 	environ.obj  \
 	fconf.obj    \
 	fecfg145.obj \
-	fido.obj     \
-	filedlg.obj  \
+objs2=	fido.obj
+	filedlg.obj  }
 	flags.obj    \
 	freq.obj     \
 	gestr120.obj \
@@ -57,8 +50,8 @@ objs=	addr.obj     \
 	malloc16.obj \
 	memextra.obj \
 	menu.obj     \
-	misc.obj     \
-	mnu.obj      \
+	misc.obj
+objs3=	mnu.obj      \
 	msg.obj      \
 	msged.obj    \
 	mxbt.obj     \
@@ -69,8 +62,8 @@ objs=	addr.obj     \
 	quote.obj    \
 	readmail.obj \
 	screen.obj   \
-	strextra.obj \
-	system.obj   \
+	strextra.obj
+objs4=	system.obj   \
 	template.obj \
 	textfile.obj \
 	userlist.obj \
@@ -84,12 +77,21 @@ all: $(TARGET)
 .c.obj:
 	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
 
-$(TARGET): $(objs)
-	$(CC) $(COPT) -fe=$(TARGET) $(objs) $(MSGAPI)
+icc.cfg: makefile.ibo
+	echo $(COPT) /Fe$(TARGET) /B"/NOE" > icc.cfg
+        echo $(objs1) >> icc.cfg
+        echo $(objs2) >> icc.cfg
+	echo $(objs3) >> icc.cfg
+	echo $(objs4) >> icc.cfg
+        echo $(MSGAPI) >> icc.cfg
+
+
+$(TARGET): $(objs1) $(objs2) $(objs3) $(objs4) icc.cfg
+	icc @icc.cfg
 
 clean:
 	del *.obj
-        del *.bak
+	del *.bak
 
 distclean: clean
 	del $(TARGET)

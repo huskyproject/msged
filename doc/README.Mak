@@ -1,7 +1,7 @@
 
 There are two sets of Makefiles: One for use with other software of the
-husky project (makefile.*) and one for standalone-compiling of MsgEd TE
-(nohusky.*). I recommend the first ones.
+husky project (husky.*) and one for standalone-compiling of MsgEd TE
+(makefile.*). I recommend the first ones.
 
 To use the Husky-Makefiles, you have to create a Makefile-Config (huskymak.cfg)
 in the directory above the MsgEd sources.

@@ -22,8 +22,18 @@
 # library, or simply leave out the "-Zsys" switch  (at the expense that
 # the resulting executable then requires RSXNT.DLL at runtime)
 
-# include Husky-Makefile-Config
-include ../huskymak.cfg
+# look for libs in c:\lib
+LIBDIR=c:\lib
+
+# install programs in c:\bin
+BINDIR=c:\bin
+
+# look for includes here
+INCDIR=c:\include
+
+# options for installing programs
+IBOPT=-s
+
 
 CC=     gcc
 

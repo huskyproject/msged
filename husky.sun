@@ -1,30 +1,21 @@
-# look for libs in /usr/local/lib
-LIBDIR=/usr/local/lib
-
-# install programs in /usr/local/bin
-BINDIR=/usr/local/bin
-
-# look for includes here
-INCDIR=/usr/local/include
-
-# options for installing programs
-IBOPT=-s
-
+# include Husky-Makefile-Config
+include ../huskymak.cfg
 
 CC=	gcc
 
 ifeq ($(DEBUG), 1)
-  CFLAGS=	-Wall -I$(INCDIR) -g
+  CFLAGS= -O3 -I$(INCDIR) -g
 else
-  CFLAGS=	-Wall -I$(INCDIR) -s
+  CFLAGS= -O3 -I$(INCDIR) -s
 endif
 
-CDEFS=	-DUNIX -DUSE_MSGAPI -DUNAME=\"BSD\" -DUSE_FIDOCONFIG
-COPT=	-O2
+CDEFS=	-DUNIX -DUSE_MSGAPI -DUSE_FIDOCONFIG
+COPT=
+LOPT= -L$(LIBDIR)
+LIBRARIES=	-lfidoconfig -lsmapisun -lcurses
 
 TARGET=	msged
-MSGAPI=	smapibsd
-FC    = fidoconfig
+MSGAPI=	smapisun
 
 objs=	addr.o     \
 	ansi.o     \
@@ -41,7 +32,7 @@ objs=	addr.o     \
 	dlist.o    \
 	echotoss.o \
 	environ.o  \
-	fconf.o	   \
+	fconf.o    \
 	fecfg145.o \
 	fido.o     \
 	filedlg.o  \
@@ -86,7 +77,7 @@ all: $(TARGET)
 	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
 
 $(TARGET): $(objs)
-	$(CC) $(COPT) -o $(TARGET) $(objs) -L$(LIBDIR) -l$(MSGAPI) -l$(FC)
+	$(CC) $(COPT) -o $(TARGET) $(objs) $(LOPT) $(LIBRARIES)
 
 clean:
 	-rm *.o *~

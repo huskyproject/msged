@@ -1,35 +1,20 @@
-# look for libs in c:\lib
-LIBDIR=c:\lib
+# include Husky-Makefile-Config
+!include ..\huskymak.cfg
 
-# install programs in c:\bin
-BINDIR=c:\bin
+CC=	wcl386
 
-# look for includes here
-INCDIR=c:\include
+!IF $(DEBUG) == 1
+  CFLAGS=	-zq -wx -bt=nt -l=nt -I$(INCDIR) -d2
+!ELSE
+  CFLAGS=	-zq -wx -bt=nt -l=nt -I$(INCDIR)
+!ENDIF
 
-# options for installing programs
-IBOPT=-s
+#CDEFS=	-DWINNT
+CDEFS=	-DWINNT -DUSE_MSGAPI
+#COPT=	-oneatx -5
 
-
-CC=	 gcc
-
-ifeq ($(DEBUG), 1)
-  CFLAGS=	-Wall -Zomf -Zsys -g -I$(INCDIR)
-else
-  CFLAGS=	-Wall -Zomf -Zsys -s -I$(INCDIR)
-endif
-
-CDEFS=	-DOS2 -DUSE_MSGAPI
-COPT=   -O3 -fomit-frame-pointer -fstrength-reduce
-#-m486
-
-.SUFFIXES:
-.SUFFIXES: .c .obj
-
-TARGET=	msgedp.exe
-TMPLIB= msgedemo.lib
-LIB=    emxomfar
-MSGAPI=	$(LIBDIR)/smapiemo.lib
+TARGET=	msgedw32.exe
+MSGAPI=	$(LIBDIR)\smapiwcw.lib
 
 objs=	addr.obj     \
 	areas.obj    \
@@ -60,7 +45,6 @@ objs=	addr.obj     \
 	list.obj     \
 	maintmsg.obj \
 	makemsgn.obj \
-	malloc16.obj \
 	memextra.obj \
 	menu.obj     \
 	misc.obj     \
@@ -70,7 +54,6 @@ objs=	addr.obj     \
 	mxbt.obj     \
 	normalc.obj  \
 	nshow.obj    \
-	os2scr.obj   \
 	quick.obj    \
 	quote.obj    \
 	readmail.obj \
@@ -83,23 +66,23 @@ objs=	addr.obj     \
 	vsev.obj     \
 	vsevops.obj  \
 	win.obj      \
+	winntscr.obj \
 	wrap.obj
 
 all: $(TARGET)
 
 .c.obj:
 	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
-	$(LIB) r $(TMPLIB) $@
 
 $(TARGET): $(objs)
-	$(CC) $(COPT) $(CFLAGS) -Zlinker "/pm:vio" -o $(TARGET) msged.obj $(TMPLIB) $(MSGAPI)
+	$(CC) $(COPT) -fe=$(TARGET) *.obj $(MSGAPI)
 
 clean:
-	-del *.obj
-        -del *.bak
+	del *.obj
+	del *.bak
 
 distclean: clean
-	-del $(TARGET)
+	del $(TARGET)
 
 install: $(TARGET)
 	copy $(TARGET) $(BINDIR)
