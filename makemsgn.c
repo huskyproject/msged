@@ -830,8 +830,8 @@ static char *alias_lookup(ADDRESS * addr, char *isto)
                 addr->domain = NULL;
             }
         } */
-    } 
-    return name; 
+    }
+    return name;
 }
 
 /*
@@ -973,7 +973,7 @@ static void GetAddress(ADDRESS * addr, char *from, char *subj)
     {
         do_lookup = FALSE;
     }
-    
+
     name = addr_lookup(from, addr);
 
     /* Check for an Alias subject. */
@@ -1025,19 +1025,23 @@ static int ChangeName(ADDRESS * addr, char *from, char *subj, int y)
     int ch = 0, pos, done = 0;
 
     strcpy(tmp2, subj);
-    if (addr->internet)
+    tmp[0] = '\0';
+    if (addr->internet && addr->domain != NULL)
     {
         strncpy(tmp, addr->domain, sizeof tmp - 1);
     }
     else
     {
-        if (addr->bangpath)
+        if (addr->bangpath && addr->domain != NULL)
         {
             strncat(strcpy(tmp, "@"), addr->domain, sizeof tmp - 1);
         }
         else
         {
-            strncpy(tmp, from, sizeof tmp - 1);
+            if (from != NULL)
+            {
+                strncpy(tmp, from, sizeof tmp - 1);
+            }
         }
     }
 
