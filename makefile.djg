@@ -1,9 +1,8 @@
 CC=	gcc
 CFLAGS= -Wall
-#-s
 CDEFS=	-D__FLAT__ -DUSE_MSGAPI
-COPT= -s
-#COPT=	-O3 -fomit-frame-pointer -fstrength-reduce -m486
+COPT= -s -O3
+# -fomit-frame-pointer -fstrength-reduce -m486
 MSGDIR= ../smapi
 
 TARGET= msged32.exe

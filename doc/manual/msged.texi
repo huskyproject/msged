@@ -88,12 +88,12 @@ of pain, especially (but not only) when using @value{MSGED} in networked or
 UNIX environments.
 
 @menu
-* Distribution Archives::       
-* DOSish Installation::         
-* UNIX installation::           
+* Distribution Archives::       Which archives do I need?
+* Non-Unix Installation::       Installing @value{MSGED} on OS/2, DOS or Windows
+* UNIX installation::           Installing @value{MSGED} on Linux or Unix
 @end menu
 
-@node Distribution Archives, DOSish Installation, Installation, Installation
+@node Distribution Archives, Non-Unix Installation, Installation, Installation
 @section Which Distribution Archives do I need?
 @value{MSGED} @value{VERSION} is shipped in various distribution
 archives. This section describes the contents of each. You normally do only
@@ -154,9 +154,22 @@ version of @value{MSGED} to function properly under all circumstances.
 @emph{Attention:} Most of these ZIP-files contain subdirectories, so you
 should use the @samp{-d} option when unzipping them!
 
-@node DOSish Installation, UNIX installation, Distribution Archives, Installation
+@node Non-Unix Installation, UNIX installation, Distribution Archives, Installation
 @section Installation on OS/2, DOS or Windows
 
+This section provides guidelines and additional notes for installing
+@value{MSGED} on OS/2, DOS or Windows.
+
+@menu
+* Non-Unix Installation Guide::  
+* 16-Bit DOS Release Notes::    
+* 32 Bit DOS Release Notes::    
+* OS/2 Release Notes::          
+* Windows Release Notes::       
+@end menu
+
+@node Non-Unix Installation Guide, 16-Bit DOS Release Notes, Non-Unix Installation, Non-Unix Installation
+@subsection Installation Procedure
 @enumerate
 @item
 Obtain the distribution archive that contains the executable for your
@@ -190,8 +203,90 @@ above) as working directory).
 Start @value{MSGED}.
 @end enumerate
 
-@node UNIX installation,  , DOSish Installation, Installation
+@node 16-Bit DOS Release Notes, 32 Bit DOS Release Notes, Non-Unix Installation Guide, Non-Unix Installation
+@subsection Release Notes for the 16-Bit DOS version (@file{MSGED.EXE})
+@itemize @bullet
+@item
+The 16 bit DOS version cannot handle squish message areas where the
+@file{.SQI} file is larger thank 64k. This limits the size of a message area
+to about 5000 messages. If this is a problem to you, you should use the 32
+bit DOS DPMI version instead.
+
+@item
+The 16 bit DOS version has been compiled with Borland C 3.1.
+
+@end itemize
+
+@node 32 Bit DOS Release Notes, OS/2 Release Notes, 16-Bit DOS Release Notes, Non-Unix Installation
+@subsection Release Notes for the 32 Bit DOS version (@file{MSGED32.EXE})
+@itemize @bullet
+@item
+The 32 bit DOS version should be used when the 16 bit DOS version runs out of
+conventional memory (which is very unlikely to happen) or if you want to use
+message areas with more than 5000 messages in them. In all other cases, the
+16 bit version is the better choice because it uses less memory
+
+@item
+The 32 bit DOS version requries a functional DPMI server to run. Valid DPMI
+servers include the Windows and OS/2 DOS box, Quarterdeck QDPMI, and others.
+
+@item
+In case you are running plain DOS without any DPMI server, @file{CWSDPMI.EXE}
+is shipped in the distribution archive. Simply but it in the same path where
+you put @file{MSGED32.EXE}, and it will act as an DPMI server as long as no
+other one is installed already. Please note that CWSDPMI is not a public
+domain program. It is licensed under the GNU Public License instead. You can
+obtain the full source code for CWSDPMI and a copy of the GNU license from
+@url{ftp.simtel.net/pub/simtelnet/djgpp/v2misc}.
+
+@item
+The 32 bit DOS version has been compiled using the DJGPP GNU compiler.
+
+@end itemize
+
+@node OS/2 Release Notes, Windows Release Notes, 32 Bit DOS Release Notes, Non-Unix Installation
+@subsection Release Notes for the 32 Bit OS/2 version (@file{MSGEDP.EXE})
+@itemize @bullet
+@item
+The OS/2 version has been compiled with the EMX GNU compiler, but does no
+longer require the EMX runtime. It is a standalone OS/2 executable.
+
+@end itemize
+
+@node Windows Release Notes,  , OS/2 Release Notes, Non-Unix Installation
+@subsection Release Notes for the 32 Bit Windows version (@file{MSGEDNT.EXE})
+@itemize @bullet
+@item
+The Windows version is a 32 bit executable designed for Windows NT. Although
+it has only been tested on Windows NT, it should also work on Windows 95 and
+Windows 98.
+
+@item
+The Windows version presently does not support mouse control (although the
+mouse cursor is visible).
+
+@item
+The Windows version hsa been compiled with the RSXNT GNU compiler. It is a
+standalone executable that does not require any runtime DLLs.
+
+@end itemize
+
+
+@node UNIX installation,  , Non-Unix Installation, Installation
 @section Installation on Linux, FreeBSD, or other Unixes
+This section provides information on installing @value{MSGED} on Linux,
+FreeBSD or any other Unix-like system.
+
+@menu
+* UNIX Installation Procedure::  
+* Notes on UNIX terminal I/O::  
+* Notes on UNIX keyboard input::  
+* Notes on Big Endian Hardware::  
+* Colors in the Unix version::  
+@end menu
+
+@node UNIX Installation Procedure, Notes on UNIX terminal I/O, UNIX installation, UNIX installation
+@subsection Installation Procedure
 If you are using Linux (or FreeBSD with the Linux compatibility libraries),
 you can get the Linux distribution archive which contains a pre-compiled
 binary. If you are running any other Unix you have to compile the source code
@@ -218,6 +313,14 @@ Unzip the Linux distribution archive:
 @example
 ~/msged-work $ unzip ~/msgte5_l.zip
 @end example
+
+@item
+Fix the file permissions of the executable file:
+
+@example
+~/msged-work $ chmod guo+x msged
+@end example
+
 
 @item
 The executable can be either installed system-globally in
@@ -252,6 +355,11 @@ You have to rename and move some other files as well:
 ~/msged-work $ mv writmaps.dat ~/.msged.writmaps
 @end example
 
+Note that if you have the source code distributions, you must take
+@file{readmaps.dat} and @file{writmaps.dat} from the @file{bin/latin}
+subdirectory (assuming that your Unix machine uses the ISO 8859-1 character
+set).
+
 @item
 Modify the configuration file @file{~/.msged} with your favourite text editor
 according to your needs. @xref{Configuration Reference} for detailed
@@ -263,12 +371,124 @@ uncomment these settings if you want to use all features of @value{MSGED} on
 Unix!
 
 @item
-You should now refer to the Unix specific release notes found later in
-this chapter before trying to start @value{MSGED}. They can save you from a lot
+You should now refer to the Unix specific release notes found below
+before trying to start @value{MSGED}. They can save you from a lot
 of headaches ;-).
 @c FIXME add xref
 
 @end enumerate
+
+@node Notes on UNIX terminal I/O, Notes on UNIX keyboard input, UNIX Installation Procedure, UNIX installation
+@subsection How Terminal I/O is handled on Unix
+@value{MSGED} does not use termcap, terminfo, or anything. @value{MSGED} is
+not linked to any curses library. The way that @value{MSGED} uses to create
+its full screen interface is to emit ANSI x3.64 character control
+sequences. This is a common subset of control sequences that is recognised,
+among others, by VT52, VT100, VT200 and higher VTxxx terminals, by xterm, by
+the FreeBSD and the Linux console, by the OS/2 telnet program, and others. I
+have tested this on several Unix boxes and it worked remarkably
+well. For optimum results, you should use the @file{scheme.004} color scheme
+file found in the @file{doc/} resp. @file{samples/} subdirectory. If you have
+problems seeing the cursor in an xterm, you should start the xterm with the
+option @samp{-cr white}.
+
+However, this will of course not work on all possible Unix installations. In
+the future, I might consider to add a curses port. Until then, if you have
+any problems with the terminal routinesay of @value{MSGED}, please get in
+contact with me so that I can fix it.
+
+@node Notes on UNIX keyboard input, Notes on Big Endian Hardware, Notes on UNIX terminal I/O, UNIX installation
+@subsection Special Notes on Keyboard Input
+Due to the history of @value{MSGED}, it heavily depends on typical PC
+keyboard combinations like @key{Alt}-keys, combinations of @key{Ctrl} with
+cursor keys, and so on. Not all of them are easy to reflect on a Unix console
+or in an xterm.
+
+As for the @key{Alt} keys (@key{Alt}-@key{X} and so on): @value{MSGED} tries
+to recognize all sorts of ways in which clients reflect @key{Alt} or
+@key{Meta} key combinations. If that still does not work on your console,
+besides contacting me so that I can fix it, you can emulate an @key{Alt} key@c 
+with the @key{Esc} key: If you press and release the @key{Esc} key and then
+press a letter, @value{MSGED} will treat this as if you pressed @key{Alt} and
+that letter. However, you have to do this fast, because if no key is pressed
+after the @key{Esc} for more than 0.2 seconds, @value{MSGED} will assume that
+you really meant to press a single @key{Esc} key, which is also frequently
+used in @value{MSGED}.
+
+Some other key combinations, like @key{Ctrl}-@key{Left} and so on, are not
+reproducable in an xterm or on a Unix console at all. Therefore, the sample
+documentation file @file{sample.cfg} contains a bunch of settings that puts
+the functions that are by default bound to key combinations that cannot be
+keyed on Unix to other key combinations.
+
+Finally, entering national special characters like the German a dieresis, or
+the french accented characters, is always a problem on Unix. If you want to
+do that with @value{MSGED}, refer to the sample configuration file and the
+documentation on the @code{EnableSC} keyword (@pxref{EnableSC,,The
+@code{EnableSC} keyword}).
+
+If all this sounds very clumsy to you, perhaps you might volunteer to create
+a more Unix-friendly keyboard layout for @value{MSGED}. @value{MSGED} allows
+to freely redefine the keyboard layout. @xref{Redefining the
+Keyboard,,Redifining the Keyboard Bindings}, for more information on
+this. The first person that provides me with a really Unix-friendly set of
+@samp{ReadKey} and @samp{EditKey} configuration statements will receive
+special honour in this manual @dots{}
+
+@node Notes on Big Endian Hardware, Colors in the Unix version, Notes on UNIX keyboard input, UNIX installation
+@subsection Notes on Big Endian Hardware
+A large part of @value{MSGED} and the underlying message API has been made
+independent of little/big endian or structure packing issues. This means that
+in principle you can compile @value{MSGED} on Alpha, PowerPC, Sparc, or
+whatever exotic hardware and it will read and write exactly the same binary
+format files like the Intel versions do. You do not even have to specify any
+special compile-time switch for compiling on big endian hardware.
+
+However, some things do not yet work on big on non-Intel machines. This
+includes:
+
+@itemize @bullet
+@item
+the QuickBBS / Hudson Message Base routines
+
+@item
+the Fido *.MSG routines
+
+@item
+the routines for reading a @file{fastecho.cfg} configuration file.
+@end itemize
+
+This means that you presently must restrict yourself to a Squish message bas
+eand a @file{squish.cfg} configuration file if you want to run @value{MSGED}
+on big endian hardware.
+
+@node Colors in the Unix version,  , Notes on Big Endian Hardware, UNIX installation
+@subsection Colors in the Unix version
+
+The UNIX verison of @value{MSGED}, by default, presents itself in spartanic
+black and white, because this is most compatible with any existing terminal
+type. Even if you use the @code{Color} configuration keyword to define custom
+colors, @value{MSGED} still will transform all your color definitions into a
+black and white equivalent.
+
+If you want to see @value{MSGED} displayed in nice colors, you need to enable
+extended ANSI color codes:
+
+@example
+Switch Colors On         # enable ANSI color codes
+Include ~/.msged.colors  # include the color configuration
+@end example
+
+Of course you need a terminal that supports ANSI color codes. Among others,
+these are the Linux console (but not the Linux xterm!), the FreeBSD console,
+the "color-xterm" or "xterm-color" or "nxterm" terminal emulators, and the
+FreeBSD xterm.
+
+The sample color scheme file @file{color.004}, that you copied to
+@file{~/.msged.colors} during the installation process, contains color
+settings with sensible values. If, after adding the two lines from the
+example above to your configuration file, parts of the screen or message text
+are invisible, your terminal probably does not correctly support ANSI color codes.
 
 @node Introduction, Advanced Concepts, Installation, Top
 @chapter A quick tour through @value{MSGED}
@@ -1506,6 +1726,11 @@ set, so it makes sense to specify @samp{AssumeCharset IBMPC} here.
 
 Use this to customize the colors that @value{MSGED} uses. For a list of
 available color values and items, refer to the sample color scheme files.
+
+If you are using the Unix version of @value{MSGED}, you must also switch on the
+@code{Colors} switch in order to get a non-monochrome display. @xref{Colors
+in the Unix version,, Colors in the Unix version}, for more information.
+
 @c FIXME better documentaiton of color shemes
 
 @node Colour, CurStart/CurEnd, Color, Keywords
@@ -2566,6 +2791,13 @@ Switch SEEN-BYs On
 The following switches are available:
 
 @table @code
+@item ArealistExactMatch
+@findex ArealistExactMatch
+When the area list is displayed, you can search a message are by entering the
+first few characters of this name. This is the default. If you turn off the
+@code{ArealistEactMatch} switch, @emph{any} substring is matched in an area
+search; you don't have to type an area name from the beginning. Default: On.
+
 @item ChopQuote
 @findex ChopQuote
 When set to on, and you are quoting a message for reply, this switch will
@@ -2575,6 +2807,18 @@ are using an external editor, ChopQuote has no effect.  When set to off, all
 quoted lines are saved, regardless of their location in the message.  Note
 that you can also manually chop quotes by pressing
 @key{Alt}-@key{L}. Default: Off.
+
+@item Colors
+@findex Colors
+This switch is only relevant for the Unix versions of @value{MSGED}. If it is
+disabled, @value{MSGED} will not send any ANSI color codes to the terminal,
+but will restrict itself to the most basic monochrome text styles ``normal'',
+``bright'' and ``inverted''. This allows you to use @value{MSGED} on
+terminals like the standard xterm, hardware VT100 terminals, and others that
+do not understand color codes. Note that you should not use the @code{Color}
+configuration keyword, nor include any color scheme file, as long as this
+switch is disabled. @xref{Colors in the Unix version}, for more
+information. Default: Off for Unix, On for all other versions.
 
 @item Confirm
 @findex Confirm
@@ -2593,13 +2837,66 @@ header information block below the date written information. You might want
 to turn this off if your tosser should not fill in this date field
 correctly. Default: On.
 
+@item DMore
+@findex DMore
+When set to on, this will display the message number of the message currently
+being read on the top line of the header after the area description in the
+form: @samp{(currentmsg# of maxmsg#)}. Default: Off.
+
+
+@item DomainOrigin
+@findex DomainOrigin
+If turned on, @value{MSGED} will generate five dimensional origin lines
+(i.E., it will append the domain string to the address in the origin
+line). It is suggested that you turn this switch off, but is is turned on by
+default. Default: On.
+
+
+@item EchoFlags
+@findex EchoFlags
+When this switch is set to on, @value{MSGED} will append a FLAGS control line
+to messages entered in echomail areas whenever there are message attributes.
+For example, entering a private message into an echomail area will cause
+Msged to add a @samp{FLAGS PVT} control line to the beginning of the message
+text. Do not change this switch unless you know what you are doing. Default:
+On.
+
+@item EditCROnly
+@findex EditCROnly
+If turned on, the internal message editor will mark hard carriage returns
+with an ampersand sign. Default: Off.
+
+@item EditTearLines
+@item EditOriginLines
+When these switches are turned off, the tearline and the origin line will be
+appended to an echomail message after you have entered and saved it. When
+they are turned on, tearline and/or origin line will be appended to the
+message before you start to edit it, so that you have for example the chance
+to modify the origin text or similar. Default: Both On.
+
+@item ExtFormat
+@findex ExtFormat
+Indicates if text created in an external editor should be reformatted by
+@value{MSGED}. It is a good idea to leave this on when using an external
+editor. Default: On.
+
 @item HardQuote
 @findex HardQuote
 When switched on, this option causes the column formatting to be preserved
 when quoting, ie it doesn't reformat quotes. Default: On.
 
+@item ImportFN
+@findex ImportFN
+When using the built-in editor to  import a text file into a message, this
+text file will be bracketet by some horizontal dashes and the name of the
+file like this one: @samp{"------ test.txt begins -----"} before and
+@samp{"----- test.txt ends -----"} after the file. You can disable these two
+lines by turning the @code{ImportFN} switch off. Default: On.
+
 @item MSGIDs
 @findex MSGIDs
+@cindex MSGID, generation
+@cindex message IDs
 MSGIDs are used to uniquely identify a message coming from your system.
 Unfortunately no two message editors use the same MSGID-generating algorithm,
 so you cannot guarantee that you conform to the MSGID specs unless you have
@@ -2607,6 +2904,16 @@ used a specific message editor (only) for a particular address in a 3-year
 period.  Most people just ignore this potential problem and use them anyway.
 Leaving MSGIDs ON will help mail tossers in duplicate message checking and/or
 reply linking. Default: On.
+
+@item NetmailVia
+@findex NetmailVia
+@cindex Via lines
+If this switch is turned on, @value{MSGED} will append a Via control line to
+each netmail entered. You should turn this switch on, if your tosser does not
+append Via lines to netmail that originates from your system (like Squish
+does), but you should switch it off if your tosser does append via lines to
+netmail even if the mail originates from your own system (like Fastecho
+does).
 
 @item OpusDate
 @findex OpusDate
@@ -2616,6 +2923,13 @@ code, turning this flag @emph{on} would @emph{stop} @value{MSGED} from
 *.MSG messages. @value{MSGED} will, however, always fill in those fields (in
 the worst case with the current timestamp). Probably you should leave this
 flag as is. Default: Off.
+
+@item Origins
+@findex Origins
+This switch controls if echomail messages will be appended with an origin
+line. You absolutely @emph{must} leave this switch turned on, because origin
+lines are technically necessary for a smooth operation of the
+network. Default: On.
 
 @item QQuotes
 @findex QQuotes
@@ -2635,8 +2949,20 @@ copies will be re-generated). Otherwise, the first formatted cc:  will NOT be
 marked kill/sent and will therefore remain as a future reference, but the
 original raw message will not be saved. Default: On.
 
+@item RealMsgN
+@findex RealMsgN
+If this switch is turned on, the message list screen (@key{Alt}-@key{L}) will
+display the actual message number of each message instead of displaying the
+messages in sequential order, starting with 1. Default: Off.
+
+@item RightNextUnreadArea
+@findex RightNextUnreadArea
+When in message reading mode, and this switch is set to on, and there are no
+more unread messages in the current message area, pressing the right arrow
+key will go to the next area with unread messages. Default: Off.
+
 @item SaveCC
-@cindex SaveCC
+@findex SaveCC
 @cindex carbon copies, saving the original message
 When generating carbon copies, and if this switch is turned on, a duplicate
 of the original message is saved with no kill/sent flag set for future
@@ -2644,26 +2970,31 @@ reference, and possible re-editing and/or resending (along with the normal
 copied messages that are sent out and flagged kill/sent). Default: On.
 
 @item Seen-Bys
-@cindex Seen-Bysb
-@findex SEEN-BY lines, showing
-If this switch is turned on, @value{MSGED} will display SEEN-BY lines in
-message reading mode. This is probably only useful for echomail routing
-debugging purposes. Default: Off.
+@findex Seen-Bys
+This switch is a synonym for the @code{ShowSeenBys} switch. See below.
+
+@item Shadows
+@findex Shadows
+If this switch is enabled, @value{MSGED} will draw nice shadows round dialog
+boxes and other popup windows. You might want to disable this switch if you
+use the Unix version of @value{MSGED}, because on a VT100 compatible
+terminal, drawing those borders can slow down the program
+considerably. Default: On.
 
 @item ShowAddr
-@cindex ShowAddr
+@findex ShowAddr
 If this switch is enabled, the FTN address that you are currently using for
 the current area will be displayed on the left-hand side of the line that
 separates the message header from the message text. Default: On.
 
 @item ShowCR
-@cindex ShowCR
+@findex ShowCR
 If turned on, @value{MSGED} will mark the location of hard carriage
 returns with ASCII code 20, as known from common word processors. This might
 not work on a VT100 terminal. Default: Off.
 
 @item ShowEOL
-@cindex ShowEOL
+@findex ShowEOL
 If turned on, @value{MSGED} will mark the location of each end-of-line
 character with ASCII code 29. This will only work if the @code{ShowCR} switch
 is also turned on. Default: Off.
@@ -2676,6 +3007,47 @@ If turned on, @value{MSGED} will display kludge line information in message
 reading mode. You can also toogle this switch during program execution by
 pressing @key{Alt}-@key{V}. Unlike in older MsgEd versions, this switch
 does not pertain to origin and/or tear lines. Default: Off.
+
+@item ShowOrigins
+@findex ShowOrigins
+This switch toggles the display of origin lines in message reading
+mode. Default: On.
+
+@item ShowSystem
+@findex ShowSystem
+This enables the lookup and display of a system name in your compiled version
+7 nodelists. If set to on, the nodelisted system name will appear in the
+header, after the sender's name and address, in netmail and echomail message
+areas. If switched off, the lookup will not be performed. Default: On.
+
+@item ShowTearlines
+@findex ShowTearlines
+This switch toggles the display of tearlines in message reading
+mode. Default: On.
+
+@item ShowSeenBys
+@findex ShowSeenBys
+@cindex SEEN-BY lines, showing
+If this switch is turned on, @value{MSGED} will display SEEN-BY lines in
+message reading mode. This is probably only useful for echomail routing
+debugging purposes. Default: Off.
+
+@item ShowTime
+@findex ShowTime
+Shows the current time.  This isn't a real time clock; it simply shows what
+the current date and time were when the screen was last refreshed with a new
+message, or when other keyboard presses were detected.  Default: Off.
+
+@item SOTEOT
+@findex SOTEOT
+@cindex start of text / end of text
+If this is set to on, @value{MSGED} will add SOT and EOT (Start Of Text/End
+Of Text) kludge lines to bracket the text in the message body. Please note
+that Paul Edwards' SOT/EOT specification does not permit domains in echomail
+origin lines.  If both the @code{DomainOrigin} and @code{SOTEOT}
+configuration switches are enabled, Msged will exit and suggest to disable
+one or the other. Default: Off.
+
 
 @item SquishLock
 @findex SquishLock
@@ -2697,6 +3069,17 @@ to insure data integrity even if the SquishLock switch is turned off.
 The default value of the SquishLock switch is Off (in contrast to the
 mainstream MsgEd 4.30, where it is turned on by default).
 
+@item StatBar
+@findex StatBar
+Shows a status bar along the bottom of the screen. Default: On.
+
+@item Tearlines
+@findex Tearlines
+@cindex tearlines, disabling
+This switch controls if echomail messages will be appended with a tear
+line (three consecutive dashes) or not. You should leave this switch
+on. Default: On.
+
 @item UseLastr
 @findex UseLastr
 You should leave this switch turned on. It instructs @value{MSGED} to use the
@@ -2705,6 +3088,20 @@ switch off probably does not disable @emph{all} lastread pointer handling
 code in @value{MSGED} @dots{} Older @value{MSGED} versions had this switch
 turned off by default and it was undocumented. Hence a lot of problems with
 lastread pointers in those versions @dots{} Default: On.
+
+@item UseMouse
+@findex USeMouse
+Some features of @value{MSGED} can be controlled through the
+use of a mouse.  This switch tells Msged whether or not you're using one.
+Note that the Windows NT and the Unix versions of @value{MSGED} presently do
+not support a mouse at all. - Default: On.
+
+@item UsePID
+@findex UsePID
+If this switch is turned on, @value{MSGED} will put its version information
+in a @@PID kludge line, and leave the tearline blank. If turned off,
+@value{MSGED} will not generate a @@PID kludge, but put its version
+information in the tera line. Default: Off.
 
 @end table
 

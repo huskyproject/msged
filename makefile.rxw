@@ -1,6 +1,16 @@
+# Makefile for building a Windows 95/NT verison of MsgEd using
+# the RSXNT GNU compiler.
+
+# Note: If the final linkage fails with the linker complaining about
+# multiple definitions of "_func_rsxnt_wait_debuggee", you are experiencing
+# a bug in the RSXNT system library. You can either fix this bug in the
+# library, or simply leave out the "-Zsys" switch  (at the expense that
+# the resulting executable then requires RSXNT.DLL at runtime)
+
 CC=     gcc
 CFLAGS= -Wall -pedantic -D__RSXNT__
-CDEFS=  -D__NT__ -DWINNT  -DUSE_MSGAPI 
+CDEFS=  -D__NT__ -DWINNT  -DUSE_MSGAPI
+COPT=   -O3
 MSGDIR= ..\smapi
 
 
@@ -64,7 +74,7 @@ objs=   addr.o     \
 	$(LIB) r $(TMPLIB) $@
 
 $(TARGET): $(objs)
-	$(CC) -Zwin32 $(COPT) $(CFLAGS) $(DFLAGS) -o $(TARGET) msged.o $(TMPLIB) $(MSGAPI)
+	$(CC) -s -Zsys -Zwin32 $(COPT) $(CFLAGS) $(DFLAGS) -o $(TARGET) msged.o $(TMPLIB) $(MSGAPI)
 
 
 
