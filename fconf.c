@@ -59,7 +59,7 @@
 /* ===================================================================== */
 
 static void fc_copy_address(ADDRESS *a, s_addr *fc_a)
-{  
+{
     memset(a, 0, sizeof(ADDRESS));
 
     a->zone  = fc_a->zone;
@@ -101,8 +101,9 @@ static void fc_add_area(s_area *fc_area, int netmail, int local)
     a.description=makeareadesc(fc_area->areaName, fc_area->description);
 
     a.path = xstrdup(fc_area->fileName);
-    
-    if ((strcmp(fc_area->group, "\060") != 0) && (SW->areafilegroups))
+
+    if ((fc_area->group != NULL) && (SW->areafilegroups) &&
+        (strcmp(fc_area->group, "\060") != 0))
     {
         a.group = group_gethandle(fc_area->group, 1);
     }
@@ -170,8 +171,8 @@ void check_fidoconfig(char *option_string)
     {
        check_type = 2;
     }
-    
-    if (fc_config != NULL)                    
+
+    if (fc_config != NULL)
     {
         if (check_type & 1)     /* load settings */
         {
@@ -200,7 +201,7 @@ void check_fidoconfig(char *option_string)
                 alias = xrealloc(alias,
                                  (SW->aliascount + fc_config->addrCount) *
                                  sizeof (ADDRESS));
-                
+
                 for (i = 0; i < fc_config->addrCount; i++)
                 {
                     fc_copy_address(alias + SW->aliascount + i,
@@ -241,7 +242,7 @@ void check_fidoconfig(char *option_string)
 
             fc_add_area(&(fc_config->dupeArea), 0, 1);
             fc_add_area(&(fc_config->badArea), 0, 1);
-            
+
                                 /* netmail areas */
             for (i=0; i<fc_config->netMailAreaCount; i++)
             {
@@ -251,7 +252,7 @@ void check_fidoconfig(char *option_string)
                     fc_add_area(fc_area, 1, 0);
                 }
             }
-      
+
                                 /* local areas */
             for (i=0; i<fc_config->localAreaCount; i++)
             {
@@ -261,7 +262,7 @@ void check_fidoconfig(char *option_string)
                     fc_add_area(fc_area, 0, 1);
                 }
             }
-      
+
                                 /* echomail areas */
             for (i=0; i<fc_config->echoAreaCount; i++)
             {
@@ -323,12 +324,12 @@ void check_fidoconfig(char *option_string)
     fc_default_address_set = 0;
     memset(&fc_default_address, 0, sizeof(ADDRESS));
     release (fc_default_address.domain);
-    
+
     fc_config_nodelistDir = NULL;
     fc_config_fidoUserList = NULL;
 
     read_fidoconfig_file(filename, check_type);
-    
+
     if (fc_config_nodelistDir != NULL &&
         fc_config_fidoUserList != NULL)
     {
@@ -367,7 +368,7 @@ static char *get_rest_of_line(void)
         len--;
     }
     ptr[len + 1] = '\0';
-    
+
     return ptr;
 }
 
@@ -386,7 +387,7 @@ static void parse_fc_sysop(void)
                 break;
             }
         }
-        
+
         if (i < MAXUSERS)
         {
             user_list[i].name = xstrdup(sysop);
@@ -469,7 +470,7 @@ static void parse_fc_include(int check_type)
 
 static char *fc_get_description(char *firsttoken)
 {
-    
+
     static char desc[257];
     char *token = firsttoken;
     int len = 0;
@@ -512,12 +513,12 @@ static char *fc_get_description(char *firsttoken)
             }
         }
     }
-    
+
     return desc;
 }
 
 
-    
+
 static void parse_fc_area(int type)
 {
     static AREA a;
@@ -548,7 +549,7 @@ static void parse_fc_area(int type)
         xfree(a.tag);
         return;
     }
-    
+
     a.path = pathcvt(xstrdup(token));
 
     copy_addr(&(a.addr), &(fc_default_address));
@@ -654,7 +655,7 @@ static void parse_fc_line(char *line, int check_type)
     {
         return;
     }
-    
+
     token = strtok(line, " \t");
 
     if (token == NULL)
@@ -716,7 +717,7 @@ static void parse_fc_line(char *line, int check_type)
 
     return;
 }
-    
+
 static void read_fidoconfig_file (char *filename, int check_type)
 {
     FILE *f = fopen(filename, "r");
@@ -736,7 +737,7 @@ static void read_fidoconfig_file (char *filename, int check_type)
     while(fgets(line, sizeof(line), f) != NULL)
     {
         l = strlen(line);
-        
+
         /* handle trailing \n */
         if (l)
         {
@@ -780,7 +781,7 @@ static void read_fidoconfig_file (char *filename, int check_type)
                 *(start - 1) = '\0';
             }
         }
-        
+
         expanded_line = env_expand(line); /* expand %ENVIRONMENT% variables */
         parse_fc_line(expanded_line, check_type);
         xfree(expanded_line);
