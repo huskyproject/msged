@@ -57,7 +57,6 @@ static time_t stampToTimeT(struct _stamp *st);
 static struct _stamp *timeTToStamp(time_t);
 
 static struct _minf minf;
-extern word _stdc msgapierr;
 
 static MSGA *Ahandle = NULL;     /* area handle */
 static MSGH *mh = NULL;         /* message handle */

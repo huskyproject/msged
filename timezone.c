@@ -11,7 +11,9 @@
 
 #include <time.h>
 #include <stdlib.h>             /* NULL */
+#include <smapi/compiler.h>
 #include "timezone.h"
+
                                 /* guess our time zone */
 int tz_my_offset(void)
 {

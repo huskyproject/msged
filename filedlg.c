@@ -72,6 +72,8 @@
 #include "unused.h"
 #include "mctype.h"
 
+#include <smapi/msgapi.h>
+
 struct UFILES
 {
     int attrib;

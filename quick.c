@@ -16,6 +16,7 @@
 #include <stat.h>
 #endif
 #include <assert.h>
+#include <smapi/compiler.h>
 #include "addr.h"
 #include "nedit.h"
 #include "msged.h"
@@ -25,6 +26,7 @@
 #include "normal.h"
 #include "quick.h"
 #include "charset.h"
+
 
 typedef unsigned int bits;
 
@@ -554,7 +556,7 @@ short find_link(unsigned long n)
         return 0;
     }
 
-#if defined(PACIFIC) || defined(LATTICE)
+#if defined(PACIFIC) || defined(LATTICE) 
     fclose(textfp);
     textfp = fopen(msgtxt, "r+b");
     stat(msgtxt, &b);

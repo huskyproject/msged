@@ -94,6 +94,18 @@ int sopen(char *filename, unsigned int access, int flags,...);
 
 /* file access shortcuts */
 
+#if defined(_MSC_VER) && (_MSC_VER >= 1200) && defined(_MAKE_DLL)
+#   define O_RDONLY        _O_RDONLY
+#   define O_WRONLY        _O_WRONLY
+#   define O_RDWR          _O_RDWR
+#   define O_CREAT         _O_CREAT
+#   define O_BINARY        _O_BINARY
+#   define S_IWRITE        _S_IWRITE
+#   define S_IREAD         _S_IREAD
+#   define SH_DENYNO       _SH_DENYNO
+#endif
+
+
 #define OPENR   O_RDONLY | O_BINARY             /* open read-only */
 #define OPENC   O_WRONLY | O_BINARY | O_CREAT   /* open/create */
 #define OPENRW  O_RDWR | O_BINARY               /* open read/write */

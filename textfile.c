@@ -24,6 +24,8 @@
 #include <io.h>
 #endif
 
+#include <smapi/compiler.h>
+
 #if defined(UNIX) || defined(__EMX__) || defined(__DJGPP__)
 #define HAVE_POPEN
 #endif
