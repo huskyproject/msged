@@ -88,6 +88,7 @@ int stricmp(const char *s, const char *t)
 #endif
 
 #ifndef __IBMC__
+#ifndef UNIX
 char *strdup(const char *s)
 {
     char *p;
@@ -98,6 +99,7 @@ char *strdup(const char *s)
     }
     return p;
 }
+#endif
 #endif
 
 #ifndef __IBMC__

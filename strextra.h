@@ -19,7 +19,9 @@ void strdel(char *l, int x);
 #ifndef UNIX
 int stricmp(const char *s, const char *t);
 #endif
+#ifndef UNIX
 char *strdup(const char *s);
+#endif
 
 #ifndef __IBMC__
 int memicmp(const void *s1, const void *s2, size_t n);
