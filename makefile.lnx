@@ -5,7 +5,7 @@ CDEFS=	-DUNIX -DUSE_MSGAPI -DUNAME=\"LNX\"
 MSGDIR= ../smapi
 
 TARGET=	msged
-MSGAPI=	-lsmapilnx
+MSGAPI=	-L$(MSGDIR) -lsmapilnx
 
 objs=   addr.o     \
 	ansi.o     \
