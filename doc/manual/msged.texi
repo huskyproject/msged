@@ -1488,6 +1488,9 @@ WRITMAPS.437 | fonts, that uses the standard codepage 437. This applies to
              | ones that use Codepage 850 because it has some more IBM
              | graphics characters.
 -------------------------------------------------------------------------
+READMAPS.865 | This is the "nordic" IBM Codepage 865 used in some
+WRITMAPS.865 | Northern European countries.
+-------------------------------------------------------------------------
 READMAPS.866 | This is IBM Codepage 866, used by DOS and OS/2 or Windows
 WRITMAPS.866 | text mode applications in Russia.
 -------------------------------------------------------------------------
