@@ -225,6 +225,10 @@ Features:
 
 Fixes:
 
+- When forwarding a netmail to an echomail area, the "to" field was
+  not cleared, which could lead to strange results in echomail areas
+  (wrong sender AKAs, even crashes, etc).
+
 - Reworked the way error messages are printed on startup a little bit.
 
 - Fixed segmentation violation when quoting mails that already contain
