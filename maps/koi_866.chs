@@ -1,7 +1,7 @@
 ;
 ; This file is a charset conversion module in text form.
 ;
-; This module converts KOI8-R cyrillics to CP866
+; This module converts KOI8-RU cyrillics to CP866
 ;
 ; Format: ID, version, level,
 ;         from charset, to charset,
@@ -65,34 +65,34 @@ CP866           ; to set
 \0 \x20         ; non-breaking space
 \x1 ?
 \x1 ?
-\0 \xf1	; yo small
+\0 \xf1	;0xa3 cyrillic small letter io
+\0 \xf3 ;0xa4 cyrillic small letter ukrainian ye
+\x1 ?
+\0 i    ;0xa6 cyrillic small letter byelorussian-ukrainian i
+\0 \xf5 ;0xa7 cyrillic small letter yi (ukrainian)
 \x1 ?
 \x1 ?
 \x1 ?
 \x1 ?
 \x1 ?
+\xa3 \x27 ;0xad cyrillic small letter ghe with upturn
+\0 \xf7   ;0xae cyrillic small letter byelorussian short y
+\x1 ?
+\x1 ?
+\x1 ?
+\x1 ?
+\0 \xf0   ;0xb3 cyrillic capital letter io
+\0 \xf2   ;0xb4 cyrillic capital letter ukrainian ye
+\x1 ?
+\0 I      ;0xb6 cyrillic capital letter byelorussian-ukrainian i
+\0 \xf4   ;0xb7 cyrillic capital letter yi (ukrainian)
 \x1 ?
 \x1 ?
 \x1 ?
 \x1 ?
 \x1 ?
-\x1 ?
-\x1 ?
-\x1 ?
-\x1 ?
-\x1 ?
-\0 \xf2 ; yo capital
-\x1 ?
-\x1 ?
-\x1 ?
-\x1 ?
-\x1 ?
-\x1 ?
-\x1 ?
-\x1 ?
-\x1 ?
-\x1 ?
-\x1 ?
+\x83 \x27 ;0xad cyrillic capital letter ghe with upturn
+\0 \xf6   ;0xae cyrillic capital letter byelorussian short y
 \x1 ?
 \0 \xEE
 \0 \xA0

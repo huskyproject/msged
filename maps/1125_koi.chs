@@ -1,7 +1,7 @@
 ;
 ; This file is a charset conversion module in text form.
 ;
-; This module Converts IBM CP1125 to KOI8-R
+; This module Converts IBM CP1125 to KOI8-RU
 ;
 ; Format: ID, version, level,
 ;         from charset, to charset,
@@ -144,14 +144,14 @@ KOI8-R    ; to set
 \0 \xD1   ; 0xEf   cyrillic small letter ya
 \0 \xB3   ; 0xf0   cyrillic capital letter io
 \0 \xA3   ; 0xf1   cyrillic small letter io
-\xE7 \x27 ; 0xf2   cyrillic capital letter ghe with upturn
-\xC7 \x27 ; 0xf3   cyrillic small letter ghe with upturn
-\0 \xe5   ; 0xf4   cyrillic capital letter ukrainian ie (not in KOI8)
-\0 \xc5   ; 0xf5   cyrillic small letter ukrainian ie (not in KOI8)
-\0 \xe9   ; 0xf6   cyrillic capital letter byelorussian-ukrainian i
-\0 \xc9   ; 0xf7   cyrillic small letter byelorussian-ukrainian i
-\xea \xe9 ; 0xf8   cyrillic capital letter yi (not in KOI8)
-\xca \xc9 ; 0xf9   cyrillic small letter yi (not in KOI8)
+\0 \xBD   ; 0xf2   cyrillic capital letter ghe with upturn
+\0 \xAD   ; 0xf3   cyrillic small letter ghe with upturn
+\0 \xB4   ; 0xf4   cyrillic capital letter ukrainian ie 
+\0 \xA4   ; 0xf5   cyrillic small letter ukrainian ie
+\0 \xB6   ; 0xf6   cyrillic capital letter byelorussian-ukrainian i
+\0 \xA6   ; 0xf7   cyrillic small letter byelorussian-ukrainian i
+\0 \xB7   ; 0xf8   cyrillic capital letter yi
+\0 \xA7   ; 0xf9   cyrillic small letter yi
 \0 -      ; 0xfa   middle dot
 \x1 ?     ; 0xfb   sqare root
 ^ n       ; 0xfc   numero sign

@@ -1,7 +1,7 @@
 ;
 ; This file is a charset conversion module in text form.
 ;
-; This module Converts IBM CP866 to KOI8-R
+; This module Converts IBM CP866 to KOI8-RU
 ;
 ; Format: ID, version, level,
 ;         from charset, to charset,
@@ -144,12 +144,12 @@ KOI8-R    ; to set
 \0 \xD1   ; 0xEf   cyrillic small letter ya
 \0 \xB3   ; 0xf0   cyrillic capital letter io
 \0 \xA3   ; 0xf1   cyrillic small letter io
-\0 \xe5   ; 0xf2   cyrillic capital letter ukrainian ie (not in KOI8)
-\0 \xc5   ; 0xf3   cyrillic small letter ukrainian ie (not in KOI8)
-\xea \xe9 ; 0xf4   cyrillic capital letter yi (not in KOI8)
-\xca \xc9 ; 0xf5   cyrillic small letter yi (not in KOI8)
-\x7e \xf5 ; 0xf6   cyrillic capital letter short u (not in KOI8)
-\x7e \xd5 ; 0xf7   cyrillic small letter short u   (not in KOI8)
+\0 \xB4   ; 0xf2   cyrillic capital letter ukrainian ie
+\0 \xA4   ; 0xf3   cyrillic small letter ukrainian ie
+\0 \xB7   ; 0xf4   cyrillic capital letter yi
+\0 \xA7   ; 0xf5   cyrillic small letter yi
+\0 \xBE   ; 0xf6   cyrillic capital letter short u
+\0 \xAE   ; 0xf7   cyrillic small letter short u
 \x1 ?     ; 0xf8   degree sign
 \0 .      ; 0xf9   bullet operator
 \0 -      ; 0xfa   middle dot

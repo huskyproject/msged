@@ -1,11 +1,11 @@
-; This module converts ISO8859-5 to CP866
+; This module converts ISO8859-5 to CP1125
 0               ; ID number
 0               ; version number
 ;
 2               ; level number
 ;
 ISO-5		; from set
-CP866		; to set
+CP1125		; to set
 
 \1 \x3f		; 128
 \1 \x3f		; 129
@@ -42,18 +42,18 @@ CP866		; to set
 \0 \xff		; 160 nbsp
 \0 \xf0		; 161 capital yo
 \1 \x3f		; 162
-\x83 \x27	; 163 capital ghe with upturn
-\0 \xf2 	; 164 capital ukrainian ie
+\0 \xf2		; 163 capital ghe with upturn
+\0 \xf4 	; 164 capital ukrainian ie
 \1 \x3f		; 165
-\0 I		; 166 capital byelorussian-ukrainian i
-\0 \xf4		; 167 capital ukrainian yi
+\0 \xf6		; 166 capital byelorussian-ukrainian i
+\0 \xf8		; 167 capital ukrainian yi
 \1 \x3f		; 168
 \1 \x3f		; 169
 \1 \x3f		; 170
 \1 \x3f		; 171
 \1 \x3f		; 172
 \1 \x3f		; 173
-\0 \xf6		; 174 capital byelorussian short y
+\x7e \x93	; 174 capital byelorussian short y
 \1 \x3f		; 175
 \0 \x80		; 176
 \0 \x81		; 177
@@ -122,18 +122,18 @@ CP866		; to set
 \0 \xfc		; 240 number sign
 \0 \xf1		; 241 small yo
 \1 \x3f		; 242
-\xa3 \x27	; 243 small ghe with upturn
-\0 \xf3		; 244 small ukrainian ie
+\0 \xf3		; 243 small ghe with upturn
+\0 \xf5		; 244 small ukrainian ie
 \1 \x3f		; 245
-\0 i		; 246 small byelorussian-ukrainian i
-\0 \xf5		; 247 small ukrainian yi
+\0 \xf7		; 246 small byelorussian-ukrainian i
+\0 \xf9		; 247 small ukrainian yi
 \1 \x3f		; 248
 \1 \x3f		; 249
 \1 \x3f		; 250
 \1 \x3f		; 251
 \1 \x3f		; 252
 \1 \x3f		; 253
-\0 \xf7		; 254 small byelorussian short y
+\x7e \xe3	; 254 small byelorussian short y
 \1 \x3f		; 255
 END
 

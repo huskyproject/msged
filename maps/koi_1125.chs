@@ -1,7 +1,8 @@
 ;
 ; This file is a charset conversion module in text form.
 ;
-; This module converts KOI8-R cyrillics to CP1125
+; This module converts KOI8-RU (KOI8-R + RFC 2319 + Microsoft addition of
+; Byelorussian short y) cyrillics to Ukrainian CP1125
 ;
 ; Format: ID, version, level,
 ;         from charset, to charset,
@@ -65,34 +66,34 @@ CP1125          ; to set
 \0 \x20         ; non-breaking space
 \x1 ?
 \x1 ?
-\0 \xf1	; yo small
+\0 \xf1	    ; 0xa3 cyrillic small letter io
+\0 \xf5     ; 0xa4 cyrillic small letter ukrainian ie
+\x1 ?
+\0 \xf7     ; 0xa6 cyrillic small letter byelorussian-ukrainian i
+\0 \xf9     ; 0xa7 cyrillic small letter yi (ukrainian)
 \x1 ?
 \x1 ?
 \x1 ?
 \x1 ?
 \x1 ?
+\0 \xf3     ; 0xad cyrillic small letter ghe with upturn
+\7e \xe3    ; 0xae cyrillic small letter byelorussian short y
+\x1 ?
+\x1 ?
+\x1 ?
+\x1 ?
+\0 \xf0     ; 0xb3 cyrillic capital letter io  
+\0 \xf4     ; 0xb4 cyrillic capital letter ukrainian ie
+\x1 ?
+\0 \xf6     ; 0xb6 cyrillic captial letter byelorussian-ukrainian i
+\0 \xf8     ; 0xb7 cyrillic capital letter yi (ukrainian)
 \x1 ?
 \x1 ?
 \x1 ?
 \x1 ?
 \x1 ?
-\x1 ?
-\x1 ?
-\x1 ?
-\x1 ?
-\x1 ?
-\0 \xf2 ; yo capital
-\x1 ?
-\x1 ?
-\x1 ?
-\x1 ?
-\x1 ?
-\x1 ?
-\x1 ?
-\x1 ?
-\x1 ?
-\x1 ?
-\x1 ?
+\0 \xf2     ; 0xbd cyrillic capital letter ghe with upturn
+\7e \x93    ; 0xbe cyrillic capital letter byelorussian short y
 \x1 ?
 \0 \xEE
 \0 \xA0
@@ -159,3 +160,5 @@ CP1125          ; to set
 \0 \x97
 \0 \x9A
 END
+
+;
