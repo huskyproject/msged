@@ -1275,12 +1275,14 @@ static void al_scan_areas(int all)
             break;
         }
 
+
         CurArea.messages = MsgAreaOpen(&CurArea);
 
         if (CurArea.status)
         {
             MsgAreaClose();
         }
+
     }
     CloseMsgWnd();
     SW->area = a;
