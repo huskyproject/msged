@@ -76,7 +76,7 @@ struct _dta
 
 #elif defined(__WATCOMC__)
 
-#include <DIRECT.H>
+#include <direct.h>
 
 struct _dta
 {
