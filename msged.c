@@ -1017,12 +1017,12 @@ void SetupArea(void)
      *  lastread (fido areas) name, useroffset (squish areas).
      */
 
-    release(ST->username);
-    release(ST->template);
-    release(ST->lastread);
-
     if (SW->areadefinesuser)
     {
+        release(ST->username);
+        release(ST->template);
+        release(ST->lastread);
+
         ST->username = xstrdup(user_list[CurArea.username].name);
         SW->useroffset = user_list[CurArea.username].offset;
         ST->lastread = xstrdup(user_list[CurArea.username].lastread);
