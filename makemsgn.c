@@ -319,36 +319,15 @@ static void reply_msg(int type)
 
     /* find a origin aka matching the destination zone for netmails */
 
-    if (CurArea.netmail && (!(type & MT_NEW) && (m->to.zone != m->from.zone)))
+    m->from = CurArea.addr;
+    if (CurArea.addr.domain)
     {
-        for (i = 0; i < SW->aliascount; i++)
-        {
-            if (alias[i].zone == m->to.zone)
-            {
-                m->from = alias[i];
-                if (alias[i].domain)
-                {
-                    m->from.domain = xstrdup(alias[i].domain);
-                }
-                break;
-            }
-        }
-        if (i == SW->aliascount)  /* we didn't find anything */
-        {
-            m->from = CurArea.addr;
-            if (CurArea.addr.domain)
-            {
-                m->from.domain = xstrdup(CurArea.addr.domain);
-            }
-        }
+        m->from.domain = xstrdup(CurArea.addr.domain);
     }
-    else
-    {                           /* we aren't seaching */
-        m->from = CurArea.addr;
-        if (CurArea.addr.domain)
-        {
-            m->from.domain = xstrdup(CurArea.addr.domain);
-        }
+
+    if ((CurArea.netmail) && (!(type & MT_NEW)))
+    {
+        akamatch(&(m->from), &(m->to));
     }
 
     if (m->to.internet || m->to.bangpath)
@@ -1362,7 +1341,6 @@ int EditHeader(msg * m)
     char tmp[80], tmp2[80];
     int field = 2;
     int ch = 0, done = 0;
-    int i = 0;
 
     /*
      *  This is naughty, but it allows the functions to access the
@@ -1410,7 +1388,9 @@ int EditHeader(msg * m)
         case FD_FADD:
             if (CurArea.netmail && m->from.fidonet)
             {
-                ch = ChangeAddress(&m->from, 1, (m->isfrom) ? strlen(m->isfrom) : 0);
+                ch = ChangeAddress(&m->from, 1,
+                                   (m->isfrom) ? strlen(m->isfrom) : 0);
+                m->from.dontmatch = 1; /* no more aka matching here, please */
             }
             ShowNameAddress(m->isfrom, &m->from, 1, 0, 0);
             break;
@@ -1458,25 +1438,16 @@ int EditHeader(msg * m)
             {
                 ch = ChangeAddress(&m->to, 2, (m->isto) ? strlen(m->isto) : 0);
             }
-/* AKA-Matching, only for netmails */
-            if (CurArea.netmail && (m->from.zone != m->to.zone)) /* wrong zone in "from" */
+
+            /* AKA matching, only for netmails */
+            if (CurArea.netmail)
             {
-                for (i = 0; i < SW->aliascount; i++)
+                if (akamatch(&(m->from), &(m->to)))
                 {
-                    if (alias[i].zone == m->to.zone)
-                    {
-                        m->from = alias[i];
-                        if (alias[i].domain)
-                        {
-                            m->from.domain = xstrdup(alias[i].domain);
-                        }
-                        break;
-                    }
+                    /* we found a better address, redisplay it */
+                    ShowNameAddress(m->isfrom, &m->from, 1, 0, 0);
                 }
-                ShowNameAddress(m->isfrom, &m->from, 1, 0, 0);
             }
-/* end of  AKA matching */
-            ShowNameAddress(m->isto, &m->to, 2, 0, 0);
             break;
 
         case FD_SUBJ:

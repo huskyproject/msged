@@ -3597,6 +3597,14 @@ void show_debuginfo(int macro_count)
     printf("External editor   : %s\n", NP(ST->editorName));
     printf("QuickBBS path     : %s\n", NP(ST->quickbbs));
     printf("\n");
+
+    printf("Addresses                 : %d addresses configured\n", SW->aliascount);
+    for (i = 0; i < SW->aliascount; i++)
+    {
+        printf ("%s\n", show_address(alias + i));
+    }
+    printf("\n");
+
     printf("Areas                     : %d area%s configured\n", SW->areas, SW->areas == 1 ? "" : "s");
     printf("Generate MSGIDs           : %s\n", SW->msgids ? szYes : szNo);
     printf("Generate Opus time stamps : %s\n", SW->opusdate ? szYes : szNo);

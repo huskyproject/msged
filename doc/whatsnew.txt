@@ -54,6 +54,11 @@ Changes:
 
 Features:
 
+- The AKA matching alogrithm now also takes into account net and node number.
+  So, if you have two AKAs, 2:1234/5 and 2:789/123, and you write a mail to
+  a member of net 2:789 your 2:789/123 AKA will be used instead of your
+  primary AKA.
+
 - The "Gate" keyword has a new parameter "Ask". Instead of globally deciding
   if you want to zonegate all messages or none, with "Gate Ask" you can now
   individually select if you want to employ zone gating for each message.

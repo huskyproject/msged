@@ -21,17 +21,24 @@ typedef struct _address
     unsigned int node;
     unsigned int point;
     char *domain;
-    unsigned int notfound : 1;
-    unsigned int fidonet  : 1;
-    unsigned int internet : 1;
-    unsigned int bangpath : 1;
+    unsigned int notfound  : 1;
+    unsigned int fidonet   : 1;
+    unsigned int internet  : 1;
+    unsigned int bangpath  : 1;
+    unsigned int dontmatch : 1;  /* don't apply aka matching to this address */
 }
 ADDRESS;
+
+/* please call copy_addr for assigning addresses because the domain string
+   must be strdup'ed
+*/   
 
 char *show_address(ADDRESS * a);
 char *show_4d(ADDRESS * a);
 ADDRESS parsenode(char *t);
 void parse_internet_address(const char *, char **, char **);
 char *compose_internet_address(const char *, const char *);
+int akamatch(ADDRESS *pfrom, ADDRESS *pto);
+void copy_addr(ADDRESS *pdest, ADDRESS *psource);
 
 #endif

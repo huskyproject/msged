@@ -23,8 +23,6 @@ Category 2: Might be implemented, but volunteers are always very welcome!
 
 - Pseudo Grahpics with KOI8
 
-- Better AKA Matching (compare not only zones, but also net and node )
-
 - Echotoss log is not updated for forwarded messages.
 
 - Work on the area lister. Things to do:

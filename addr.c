@@ -460,3 +460,51 @@ char *compose_internet_address (const char *domain, const char *name)
     return retval;
 }
 
+
+/* routines for AKA matching */
+
+static int match_degree(ADDRESS *pfrom, ADDRESS *pto)
+{
+    int degree = 0;
+    if (pfrom->zone == pto->zone) degree++; else return degree;
+    if (pfrom->net == pto->net) degree++; else return degree;
+    if (pfrom->node == pto->node) degree++; else return degree;
+    if (pfrom->point == pto->point) degree++; else return degree;
+    return degree;
+}
+
+void copy_addr(ADDRESS *pdest, ADDRESS *psource)
+{
+    release(pdest->domain);
+
+    *pdest = *psource;
+    if (psource->domain != NULL)
+    {
+        pdest->domain = xstrdup(psource->domain);
+    }
+}
+
+int akamatch(ADDRESS *pfrom, ADDRESS *pto)
+{
+    int changed = 0, degree, newdegree, i;
+
+    degree = match_degree(pfrom, pto);
+
+    if (pfrom->dontmatch)
+    {
+        return 0;
+    }
+
+    for (i = 0; i < SW->aliascount; i++)
+    {
+        newdegree = match_degree(alias + i, pto);
+        if (newdegree > degree)
+        {
+            copy_addr(pfrom, alias + i);
+            degree = newdegree;
+            changed = 1;
+        }
+    }
+    
+    return changed;
+}

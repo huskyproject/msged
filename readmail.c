@@ -1720,25 +1720,12 @@ int writemsg(msg * m)
 	    {
 		m->to.domain = xstrdup(uucp_gate.domain);
 	    }
-            
-            /* AKA-Matching for UUCP gated messages */
-	    if (m->from.zone != m->to.zone)     
-	    {
-		for (i = 0; i < SW->aliascount; i++)
-		{
-		    if (alias[i].zone == m->to.zone)
-		    {
-			m->from = alias[i];
-			if (alias[i].domain)
-			{
-			    m->from.domain = xstrdup(alias[i].domain);
-			}
-			break;
-		    }
-		}
-                /* ShowNameAddress(m->isfrom, &m->from, 1, 0, 0); */
-	    }
-            /* End of AKA matching */
+
+            if (CurArea.netmail)
+            {                
+                /* AKA-Matching for UUCP gated messages */
+                akamatch(&(m->from), &(m->to));
+            }
 	}
 
 	if (m->from.internet || m->from.bangpath)
