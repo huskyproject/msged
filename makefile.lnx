@@ -1,11 +1,13 @@
 CC=	gcc
 CFLAGS=	-Wall -s
-CDEFS=	-DUNIX -DUSE_MSGAPI -DUNAME=\"LNX\"
-#COPT=	-O3 -fomit-frame-pointer -fstrength-reduce -m486
+CDEFS=	-DUNIX -DUSE_MSGAPI -DUSE_FIDOCONFIG -DUNAME=\"LNX\"
+COPT=	-O3 -fomit-frame-pointer -fstrength-reduce -m486
 MSGDIR= ../smapi
+FCDIR=  ../fidoconfig
 
 TARGET=	msged
 MSGAPI=	-L$(MSGDIR) -lsmapilnx
+FC= -L$(FCDIR) -lfidoconfig
 
 objs=   addr.o     \
 	ansi.o     \
@@ -21,6 +23,7 @@ objs=   addr.o     \
 	dlist.o    \
 	echotoss.o \
 	environ.o  \
+	fconf.o    \
 	fecfg145.o \
 	fido.o     \
 	freq.o     \
@@ -60,7 +63,7 @@ objs=   addr.o     \
 # Thunderbirds are go!
 
 .c.o:
-	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -I$(MSGDIR) -c $<
+	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -I$(MSGDIR) -I$(FCDIR) -c $<
 
 $(TARGET): $(objs)
-	$(CC) $(COPT) -o $(TARGET) $(objs) $(MSGAPI)
+	$(CC) $(COPT) -o $(TARGET) $(objs) $(MSGAPI) $(FC)

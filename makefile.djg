@@ -23,6 +23,7 @@ objs=	addr.o     \
 	dosmisc.o  \
 	echotoss.o \
 	environ.o  \
+	fconf.o    \
 	fecfg145.o \
 	fido.o     \
 	freq.o     \

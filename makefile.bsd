@@ -1,11 +1,13 @@
 CC=	gcc
 CFLAGS=	-Wall
-CDEFS=	-DUNIX -DUSE_MSGAPI -DUNAME=\"BSD\"
+CDEFS=	-DUNIX -DUSE_MSGAPI -DUNAME=\"BSD\" -DUSE_FIDOCONFIG
 COPT=	-s -O2
 MSGDIR=	../smapi
+FCDIR=  ../fidoconfig
 
 TARGET=	msged
 MSGAPI=	smapibsd
+FC    = fidoconfig
 
 objs=	addr.o     \
 	ansi.o     \
@@ -21,6 +23,7 @@ objs=	addr.o     \
 	dlist.o    \
 	echotoss.o \
 	environ.o  \
+	fconf.o	   \
 	fecfg145.o \
 	fido.o     \
 	freq.o     \
@@ -60,7 +63,7 @@ objs=	addr.o     \
 # Thunderbirds are go!
 
 .c.o:
-	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -I$(MSGDIR) -c $<
+	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -I$(MSGDIR) -I$(FCDIR) -c $<
 
 $(TARGET): $(objs)
-	$(CC) $(COPT) -o $(TARGET) $(objs) -L$(MSGDIR) -l$(MSGAPI)
+	$(CC) $(COPT) -o $(TARGET) $(objs) -L$(MSGDIR) -L$(FCDIR) -l$(MSGAPI) -l$(FC)

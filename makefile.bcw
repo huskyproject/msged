@@ -30,6 +30,7 @@ OBJS=   addr.obj     \
 	dlist.obj    \
 	echotoss.obj \
 	environ.obj  \
+	fconf.obj    \
 	fido.obj     \
 	fecfg145.obj \
 	freq.obj     \

@@ -21,6 +21,7 @@ objs=	addr.o     \
 	dlist.o    \
 	echotoss.o \
 	environ.o  \
+	fconf.o    \
 	fecfg145.o \
 	fido.o     \
 	freq.o     \

@@ -48,13 +48,15 @@
 #include "config.h"
 #include "environ.h"
 #include "charset.h"
+#include "fconf.h"
 
 int areas_type;
 
-static void applyflags(AREA *a, char *flagstring);
+void applyflags(AREA *a, char *flagstring);
 
 static char **tags2skip;
-static char *mntdirunix = NULL, *mntdirdos = NULL, *areafileflags = NULL;
+static char *mntdirunix = NULL, *mntdirdos = NULL;
+char *areafileflags = NULL;
 static GROUP *group = NULL;
 static int num_groups = 0, check_area_files = 0;
 
@@ -379,6 +381,7 @@ static char *cfgswitches[] =
  *
  */
 
+#ifndef USE_FIDOCONFIG
 char *shell_expand(char *str)
 {
     char *slash = NULL, *ret = NULL, c;
@@ -440,6 +443,7 @@ char *shell_expand(char *str)
     xfree(str);
     return ret;
 }
+#endif
 
 /*
  * Function: pathcvt
@@ -1167,7 +1171,7 @@ static void SetAreaInfo(AREA * a)
  *  Adds a new area to the area-list.
  */
 
-static void AddArea(AREA * a)
+void AddArea(AREA * a)
 {
     int i, g, l;
     char *d, *t, *p, *converted_path;
@@ -2055,7 +2059,7 @@ static void check_gecho(char *areafile)
  *  Applies a string of user-given flags to an area definition
  */
 
-static void applyflags(AREA *a, char *flagstring)
+void applyflags(AREA *a, char *flagstring)
 {
     char *s = flagstring;
 
@@ -2320,10 +2324,18 @@ void do_areafile(char *value)
         areas_type = GECHO;
     }
 
-    if (tokens[1])
+    if (toupper(*tokens[0]) == 'F' && toupper(tokens[0][1]) == 'I')
     {
-        char *temp;
-        temp = pathcvt(xstrdup(tokens[1]));
+        areas_type = FIDOCONFIG;
+    }
+
+    if (tokens[1] || areas_type == FIDOCONFIG)
+    {
+        char *temp = NULL;
+        if (tokens[1])
+        {
+            temp = pathcvt(xstrdup(tokens[1]));
+        }
         if (areas_type == AREAS_BBS)
         {
             checkareas(temp);
@@ -2335,6 +2347,10 @@ void do_areafile(char *value)
         else if (areas_type == GECHO)
         {
             check_gecho(temp);
+        }
+        else if (areas_type == FIDOCONFIG)
+        {
+            check_fidoconfig(tokens[1]);
         }
         else
         {

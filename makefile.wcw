@@ -21,6 +21,7 @@ objs=	addr.obj     \
 	dlist.obj    \
 	echotoss.obj \
 	environ.obj  \
+	fconf.obj    \
 	fecfg145.obj \
 	fido.obj     \
 	freq.obj     \

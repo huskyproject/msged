@@ -21,10 +21,11 @@ objs1=	addr.obj     \
 	dirute.obj   \
 	dlgbox.obj   \
 	dlist.obj    \
-	echotoss.obj
-objs2=	environ.obj  \
-	fido.obj     \
-	fecfg145.obj \
+	echotoss.obj \
+	environ.obj  \
+	fconf.obj    \
+	fido.obj     
+objs2=	fecfg145.obj \
 	freq.obj     \
 	gestr120.obj \
 	getopts.obj  \

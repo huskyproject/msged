@@ -27,6 +27,7 @@ objs=	addr.obj     \
 	dosmisc.obj  \
 	echotoss.obj \
 	environ.obj  \
+	fconf.obj    \
 	fecfg145.obj \
 	fido.obj     \
 	freq.obj     \

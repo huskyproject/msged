@@ -7,6 +7,28 @@ Features, Changes and Fixes in the current development version of MsgEd
 
 Features:
 
+- Msged now support the Husky project "fidoconfig" style configuration
+  file. If Msged has been compiled with -DUSE_FIDOCONFIG, you can use
+  the following lines in the configuration file
+    Areafile Fidoconfig
+  will import all message areas that are defined in the config file.
+    Areafile Fidoconfig Settings
+  will import all other settings (AKAs etc.) from the config file.
+    Areafile Fidoconfig Both
+  will import both areas and settings from the file.
+
+  In order to get Msged up and running, if you have libfidoconfig isntalled
+  and a proper fidoconfig config file, the following ~/.msged file will b
+  sufficient:
+
+    Areafileflags 8u
+    Areafile Fidoconfig Both
+
+  After that, you can add any private setttings you would like to have, but
+  the above two lines are enough to get a working Msged,.
+
+  [TODO: Write documentation about this in the manual]
+
 - Unix: New Switch "AdaptiveCase". If you set "Switch Adaptivecase On" 
   at the beginning of your configuration file, MsgEd will treat all
   file names case insensitively (i.E. it before trying to open any file,

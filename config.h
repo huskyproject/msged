@@ -24,4 +24,6 @@ void kill_trail_slash(char *str);
 void opening(char *cfgfile, char *areafile);
 void parse_tokens(char *str, char *tokens[], int num);
 char *shell_expand(char *str);  /* expands ~ to home dir etc. */
+char *pathcvt(char *);
+
 #endif
