@@ -1,26 +1,44 @@
+# Makefile for the Husky build environment
+
 # include Husky-Makefile-Config
 include ../huskymak.cfg
 
 ifeq ($(DEBUG), 1)
-  CFLAGS=	-Wall -I$(INCDIR) -ggdb
+  CFLAGS=$(WARNFLAGS) $(DEBCFLAGS) -I$(INCDIR)
+  LFLAGS=$(DEBLFLAGS)
 else
-  CFLAGS=	-Wall -I$(INCDIR) -s
+  CFLAGS=$(WARNFLAGS) $(OPTCFLAGS) -I$(INCDIR)
+  LFLAGS=$(OPTLFLAGS)
 endif
 
 CDEFS=-D$(OSTYPE) -DUSE_MSGAPI -DUSE_FIDOCONFIG -DUNAME=\"$(UNAME)\" \
-      $(ADDCDEFS)
-COPT=	-O3 -fomit-frame-pointer -fstrength-reduce
+      $(ADDCDEFS) -DREADMAPSDAT=\"$(CFGDIR)/readmaps.dat\" \
+      -DWRITMAPSDAT=\"$(CFGDIR)/writmaps.dat\" \
+      -DDEFAULT_CONFIG_FILE=\"$(CFGDIR)/msged.cfg\"
 
 ifeq ($(SHORTNAME), 1)
-  LFLAGS= -L$(LIBDIR) -lfidoconf -lsmapi -lncurses
+  LIBS= -L$(LIBDIR) -lfidoconf -lsmapi
 else
-  LFLAGS= -L$(LIBDIR) -lfidoconfig -lsmapi -lncurses
+  LIBS= -L$(LIBDIR) -lfidoconfig -lsmapi
 endif
 
 TARGET=	msged$(EXE)
 
+ifeq ($(OSTYPE), UNIX)
+  osobjs=	ansi$(OBJJ) \
+  		readtc$(OBJ)
+  OSLIBS=-l$(TERMCAP)
+endif
+ifeq ($(OSTYPE), OS2)
+  osobjs=	os2scr$(OBJ) \
+  		malloc16$(OBJ)
+endif
+ifeq ($(OSTYPE), WINNT)
+  osobjs=	winntscr$(OBJ)
+endif
+
+
 objs=   addr$(OBJ)     \
-	ansi$(OBJ)     \
 	areas$(OBJ)    \
 	bmg$(OBJ)      \
 	charset$(OBJ)  \
@@ -62,7 +80,6 @@ objs=   addr$(OBJ)     \
 	quick$(OBJ)    \
 	quote$(OBJ)    \
 	readmail$(OBJ) \
-	readtc$(OBJ)   \
 	screen$(OBJ)   \
 	strextra$(OBJ) \
 	system$(OBJ)   \
@@ -76,11 +93,11 @@ objs=   addr$(OBJ)     \
 
 all: $(TARGET) msghelp.dat
 
-.c$(OBJ):
-	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
+%$(OBJ): %.c
+	$(CC) $(CFLAGS) $(CDEFS) -c $*.c
 
-$(TARGET): $(objs)
-	$(CC) $(COPT) $(LFLAGS) -o $(TARGET) $(objs)
+$(TARGET): $(objs) $(osobjs)
+	$(CC) $(LFLAGS) -o $(TARGET) $(objs) $(osobjs) $(LIBS) $(OSLIBS)
 
 msghelp.dat: msghelp.src
 	.$(DIRSEP)$(TARGET) -hc msghelp.src msghelp.dat
@@ -88,12 +105,21 @@ msghelp.dat: msghelp.src
 clean:
 	-$(RM) *$(OBJ)
 	-$(RM) *~
+	(cd maps && $(MAKE) -f makefile.husky clean)
+	(cd doc && cd manual && $(MAKE) -f makefile.husky clean)
+
 
 distclean: clean
 	-$(RM) $(TARGET)
 	-$(RM) msghelp.dat
+	(cd maps && $(MAKE) -f makefile.husky distclean)
+	(cd doc && cd manual && $(MAKE) -f makefile.husky distclean)
+
 
 install: $(TARGET)
 	$(INSTALL) $(IBOPT) $(TARGET) $(BINDIR)
 	$(INSTALL) $(IIOPT) msghelp.dat $(CFGDIR)
+	(cd maps && $(MAKE) -f makefile.husky install)
+	(cd doc && cd manual && $(MAKE) -f makefile.husky install)
+
 

@@ -1,0 +1,65 @@
+include ../../../huskymak.cfg
+
+html: msged_toc.html
+
+dvi: msged.dvi
+
+info: msged.info
+
+# The DOC target does only work on Tobias Ernst's OS/2 machine ...
+doc: msged.doc
+
+# The INF target does only work on OS/2 ...
+inf: msged.inf
+
+msged_toc.html: msged.texi
+	texi2html -split_node -number -menu msged.texi
+
+msged.dvi: msged.texi
+	texi2dvi msged.texi
+
+msged.info: msged.texi
+	makeinfo --no-split  msged.texi
+
+msged.doc: msged.texi
+	texi2txt msged.texi
+
+clean:
+	-$(RM) msged.fns
+	-$(RM) *~
+	-$(RM) msged.aux
+	-$(RM) msged.toc
+	-$(RM) msged.cp
+	-$(RM) msged.fn
+	-$(RM) msged.vr
+	-$(RM) msged.kr
+	-$(RM) msged.ke
+	-$(RM) msged.tp
+	-$(RM) msged.kes
+	-$(RM) msged.krs
+	-$(RM) msged.ky
+	-$(RM) msged.pg
+	-$(RM) msged.cps
+	-$(RM) msged.log
+	-$(RM) msged.fns
+	-$(RM) *~
+
+distclean: clean
+	-$(RM) msged.dvi
+	-$(RM) msged.inf
+	-$(RM) msged*html
+	-$(RM) msged.ps
+	-$(RM) msged.doc
+	-$(RM) msged.info*
+
+
+# The OS/2 INF viewer fails if some of the files from the DVI generating
+# process are still lying around. (I have not yet figured out which).
+# Therefore, we make a clean before we make the INF file.
+
+msged.inf: msged.texi clean
+	texi2i msged.texi
+
+install: info
+	$(INSTALL)  msged.info $(INFODIR)
+	install-info --info-dir=$(INFODIR)  $(INFODIR)$(DIRSEP)msged.info

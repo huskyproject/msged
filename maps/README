@@ -41,6 +41,10 @@ example above, also ibm_mac.chs would match.  Makemaps  would  simply  skip
 this  file,  because it is not helpful for character translation from or to
 the Latin-1 charset.
 
+If you are running Unix, Linux, or  OS/2  with some GNU tools, you can also
+just type "make" in this  directoy  to  build  all  possible  readmaps  and
+writmaps files.
+
 Note that the .CHS files are textfiles (if you transfer them with ftp, use
 "asc"), while the readmaps.dat and writmaps.dat are binary files that must
 be transferred with "bin".

@@ -28,6 +28,12 @@
 @end titlepage
 
 @ifinfo
+
+@dircategory Fidonet Software
+@direntry
+* Msged: (msged).               Msged is the message reader and editor.
+@end direntry
+
 @node Top, Overview, (dir), (dir)
 @top @value{MSGED}
 This document describes @value{MSGED} @value{VERSION}, a Public Domain
@@ -36,7 +42,7 @@ Fidonet Message Reader and Editor Software for OS/2, Windows, DOS and Unix.
 @menu
 * Overview::                    What is @value{MSGED}?
 * Installation::                Installation and Release Notes. @emph{Read this!}
-* Introduction::                Using @value{MSGED}. A guide for beginners. 
+* Introduction::                Using @value{MSGED}. A guide for beginners.
 * Advanced Concepts::           Advanced features and concepts.
 * Keyboard Reference::          How to use and change the key combinations.
 * Configuration Reference::     Explanation of the configuration file.
@@ -186,11 +192,11 @@ This section provides guidelines and additional notes for installing
 @value{MSGED} on OS/2, DOS or Windows.
 
 @menu
-* Non-Unix Installation Guide::  
-* 16-Bit DOS Release Notes::    
-* 32 Bit DOS Release Notes::    
-* OS/2 Release Notes::          
-* Windows Release Notes::       
+* Non-Unix Installation Guide::
+* 16-Bit DOS Release Notes::
+* 32 Bit DOS Release Notes::
+* OS/2 Release Notes::
+* Windows Release Notes::
 @end menu
 
 @node Non-Unix Installation Guide, 16-Bit DOS Release Notes, Non-Unix Installation, Non-Unix Installation
@@ -328,7 +334,7 @@ The Windows version presently does not support mouse control (even though the
 mouse cursor is visible).
 
 @item
-The Windows version has been compiled with the Borland C++ 4.0 compiler. 
+The Windows version has been compiled with the Borland C++ 4.0 compiler.
 
 @end itemize
 
@@ -483,7 +489,7 @@ or in an xterm.
 As for the @key{Alt} keys (@key{Alt}-@key{X} and so on): @value{MSGED} tries
 to recognize all sorts of ways in which clients reflect @key{Alt} or
 @key{Meta} key combinations. If that still does not work on your console,
-besides contacting me so that I can fix it, you can emulate an @key{Alt} key 
+besides contacting me so that I can fix it, you can emulate an @key{Alt} key
 with the @key{Esc} key: If you press and release the @key{Esc} key and then
 press a letter, @value{MSGED} will treat this as if you pressed @key{Alt} and
 that letter. However, you have to do this fast, because if no key is pressed
@@ -755,7 +761,7 @@ There currently is not any way to savely share a Squish, JAM or Hudson
 message base between computers if any of the computers is a Linux or Unix
 machine. If you want to run Fido on the Linux box, the Linux box has to have
 its own messagebase (usually meaning that you must install it as sysop point
-or similar). 
+or similar).
 @end enumerate
 
 If you do not obey to these three rules, you sooner or later will experiences
@@ -798,7 +804,7 @@ Keyword}, for more information.
 @item
 The Windows NT version does not allow entry of special characters by ASCII
 code using the @key{Alt}-@var{numeric keypad} - Method. Also, under Windows
-95, you must use @key{AltGr} to create special characters. 
+95, you must use @key{AltGr} to create special characters.
 @key{Ctrl}+@key{Alt} will not work.
 
 @item
@@ -966,7 +972,7 @@ Select the first entry, @samp{Write to File}. You then will be shown a dialog
 box where you can select a file name. You can use the cursor keys to navigate
 through the directory structure and select a file to be overwritten. If you
 want to create a new file, press @key{Tab} to get to the @samp{File:} entry
-box and enter a new file name. 
+box and enter a new file name.
 
 After that, you will see a menu that asks you how the text should be
 exported:
@@ -1079,7 +1085,7 @@ agree on a scheme on how to encode letters into numbers, the so called
 @dfn{character set}. The standard character set for transferring text between
 a huge variety of computer systems is the ASCII character set. Unfortunately,
 the ASCII character set is only 7 bit wide and does not leave room for
-national special characters. 
+national special characters.
 
 In order to be able to transfer special characters like accents and umlauts,
 it was therefore necessary to use eight bit wide extended character sets
@@ -1193,17 +1199,17 @@ The following tables lists all read map and write map files that
 @value{MSGED} currently includes:
 
 @example
-Filename     | Type of font / character set / computer 
+Filename     | Type of font / character set / computer
 -------------------------------------------------------------------------
 READMAPS.850 | Any DOS or OS/2 computer, or Windows computer with the OEM
-WRITMAPS.850 | console fonts, that uses Codepage 850. This applies to most 
-             | computers in Western Europe. Some badly configured Linux 
+WRITMAPS.850 | console fonts, that uses Codepage 850. This applies to most
+             | computers in Western Europe. Some badly configured Linux
              | systems might also use this code page.
 -------------------------------------------------------------------------
 READMAPS.437 | Any DOS or OS/2 computer, or Windows computer with the OEM
 WRITMAPS.437 | fonts, that uses the standard codepage 437. This applies to
-             | most US-American installations, and also to some European 
-             | ones that use Codepage 850 because it has some more IBM 
+             | most US-American installations, and also to some European
+             | ones that use Codepage 850 because it has some more IBM
              | graphics characters.
 -------------------------------------------------------------------------
 READMAPS.866 | This is IBM Codepage 866, used by DOS and OS/2 or Windows
@@ -1213,7 +1219,7 @@ READMAPS.UKR | This is IBM Codepage 1125, used by some DOS and OS/2 or
 WRITMAPS.UKR | Windows installations for text mode applications in
              | Ukraine and Belorussia.
 -------------------------------------------------------------------------
-READMAPS.IS1 | This is ISO 8859-1. It is the standard encoding for 
+READMAPS.IS1 | This is ISO 8859-1. It is the standard encoding for
 WRITMAPS.IS1 | X11 fonts and console fonts on Linux and Unix systems
              | in Western Europe.
 -------------------------------------------------------------------------
@@ -1221,7 +1227,7 @@ READMAPS.IS5 | This is ISO 8859-5. It is the encoding used for vendor
 WRITMAPS.IS5 | shipped additional fonts in Russian editions of commercial
              | Unix systems.
 -------------------------------------------------------------------------
-READMAPS.KOI | This is KOI8-R, used by the cyrillic cronyx font set, 
+READMAPS.KOI | This is KOI8-R, used by the cyrillic cronyx font set,
 WRITMAPS.KOI | which is in use in almost any Russian Linux or FreeBSD
              | installation, and can of course also be installed on
              | commercial Unix systems.
@@ -1269,7 +1275,7 @@ Originaly, @code{IBMPC 2} meant the DOS codepage 437, but in the meantime, it
 has been used to simply denote the codepage that a "IBM" computer is
 typically using. This means that if a Russian user has a kludge that says
 @code{IBMPC 2}, he probably means @code{CP866 2}, while if a German user has
-@code{IBMPC 2}, he probably means @code{CP850 2}. 
+@code{IBMPC 2}, he probably means @code{CP850 2}.
 
 Msged supports use of those outdated or incorrect charset kludges with the
 @code{CharsetAlias} command. A Western European user should
@@ -1296,7 +1302,7 @@ CharsetAlias RUFIDO CP866
 Once FSC 0054 is activated, @value{MSGED} will be able to correctly display
 all mails that have been created with one of the characters sets listed
 above, as long as they contain the proper charset kludge
-line. 
+line.
 
 Unfortunately, quite some still don't - do tell their authors to correct
 their setup! Until those users fix their editors, @value{MSGED} offers you
@@ -1421,7 +1427,7 @@ Hello Joe!
 
 This is a test.
 
-Regards, 
+Regards,
 Bill.
 @end example
 
@@ -1446,7 +1452,7 @@ Hello Bill!
 
 I received your test e-mail without problems.
 
-Regards, 
+Regards,
 Joe.
 @end example
 
@@ -1538,7 +1544,7 @@ switches}).
 Reading e-mail that comes from any internet gateway is equally simple. If the
 @samp{u} flag is set for an area, @value{MSGED} will automatically recognise
 @code{From:} and @code{Reply-To:} lines and hide them from you. Instead of
-displaying the gateway pseudo user name and node numer, it will display 
+displaying the gateway pseudo user name and node numer, it will display
 the e-mail address that the mail is coming from in the message header field.
 
 @value{MSGED} also supports newsgroups, i.E. echomail areas that are being
@@ -1789,7 +1795,7 @@ Personal mail scan: this scans all message areas for messages addressed to you.
 @item Function: @code{spmail}, not pre-bound to any key
 @krindex spmail
 This scans for messages addressed to you in the current area only.
- 
+
 @item Function: @code{search}, bound to: @key{Alt}-@key{F}
 @krindex search
 @cindex searching
@@ -1858,7 +1864,7 @@ need this in two cases: Either when some idiot is inserting a wrong CHRS
 kludge into this mail, or when a mail does not have a CHRS kludge and it is
 @emph{not} written in the character set that you have specified as argument
 to the @code{AssumeCharset} keyword (@pxref{AssumeCharset,,The AssumeCharset
-Keyword}. 
+Keyword}.
 
 An example would be if you have configured your computer with
 @samp{AssumeCharset 850} because you usually write in a Western European
@@ -1908,7 +1914,7 @@ the Keyboard bindings}).
 @menu
 * Cursor Movement::             Keystrokes for moving the cursor.
 * Killing Text::                Keystrokes for deleting text.
-* Text Block Commands::         Keystrokes for cut and paste functionality.   
+* Text Block Commands::         Keystrokes for cut and paste functionality.
 * Miscellaneous Commands::      Other functions like saving, importing, etc.
 @end menu
 
@@ -2205,10 +2211,10 @@ avilable keywords and switches in alphabetical order.
 
 @node Syntax, Keywords, Configuration Reference, Configuration Reference
 @section Configuration File Syntax
-@cindex environment variables, using 
+@cindex environment variables, using
 @cindex comments, configuration file
 Each line in the configuration file should start with a keyword. Each
-keyword can be followed by zero or more free-form parameters. 
+keyword can be followed by zero or more free-form parameters.
 
 A special case of a keyword is the @samp{switch} keyword. Using the
 @samp{switch} keyword, a switch can be turned either on or
@@ -2236,13 +2242,13 @@ are generally case-insensitive.
 @menu
 * Address::                     Specifying your FTN AKAs.
 * Alias::                       Your personal address book.
-* Alterfunc::                   
+* Alterfunc::
 * AreaExcl::                    Excluding areas from the area list.
 * Areafile and AreaFileFlags::  Reading squish.cfg or fastecho.cfg.
 * AssumeCharset::               Workaround for mails without CHRS kludges.
 * CharsetAlias::                About IBMPC 2 and other wrong CHRS kludges.
 * Color::                       Configuring the screen colors.
-* Colour::                      
+* Colour::
 * CurStart/CurEnd::             Configuring the cursor shape.
 * Domain::                      About Domain Gating.
 * EditKey::                     Configurint the editor's keyboard layout.
@@ -2677,7 +2683,7 @@ generated using the @key{Ctrl}-@key{F} feature. If not defined, @samp{DIR
 K/S} is the default. The @samp{FRQ} flag will be appended in any case, so
 will the local message area flags (usaually @samp{PVT LOC}). Any flags
 defined in FSC 0053 are electible, yet the only ones that are useful for file
-request messages are listed below. 
+request messages are listed below.
 
 @example
 HLD @r{place file request on hold for the caller}
@@ -2689,7 +2695,7 @@ K/S @r{kill the file request mail after it has been sent}
 
 You should at least specify one flag out of @samp{HLD CRA IMM DIR}, because
 if none of these is present, the file request will be routed and consequently
-be ignored by the destination system. 
+be ignored by the destination system.
 
 If you want to specify multiple file request flags, separate them by white
 spaces, as shown in the example above.
@@ -3093,7 +3099,7 @@ an origin line. This feature is called @dfn{origin shuffling}.
 
 This keyword is used to configure the default @var{file-name} that should be
 used as a default selection for exporting mails as text by pressing
-@key{Alt}-@key{W}. 
+@key{Alt}-@key{W}.
 
 @node OutputCharset, Printer, Outfile, Keywords
 @subsection OutputCharset
@@ -3117,7 +3123,7 @@ The charset that you specify as @var{charset} argument must be a level 2
 charset, and a matching translation table must be contained in the
 @file{writmaps.dat} file. If there isn't such a table, you will only see this
 from the fact that the written message will contain 8-bit characters, but no
-charset kludge(!). So be careful not to misspell the option. 
+charset kludge(!). So be careful not to misspell the option.
 
 @xref{Special Characters,,Using Special Characters like Umlauts or Cyrillics
 - The Charset Kludge}, for more information on the concept of
@@ -3398,7 +3404,7 @@ en character that other users write, and any big en character that he writes
 will be replaced with it's low-ASCII-look alike, thus avoiding problems at
 other message readers.
 
-Now suppose that you don't want to translate the 0x8D character 
+Now suppose that you don't want to translate the 0x8D character
 to any other value. If your language uses the i with accent grave, for
 example, there is no other equivalent of this character, so you could only
 change it to an i without accent grave, which you might not like. In this
@@ -3406,7 +3412,7 @@ case, you can also instruct @value{MSGED} to keep the 0x8D character as is,
 by setting @code{SoftCrXlat 141} (141 is the decimal representation of
 0x8D). With @code{SoftCrXlat 141}, the 0x8d character becomes an ordinary
 character for @value{MSGED}, i.E. it does not behave different to any other
-character any more. 
+character any more.
 
 However, be aware of the fact that this might cause problems on other systems
 that behave according to FTS 0001 and ignore any 0x8D characters. Another
@@ -3644,7 +3650,7 @@ for more information.
 The Internet e-mail standards specified so-called @samp{Reply-To:} header
 lines. The presence of such a header line speicifes that any reply to this
 message should not be sent to the sender of the mail, but to the alternate
-e-mail account that is specified in the @samp{Reply-To:} header. 
+e-mail account that is specified in the @samp{Reply-To:} header.
 
 A common scenario is the following: You have two e-mail accounts, one at home
 and one at your university or at your office. You have set up the account at
@@ -3668,7 +3674,7 @@ Reply-To: user@@some.domain.com (Joe Sysop)
 @end example
 
 Please note that of course the whole thing can only work if your gateway
-software can recognise @code{Reply-To:} headers in fido netmail. As always, 
+software can recognise @code{Reply-To:} headers in fido netmail. As always,
 Fidogate can, while others probably can't.
 
 @node Writemap,  , UucpReplyTo, Keywords
@@ -4147,7 +4153,7 @@ variable has a certain value.
 @menu
 * Statements: cond-statements.  Formulating Conditional Statements.
 * Conditions: cond-conditions.  Conditions that can be tested.
-* cond-examples::               
+* cond-examples::
 @end menu
 
 @node cond-statements, cond-conditions, Conditionals, Conditionals
@@ -4450,7 +4456,7 @@ Here are some examples:
 
 @example
 Fido   mup "Fidonet Netmail" e:\fido\netmail   2:2476/418.0
-Squish eu  "MsgEd Support"   e:\fido\sq\msged  MSGED_ECHO 
+Squish eu  "MsgEd Support"   e:\fido\sq\msged  MSGED_ECHO
 Squish eu8 "OS/2 Debate"     e:\fido\sq\os2deb OS2.DEBATE.GER
 Squish eu  "c't conference"  e:\fido\sq\ctger  CT.GER  21:492/2851.0
 Quick  lp  "To Sysop Area"   1
@@ -4532,7 +4538,7 @@ and other Unix systems), or if you want to do modifications on the source
 code, or if you are just curious :-).
 
 Most of the information of this chapter applies to all supported platfroms
-(including Unix, OS/2, Windows and DOS). 
+(including Unix, OS/2, Windows and DOS).
 
 @menu
 * Preparations::                Obtaining and unpacking the files.
@@ -4541,7 +4547,7 @@ Most of the information of this chapter applies to all supported platfroms
 * Building the Executables::    Invoking the compiler.
 * Building the other Files::    Compiling the manual and help files.
 * Installing::                  Installing the files you have created.
-@end menu 
+@end menu
 
 @node Preparations, Configuring, Compiling, Compiling
 @section Step 1: Preparing the build directories; Obtaining the SMAPI
@@ -4614,15 +4620,15 @@ while on Unix, you would use:
 The following compilers and target operating systems are supported:
 
 @example
-Makefile     | Platform                 
+Makefile     | Platform
 -------------+-----------------------------------------
-makefile.bcd | DOS with Borland C++ 3.1 or Turbo C  
+makefile.bcd | DOS with Borland C++ 3.1 or Turbo C
 makefile.bco | OS/2 with Borland C 2.0
 makefile.bcw | Windows 95/NT with Borland C++ 4.0
 makefile.djg | DOS/386 with DJGPP GCC 2.7.2
 makefile.emo | OS/2 with EMX 0.9c GCC 2.7.2
 makefile.ibo | OS/2 with IBM CSET/2 or Visual Age C++
-makefile.rxw | 95/NT with RSXNT + EMX GCC 2.7.2 
+makefile.rxw | 95/NT with RSXNT + EMX GCC 2.7.2
 makefile.unx | Any UNIX, BSD or Linux with any compiler
 @end example
 
@@ -4635,10 +4641,10 @@ makefiles along with the others, but I cannot make any promises.
 Makefile     | Platform
 -------------+----------------------------------------------
 makefile.bsd | FreeBSD with GCC; links the SMAPI dynamically
-makefile.hco | OS/2 with Metware High C 
+makefile.hco | OS/2 with Metware High C
 makefile.lnx | Linux with GCC; links the SMAPI dynamically
-makefile.qcd | DOS with MS Quick C      
-makefile.wcd | DOS with Watcom C     
+makefile.qcd | DOS with MS Quick C
+makefile.wcd | DOS with Watcom C
 makefile.wcw | NT with Watcom C
 makefile.wco | OS/2 with Watcom C
 makefile.wcx | DOS/386 with Watcom C
@@ -4746,7 +4752,7 @@ specify all character map files that are to be included into
 [C:\COMPILE\MSGED] cd c:\compile\msged\maps
 [C:\COMPILE\MSGED\MAPS] icc makemaps.c
  (...)
-[C:\COMPILE\MSGED\MAPS] makemaps IBMPC IBM_ISO.CHS ISO_IBM.CHS 
+[C:\COMPILE\MSGED\MAPS] makemaps IBMPC IBM_ISO.CHS ISO_IBM.CHS
 IBM_ASC.CHS IBM_MAC.CHS MAC_IBM.CHS IBM_850.CHS 850_IBM.CHS
 @end example
 
