@@ -6,6 +6,10 @@ Features, Changes and Fixes in the current development version of MsgEd
 
 Changes:
 
+- Changed the semantics of AssumeCharset. Now it also works for mails that
+  do have a charset kludge, but the charset is unknown. This seems to be
+  necessary in Russia especially ("AssumeCharset CP866").
+
 - Reworked the Alt+D (Ctrl+Y) delete line function in the editor. Previously,
   if you pressed Ctrl+Y and were at the very last line of the message, the
   line would be killed and the cursor would move up, so that if you pressed
@@ -15,7 +19,13 @@ Changes:
   If you do not like the new behaviour, add "Switch Carthy Off" to the confi-
   guration file in order to revert to the old behaviour.
 
+
 Features:
+
+- Character set translate now does not only recode the mail text, but also
+  the message header (from, to, and subject field). This allows for umlauts
+  or kyrillic letters in the header, provided the recipient mail editor also
+  has this feature.
 
 - New Switch: DirectList. If you put "Switch DirectList On" into your config
   file, you will directly drop into the message listing mode when entering a

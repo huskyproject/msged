@@ -2221,19 +2221,23 @@ These keywords are documented in the section about area configuration
 In Fidonet mail, mails that contain special characters must carray a charset
 kludge line (@pxref{Special Characters,,Using Special Characters -
 The FSC 0054 Charset Kludge}). However, still a good percentage of
-fidonetmail contains special characters, but no charset kludge line.
+fidonetmail contains special characters, but no charset kludge line. Also,
+people often use wrong charset kludge names.
 
 By default, @value{MSGED} will replace all special characters with question
-marks in mails without charset kludge, because @value{MSGED} does not know
-how to properly translate such special characters. If you do not like this,
-you can use the @code{AssumeCharset} keyword to specify that @value{MSGED}
-should assume that all special characters in mails that do not contain a
-charset kludge have been composed using the character set @var{charset}, and
-translate the special characters accordingly.
+marks in mails without charset kludge or with unknown charset kludge,
+because @value{MSGED} does not know how to properly translate such special
+characters. If you do not like this, you can use the @code{AssumeCharset}
+keyword to specify that @value{MSGED} should assume that all special
+characters in mails that do not contain a charset kludge, or have a unknown
+charset kludge, have been composed using the character set @var{charset},
+and translate the special characters accordingly.
 
 In Germany, for example, nearly all mail that contains special characters but
 does not contain a charset kludge has been composed using the IBMPC character
 set, so it makes sense to specify @samp{AssumeCharset IBMPC} here.
+
+In Russia, it is best to use @samp{AssumeCharset CP866}.
 
 @node Color, Colour, AssumeCharset, Keywords
 @subsection Color

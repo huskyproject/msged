@@ -372,10 +372,6 @@ msg *QuickMsgReadHeader(unsigned long n, int type)
     m->subj = xcalloc(header.subject[0] + 1, 1);
     strncpy(m->subj, header.subject + 1, header.subject[0]);
 
-    strip_control_chars(m->isfrom);
-    strip_control_chars(m->isto);
-    strip_control_chars(m->subj);
-
     strncpy(path, header.postdate + 1, header.postdate[0]);
     strcat(path, " ");
     strncat(path, header.posttime + 1, header.posttime[0]);

@@ -397,10 +397,6 @@ msg *FidoMsgReadHeader(unsigned long n, int type)
     memcpy(m->isfrom, msghead.from, sizeof msghead.from);
     memcpy(m->subj, msghead.subj, sizeof msghead.subj);
 
-    strip_control_chars(m->isto);
-    strip_control_chars(m->isfrom);
-    strip_control_chars(m->subj);
-
     if (type != RD_HEADER_BRIEF)
     {
         m->replyto = FidoUidToMsgn((unsigned long)((msghead.reply[1] << 8)

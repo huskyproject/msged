@@ -30,8 +30,10 @@ void         destroy_charset_maps (void); /* destroy the charset engine      */
 #define READ_DIRECTION 1
 #define WRITE_DIRECTION 2
 
+int          have_readtable      (const char *, int);
 LOOKUPTABLE *get_readtable       (const char *, int);
 LOOKUPTABLE *get_writetable      (const char *, int*);
+
 
 void         strip_control_chars (char *);
 char        *translate_text      (const char *, LOOKUPTABLE *);

@@ -222,7 +222,9 @@ void destroy_charset_maps(void)
 
 
 /* Find a lookup table. Note: NULL pointer means no translation has to be
-   (or can be) done. */
+   done. If you specify an unknown charset name, you will not get NULL
+   pointer, but you will get the maskout table (which maps everything to
+   a questionmark). If you do not want this, use have_readtable to test! */
 
 LOOKUPTABLE *get_readtable (const char *charset_name, int level)
 {
@@ -299,6 +301,17 @@ LOOKUPTABLE * get_writetable(const char *charset_name, int *allowed)
     *allowed=0;
     return NULL;  /* can't help */
 }
+
+
+
+/* Test if we have a read table for this charset */
+
+int have_readtable (const char *charset_name, int level)
+{
+    return get_readtable(charset_name, level) != &maskout_table;
+}
+
+
 
 /* this routine filters out control codes that could break vt100 */
 

@@ -237,11 +237,15 @@ msg *readmsg(unsigned long n)
 		    break;
 		}
 
-		release(m->charset_name);
-		m->charset_name = xstrdup(tokens[0]);
-		m->charset_level = atoi(tokens[1]);
-		ltable = get_readtable(m->charset_name,
-                                       m->charset_level);
+                if ( have_readtable(tokens[0], atoi(tokens[1])) ||
+                     ST->input_charset == NULL /* user wants no assumptions */)
+                {
+                    release(m->charset_name);
+                    m->charset_name  = xstrdup(tokens[0]);
+                    m->charset_level = atoi(tokens[1]);
+                    ltable = get_readtable(m->charset_name,
+                                           m->charset_level);
+                }
 		break;
 
 	    case 'M':
@@ -645,6 +649,23 @@ msg *readmsg(unsigned long n)
     }
 
     MsgClose();
+
+    if (!read_verbatim) /* recode the header, important for Russian users */
+    {
+        char *tmp;
+
+        tmp = translate_text(m->isfrom, ltable);
+        release(m->isfrom); m->isfrom = tmp;
+        strip_control_chars(m->isfrom);
+
+        tmp = translate_text(m->isto, ltable);
+        release(m->isto); m->isto = tmp;
+        strip_control_chars(m->isto);
+
+        tmp = translate_text(m->subj, ltable);
+        release(m->subj); m->subj = tmp;
+        strip_control_chars(m->subj);
+    }
 
     if (set_rcvd)
     {
@@ -1967,6 +1988,20 @@ int writemsg(msg * m)
 	    m->to.zone = m->from.zone;
 	    m->to.net = m->from.zone;
 	}
+    }
+
+    if (!m->rawcopy) /* recode the header, important for Russian users */
+    {
+        char *tmp;
+
+        tmp = translate_text(m->isfrom, ltable);
+        release(m->isfrom); m->isfrom = tmp;
+
+        tmp = translate_text(m->isto, ltable);
+        release(m->isto); m->isto = tmp;
+
+        tmp = translate_text(m->subj, ltable);
+        release(m->subj); m->subj = tmp;
     }
 
     abortWrite = 0;

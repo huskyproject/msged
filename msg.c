@@ -265,10 +265,6 @@ msg *SquishMsgReadHeader(unsigned long n, int type)
     memcpy(m->isfrom, xmsg.from, sizeof xmsg.from);
     memcpy(m->subj, xmsg.subj, sizeof xmsg.subj);
 
-    strip_control_chars(m->isto);
-    strip_control_chars(m->isfrom);
-    strip_control_chars(m->subj);
-
     m->attrib.priv = (xmsg.attr & MSGPRIVATE) != 0;
     m->attrib.crash = (xmsg.attr & MSGCRASH) != 0;
     m->attrib.rcvd = (xmsg.attr & MSGREAD) != 0;
