@@ -494,11 +494,13 @@ follow the generic Husky installation instruction as found in the file
 @file{INSTALL} found in the @file{huskybse} package.
 
 These instructions essentially boil down to getting the source code packages
-of Huskybse, Smapi, Fidoconf and Msged (in this case, use the Husky Msged
+of Huskybse, Smapi, and Msged (in this case, use the Husky Msged
 distribution, @file{msged-VERSION-src.tar.gz}), untar each file, create a
 @file{huskymak.cfg} based on the template found in the @file{huskybse}
 package, and then entering each of the subdirectories and typing @code{make;
-make install}. But be sure to read the file in detail.
+make install}.  But be sure to read the file in detail.  Note that for building
+@value{MSGED}, you don't need the fidoconfig library, even though @value{MSGED}
+is able to read the fidoconfig configuration file.
 
 After you have done so, you already have a working installation of
 @value{MSGED}. The command @code{make install} entered in the @value{MSGED}
