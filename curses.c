@@ -12,7 +12,7 @@
 #include <sys/types.h>
 #include <sys/time.h>
 #include <ctype.h>
-#include <ncurses.h>
+#include <curses.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>

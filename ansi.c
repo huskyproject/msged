@@ -9,6 +9,8 @@
  *  Screen definitions & routines using ANSI codes.
  */
 
+#ifndef USE_CURSES
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -1594,3 +1596,5 @@ static int FullBuffer(void)
         return 1;
     }
 }
+
+#endif
