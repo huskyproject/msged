@@ -58,7 +58,7 @@ void e_uudecode(void);
 void (*editckeys[256]) (void) =
 {
     NULL, NULL, NULL, NULL, e_uudecode, NULL, NULL, NULL,     /* 0 */
-    backspace, tabit, NULL, delete_line, NULL, newline, NULL, NULL,  /* 8 */
+    backspace, tabit, NULL, emacskill, NULL, newline, NULL, NULL,  /* 8 */
     NULL, NULL, NULL, NULL, delword, undelete, NULL, NULL,    /* 10 */
     NULL, delete_line, NULL, die, NULL, NULL, NULL, NULL,     /* 18 */
     NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,           /* 20 */
@@ -96,7 +96,7 @@ void (*editckeys[256]) (void) =
 void (*editakeys[256]) (void) =
 {
     NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,           /* 0 */
-    NULL, NULL, NULL, emacskill, NULL, NULL, NULL, NULL,      /* 8 */
+    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,      /* 8 */
     toggle_quote, outtext, editheader, rotate, setup, NULL, unblock, imptxt,  /* 10 */
     shellos, paste, NULL, NULL, NULL, NULL, anchor, quit,     /* 18 */
     delete_line, NULL, NULL, do_help, NULL, killeol, zap_quotes, NULL,  /* 20 */
