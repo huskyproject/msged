@@ -181,10 +181,9 @@ void read_charset_maps(void)
         {
            fprintf (stderr,
                     "\r\aWarning: %s does not contain an entry for converting"
-                    "\n         back to ASCII!", fnw);
+                    "\n         back to ASCII!\n", fnw);
         }
-        if (strcmp(readmaps->charset_name, writemaps->charset_name) == 0 &&
-            toasc_encountered)
+        if (strcmp(readmaps->charset_name, writemaps->charset_name) == 0)
         {
            printf ("\rIncorporating FSC 0054 charset engine. "
                    "Local charset is: %s\n", readmaps->charset_name);
