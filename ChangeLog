@@ -1,3 +1,7 @@
+2002-10-24 Thursday 14:26  stas_degteff
+
+	* msg.c (1.23): Fix for typedef change in smapi
+
 2002-09-26 Thursday 05:55  os2tobi
 
 	* maps/: iso_mac.chs (1.5), mac_850.chs (1.4), mac_ibm.chs (1.5),
