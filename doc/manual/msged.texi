@@ -1841,7 +1841,12 @@ Change the currently active nodelist.
 @krindex name
 If you have defined more than one user name with the @code{Name}
 configuration keyword, you can use this function to select the name to use
-when writing messages.
+when writing messages. If you have any @code{group} keyword in your config,
+this selecting will only last until you enter a new area, because in such a
+scenario, the username which is used is defined by the area that you are
+in. If you don't have any @code{group} keyword in your config, this selection
+will last until you make a different one. @xref{Group,,The @code{group}
+keyword}, for more information.
 @end table
 
 @node Misc Reader Functions,  , Options Functions, Reader Keystrokes

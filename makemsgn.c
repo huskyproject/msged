@@ -387,7 +387,7 @@ static void reply_msg(int type)
         user_list[0].robotname = "AreaFix";  /* default */
     }
     count = 0;
-    for (i = 0; i < 11; i++)
+    for (i = 0; i < MAXUSERS; i++)
     {
         if (user_list[i].robotname == NULL || m->isto == NULL)
         {

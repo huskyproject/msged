@@ -140,14 +140,14 @@ void change_username(void)
 {
     int x1, y1, x2, y2, len = 0;
     int i, j, ch;
-    char *list[11];
+    char *list[MAXUSERS];
 
     if (user_list[1].name == NULL)
     {
         return;
     }
 
-    for (i = 0; i < 11; i++)
+    for (i = 0; i < MAXUSERS; i++)
     {
         if (user_list[i].name == NULL)
         {

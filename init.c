@@ -193,6 +193,7 @@ int InitVars(void)
     SW->carthy = YES;
     SW->direct_list = NO;
     SW->areadesc = DSCTAGASIS | DSCDESCASIS;
+    SW->areadefinesuser = NO;
 
 #ifndef UNIX
     ST->comspec = getenv("COMSPEC");

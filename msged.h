@@ -70,7 +70,7 @@
 #define BLOCKLEN  255
 #define BUFLEN    4096
 
-#define MAXUSERS  11
+#define MAXUSERS  20
 
 #define MT_QUO    0x0001        /* msg has a quote */
 #define MT_REP    0x0002        /* msg is a reply (no quote) */
@@ -412,6 +412,7 @@ struct _swv
     int carthy;                 /* behaviour of delete_line at last line */
     int direct_list;            /* jump directly to message listing mode */
     int areadesc;               /* how to build areadesc from areafile */
+    int areadefinesuser;        /* the selected area defines the username */
 };
 
 #ifndef INCL_MAIN

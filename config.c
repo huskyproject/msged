@@ -1192,6 +1192,14 @@ static void SetAreaInfo(AREA * a)
     {
         a->username = group[i].username;
         a->template = group[i].template;
+        SW->areadefinesuser = 1;
+          
+           /* Currently, the user cannot set this switch. Our logic is this: if
+              there is at least one group setting which actually gets applied,
+              then the user probably wants that the username is selected based
+              on the area that he enters. If, however, there is no such group
+              statement, then entering an area does not change the user
+              name. Handy for pseudo multiuser installations. */
     }
 }
 
@@ -2988,19 +2996,6 @@ static void parseconfig(FILE * fp)
                         user_list[i].offset = atol(tokens[2]);
                         user_list[i].offs_defined = 1;
                     }
-
-                    if (i == 0)
-                    {
-                        release(ST->username);
-                        ST->username = xstrdup(user_list[i].name);
-
-                        if (user_list[i].lastread)
-                        {
-                            release(ST->lastread);
-                            ST->lastread = xstrdup(user_list[i].lastread);
-                        }
-                        SW->useroffset = user_list[i].offset;
-                    }
                 }
             }
             break;
@@ -3039,17 +3034,6 @@ static void parseconfig(FILE * fp)
         case CFG_LASTREAD:
             release(ST->lastread);
             ST->lastread = xstrdup(value);
-            for (i = 0; i < 11; i++)
-            {
-                if (user_list[i].name == NULL)
-                {
-                    break;
-                }
-                else if (user_list[i].lastread == NULL)
-                {
-                    user_list[i].lastread = xstrdup(value);
-                }
-            }
             break;
 
         case CFG_TOSSLOG:
@@ -3116,18 +3100,6 @@ static void parseconfig(FILE * fp)
 
         case CFG_USEROFFSET:
             SW->useroffset = atoi(value);
-            for (i = 0; i < 11; i++)
-            {
-                if (user_list[i].name == NULL)
-                {
-                    break;
-                }
-                else if (user_list[i].offs_defined == 0)
-                {
-                    user_list[i].offset = SW->useroffset;
-                    user_list[i].offs_defined = 1;
-                }
-            }
             break;
 
         case CFG_QUOTE:
@@ -3411,14 +3383,14 @@ static void parseconfig(FILE * fp)
             parse_tokens(value, tokens, 3);
             if (tokens[0] != NULL)
             {
-                for (i = 0; i < 11; i++)
+                for (i = 0; i < MAXUSERS; i++)
                 {
                     if (user_list[i].robotname == NULL)
                     {
                         break;
                     }
                 }
-                if (i < 11)
+                if (i < MAXUSERS)
                 {
                     user_list[i].robotname = xstrdup(tokens[0]);
                 }
@@ -3708,10 +3680,46 @@ void opening(char *cfgfile, char *areafile)
         exit(-1);
     }
 
+
+    /* set default lastread pointer information for all users from the current
+       lastread and user offset values, and after that, set the current values
+       to those of the first user. */
+
+    for (i = 0; i < MAXUSERS; i++)
+    {
+        if (user_list[i].name == NULL)
+        {
+            break;
+        }
+
+        if (user_list[i].lastread == NULL)
+        {
+            user_list[i].lastread = xstrdup(ST->lastread);
+        }
+        if (user_list[i].offs_defined == 0)
+        {
+            user_list[i].offset = SW->useroffset;
+            user_list[i].offs_defined = 1;
+        }
+    }
+
+    release(ST->username);
+    ST->username = xstrdup(user_list[0].name);
+    release(ST->lastread);
+    ST->lastread = xstrdup(user_list[0].lastread);
+    SW->useroffset = user_list[0].offset;
+
+
+
+    /* count the number of macros */
+
     for (i = 0; i < 40; i++)
     {
         count += macros[i] != NULL ? 1 : 0;
     }
+
+
+    /* now read the areafile. FIXME: What if user configures more than one? */
 
     if (check_area_files)
     {

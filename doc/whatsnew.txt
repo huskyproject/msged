@@ -209,6 +209,8 @@ Features:
 
 Fixes:
 
+- The lastread and useroffset handling is even more idiot-proof now.
+
 - "xc:" crossposting now also works when editing a message, not only when
   creating a new message.
 

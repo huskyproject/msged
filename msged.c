@@ -1021,9 +1021,12 @@ void SetupArea(void)
     release(ST->template);
     release(ST->lastread);
 
-    ST->username = xstrdup(user_list[CurArea.username].name);
-    SW->useroffset = user_list[CurArea.username].offset;
-    ST->lastread = xstrdup(user_list[CurArea.username].lastread);
+    if (SW->areadefinesuser)
+    {
+        ST->username = xstrdup(user_list[CurArea.username].name);
+        SW->useroffset = user_list[CurArea.username].offset;
+        ST->lastread = xstrdup(user_list[CurArea.username].lastread);
+    }
 
     if (templates != NULL)
     {
