@@ -22,7 +22,7 @@
 #include <io.h>
 #endif
 
-#if defined(UNIX) || defined(__EMX__)
+#if defined(UNIX) || defined(__EMX__) || defined(__DJGPP__)
 #define HAVE_POPEN
 #endif
 
