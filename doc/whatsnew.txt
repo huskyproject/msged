@@ -24,6 +24,9 @@ Changes:
 
 Features:
 
+- In the Unix version, you can now press Ctrl+L to redraw the screen
+  (in case it got corrupted by a syslogd message or similar).
+
 - If you set "Switch Lowercase On", MsgEd TE will convert all filenames
   that it reads from the configuration file or from an areafile to lower case
   before, reading from, writing to or creating any file. This is helpful if
@@ -99,11 +102,11 @@ Features:
     |lpr,t
 
   The ",t" tells MsgEd to line-wrap the message. Note that you can't use
-  commands that need a komma as argument because of that. I wanted to
+  commands that need a comma as argument because of that. I wanted to
   keep kompatible with the old Alt+W feature.
 
-  Piping does only work in the Unix version and in the EMX-compiled OS/2
-  version of MsgEd.
+  Piping does not work in the 16 bit DOS version (due to lack of a popen
+  C library routine).
 
 - Origin shuffling:  You can now repeat the Origin keyword as often as
   desired.  MsgEd will select a random origin line each time when you write a
@@ -212,6 +215,15 @@ Features:
 - Updated MsgEd TE to again compile for the NT and DOS/386 platforms.
 
 Fixes:
+
+- Unix version: Fixed Alt+<digit> keystrokes; fixed segmentation
+  violation on unknown control key combination; fixed F1..F10 on FreeBSD
+  syscons.
+
+- Fixed segmentation violation when quoting mails that already contain
+  quotes where the quote character ('>') is in the very first column.
+
+- The Windows NT version now handles umlauts correctly in all cases.
 
 - Origin lines that contained parentheses in the origin text did not work.
 

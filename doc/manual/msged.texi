@@ -6,7 +6,7 @@
 @setchapternewpage odd
 @set MSGED MsgEd TE
 @set VERSION 05
-@set EDITION 01
+@set EDITION 02
 @defindex kr
 @defindex ke
 @c %**end of header
@@ -280,11 +280,11 @@ This section provides information on installing @value{MSGED} on Linux,
 FreeBSD or any other Unix-like system.
 
 @menu
-* UNIX Installation Procedure::  
-* Notes on UNIX terminal I/O::  
-* Notes on UNIX keyboard input::  
-* Notes on Big Endian Hardware::  
-* Colors in the Unix version::  
+* UNIX Installation Procedure::   How to install @value{MSGED}.
+* Notes on UNIX terminal I/O::    How @value{MSGED} handles the terminal.
+* Notes on UNIX keyboard input::  Escape Meta Alt Control Shift ;-)
+* Notes on Big Endian Hardware::  Running @value{MSGED} on RISC processors.
+* Colors in the Unix version::    How to enable colors.
 @end menu
 
 @node UNIX Installation Procedure, Notes on UNIX terminal I/O, UNIX installation, UNIX installation
@@ -535,10 +535,10 @@ will describe what measures have to be taken in order to be able to transmit
 special characters via Fidonet.
 
 @menu
-* Charset Kludges for the Impatient::  
-* Problems with Special Characters::  
-* Special Characters in Fidonet::  
-* MsgEd TE and Special Characters::  
+* Charset Kludges for the Impatient::  Read this to get it to work quickly.
+* Problems with Special Characters::   Description of the general problem.
+* Special Characters in Fidonet::      FSC/FTS proposal to solve the problem.
+* MsgEd TE and Special Characters::    How @value{MSGED} implements FSC 0054.
 @end menu
 
 @node Charset Kludges for the Impatient, Problems with Special Characters, Special Characters, Special Characters
@@ -720,9 +720,9 @@ to new users that want instant e-mail access without having to care for
 klumsy gateway addressing rules.
 
 @menu
-* Gateway Principles::          
-* Gateway Configuration::       
-* Gateway Usage::               
+* Gateway Principles::          How does a UUCP gateway work?
+* Gateway Configuration::       How to configure @value{MSGED} for e-mail.
+* Gateway Usage::               How to use @value{MSGED} to write e-mail.
 @end menu
 
 @node Gateway Principles, Gateway Configuration, Internet Gateways, Internet Gateways
@@ -895,9 +895,11 @@ your favorite internet gateway.
 This chapter gives a complete listing of available keystroke combinations in
 @value{MSGED}. After that, you will find instructions on how you can redefine
 the keyboard to suit your preferences.
-@c @value{MSGED} traditionally uses a DOS-ish PC keyboard with @key{Alt} key
-@c and function keys. Unix users should refer to the Unix installation notes
-@c for information before reading on in this chapter. FIXME
+
+Please note: @value{MSGED} traditionally uses a DOS-ish PC keyboard with
+@key{Alt} key and function keys. Unix users should refer to the Unix
+installation notes before reading this chapter (@pxref{Notes on UNIX keyboard
+input}).
 
 @menu
 * Arealist Keystrokes::         Keystroke combinations in the Arealist Screen
@@ -1521,13 +1523,11 @@ avilable keywords and switches in alphabetical order.
 @cindex environment variables, using 
 @cindex comments, configuration file
 Each line in the configuration file should start with a keyword. Each
-keyword can be followed by one or more parameters.
+keyword can be followed by zero or more free-form parameters. 
 
-Switches have a very easy semantics: A switch can be turned either on or
-off. You can modify the state of a switch with the @code{switch}
-keyword.
-@c (@pxref{switch,,The @code{switch} Keyword}) FIXME
-Switches really are just parameters to a special keyword.
+A special case of a keyword is the @samp{switch} keyword. Using the
+@samp{switch} keyword, a switch can be turned either on or
+off. @pxref{Switches}, for more information.
 
 When parsing the config file, lines that start with a semicolon or with a
 semicolon preceeded only by whitespace are treated as comments .
@@ -1549,56 +1549,56 @@ The following keywords can be used in the configuration file. Keywords
 are generally case-insensitive.
 
 @menu
-* Address::                     
-* Alias::                       
+* Address::                     Specifying your FTN AKAs.
+* Alias::                       Your personal address book.
 * Alterfunc::                   
-* AreaExcl::                    
-* Areafile and AreaFileFlags::  
-* AssumeCharset::               
-* Color::                       
+* AreaExcl::                    Excluding areas from the area list.
+* Areafile and AreaFileFlags::  Reading squish.cfg or fastecho.cfg.
+* AssumeCharset::               Workaround for mails without CHRS kludges.
+* Color::                       Configuring the screen colors.
 * Colour::                      
-* CurStart/CurEnd::             
-* Domain::                      
-* EditKey::                     
-* Editor::                      
-* EnableSC::                    
-* Fido::                        
-* FreqArea::                    
-* Function::                    
-* Gate::                        
-* Group::                       
-* HelpFile::                    
-* Include::                     
-* Lastread::                    
-* MaxX and MaxY::               
-* MountDir::                    
-* Name::                        
-* NodePath::                    
-* Nodelist::                    
-* Origin::                      
-* Outfile::                     
-* OutputCharset::               
-* PrivateNet::                  
-* Quick::                       
-* QuickBBS::                    
-* Quote::                       
-* QuoteRight::                  
-* ReadKey::                     
-* Right::                       
-* RobotName::                   
-* Scan::                        
+* CurStart/CurEnd::             Configuring the cursor shape.
+* Domain::                      About Domain Gating.
+* EditKey::                     Configurint the editor's keyboard layout.
+* Editor::                      Selecting the internal or an external editor.
+* EnableSC::                    Enabling input of ``Umlauts'' on Unix.
+* Fido::                        Specifying a Fido *.MSG format mail area
+* FreqArea::                    Specifying an area to place file requests in.
+* Function::                    Creating keyboard macros.
+* Gate::                        Enabling Domain- and/or Zone gating.
+* Group::                       Different templates for different areas.
+* HelpFile::                    Enabling online help.
+* Include::                     Including other configuration files.
+* Lastread::                    Handling of the lastread pointer.
+* MaxX and MaxY::               Hard-wiring the terminal size.
+* MountDir::                    DOS to Unix path translation.
+* Name::                        Configuring the Sysop's name.
+* NodePath::                    Where to find the nodelist files.
+* Nodelist::                    Configuring a V7 nodelist index.
+* Origin::                      Choosing one or multiple origin lines.
+* Outfile::                     Selecting a default export file name.
+* OutputCharset::               Selecting the charset to use for umlauts.
+* PrivateNet::                  Nobody needs this.
+* Quick::                       Specifying a QuickBBS/Hudson format mail area.
+* QuickBBS::                    Specifying a QuickBBS/Hudson format mail area.
+* Quote::                       Configuring the quote characters.
+* QuoteRight::                  Configuring the right margin for quoting.
+* ReadKey::                     Modifying the keyboard layout.
+* Right::                       Selecting the right margin for message display.
+* RobotName::                   Do not use templates for Areafix mails :-)
+* Scan::                        Enabling auto-scan on program startup.
 * SoftCrXlat::                  
-* SortAreas::                   
-* Squish::                      
-* SwapPath::                    
-* Switch::                      
-* Tabsize::                     
-* Template::                    
-* TossLog::                     
-* UserList::                    
-* UserOffset::                  
-* UUCP::                        
-* UucpName::                    
+* SortAreas::                   Sort message areas by name or group.
+* Squish::                      Specifying a Squish format mail area.
+* SwapPath::                    DOS users need this @dots{}
+* Switch::                      Turning configuration switches on or off.
+* Tabsize::                     How many spaces shall a @key{Tab} key insert?
+* Template::                    Signoff, Signature, et cetera.
+* TossLog::                     Creating @file{ECHOTOSS.LOG} entires.
+* UserList::                    Using a @file{FIDOUSER.LST} sysop list.
+* UserOffset::                  Each user has a different lastread pointer.
+* UUCP::                        Configuring your internet gateway.
+* UucpName::                    Configuring your internet gateway.
 @end menu
 
 
@@ -1821,9 +1821,7 @@ Luckily enough, most users don't have to deal with domain gating @dots{}
 @end table
 
 This keyword is used to redefine the keyboard layout in the internal message
-editor. It is not yet documented.
-
-@c FIXME add xref to section about keyboard redefinition.
+editor. @xref{Redefining the Keyboard,,Redefining the Keyboard}, for more information.
 
 @node Editor, EnableSC, EditKey, Keywords
 @subsection Editor
@@ -1920,6 +1918,8 @@ may be defined.
 @subsection Function
 @findex Function
 @cindex function key macros
+@cindex macros
+@cindex keyboard macros
 @table @asis
 @item Syntax:
 @code{Function @var{number} @var{keystrokes}}
@@ -2039,8 +2039,8 @@ second has number 1, and so on.
 @end table
 
 Specify the complete path and file name of the compiled @value{MSGED} help
-file here.
-@c FIXME: Add chapter about help file creating
+file here. It is usally named @file{msghelp.dat}, or @file{~/.msged.help} on
+Unix.
 
 @node Include, Lastread, HelpFile, Keywords
 @subsection Include
@@ -2379,7 +2379,8 @@ if you do not have reasons to use the other one's.
 The character does not need to match the charset that your computer is using
 internally; @value{MSGED} will do all necessary conversion.
 
-@c FIXME add xref to chapter about charset translation.
+@xref{Special Characters,,Using Special Characters - The FSC 0054 Charset
+Kludge}, for more information.
 
 @node PrivateNet, Quick, OutputCharset, Keywords
 @subsection PrivateNet
@@ -2483,9 +2484,7 @@ displays without problems.
 @end table
 
 This keyword is used to redefine the keyboard layout in message reading
-mode. It is not yet documented.
-
-@c FIXME add xref to section about keyboard redefinition.
+mode.  @xref{Redefining the Keyboard,,Redefining the Keyboard}, for more information.
 
 @node Right, RobotName, ReadKey, Keywords
 @subsection Right
@@ -2735,7 +2734,8 @@ without having different lastread pointer offsets.
 
 The @var{address} parameter designates the FTN address of the gateway that
 your are using to send Internet/Usenet e-mail.
-@c FIXME Add xref to section about gateway usage
+@xref{Internet Gateways,,Using @value{MSGED} for e-mail and newsgroups},
+for more information.
 
 @node UucpName,  , UUCP, Keywords
 @subsection UucpName
@@ -2760,6 +2760,9 @@ not have this restriction. Instead, such gateway software uses the name
 fields in the FTN header to exchange real name information. In this case, you
 should specify @samp{UucpName *}, which tells @value{MSGED} that the gateway
 software allows any name to be put into the FTN header field.
+
+@xref{Internet Gateways,,Using @value{MSGED} for e-mail and newsgroups},
+for more information.
 
 
 @node Switches, Conditionals, Keywords, Configuration Reference
@@ -3369,8 +3372,8 @@ the area definition keywords will only work if they are read in before the
 area definition keywords.
 
 @menu
-* Manual Area Definition::      
-* Areafile Parsing::            Reading areas from a tosser config file.
+* Manual Area Definition::      Configuring areas one by one.
+* Areafile Parsing::            Reading all areas from a tosser config file.
 @end menu
 
 @node Manual Area Definition, Areafile Parsing, Area Definitions, Area Definitions
@@ -3414,8 +3417,8 @@ those:
 
 @item
 Flags that toogle certain special features of @value{MSGED}. All of these
-flags are optional.
-@c FIXME add xref to documentation of these features
+flags are optional. @xref{Advanced Concepts}, for more information on the
+meaning of these flags.
 
 @format
 @code{8} - allow 8 bit characters with the proper @code{@@CHRS} kludge,
