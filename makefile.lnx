@@ -1,6 +1,6 @@
 CC=	gcc
 CFLAGS=	-Wall -s
-CDEFS=	-DUNIX -DUSE_MSGAPI -DHAVE_CURSES -DUNAME=\"LNX\"
+CDEFS=	-DUNIX -DUSE_MSGAPI -DUNAME=\"LNX\"
 #COPT=	-O3 -fomit-frame-pointer -fstrength-reduce -m486
 MSGDIR=	../smapi
 
