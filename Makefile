@@ -98,13 +98,13 @@ objs=   addr$(OBJ)     \
 
 
 ifeq ($(OSTYPE), UNIX)
-   all: $(TARGET) testcons maps msghelp.dat
+   all: $(TARGET) testcons do-maps msghelp.dat
 else
-   all: $(TARGET) maps msghelp.dat
+   all: $(TARGET) do-maps msghelp.dat
 
 endif
 
-maps:
+do-maps:
 	(cd maps && $(MAKE) -f makefile.husky)
 	(cd doc && cd manual && $(MAKE) -f makefile.husky)
 
