@@ -588,7 +588,7 @@ char *striplwhite(char *str)
 
 
 /* Strips trailing spaces from a string. */
-
+#ifndef USE_FIDOCONFIG
 char *striptwhite(char *str)
 {
     char *p;
@@ -609,7 +609,7 @@ char *striptwhite(char *str)
     }
     return str;
 }
-
+#endif
 
 /* Strips quotation marks ("Gaensefuesschen") from a string */
 
