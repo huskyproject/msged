@@ -147,13 +147,13 @@ This archive contains a statically linked, pre-compiled Linux executable,
 sample configuration files and a manual in HTML format.
 
 @item MSGTE5_M.ZIP
-This archive contains the manual for @value{MSGED} in Adobe Acrobat (PDF) and
-in HTML format. If you intend to print the documentation of @value{MSGED},
-then you should get this file and use the PDF version, because printing the
-PDF version of the manual using Adobe Acrobat Reader (which is available on
-www.adobe.com at no charge) will result in the best possible output that
-looks much nicer than if you would print the HTML or plain text
-documentations.
+This archive contains the manual for @value{MSGED} in Postscript and in HTML
+format. If you intend to print the documentation of @value{MSGED}, then you
+should get this file and use the Postscript version, because printing the
+Postscript version of the manual (by copying it to the printer port of a
+postscript capable printer, or by using Ghostscript) will result in the best
+possible output that looks much nicer than if you would print the HTML or
+plain text documentations.
 
 @item MSGTE5_S.ZIP
 This archive contains the complete C source code for @value{MSGED},
