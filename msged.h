@@ -172,18 +172,6 @@ typedef struct _user
 }
 USER;
 
-/*
- *  Defines an area group.  This is used to determine what username
- *  and template to use in an area.  Only used on startup.
- */
-
-typedef struct _group
-{
-    char *search;
-    unsigned int username;
-    unsigned int template;
-}
-GROUP;
 
 /* The internal area structure. Contains all info relevant for an area. */
 
@@ -210,13 +198,13 @@ typedef struct _area
     unsigned int scanned   : 1;  /* area has been scanned */
     unsigned int recodedsc : 1;  /* recode areatag from IBMPC to local chrs */
 
-    int group;                  /* fastecho group number for areasort */
+    int group;                  /* Group handle */
     int areanumber;             /* Number of this area. Normally corresponds
                                    to the array index. Needed to make qsort
                                    stable when sorting the areas */
 
-    unsigned int template;      /* index into template array */
-    unsigned int username;      /* index into username array */
+    int template;               /* index into template array */
+    int username;               /* index into username array */
 
     unsigned int msgtype;       /* the message type */
     int board;                  /* if a quickbbs area, which board */
@@ -413,7 +401,13 @@ struct _swv
     int direct_list;            /* jump directly to message listing mode */
     int areadesc;               /* how to build areadesc from areafile */
     int areadefinesuser;        /* the selected area defines the username */
+    int groupareas;             /* # of areas in current group selection */
+    int group;                  /* currently selected group, 0 = none */
+    int groupseparators;        /* do we want to draw horizontal bars? */
+    int grouparea;              /* SW->area = grouparealist[SW->grouparea] */
+    int areafilegroups;         /* want to read group info from areafile? */
 };
+
 
 #ifndef INCL_MAIN
 
@@ -444,6 +438,7 @@ extern int msgederr;              /* global error number */
 extern int cmd_dbginfo;           /* show debugging info at startup? */
 extern int areas_type;            /* areas read from fastecho */
 extern int scan;                  /* scan areas for new mail at startup? */
+extern int *grouparealist;
 
 #endif
 
@@ -477,7 +472,8 @@ void r_assignkey(unsigned int key, char *label);
 void area_scan(int);
 void dolist(void);
 void dispose(msg * message);
-void set_area(int newarea);
+void set_nongrouped_area(int newarea); /* argument is absolute area number */
+void set_area(int newgrouparea);       /* argument is a group area number */
 void cleanup(char *msg,...);
 void SetupArea(void);
 int dv_running(void);

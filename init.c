@@ -194,6 +194,10 @@ int InitVars(void)
     SW->direct_list = NO;
     SW->areadesc = DSCTAGASIS | DSCDESCASIS;
     SW->areadefinesuser = NO;
+    SW->group = 0;
+    SW->groupareas = 0;
+    SW->groupseparators = YES;
+    SW->areafilegroups = 1;
 
 #ifndef UNIX
     ST->comspec = getenv("COMSPEC");

@@ -159,7 +159,7 @@ postscript capable printer, or by using Ghostscript) will result in the best
 possible output that looks much nicer than if you would print the HTML or
 plain text documentations.
 
-@item MSGTE5_S.ZIP
+@item MSGTE6_S.ZIP
 This archive contains the complete C source code for @value{MSGED},
 out-of-the-box makefiles for building @value{MSGED} on DOS, OS/2, Windows,
 and almost every imaginable Unix-like system (tested systems include Linux,
@@ -935,11 +935,12 @@ Fidonet-Internet gateway, how to use eight bit character sets, and similar.
 
 @menu
 * Exporting and Printing::      Exporting mails to text files or printers.
+* Grouping::                    Configuring and Using Message Area Groups.
 * Special Characters::          Umlauts, Cyrillics and Charset Kludges
 * Internet Gateways::           Using @value{MSGED} for e-mail correspondance.
 @end menu
 
-@node Exporting and Printing, Special Characters, Advanced Concepts, Advanced Concepts
+@node Exporting and Printing, Grouping, Advanced Concepts, Advanced Concepts
 @section Exporting Mails to Text Files or to the Printer
 
 This section tells you how to export mail messages. Exporting in this sense
@@ -1058,8 +1059,213 @@ After that, you will be prompted for the export mode (plain text or
 binary). @xref{Exporting,,Saving message text into a plain text file}, for
 information on what this means.
 
+@node Grouping, Special Characters, Exporting and Printing, Advanced Concepts
+@section Configuring and Using Message Area Groups.
+@cindex groups
+@cindex area groups
+@cindex message area groups
 
-@node Special Characters, Internet Gateways, Exporting and Printing, Advanced Concepts
+@value{MSGED} @value{VERSION} supports forming message areas into message
+area groups. The main appliance of this feature is to ease arealist
+navigation - you can have the areas sorted by groups, @value{MSGED} can
+display separators between the single groups, or you can make the area list
+display only members of a certain group, and switch between the groups using
+hotkeys. But you can also use the group feature to select different usernames
+or template files based on which area you are writing in.
+
+The following subsections will first tell you how to set up groups and assign
+areas to those groups, and will then go on and tell you how you can make use
+of groups to ease your life with @value{MSGED}.
+
+@menu
+* Group Basics::                How @value{MSGED} identifies a group.
+* Tosser Groups::               Reading group information from the areafile.
+* Manual Groups::               Manually assigning areas to groups.
+* Arealist Group Functions::    
+* Group Templates::             
+@end menu
+
+@node Group Basics, Tosser Groups, Grouping, Grouping
+@subsection Grouping Basics
+In @value{MSGED}, a group is identified by a @emph{group name}. A group name
+can be any string and may include spaces etc. The group name is not case
+sensitive, however. @value{MSGED} has no fundamental limit on the number of
+groups that can be defined.
+
+Each message area can only be member of one group. This means that if you
+assign an area twice to different groups, it will only be a member of the
+group that it has been last added.
+
+@node Tosser Groups, Manual Groups, Group Basics, Grouping
+@subsection Reading Group Definitions from the Tosser Configuration File
+
+Setting up groups is very easy if you read all your area definitions form a
+tosser configuration file (@pxref{Areafile Parsing,,Reading a Tosser
+Configuration File (Areafile)}). If your tosser stores group information and
+@value{MSGED} supports reading it, then @value{MSGED} will automatically take
+over the tosser's group definitions. This is currently supported for
+@samp{Fidoconfig} and @samp{Fastecho} type areafiles.
+
+For @samp{Fidoconfig}, the names of the @value{MSGED} area groups will be the
+same names as the @samp{Fidoconfig} group names. However, be aware that
+fidoconfig group names are case sensitive, while @value{MSGED} group names
+are not. So, members of two different groups with names that, in the
+fidoconfig file, only differ in upper/lower case spelling will be members of
+the same group in @value{MSGED}.
+
+For @samp{Fastecho}, the names of the @value{MSGED} area groups will be the
+names that you have defined in @file{fesetup} in the @samp{System/Group
+names} menu. If you did not set up group names for some or all areas, those
+areas will have a name of @samp{Fastecho Group X}, where @samp{X} is the
+letter that is used to identify the group in Fastecho.
+
+The easiest way to find out about which group names @value{MSGED} has created
+based on the areafile information is to press @key{Ctrl}-@key{G} in the
+message area list. This will show a menu of all groups.
+
+If you do @emph{not} want to read any sort of group setup from the tosser
+configuration file, then you can turn off the @code{UseTosserGroup} switch by
+adding @code{Switch UserTosserGroup Off} to your @value{MSGED} configuration
+file. This has to be done before the @code{Areafile} statement to which this
+setting should apply.
+
+@node Manual Groups, Arealist Group Functions, Tosser Groups, Grouping
+@subsection Manually Defining and Assigning Groups
+@findex Group
+If @value{MSGED} is not able to read group information from your
+@code{Areafile}, or if you want to fine-tune that information, or also if you
+are defining some or all areas manually in your @value{MSGED} configuration
+file. This is done using the @code{Group} keyword. Here is it's syntax:
+
+@table @asis
+@item Syntax:
+@code{Group "@var{groupname}" [@var{pattern}]}
+@item Example:
+@code{Group "OS/2 Echos" *OS2*}
+@end table
+
+The @var{groupname} parameter should be a string that uniquely identifies
+this group. It may contain spaces if you enclose it in quotation marks, as
+shown above.
+
+The optional @var{pattern} argument specifies a wildcard pattern. The pattern
+may contain any number of stars and questionmarks, and works like a wildcard
+on an OS/2 or Win32 command line. This pattern is matched against the area
+@emph{tag} (like for example OS2PROG), and all matching areas will be added
+to that group.
+
+If the @var{pattern} argument is omitted, the group will be defined, but no
+areas will be added to it yet.
+
+There can only be one @var{pattern} argument, but this is not a problem, as
+the @code{Group} keyword is cumulative. This means that if you write
+something like
+
+@example
+Group "Echos in German Language" *.GER
+Group "Echos in German Language" *.024
+Group "Echos in German Language" *.AUS
+@end example
+
+then the group will contain all areas that match at least one of the given
+patterns.
+
+However, each one area can only be member of a single group. This means that
+if you add an area to a group that has previously already been added to a
+different group, that group will lose this area. Example:
+
+@example
+Group "German Echos" *.GER
+Group "Linux Echos" *LINUX*
+@end example
+
+Here, the @samp{LINUX.GER} echo area would be in the @samp{Linux Echos}
+group, and not in the @samp{German Echos} group.
+
+You can put @code{Group} statements anywhere in your configuration file. Even
+if an area is defined after a @code{Group} statement, it will still be added
+to that group if the wildcard matches. However, the relative ordering of the
+@code{Group} file statements may be important: Msged will display 
+groups (when areas are sorted by group, or in the group menu, see
+later) in the order of first mention in the @value{MSGED} configuration
+file. A group is @emph{mentioned} either when it's name first appears in a
+@code{Group} statement, or when it is automatically defined when reading an
+areafile.
+
+For example, let's assume you are using fidoconfig and get all group
+information from the areafile. But you want to put some groups that attract
+your special interest into a group named @samp{Interesting Groups}. Now you
+have to decide if you want to put see this group before all other groups in
+the area list, or if you want to see it after all other groups. In the first
+case, write
+
+@example
+Group "Interesting Groups"
+Areafile fidoconfig
+Group "Interesting Groups" *LINUX* *OS2*
+@end example
+
+In the second case, omit the definition before the @code{Areafile} statement
+and simply write
+
+@example
+Areafile fidoconfig
+Group "Interesting Groups" *LINUX* *OS2*
+@end example
+
+@node Arealist Group Functions, Group Templates, Manual Groups, Grouping
+@subsection Group Functions in the Message Area List
+When you have set up groups, the message area list will make navigation with
+many areas a lot easier.
+
+@subsubsection Sorting Areas by Group
+The most basic group feature of the area list is that it can display areas
+grou-sorted, i.E. first all areas of the first group, then all areas of the
+second group, and so on. To achieve this, use the @code{SortArea} keyword as
+follows:
+
+@example
+SortArea G
+@end example
+
+Most probably, you will further want to sort the area inside the group. If,
+for example, you want to sort all netmail areas to the beginning of each
+group, and then sort the areas alphabetically by description, you would use
+
+@example
+SortArea GND
+@end example
+
+Once you have activated sorting areas by group, @value{MSGED} will draw
+horizontal bars between the groups to visually separate them. If you do not
+like this feature, you can disable it using:
+
+@example
+Switch GroupSeparators Off
+@end example
+
+@subsubsection Displaying only a certain group
+You can press @key{Ctrl}-@key{G} in the arealist and get a list of all groups
+that have been defined. When you select any of those groups, the area list
+will then only display areas that are member of this group. Further more, all
+other @value{MSGED} functions, like area scanning, personal mail scan,
+switching to the next/previous area in message reading mode, etc., will also
+only work on those groups. @value{MSGED} will effectively behave as if only
+those groups had been defined. (An exception is when
+moving/copying/forwarding mail or replying to a different area: there you
+will still get a list of all areas).
+
+You can then again use the @key{Ctrl}-@key{G} menu or press the short cut
+@key{Alt}-@key{0} to return to the display of all defined areas. You can also
+use the shortuts @key{Alt}-@key{1} @dots{} @key{Alt}-@key{9} to quickly
+switch between the first nine groups.
+
+@node Group Templates,  , Arealist Group Functions, Grouping
+@subsection Group Default Templates and Usernames
+This feature is described in the documentation of the @code{GroupSettings}
+keyword. @xref{GroupSettings,,The @code{GroupSettings} Keyword}.
+
+@node Special Characters, Internet Gateways, Grouping, Advanced Concepts
 @section Using Special Characters like Umlauts or Cyrillics - The Charset Kludge
 @cindex FSC 0054
 @cindex special characters
@@ -1610,6 +1816,19 @@ Scan message areas for new messages, but only scan areas that have not been
 scanned perviously. Areas that have not yet been scanned for messages are
 listed with dashes instead of message numbers in the area list.
 
+@item @key{Ctrl}-@key{G}
+Select a group. Display a menu of all message area groups. Selecting any
+message are group here will result in the aralist only displaying areas that
+are member of this particular group, until you use @key{Ctrl}-@key{G} again
+to select another group, or to select to display members of all groups.
+
+@item @key{Alt}-@key{0}
+Display all areas (no matter which group they belong to).
+
+@item @key{Alt}-@key{1} @dots{} @key{Alt}-@key{9}
+Only display areas that are member of the 1st @dots{} 9th group. The first group
+is the group which appears first in the @key{Ctrl}-@key{G} menu, and so on.
+
 @end table
 
 The keyboard setup of the Arealist Screen cannot be modified by the user.
@@ -1843,12 +2062,12 @@ Change the currently active nodelist.
 @krindex name
 If you have defined more than one user name with the @code{Name}
 configuration keyword, you can use this function to select the name to use
-when writing messages. If you have any @code{group} keyword in your config,
-this selecting will only last until you enter a new area, because in such a
+when writing messages. If you have any @code{GroupSettings} keyword in your config,
+this selection will only last until you enter a new area, because in such a
 scenario, the username which is used is defined by the area that you are
-in. If you don't have any @code{group} keyword in your config, this selection
-will last until you make a different one. @xref{Group,,The @code{group}
-keyword}, for more information.
+in. If you don't have any @code{GroupSettings} keyword in your config, this selection
+will last until you make a different one. @xref{GroupSettings,,The
+@code{GroupSettings} keyword}, for more information.
 @end table
 
 @node Misc Reader Functions,  , Options Functions, Reader Keystrokes
@@ -2268,7 +2487,8 @@ are generally case-insensitive.
 * FreqFlags::                   Specifying flags for file request messages.
 * Function::                    Creating keyboard macros.
 * Gate::                        Enabling Domain- and/or Zone gating.
-* Group::                       Different templates for different areas.
+* Group::                       Defining groups and adding areas to groups.
+* GroupSettings::               Different templates for different areas.
 * HelpFile::                    Enabling online help.
 * Include::                     Including other configuration files.
 * Lastread::                    Handling of the lastread pointer.
@@ -2814,27 +3034,41 @@ be one single tosser on the routing path which does not recognise @code{INTL}
 kludges, and the mail will probably disappear. So, don't turn off zonegating
 unless you have direct links for the destination zones you are writing mail to.
 
-@node Group, HelpFile, Gate, Keywords
+@node Group, GroupSettings, Gate, Keywords
 @subsection Group
 @findex Group
-@cindex groups of areas
 @table @asis
 @item Syntax:
-@code{Group "@var{substring}" @var{name-index} @var{template-index}}
+@code{Group "@var{groupname}" [@var{pattern}]}
 @item Example:
-@code{Group "OS2" 0 1}
+@code{Group "OS/2 Echos" *OS2*}
 @end table
 
-This command allows you to form groups of areas for which different
-templates and user names are used. For example, you might wish to use a
-different signoff in OS/2-related areas (probably stating your TeamOS/2
+This command is used to set up area groups and add areas to those
+groups. @xref{Manual Groups,,Manually Defining and Assigning Groups}, for a
+full documentation on how to use this keyword. @xref{Grouping,,Configuring and
+Using Message Area Groups}, for an overview on the group concept of
+@value{MSGED}.
+@node GroupSettings, HelpFile, Group, Keywords
+@subsection GroupSettings
+@findex GroupSettings
+@table @asis
+@item Syntax:
+@code{Group "@var{groupname}" @var{name-index} @var{template-index}}
+@item Example:
+@code{Group "OS/2 Echos" 0 1}
+@end table
+
+This command allows you to select different user names and/or template files
+based on the group a message area belongs to.  For example, you might wish to
+use a different signoff in OS/2-related areas (probably stating your TeamOS/2
 number) than in other areas. Or, if you are moderator in a certain area, you
 might want to use the user name "Moderator" instead of the user name that you
 are using in normal areas.
 
-The @var{substring} parameter to the @code{Group} command specifies a
-substring that must be present in the area tag in order to make the area a
-member of this group.
+The @var{groupname} parameter to the @code{GroupSettings} command specifies
+the name of the group. @xref{Group,, The @code{Group} Keyword}, for
+information on how to define groups and add areas to those groups.
 
 The @code{name-index} parameter then specifies the index number of the user
 name that should be used for all areas in this group. User names are counted
@@ -2849,14 +3083,9 @@ that you have specified with the @code{Template} keyword has number 0, the
 second has number 1, and so on. Note that if you want to specify multiple
 template files, you have to repeat the @code{Template} keyword for each
 file. The @code{Template} keyword itself can only take one argument.
+@xref{Template,,The @code{Template} Keyword}, for more information.
 
-@emph{Attention:} The @code{group} keyword must be specified @emph{after} any
-@code{name} or @code{template} keywords, but @emph{before} any area
-definitions.
-
-@c FIXME @xref{Template,,The @code{Template} Keyword}, for more information.
-
-@node HelpFile, Include, Group, Keywords
+@node HelpFile, Include, GroupSettings, Keywords
 @subsection HelpFile
 @findex HelpFile
 @table @asis
@@ -3465,7 +3694,7 @@ non-critical positions.
 @item Syntax:
 @code{SortAreas @var{criteria}}
 @item Example:
-@code{SortAreas NGD}
+@code{SortAreas GND}
 @end table
 
 Normally, @value{MSGED} displays all message areas in the order in that they
@@ -3486,7 +3715,7 @@ Sort by area tag.
 @item D
 Sort by area description.
 @item G
-Sort by Fastecho group number.
+Sort by group.
 @end table
 
 The meanings of @samp{D} and @samp{T} may vary depending on which area file
@@ -3494,8 +3723,17 @@ you imported the area from.  T is the true area tag, while D is what you
 actually see on screen.  You will usually wish to use D, because ordering by
 what you see seems to be more logical than ordering by what you don't see.
 
-The @samp{G} criterium does only work with areas imported from a
-@file{Fastecho.cfg} files. All other areas have a group value of 0.
+The @samp{G} criterium works on @value{MSGED} area groups. An area can belong
+to a group either because you used the @code{Group} statement to add it to a
+group, or because the group setting has been imported from a tosser
+configuration file. When areas are sorted by group, those areas that do not
+belong to any group will come first, followed by the members of the group
+that has been defined first, then those of the group that has been defined
+after that one, and so on.
+
+Please note that the arealist feature of displaying Group separators can of
+course only work if the @samp{G} ciretrium is the first criterium in your
+@code{SortArea} statement.
 
 @node Squish, SwapPath, SortAreas, Keywords
 @subsection Squish
@@ -3921,6 +4159,16 @@ Indicates if text created in an external editor should be reformatted by
 @value{MSGED}. It is a good idea to leave this on when using an external
 editor. Default: On.
 
+@item GroupSeparators
+@findex GroupSeparators
+When this switch is turned on, @value{MSGED} will draw horizontal bars
+between different area groups in the area list. However, this will only work
+if the first area sort criterion is @emph{sort by group}. Otherwise, this
+switch will have no efect. @xref{SortAreas,,The @code{SortAreas} Keyword},
+for information on how to make @value{MSGED} sort your area list by area
+groups. @xref{Grouping,,Configuring and Using Message Area Groups}, for an
+introduction on how to use groups with @value{MSGED}. Default: On.
+
 @item HardQuote
 @findex HardQuote
 When switched on, this option causes the column formatting to be preserved
@@ -4180,7 +4428,19 @@ not support a mouse at all. - Default: On.
 If this switch is turned on, @value{MSGED} will put its version information
 in a @@PID kludge line, and leave the tearline blank. If turned off,
 @value{MSGED} will not generate a @@PID kludge, but put its version
-information in the tera line. Default: Off.
+information in the tear line. Default: Off.
+
+@item UseTosserGroups
+@findex UseTosserGroups
+This switch controls if @value{MSGED} will read any avialable group
+information from an @code{Areafile} or not. If turned on, and if the areafile
+contains group information that can be read by @value{MSGED} (currently this
+is the case for Fastecho and Fidoconfig type area files), then each group
+defined in your areafile (tosser configuration) will become a @value{MSGED}
+group, and all areas that according to the tosser configuration are member of
+this group will also be members of this group in
+@value{MSGED}. @xref{Grouping,,Configuring and Using Message Area
+Groups}. Default: On.
 
 @end table
 

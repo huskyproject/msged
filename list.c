@@ -28,6 +28,7 @@
 #include "screen.h"
 #include "charset.h"
 #include "config.h"
+#include "group.h"
 
 static int long_subj;
 static int display_address = 1;
@@ -514,6 +515,9 @@ static void MoveMsgs(unsigned long *CurrMsgn)
         unsigned long msgn, oldmsgn;
         int to_area = -1;
         char messagetxt[80];
+        int ogroup;
+
+        ogroup = group_set_group(0); /* allow copies etc. to everywhere */
 
         oldmsgn = 0L;
 
@@ -596,6 +600,8 @@ static void MoveMsgs(unsigned long *CurrMsgn)
         CurArea.current = oldmsgn;
 
         CloseMsgWnd();
+
+        group_set_group(ogroup);
     }
 }
 

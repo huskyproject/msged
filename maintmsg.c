@@ -27,6 +27,7 @@
 #include "menu.h"
 #include "nshow.h"
 #include "maintmsg.h"
+#include "group.h"
 
 static char *formenu[] =
 {
@@ -105,12 +106,12 @@ int forward_msg(int to_area)
 {
     msg *m;
     msg *oldm;
-    int fr_area = SW->area;
+    int fr_area = SW->grouparea;
     time_t now = time(NULL);
 
     if (to_area == -1)
     {
-        to_area = selectarea("Forward To Area", SW->area);
+        to_area = selectarea("Forward To Area", fr_area);
     }
 
     if (msgederr)
@@ -146,7 +147,7 @@ int forward_msg(int to_area)
         return -1;
     }
 
-    if ((m->reply && fr_area != to_area) || CurArea.netmail)
+    if ((m->reply && group_getareano(fr_area) != to_area) || CurArea.netmail)
     {
         release(m->reply);
     }
@@ -204,11 +205,11 @@ int redirect_msg(int to_area)
 {
     msg *m;
     msg *oldm;
-    int fr_area = SW->area;
+    int fr_area = SW->grouparea;
 
     if (to_area == -1)
     {
-        to_area = selectarea("Redirect To Area", SW->area);
+        to_area = selectarea("Redirect To Area", fr_area);
     }
 
     if (msgederr)
@@ -243,7 +244,7 @@ int redirect_msg(int to_area)
 
     memset(m->replies, 0, sizeof(m->replies));
 
-    if ((m->reply && fr_area != to_area) || CurArea.netmail)
+    if ((m->reply && group_getareano(fr_area) != to_area) || CurArea.netmail)
     {
         release(m->reply);
     }
@@ -284,11 +285,11 @@ int redirect_msg(int to_area)
 int copy_msg(int to_area)
 {
     msg *m;
-    int fr_area = SW->area;
+    int fr_area = SW->grouparea;
 
     if (to_area == -1)
     {
-        to_area = selectarea("Copy To Area", SW->area);
+        to_area = selectarea("Copy To Area", fr_area);
     }
 
     if (msgederr)
@@ -351,12 +352,12 @@ int copy_msg(int to_area)
 int move_msg(int to_area)
 {
     msg *m;
-    int fr_area = SW->area;
+    int fr_area = SW->grouparea;
     int status;
 
     if (to_area == -1)
     {
-        to_area = selectarea("Move To Area", SW->area);
+        to_area = selectarea("Move To Area", fr_area);
     }
 
     if (msgederr)
@@ -429,9 +430,13 @@ int move_msg(int to_area)
 void movemsg(void)
 {
     int rc;
+    int oldgroup;
 
     rc = DoMenu((maxx / 2) - 8, (maxy / 2) - 1, (maxx / 2) + 8,
       (maxy / 2) + 2, formenu, 0, SELBOX_MOVEMSG, "");
+
+    oldgroup = SW->group;
+    group_set_group(0); /* allow move to every defined area */
 
     switch (rc)
     {
@@ -454,6 +459,8 @@ void movemsg(void)
     case -1:                   /* Escape */
         return;
     }
+
+    group_set_group(oldgroup);
 
     ShowNewArea();
 }

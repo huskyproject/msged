@@ -49,16 +49,33 @@
 #include "environ.h"
 #include "charset.h"
 #include "fconf.h"
+#include "patmat.h"
+#include "group.h"
 
 int areas_type;
 
 void applyflags(AREA *a, char *flagstring);
+
+/*
+ *  This structure is used to cache the "Group" statements until after
+ *  the configuration file has been processed.
+ *
+ */
+
+typedef struct _group
+{
+    int handle;
+    char *pattern;
+}
+GROUP;
+
 
 static char **tags2skip;
 static char *mntdirunix = NULL, *mntdirdos = NULL;
 char *areafileflags = NULL;
 static GROUP *group = NULL;
 static int num_groups = 0, check_area_files = 0;
+
 
 static char *cfgverbs[] =
 {
@@ -128,6 +145,7 @@ static char *cfgverbs[] =
     "WriteMap",
     "CharsetAlias",
     "AreaDesc",
+    "GroupSettings",
     NULL
 };
 
@@ -197,6 +215,7 @@ static char *cfgverbs[] =
 #define CFG_WRITEMAP       63
 #define CFG_CHARSETALIAS   64
 #define CFG_AREADESC       65
+#define CFG_GROUPSETTINGS  66
 
 static struct colorverb colortable[] =
 {
@@ -252,6 +271,7 @@ static char *cfgcolors[] =
     "MainWarn",
     "MainNetInf",
     "MenuBorder",
+    "MenuTitle",
     "MenuNorm",
     "MenuSelect",
     "HelpBorder",
@@ -331,6 +351,8 @@ static char *cfgswitches[] =
     "Carthy",
     "DirectList",
     "PseudoGraphics",
+    "GroupSeparators",
+    "UseTosserGroups",
     NULL
 };
 
@@ -383,6 +405,8 @@ static char *cfgswitches[] =
 #define CFG_SW_CARTHY               46
 #define CFG_SW_DIRECTLIST           47
 #define CFG_SW_PSEUDOGRAPHICS       48
+#define CFG_SW_GROUPSEPARATORS      49
+#define CFG_SW_USETOSSERGROUPS      50
 
 #ifdef UNIX
 #include <sys/types.h>
@@ -957,6 +981,13 @@ void AssignSwitch(char *swtch, int OnOff)
         TTconfigure("pseudographics", OnOff?"1":"0");
         break;
 
+    case CFG_SW_GROUPSEPARATORS:
+        SW->groupseparators = OnOff;
+        break;
+
+    case CFG_SW_USETOSSERGROUPS:
+        SW->areafilegroups = OnOff;
+
     default:
         printf("\r\aUnknown switch: '%s'\n", swtch);
         break;
@@ -1180,26 +1211,47 @@ static void SkipArea(char * a)
 
 /*
  *  Sets the username and the template for an area.
+ *  Adds areas to their respective groups based on the search pattern.
  */
 
-static void SetAreaInfo(AREA * a)
+static void SetAreaGroupInfo(AREA * a)
 {
     int i;
 
     for (i = 0; i < num_groups; i++)
     {
-        if (bmg_find(a->description, group[i].search) != NULL)
+        if (patmat(a->tag, group[i].pattern))
         {
+            a->group=group[i].handle;
             break;
         }
     }
 
-    if (i != num_groups)
+
+    if (a->group);
     {
-        a->username = group[i].username;
-        a->template = group[i].template;
-        SW->areadefinesuser = 1;
-          
+        a->username = group_getusername(a->group);
+        a->template = group_getusername(a->group);
+
+
+        if ((a->username >= MAXUSERS) ||
+            (a->username < 0) ||
+            (user_list[a->username].name == NULL))
+        {
+            a->username = 0;
+        }
+
+        if ((a->template < 0) ||
+            (a->template >= SW->numtemplates))
+        {
+            a->template = 0;
+        }
+
+        if (a->username != 0)
+        {
+            SW->areadefinesuser = 1;
+        }
+
            /* Currently, the user cannot set this switch. Our logic is this: if
               there is at least one group setting which actually gets applied,
               then the user probably wants that the username is selected based
@@ -1326,8 +1378,6 @@ void AddArea(AREA * a)
             arealist[i].addr.domain = xstrdup(a->addr.domain);
         }
     }
-
-    SetAreaInfo(&arealist[i]);
 
     release(a->tag);
     release(a->description);
@@ -1518,6 +1568,8 @@ static void check_fastecho(char *areafile)
     static char progress_indicators[4] =
     {'-', '\\', '|', '/'};
     dword curofs;
+    GroupNames *fegroups = NULL;
+    int *fegrouphandles = NULL;
 
     if (alias == NULL)
     {
@@ -1544,10 +1596,17 @@ static void check_fastecho(char *areafile)
         return;
     }
 
-    /* preload the AKAs */
+    /* preload the AKAs and groups*/
 
     fseek(fp, FE_CONFIG_SIZE, SEEK_SET);
     curofs = (dword) FE_CONFIG_SIZE; found=0;
+
+    if (feconfig.GroupCnt)
+    {
+        fegroups = xmalloc(FE_GROUPNAMES_LEN * feconfig.GroupCnt);
+        fegrouphandles = xmalloc(sizeof(int) * feconfig.GroupCnt);
+        memset(fegrouphandles, 0, sizeof(int) * feconfig.GroupCnt);
+    }
 
     while (curofs < FE_CONFIG_SIZE + feconfig.offset)
     {
@@ -1569,6 +1628,20 @@ static void check_fastecho(char *areafile)
             }
             while (cnt < feconfig.AkaCnt);
         }
+        else if ((feexthdr.type == EH_GROUPS) && (fegroups != NULL))
+        {
+            cnt = 0;
+            do
+            {
+                if (fread(fegroups + cnt, FE_GROUPNAMES_LEN, 1, fp) != 1)
+                {
+                    xfree(fegroups); xfree(fegrouphandles);
+                    return;
+                }
+                curofs += FE_GROUPNAMES_LEN; cnt++;
+            }
+            while (cnt < feconfig.GroupCnt);
+        }
         else
         {
             fseek(fp, feexthdr.offset, SEEK_CUR);
@@ -1577,14 +1650,23 @@ static void check_fastecho(char *areafile)
     }
     if (!found)  /* no EH_AKAS header !? */
     {
+        xfree(fegroups); xfree(fegrouphandles);
         return;
+    }
+    for (i = 0; i < feconfig.GroupCnt; i++)
+    {
+        if (!((fegroups + i)->name)[0])
+        {
+            sprintf ((fegroups + i)->name, "Fastecho Group %c", i + 'a');
+        }
     }
 
 
     /* set up the fastecho primary netmail path */
     memset(&a, 0, sizeof a);
     a.msgtype = FIDO;
-    a.group = -1;
+    a.group = (SW->areafilegroups) ?
+        group_gethandle("Primary Netmail Folders", 1) : 0;
     a.echomail = 0;
     a.netmail = 1; a.priv = 1;
     a.addr.notfound = 0;
@@ -1608,6 +1690,7 @@ static void check_fastecho(char *areafile)
     applyflags (&a, areafileflags);
     AddArea(&a);
 
+
     /* Scan for echomail and secondary netmail areas */
 
     fseek(fp, (dword)FE_CONFIG_SIZE + feconfig.offset + feconfig.NodeCnt *
@@ -1626,6 +1709,7 @@ static void check_fastecho(char *areafile)
 
         if(read_fe_area(&fearea, fp) == -1)
         {
+            xfree(fegroups); xfree(fegrouphandles);
             return;
         }
 
@@ -1638,7 +1722,25 @@ static void check_fastecho(char *areafile)
 
         memset(&a, 0, sizeof a);
         a.msgtype = FIDO;
-        a.group = fearea.info.group;
+
+        /* We do not yet have Msged grouphandles for the Fastecho groups. This
+           is because we only want to register those Fastecho groups that
+           actually contain at least one area.
+
+           Now, we mark the group of this area as used: */
+
+        fegrouphandles[fearea.info.group] = 1;
+
+        /* ... and set an invalid (negative) group handle. Later, we will
+           register all Fastecho groups that have been marked as used, and then
+           iterate the area array to set the correct group handle for all areas
+           that have a negative group handle. */
+
+        if (SW->areafilegroups)
+            a.group = -(fearea.info.group + 1);
+        else
+            a.group = 0;
+
         a.echomail = 1;
         a.netmail = 0;
         a.addr.notfound = 0;
@@ -1734,6 +1836,30 @@ static void check_fastecho(char *areafile)
     }
 
     fclose(fp);
+
+    /* Now, we must fix the invalid group handles that we have set previously
+    */
+
+    if (SW->areafilegroups)
+    {
+        for (i = 0; i < feconfig.GroupCnt; i++)
+        {
+            if (fegrouphandles[i])
+            {
+                fegrouphandles[i] = group_gethandle(fegroups[i].name, 1);
+            }
+        }
+        
+        for (i = 0; i < SW->areas; i++)
+        {
+            if (arealist[i].group < 0)
+            {
+                arealist[i].group = fegrouphandles[(-arealist[i].group) - 1];
+            }
+        }
+    }
+
+    xfree(fegroups); xfree(fegrouphandles);
 }
 
 /* check_squish - reads the areas in a squish configuration file */
@@ -1957,7 +2083,7 @@ static void check_gecho(char *areafile)
     {
         memset(&a, 0, sizeof a);
         a.msgtype = FIDO;
-        a.group = -1;
+        a.group = 0;
         a.netmail = 1;
         a.priv = 1;
         a.addr.fidonet = 1;
@@ -2093,7 +2219,7 @@ static void check_gecho(char *areafile)
             a.addr.node = Setup.aka[Area.pkt_origin].node;
             a.addr.point = Setup.aka[Area.pkt_origin].point;
 
-            a.group = Area.group;
+            a.group = 0; /* Area.group; commented out until fixed by tobi */
 
             a.tag = xstrdup(Area.name);
             strupr(a.tag);
@@ -2250,7 +2376,7 @@ static void parsemail(char *keyword, char *value)
             if (tokens[4] != NULL)
             {
                 a.addr = parsenode(tokens[4]);
-            }	
+            }
         }
         else
         {
@@ -2358,7 +2484,7 @@ static void parse_alias(char *value)
         /* Reallocating in greater blocks dramatically reduces */
         /* memory requirements of the DOS version. At least    */
         /* Borlands realloc does not seem to be very "intelligent".. */
-        
+
         aliaslist = xrealloc(aliaslist,
                              SW->maxotheraliases * sizeof(struct _alias));
     }
@@ -2366,7 +2492,7 @@ static void parse_alias(char *value)
 }
 
 /*
- *  Parses the AREADESC keyword 
+ *  Parses the AREADESC keyword
  */
 
 
@@ -2471,7 +2597,7 @@ static void parseareadesc(char *value)
 }
 
 /*
- * This routine takes data read form araefile and makes area description 
+ * This routine takes data read form araefile and makes area description
  * from it based on the user's wishes (SW->areadesc).
  */
 
@@ -2650,7 +2776,7 @@ static int compare_areas(const void *x1, const void *x2)
       case 'D':   /* sort by area description */
           retval = strcmp(a1->description, a2->description);
           break;
-      case 'G':   /* sort by fastecho group */
+      case 'G':   /* sort by group */
           retval = compare(a1->group, a2->group);
           break;
       }
@@ -2663,6 +2789,22 @@ static int compare_areas(const void *x1, const void *x2)
      original insertion order. */
   return compare(a1->areanumber, a2->areanumber);
 }
+
+
+/*
+ *  Iterates all areas and sees if they match any of the group patterns.
+ */
+
+static void applygroups(void)
+{
+    int i;
+
+    for (i=0; i<SW->areas; i++)
+    {
+        SetAreaGroupInfo(arealist + i);
+    }
+}
+
 
 
 /*
@@ -3358,25 +3500,29 @@ static void parseconfig(FILE * fp)
             break;
 
         case CFG_GROUP:
-            group = xrealloc(group, (++num_groups) * sizeof(GROUP));
+            parse_tokens(value, tokens, 3);
+            if (tokens[2] != NULL || tokens[1] == NULL)
+            {
+
+                printf("\r\aInvalid Syntax for GROUP statement. The syntax and meaning of this keyword\n");
+                printf ("have changed in Msged TE 06. See whatsnew.doc and the manual for more info.\n");
+            }
+            else
+            {
+                group = xrealloc(group, (++num_groups) * sizeof(GROUP));
+                strip_geese_feet(tokens[0]);
+                group[num_groups - 1].handle = group_gethandle(tokens[0], 1);
+                group[num_groups - 1].pattern = xstrdup(tokens[1]);
+            }
+            break;
+
+        case CFG_GROUPSETTINGS:
             parse_tokens(value, tokens, 3);
             if (tokens[2] != NULL)
             {
-                group[num_groups - 1].search = xstrdup(strupr(tokens[0]));
-                group[num_groups - 1].username = atoi(tokens[1]);
-
-                if ((group[num_groups - 1].username >= MAXUSERS) ||
-                  (group[num_groups - 1].username >= MAXUSERS) ||
-                  (user_list[group[num_groups - 1].username].name == NULL))
-                {
-                    group[num_groups - 1].username = 0;
-                }
-
-                group[num_groups - 1].template = atoi(tokens[2]);
-                if (group[num_groups - 1].template >= SW->numtemplates)
-                {
-                    group[num_groups - 1].template = 0;
-                }
+                strip_geese_feet(tokens[0]);
+                i = group_gethandle(tokens[0], 1);
+                group_setsettings(i, atoi(tokens[1]), atoi(tokens[2]));
             }
             break;
 
@@ -3455,7 +3601,7 @@ static void parseconfig(FILE * fp)
                     buffer[i] = i + 128;
                 }
                 buffer[i] = '\0';
-                
+
                 TTconfigure("highascii", buffer);
             }
             break;
@@ -3779,7 +3925,9 @@ void opening(char *cfgfile, char *areafile)
         exit(-1);
     }
 
+    applygroups();
     areasort();
+    group_build_arealist();
     printf (" \n");
     InitScreen();
     mygetcwd(tmp, PATHLEN);

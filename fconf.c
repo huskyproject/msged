@@ -26,6 +26,7 @@
 #include "config.h"
 #include "fconf.h"
 #include "version.h"
+#include "group.h"
 
 #ifdef USE_FIDOCONFIG
 static void fc_copy_address(ADDRESS *a, s_addr *fc_a)
@@ -72,15 +73,13 @@ static void fc_add_area(s_area *fc_area, int netmail, int local)
 
     a.path = xstrdup(fc_area->fileName);
     
-    if (strcmp(fc_area->group, "\060") != 0)
+    if ((strcmp(fc_area->group, "\060") != 0) && (SW->areafilegroups))
     {
-      int hash = 0;
-      int i;
-      int sl = strlen(fc_area->group);
-
-      for (i = 0; i < sl; i++) hash = hash + (int) fc_area->group[i];
-
-      a.group = hash;
+        a.group = group_gethandle(fc_area->group, 1);
+    }
+    else
+    {
+        a.group = 0;
     }
 
     if (netmail)

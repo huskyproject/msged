@@ -5,6 +5,15 @@
  *
  */
 
+#include <time.h>
+#include <string.h>
+
+#include "addr.h"
+#include "areas.h"
+#include "dirute.h"
+#include "nedit.h"
+#include "msged.h" /* SW */
+
 #include "group.h"
 #include "memextra.h"
 #include "strextra.h"
@@ -25,11 +34,11 @@ static struct group *groups=NULL;
 
 static int group_searchhandle(char *name)
 {
-    int i, j;
+    int i;
     static int lastmatch = 0;
 
     if (!ngroups)
-        return -1;
+        return 0;
 
     if (lastmatch < ngroups)
     {
@@ -48,7 +57,7 @@ static int group_searchhandle(char *name)
         }
     }
 
-    return 0;            if (groups)
+    return 0;
 }
 
 int group_gethandle(char *name, int crifnec)
@@ -130,4 +139,110 @@ void group_destroy(void)
     }
     groups = NULL;
     ngroups = 0;
+}
+
+void group_setsettings(int handle, int username, int template)
+{
+    if (handle >= 1 && handle <= ngroups)
+    {
+        groups[handle - 1].template = template;
+        groups[handle - 1].username = username;
+    }
+}
+
+/* gets the name that the user used to define this group */
+
+char *group_getname(int handle)
+{
+    if (handle >= 1 && handle <= ngroups)
+    {
+        return groups[handle - 1].name;
+    }
+    else
+    {
+        return "internal boundary error";
+    }
+}
+
+int *grouparealist = NULL;
+
+void group_build_arealist(void)
+{
+    int i;
+    int groupno = SW->group;
+    int lastgroup = -1;
+    
+    if (grouparealist == NULL)
+    {
+        grouparealist = malloc((SW->areas + ngroups) * sizeof(int));
+    }
+
+    SW->groupareas = 0; SW->grouparea = 0;
+    if (groupno)
+    {
+        for (i = 0; i < SW->areas && arealist[i].group != groupno; i++);
+        if (i == SW->areas) /* not a single area in this group */
+        {
+            groupno = 0;
+        }
+    }
+
+    for (i = 0; i < SW->areas; i++)
+    {
+        if (!groupno || arealist[i].group == groupno)
+        {
+            /* when we insert an area, we see if the group has changed, which
+               means that a separator might be needed. */
+
+            if (SW->groupseparators &&
+                arealist[i].group != lastgroup &&
+                (groupno != 0   ||  /* we display only a single group, so a
+                                       separator is allowed as group "title"
+                                       header - otherwise ... */
+                 ST->sort_criteria[0] == 'g' || /* separators only work when */
+                 ST->sort_criteria[0] == 'G')   /* alist is sorted by group */
+                )
+            {
+                lastgroup = arealist[i].group;
+                grouparealist[SW->groupareas] = -lastgroup;
+                SW->groupareas++;
+            }
+
+            /* now we actually insert the area. */
+            
+            grouparealist[SW->groupareas] = i;
+            if (i == SW->area)
+            {
+                SW->grouparea = i;
+            }
+            SW->groupareas++;
+        }
+    }
+    while (grouparealist[SW->grouparea] < 0)
+    {
+        SW->grouparea++;
+    }
+    SW->area = grouparealist[SW->grouparea];
+}
+
+void group_destroy_arealist(void)
+{
+    if (grouparealist != NULL)
+    {
+        xfree(grouparealist);
+        grouparealist = NULL;
+    }
+}
+    
+    
+int group_set_group(int group)
+{
+    int lastgroup = SW->group;
+    
+    if (group <= ngroups)
+    {
+        SW->group = group;
+        group_build_arealist();
+    }
+    return lastgroup;
 }

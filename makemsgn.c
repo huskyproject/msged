@@ -48,6 +48,7 @@
 #include "dirute.h"
 #include "makemsgn.h"
 #include "strextra.h"
+#include "group.h"
 
 #ifdef MSDOS
 #ifdef USE_CRITICAL
@@ -151,13 +152,20 @@ void replyextra(void)
 static int findArea(char *tag)
 {
     int i = 0;
+    int areano;
 
-    while (i < SW->areas && stricmp(arealist[i].tag, tag))
+    while (i < SW->groupareas)
     {
+        areano = group_getareano(i);
+        if (areano >= 0 &&
+            !stricmp(arealist[group_getareano(i)].tag, tag))
+        {
+            break;
+        }
         i++;
     }
 
-    if (i == SW->areas)
+    if (i == SW->groupareas)
     {
         i = 0;
     }
@@ -173,7 +181,8 @@ static void reply_msg(int type)
     unsigned long t = CurArea.current;
     unsigned long tl = CurArea.lastread;
     unsigned long link = t;
-    int oarea = SW->area;
+    int oarea = SW->grouparea;
+    int ogroup = SW->group;
     int q = 0;
     msg *oldmsg;                /* contains all the old information */
     unsigned long ulink;
@@ -193,9 +202,12 @@ static void reply_msg(int type)
         return;
     }
 
+    group_set_group(0); /* allow crossposts etc. pp. into all areas, and not
+                           only into areas of current group */
+
     if (type & MT_ARC)
     {
-        toarea = SW->area;
+        toarea = SW->grouparea;
         if (message && message->replyarea)
         {
             toarea = findArea(message->replyarea);
@@ -203,6 +215,11 @@ static void reply_msg(int type)
         toarea = selectarea("Answer In Area", toarea);
         if (msgederr)
         {
+            /* This code at this place is COMPLETE bullshit. No message has
+               ever been written, and no prior call to set_area has
+               taken place! It should be removed, but first I want to study if
+               there are any side effects of it's removal.
+
             if ((type & MT_ARC) || scan_base || CurArea.msgtype == SQUISH)
             {
                 set_area(oarea);
@@ -213,6 +230,11 @@ static void reply_msg(int type)
                 CurArea.messages++;
                 CurArea.last++;
             }
+
+            */
+
+            group_set_group(ogroup);
+
             return;
         }
     }
@@ -289,6 +311,7 @@ static void reply_msg(int type)
         {
             dispose(oldmsg);
             dispose(m);
+            group_set_group(ogroup);
             set_area(oarea);
             return;
         }
@@ -357,6 +380,8 @@ static void reply_msg(int type)
             if (confirm("Cancel?"))
             {
                 dispose(oldmsg);
+
+                group_set_group(ogroup);
                 dispose(m);
 
                 if (type & MT_ARC)
@@ -406,7 +431,7 @@ static void reply_msg(int type)
 
     if (count == 0)
     {
-        MakeTemplateMsg(m, oldmsg, oarea, type | MT_NEW);
+        MakeTemplateMsg(m, oldmsg, group_getareano(oarea), type | MT_NEW);
     }
 
     if (ST->editorName != NULL)
@@ -451,6 +476,8 @@ static void reply_msg(int type)
     dispose(oldmsg);
     dispose(m);
 
+    group_set_group(ogroup);
+
     if ((type & MT_ARC) || scan_base || CurArea.msgtype == SQUISH)
     {
         set_area(oarea);
@@ -468,7 +495,8 @@ void change(void)
 {
     int q = 0;
     unsigned long t = CurArea.current;
-    int oarea = SW->area;
+    int oarea = SW->grouparea;
+    int ogroup = SW->group;
 
     if (CurArea.messages == 0 || !CurArea.status || !message)
         return;
@@ -534,6 +562,8 @@ void change(void)
         ChoiceBox("", "Message was aborted.", "  Ok  ", NULL, NULL);
         break;
     }
+
+    group_set_group(ogroup);
 
     if (scan_base)  /* While changing, CC:s and XC:s could occur. */
     {
@@ -2174,7 +2204,7 @@ static void crosspost(msg * m)
             i++;
             continue;
         }
-        set_area(k);
+        set_nongrouped_area(k);
         release(m->from.domain);
         m->from = CurArea.addr;
 

@@ -33,9 +33,11 @@ Color MainWarn     Yellow   _Red
 ; The AreaSelect menu and the mouse menu.
 ;
 ; MenuBorder     - The border color.
+; MenuTitle      - Title text of the menu, if any
 ; MenuNorm       - Unselected text.
 ; MenuSelect     - Selected text.
 ;-----------------------------------------------------------------------------
+Color MenuTitle    White    _Blue
 Color MenuBorder   LBlue    _Black
 Color MenuNorm     LGrey    _Black
 Color MenuSelect   White    _Blue

@@ -504,7 +504,6 @@ int DoMenu(int x1, int y1, int x2, int y2, char **Itms, int def, int selbox_id, 
     WND *hCurr, *hWnd;
     int ret;
 
-    unused(def);
     hCurr = WndTop();
     hWnd = WndOpen(x1 - 1, y1 - 1, x2 + 3, y2 + 1, DBDR | SHADOW, cm[MN_BTXT], cm[MN_NTXT]);
 
@@ -513,7 +512,12 @@ int DoMenu(int x1, int y1, int x2, int y2, char **Itms, int def, int selbox_id, 
         return -1;
     }
 
-    ret = SelBox(Itms, 0, y2 - y1, x2 - x1 + 2, 0, hCurr, hWnd, cm[MN_STXT], cm[MN_NTXT], selbox_id, topMsg);
+    if (selbox_id >= SELBOX_CHARSET)
+    {
+        WndTitle(topMsg, cm[MN_TTXT]);
+    }
+
+    ret = SelBox(Itms, 0, y2 - y1, x2 - x1 + 2, def, hCurr, hWnd, cm[MN_STXT], cm[MN_NTXT], selbox_id, topMsg);
 
     WndClose(hWnd);
     WndCurr(hCurr);

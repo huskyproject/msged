@@ -54,6 +54,12 @@ Changes:
 
 Features:
 
+- Group handling has been added. Msged can now read group information from
+  tosser configuration files, sort areas by group, draw separators in the
+  arealist between the groups, or only show areas of a single group at a time
+  in the arealist. Please read the section "Grouping" in the "Advanced
+  Concepts" chapter of the Msged manual for more information.
+
 - The Unix version now comes with the "testcons" utility. It is intended
   mainly for debugging purposes. You will be instructed how to use it when
   you report a bug concerning Msged not recognising some sort of keystroke.

@@ -14,7 +14,7 @@
 /*
 We don't set pragma pack anymore. The result is that the structures below
 are probably larger than their pendants in the binary file. You need to write
-protable reader functions for reading them from file. For those structures
+portable reader functions for reading them from file. For those structures
 that are used by MsgEd, such reader functions can be found in fecfg145.c.
 
 #if defined(PACIFIC) || defined(MSC) || defined(__EMX__) || defined(__IBMC__) || defined(__HIGHC__) || defined(UNIX) || defined(__DJGPP__)
@@ -561,6 +561,7 @@ typedef struct
     char name[36];
 }
 GroupNames;
+#define FE_GROUPNAMES_LEN 36
 
 #define EH_GRPDEFAULTS  0x0006  /* CONFIG.GDCnt * <GroupDefaults> */
 

@@ -51,6 +51,7 @@
 #include "charset.h"
 #include "wrap.h"
 #include "textfile.h"
+#include "group.h"
 
 #ifdef MSDOS
 #ifdef USE_CRITICAL
@@ -298,6 +299,7 @@ void cleanup(char *msg,...)
         va_end(ap);
     }
 
+    group_destroy_arealist();
     destroy_charset_maps();
     DeinitMem();
 #ifdef USE_MSGAPI
@@ -837,7 +839,7 @@ static void pmail(void)
         again = 0;
         if (x == -1)
         {
-            firstarea = SW->area;
+            firstarea = SW->grouparea;
             strcpy(username, ST->username);
         }
 
@@ -971,7 +973,7 @@ static void pmail(void)
         {
             dispose(m);
             pm_next_area();
-            if (SW->area != firstarea && chkkey != Key_Esc)
+            if (SW->grouparea != firstarea && chkkey != Key_Esc)
             {
                 again = 1;
             }
@@ -1034,13 +1036,13 @@ void SetupArea(void)
     }
 }
 
-/* set_area - Opens a new area & sets all the vars */
 
-void set_area(int newarea)
+static void set_area_backend(int show_all, int newgrouparea, int newarea)
 {
     int done = 0;
     int ret;
-
+    int temp;
+    
     if (CurArea.status)         /* close current area, if open */
     {
         highest();
@@ -1049,6 +1051,10 @@ void set_area(int newarea)
     }
     message = KillMsg(message);
     SW->area = newarea;
+    if (!show_all)
+    {
+        SW->grouparea = newgrouparea;
+    }
 
     while (!CurArea.status && !done)
     {
@@ -1061,8 +1067,11 @@ void set_area(int newarea)
 
             switch (ret)
             {
-            case ID_TWO:
-                SW->area = selectarea("Pick New Area", SW->area);
+            case ID_TWO: /* UH, OH, FIXME! */
+                temp = SW->grouparea;
+                temp = selectarea("Pic New Area", temp);
+                SW->grouparea = temp;
+                SW->area = group_getareano(temp);
                 break;
 
             case ID_THREE:
@@ -1080,6 +1089,22 @@ void set_area(int newarea)
     }
     ShowNewArea();            /* display the new area */
 }
+
+
+
+/* set_area - Opens a new area & sets all the vars */
+
+void set_area(int newgrouparea)
+{
+
+    return set_area_backend(0, newgrouparea, group_getareano(newgrouparea));
+}
+
+void set_nongrouped_area(int newarea)
+{
+    return set_area_backend(1, 0, newarea);
+}
+
 
 /*
  *  Scans all the areas for new mail, calling scan_areas(), but is
@@ -1121,19 +1146,17 @@ void scan_unscanned_areas(void)
  *  Parameter: int all: =1: scan all areas, =0: scan unscanned areas
  */
 
-
-
 static void scan_areas(int all)
 {
     char line[255];
     char temp[20];
-    int a;
+    int a, ga;
     int l;
     int x,y;
 
     TTgetxy(&x,&y);
 
-    a = SW->area;
+    a = SW->area; ga = SW->grouparea;
     l = strlen(PROG) + strlen(VERSION CLOSED);
     if (!SW->dmore)
     {
@@ -1158,16 +1181,19 @@ static void scan_areas(int all)
 
     if (all)  /* reset the "scanned" flag of all areas */
     {
-        for (SW->area = 0; SW->area < SW->areas; SW->area++)
+        for (SW->grouparea = 0; SW->grouparea < SW->groupareas;
+             SW->grouparea++)
         {
-            arealist[SW->area].scanned = 0;
+            if (group_getareano(SW->grouparea) >= 0)
+                arealist[group_getareano(SW->grouparea)].scanned = 0;
         }
     }
 
 
-    for (SW->area = 0; SW->area < SW->areas; SW->area++)
+    for (SW->grouparea = 0; SW->grouparea < SW->groupareas; SW->grouparea++)
     {
-        if ((!all) && (arealist[SW->area].scanned))
+        SW->area = group_getareano(SW->grouparea);
+        if (SW->area < 0 || ((!all) && (arealist[SW->area].scanned)))
         {
             continue;
         }
@@ -1220,6 +1246,7 @@ static void scan_areas(int all)
     }
 
     SW->area = a;
+    SW->grouparea = ga;
     CurArea.messages = MsgAreaOpen(&CurArea);
     if (SW->statbar)
     {
@@ -1269,6 +1296,7 @@ static void al_scan_areas(int all)
 {
     char line[255];
     int a = SW->area;
+    int ga = SW->grouparea;
 
     if (!OpenMsgWnd(50, 6, " Scanning areas for new messages ", NULL, 0, 0))
     {
@@ -1286,15 +1314,19 @@ static void al_scan_areas(int all)
 
     if (all)
     {
-        for (SW->area = 0; SW->area < SW->areas; SW->area++)
+        for (SW->grouparea = 0; SW->grouparea < SW->groupareas;
+             SW->grouparea++)
         {
-            arealist[SW->area].scanned = 0;
+            if (group_getareano(SW->area) >= 0)
+                arealist[group_getareano(SW->area)].scanned = 0;
         }
     }
 
-    for (SW->area = 0; SW->area < SW->areas; SW->area++)
+    for (SW->grouparea = 0; SW->grouparea < SW->groupareas; SW->grouparea++)
     {
-        if ((!all) && arealist[SW->area].scanned)
+        SW->area = group_getareano(SW->grouparea);
+
+        if (SW->area < 0 || ((!all) && arealist[SW->area].scanned))
         {
             continue;
         }
@@ -1318,6 +1350,7 @@ static void al_scan_areas(int all)
     }
     CloseMsgWnd();
     SW->area = a;
+    SW->grouparea = ga;
 }
 
 /* next_area - goes to the next area with unread messages */
@@ -1327,18 +1360,23 @@ static void next_area(void)
     int NewArea;
     int OldArea;
 
-    if (SW->areas < 2)
+    if (SW->groupareas < 2)
     {
         return;
     }
 
-    OldArea = SW->area;
+    OldArea = SW->grouparea;
 
-    NewArea = (SW->area + 1) % SW->areas;
-    while (((long)arealist[NewArea].messages <=
-      (long)arealist[NewArea].lastread) && arealist[NewArea].scanned)
+    do
     {
-        NewArea = (NewArea + 1) % SW->areas;
+        NewArea = (SW->grouparea + 1) % SW->groupareas;
+    } while (group_getareano(NewArea) < 0);
+    
+    while (((long)arealist[group_getareano(NewArea)].messages <=
+      (long)arealist[group_getareano(NewArea)].lastread) &&
+           arealist[group_getareano(NewArea)].scanned)
+    {
+        NewArea = (NewArea + 1) % SW->groupareas;
         if (NewArea == OldArea)
         {
             ChoiceBox(" Notice ", "There are no more unread messages in this area", "Ok", NULL, NULL);
@@ -1354,12 +1392,17 @@ static void pm_next_area(void)
 {
     int NewArea;
 
-    if (SW->areas < 2)
+    if (SW->groupareas < 2)
     {
         return;
     }
 
-    NewArea = (SW->area + 1) % SW->areas;
+    NewArea = SW->grouparea;
+    do
+    {
+        /* prevent group separators from being selected */
+        NewArea = (NewArea + 1) % SW->groupareas;
+    } while (group_getareano(NewArea) < 0);
     set_area(NewArea);
     SetupArea();
 }
@@ -1371,25 +1414,30 @@ static void prev_area(void)
     int OldArea;
     int NewArea;
 
-    if (SW->areas < 2)
+    if (SW->groupareas < 2)
     {
         return;
     }
 
-    OldArea = SW->area;
-    NewArea = SW->area;
+    OldArea = SW->grouparea;
+    NewArea = SW->grouparea;
 
-    NewArea--;
-    NewArea = (NewArea < 0) ? SW->areas - 1 : NewArea;
-    while ((((long)arealist[NewArea].messages -
-            (long)arealist[NewArea].lastread) <= 0) && arealist[NewArea].scanned)
+    do
     {
         NewArea--;
-        NewArea = (NewArea < 0) ? SW->areas - 1 : NewArea;
+        NewArea = (NewArea < 0) ? SW->groupareas - 1 : NewArea;
+    } while (group_getareano(NewArea)< 0);
+    
+    while ((((long)arealist[group_getareano(NewArea)].messages -
+            (long)arealist[group_getareano(NewArea)].lastread) <= 0) &&
+           arealist[group_getareano(NewArea)].scanned)
+    {
+        NewArea--;
+        NewArea = (NewArea < 0) ? SW->groupareas - 1 : NewArea;
         if (NewArea == OldArea)
         {
             NewArea--;
-            NewArea = (NewArea < 0) ? SW->areas - 1 : NewArea;
+            NewArea = (NewArea < 0) ? SW->groupareas - 1 : NewArea;
             break;
         }
     }
@@ -1542,7 +1590,14 @@ static int newarea(void)
 static int start(char *cfg, char *afn)
 {
     opening(cfg, afn);
-    SW->area = 0;
+    SW->grouparea = -1;
+
+    do
+    {
+        /* don't allow a separator to be come current area */
+        SW->area = group_getareano(++(SW->grouparea));
+    } while (SW->area < 0); 
+    
     message = NULL;
     return 0;
 }

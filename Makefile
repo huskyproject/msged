@@ -64,6 +64,7 @@ objs=   addr$(OBJ)     \
 	freq$(OBJ)     \
 	gestr120$(OBJ) \
 	getopts$(OBJ)  \
+	group$(OBJ)    \
 	help$(OBJ)     \
 	helpcmp$(OBJ)  \
 	helpinfo$(OBJ) \

@@ -23,37 +23,39 @@
 #define CM_WTXT     10
 #define CM_NINF     11          /* net information */
 
-#define MN_BTXT     12          /* menu border text */
-#define MN_NTXT     13          /* menu normal text */
-#define MN_STXT     14          /* menu selected text */
+#define MN_BTXT     12          /* menu border */
+#define MN_TTXT     13          /* menu title text */
+#define MN_NTXT     14          /* menu normal text */
+#define MN_STXT     15          /* menu selected text */
 
-#define HP_BTXT     15          /* help window border text */
-#define HP_TTXT     16          /* help window title text */
-#define HP_NTXT     17          /* help normal text */
-#define HP_HTXT     18          /* help highlighted text */
 
-#define IN_BTXT     19
-#define IN_NTXT     20
+#define HP_BTXT     16          /* help window border text */
+#define HP_TTXT     17          /* help window title text */
+#define HP_NTXT     18          /* help normal text */
+#define HP_HTXT     19          /* help highlighted text */
 
-#define IP_BTXT     21
-#define IP_NTXT     22
-#define IP_ETXT     23
+#define IN_BTXT     20
+#define IN_NTXT     21
 
-#define DL_BTXT     24          /* border */
-#define DL_WTXT     25          /* window */
-#define DL_CNRM     26          /* checkbox normal */
-#define DL_CSEL     27          /* checkbox selected */
-#define DL_ENRM     28          /* entry normal */
-#define DL_ESEL     29          /* entry selected */
-#define DL_BSEL     30          /* button selected */
-#define DL_BNRM     31          /* button normal */
-#define DL_BSHD     32          /* button shadow */
+#define IP_BTXT     22
+#define IP_NTXT     23
+#define IP_ETXT     24
 
-#define LS_BTXT     33          /* border */
-#define LS_TTXT     34          /* title */
-#define LS_NTXT     35          /* normal text */
-#define LS_ITXT     36          /* info text */
-#define LS_STXT     37          /* seletected text */
+#define DL_BTXT     25          /* border */
+#define DL_WTXT     26          /* window */
+#define DL_CNRM     27          /* checkbox normal */
+#define DL_CSEL     28          /* checkbox selected */
+#define DL_ENRM     29          /* entry normal */
+#define DL_ESEL     30          /* entry selected */
+#define DL_BSEL     31          /* button selected */
+#define DL_BNRM     32          /* button normal */
+#define DL_BSHD     33          /* button shadow */
+
+#define LS_BTXT     34          /* border */
+#define LS_TTXT     35          /* title */
+#define LS_NTXT     36          /* normal text */
+#define LS_ITXT     37          /* info text */
+#define LS_STXT     38          /* seletected text */
 
 #define ID_MGRGT   100
 #define ID_MGLFT   101
@@ -96,6 +98,7 @@ int cm[] =
     /* Menu colors */
 
     WHITE | _BLACK,             /* Menu border color */
+    WHITE | _BLACK,             /* Menu title color */
     LGREY | _BLACK,             /* Unselected text */
     BLACK | _LGREY,             /* Selected text */
 

@@ -26,6 +26,7 @@
 #include "help.h"
 #include "misc.h"
 #include "charset.h"
+#include "group.h"
 
 void change_curr_addr(void)
 {
@@ -524,7 +525,7 @@ void sel_chs(void)
 
     while (ch < 0)
         ch = DoMenu(x1 + 1, y1 + 1, x2 - 1, y2 - 1, kludgemenu, 0,
-                    SELBOX_CHARSET, "Override Character Set Recognition");
+                    SELBOX_CHARSET, "Override Character Set");
 
     switch (ch)
     {
@@ -546,4 +547,49 @@ void sel_chs(void)
     message = KillMsg(message); /* force message re-read */
 
     xfree(kludgemenu);
+}
+
+/* select the active group */
+
+int sel_group(void)
+{
+    static char *firstentry = "Show all areas in all groups";
+    int num, ch = -1, i;
+    int x1, y1, x2, y2;
+    char **kludgemenu;
+
+    kludgemenu = group_buildlist(firstentry);
+
+    for (num = 0; kludgemenu[num] != NULL; num++);
+
+    x1 = (maxx / 2) - 22;
+    x2 = (maxx / 2) + 22;
+    y1 = 4;
+
+    if (y1 + num + 1 > maxy - 4)
+    {
+        y2 = maxy - 4;
+    }
+    else
+    {
+        y2 = y1 + num + 1;
+    }
+
+    ch = DoMenu(x1 + 1, y1 + 1, x2 - 1, y2 - 1, kludgemenu, SW->group,
+                SELBOX_GROUP, "Select Message Area Group");
+
+    switch (ch)
+    {
+    case -1: break;
+    default:
+        group_set_group(ch);
+    }
+
+    for (i = 0; i < num; i++)
+    {
+        xfree(kludgemenu[i]);
+    }
+    xfree(kludgemenu);
+
+    return (ch != -1);
 }

@@ -19,6 +19,7 @@
 #include "winsys.h"
 #include "menu.h"
 #include "main.h"
+#include "misc.h"
 #include "memextra.h"
 #include "specch.h"
 #include "keys.h"
@@ -27,11 +28,12 @@
 #include "version.h"
 #include "strextra.h"
 #include "areas.h"
+#include "group.h"
 
 char **alist = NULL;
 char **alist2 = NULL;
 
-static int AreaBox(char **Itms, int y1, int y2, int len, int def, WND * hPrev, WND * hWnd, int Sel, int Norm, int indent);
+static int AreaBox(char **Itms, int y1, int real_y2, int len, int def, WND * hPrev, WND * hWnd, int Sel, int Norm, int indent);
 
 void BuildList(char ***lst)
 {
@@ -39,39 +41,52 @@ void BuildList(char ***lst)
     AREA *a;
     char line[181];
     unsigned long unread, last;
+    int areano;
 
-    *lst = xcalloc(SW->areas + 2, sizeof(char *));
+    *lst = xcalloc(SW->groupareas + 2 ,sizeof(char *));
 
-    for (i = 0; i < SW->areas; i++)
+    for (i = 0; i < SW->groupareas; i++)
     {
-        a = arealist + i;
+        areano = group_getareano(i);
 
-        memset(line, ' ', sizeof line);
-        if (a->scanned)
+        if (areano>=0)
         {
-            last = a->lastread;
-            if (last > a->messages)
-            {
-                last = a->messages;
-            }
-            unread = a->messages - a->lastread;
-            if (unread > a->messages)
-            {
-                unread = a->messages;
-            }
+            a = arealist + group_getareano(i);
+            memset(line, ' ', sizeof line);
 
-            /* F_ALTERNATE for SC14 is set in SelShowItem */
-            sprintf(line, "%c%-*.*s", unread ? (SC14) : ' ',
-              maxx - 25, maxx - 25, a->description);
-            line[strlen(line)] = ' ';
-            sprintf(line + maxx - 23, "%6lu%6lu%6lu",
-              a->messages, unread, last);
+            if (a->scanned)
+            {
+                last = a->lastread;
+                if (last > a->messages)
+                {
+                    last = a->messages;
+                }
+                unread = a->messages - a->lastread;
+                if (unread > a->messages)
+                {
+                    unread = a->messages;
+                }
+                
+                /* F_ALTERNATE for SC14 is set in SelShowItem */
+                sprintf(line, "%c%-*.*s", unread ? (SC14) : ' ',
+                        maxx - 25, maxx - 25, a->description);
+                line[strlen(line)] = ' ';
+                sprintf(line + maxx - 23, "%6lu%6lu%6lu",
+                        a->messages, unread, last);
+            }
+            else
+            {
+                sprintf(line, " %-*.*s", maxx - 25, maxx - 25, a->description);
+                line[strlen(line)] = ' ';
+                sprintf(line + maxx - 19, " -     -     -");
+            }
         }
         else
         {
-            sprintf(line, " %-*.*s", maxx - 25, maxx - 25, a->description);
-            line[strlen(line)] = ' ';
-            sprintf(line + maxx - 19, " -     -     -");
+            memset(line, '=', sizeof line);
+            sprintf(line + 2, " Group: %s ", group_getname(-areano));
+            line[strlen(line)]='=';
+            line[sizeof(line) - 1] = '\0';
         }
 
         (*lst)[i] = xstrdup(line);
@@ -137,13 +152,48 @@ static void CalcDef(int max, int cur, int *top, int miny, int maxy, int *y)
     }
 }
 
+static void setup_areabox_coordinates(int *currItem, int *curY,
+                                      int *Top, int *y2, int *page,
+                                      int y1, int real_y2, int itemCnt)
+{
+
+    *y2=min(real_y2, itemCnt);
+    *page = *y2 - y1;
+
+    *curY = y1;
+
+    *Top = *currItem;
+
+    if (*currItem + y1 < y1)
+    {
+        *curY = y1 + *currItem;
+        *Top = 0;
+    }
+    else
+    {
+        if ((itemCnt - *currItem) <= (*y2 - y1))
+        {
+            (*Top) -= ((*y2 - y1 + 1) - (itemCnt - *Top));
+            *curY = y1 + (*currItem - *Top);
+            if (*Top < 0)
+            {
+                *Top = 0;
+                (*curY)--;
+            }
+        }
+    }
+}
+
+
 static int AreaBoxCurItem;
 
-static int AreaBox(char **Itms, int y1, int y2, int len, int def, WND * hPrev, WND * hWnd, int Sel, int Norm, int indent)
+static int AreaBox(char **Itms, int y1, int real_y2, int len, int def,
+                   WND * hPrev, WND * hWnd, int Sel, int Norm, int indent)
 {
     EVT e;
     char find[30];
-    int itemCnt, Stuff, done, curY, Msg, currItem, Top, page, i;
+    int itemCnt, Stuff, done, curY, Msg, currItem, Top, page, i, y2;
+    int real_areano;
 
     itemCnt = 0;
     Stuff = 0;
@@ -153,28 +203,10 @@ static int AreaBox(char **Itms, int y1, int y2, int len, int def, WND * hPrev, W
     }
 
     currItem = def;
-    curY = y1;
-    page = y2 - y1;
-    Top = currItem;
 
-    if (currItem + y1 < y1)
-    {
-        curY = y1 + currItem;
-        Top = 0;
-    }
-    else
-    {
-        if ((itemCnt - currItem) <= (y2 - y1))
-        {
-            Top -= ((y2 - y1 + 1) - (itemCnt - Top));
-            curY = y1 + (def - Top);
-            if (Top < 0)
-            {
-                Top = 0;
-                curY--;
-            }
-        }
-    }
+    setup_areabox_coordinates(&currItem, &curY, &Top, &y2, &page,
+                              y1, real_y2, itemCnt);
+    
     done = 0;
 
     TTBeginOutput();
@@ -237,7 +269,8 @@ static int AreaBox(char **Itms, int y1, int y2, int len, int def, WND * hPrev, W
                             {
                                 if (Msg == LMOU_CLCK || Msg == MOU_LBTUP)
                                 {
-                                    return currItem;
+                                    if (group_getareano(currItem) >= 0)
+                                        return currItem;
                                 }
                                 else
                                 {
@@ -261,7 +294,8 @@ static int AreaBox(char **Itms, int y1, int y2, int len, int def, WND * hPrev, W
 
                             if (Msg == LMOU_CLCK || Msg == MOU_LBTUP)
                             {
-                                return currItem;
+                                if (group_getareano(currItem) >= 0)
+                                    return currItem;
                             }
                         }
                     }
@@ -431,6 +465,7 @@ static int AreaBox(char **Itms, int y1, int y2, int len, int def, WND * hPrev, W
 
             case Key_Ent:
             case Key_Rgt:
+                if (group_getareano(currItem) >= 0)
                 {
                     size_t i;
 
@@ -448,6 +483,7 @@ static int AreaBox(char **Itms, int y1, int y2, int len, int def, WND * hPrev, W
                     WndCurr(hWnd);
                     return currItem;
                 }
+                break;
 
             case Key_Esc:
                 if (SW->confirmations)
@@ -473,18 +509,124 @@ static int AreaBox(char **Itms, int y1, int y2, int len, int def, WND * hPrev, W
             case Key_A_T:
                 arealist_area_scan(Msg == '*' || Msg == Key_A_T);
 
-                for (i = 0; i < SW->areas; i++)
+                for (i = 0; i < SW->groupareas; i++)
                 {
                     xfree(alist[i]);
                 }
                 xfree(alist);
                 BuildList(&alist);
                 Itms = alist;
+                TTBeginOutput();
                 SelShowPage(Itms, y1, y2, len, Top, Norm, indent);
                 SelShowItem(Itms[currItem], curY, len, Sel, indent);
+                TTEndOutput();
                 memset(find, '\0', sizeof find);
                 break;
 
+            case Key_A_1:
+            case Key_A_2:
+            case Key_A_3:
+            case Key_A_4:
+            case Key_A_5:
+            case Key_A_6:
+            case Key_A_7:
+            case Key_A_8:
+            case Key_A_9:
+            case Key_A_0:
+            case Key_A_G:
+            case Key_C_G:
+
+                real_areano = group_getareano(currItem);
+                i = 1;
+
+                switch(Msg)
+                {
+                case Key_C_G:
+                    i = sel_group();
+                    break;
+                case Key_A_1:
+                    group_set_group(1);
+                    break;
+                case Key_A_2:
+                    group_set_group(2);
+                    break;
+                case Key_A_3:
+                    group_set_group(3);
+                    break;
+                case Key_A_4:
+                    group_set_group(4);
+                    break;
+                case Key_A_5:
+                    group_set_group(5);
+                    break;
+                case Key_A_6:
+                    group_set_group(6);
+                    break;
+                case Key_A_7:
+                    group_set_group(7);
+                    break;
+                case Key_A_8:
+                    group_set_group(8);
+                    break;
+                case Key_A_9:
+                    group_set_group(9);
+                    break;
+                case Key_A_0:
+                    group_set_group(0);
+                    break;
+                }
+                    
+                if (i)
+                {
+                    /* group has changed ... we have quite some work! */
+
+                    /* find the new position of the currently selected group */
+                    currItem = group_getareano(0) < 0 ? 1 : 0;
+                        
+                    for (i = 0; i < SW->groupareas; i++)
+                    {
+                        if (group_getareano(i) == real_areano)
+                        {
+                            currItem = i;
+                            break;
+                        }
+                    }
+
+                    /* delete the old area list */
+
+                    for (i = 0; alist[i] != NULL; i++)
+                    {
+                        xfree(alist[i]);
+                    }
+                    xfree(alist);
+                    
+                    /* Build a new area list */
+                    BuildList(&alist);
+                    Itms = alist;
+                    itemCnt = 0;
+                    for (i = 0; Itms[i] != NULL; i++)
+                    {
+                        itemCnt++;
+                    }
+
+                    /* Do coordinate arithmetics */
+                    y2 = min(maxy - 4, SW->groupareas);
+                    setup_areabox_coordinates(&currItem, &curY, &Top,
+                                              &y2, &page,
+                                              y1, real_y2, itemCnt);
+
+                    /* Redraw everything */
+                    TTBeginOutput();
+                    SelShowPage(Itms, y1, y2, len, Top, Norm, indent);
+                    SelShowItem(Itms[currItem], curY, len, Sel, indent);
+                    if (y2 < real_y2)
+                    {
+                        WndClear(1, y2 + 1, len, real_y2, Norm);
+                    }
+                    TTEndOutput();
+                    memset(find, '\0', sizeof find);
+                }
+                break;
             default:
                 if (Msg > 32 && Msg < 127)
                 {
@@ -611,11 +753,11 @@ int mainArea(void)
 
         BuildList(&alist);
 
-        ret = AreaBox(alist, 1, min(dep - 2, SW->areas), wid - 1, 
-                      (ret == -2) ? AreaBoxCurItem : SW->area,
+        ret = AreaBox(alist, 1, dep - 2, wid - 1, 
+                      (ret == -2) ? AreaBoxCurItem : SW->grouparea,
                       hCurr, hWnd, cm[MN_STXT], cm[MN_NTXT], 1);
 
-        for (i = 0; i < SW->areas; i++)
+        for (i = 0; alist[i] != NULL; i++)
         {
                 xfree(alist[i]);
         }
@@ -637,7 +779,9 @@ int mainArea(void)
         WndClose(hWnd);
         WndCurr(hCurr);
 
-    } while (ret == -2);
+        /* returncode -3 means rebuild because group has changed */
+
+    } while (ret == -2 || ret == -3);
 
     return ret;
 }
@@ -666,10 +810,14 @@ int selectarea(char *topMsg, int def)
 
     BuildList(&alist2);
 
-    ret = SelBox(alist2, 1, dep - 2, wid - 1, def, hCurr, hWnd, cm[MN_STXT],
-      cm[MN_NTXT], SELBOX_REPLYOTH, topMsg);
+    do
+    {
+        ret = SelBox(alist2, 1, dep - 2, wid - 1, def, hCurr, hWnd,
+                     cm[MN_STXT], cm[MN_NTXT], SELBOX_REPLYOTH, topMsg);
+    } while (group_getareano(ret) < 0); /* don't allow group separators
+                                           as selection */
 
-    for (i = 0; i < SW->areas; i++)
+    for (i = 0; i < SW->groupareas; i++)
     {
         xfree(alist2[i]);
     }
@@ -686,7 +834,7 @@ int selectarea(char *topMsg, int def)
 
     if (ret < 0)
     {
-        return SW->area;
+        return def;
     }
 
     return ret;
