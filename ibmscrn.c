@@ -20,7 +20,7 @@
 #include <dpmi.h>
 #endif
 
-#ifdef __TURBOC__
+#if defined(__TURBOC__) || defined(_MSC_VER)
 #include <dos.h>
 #endif
 

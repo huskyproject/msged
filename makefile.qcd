@@ -1,32 +1,22 @@
-# look for libs in c:\lib
-LIBDIR=c:\lib
+# Legacy makefile for building Msged with Quick C / MS C for DOS
 
-# install programs in c:\bin
-BINDIR=c:\bin
-
-# look for includes here
-INCDIR=c:\include
-
-# options for installing programs
-IBOPT=-s
-
-
+# Use this for Quick C
 CC=	qcl
+# Use this for Microsoft C
+#CC= cl
 
-ifeq ($(DEBUG), 1)
-  CFLAGS=	-W4 -AL -I$(INCDIR) -g
-else
-  CFLAGS=	-W4 -AL -I$(INCDIR) -s
-endif
+CFLAGS= -nologo -W4 -AL -I..
+COPT=   -Ox
+LIB=    lib
+# You may also use tasm
+ASM=    masm
 
 CDEFS=	-DMSDOS -DUSE_MSGAPI -DUSE_CRITICAL
-#COPT=	-Ox
-ASM=	tasm
 AFLAGS=	-mx
 ADEFS=	-DMODL=large
 
 TARGET=	msged.exe
-MSGAPI=	$(LIBDIR)\smapiqcd.lib
+MSGAPI=	..\smapi\smapiqcd.lib
 
 objs=	addr.obj     \
 	areas.obj    \

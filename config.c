@@ -1464,7 +1464,7 @@ static void recode_area_descriptions(void)
 {
     LOOKUPTABLE *ltable;        /* for description charset conversion */
     int i;
-    char *tempdsc;
+    char *tempdsc = NULL;
 
     ltable = get_readtable("IBMPC", 2);
                                 /* we assume that umlauts in the
@@ -1502,7 +1502,7 @@ static void check_fastecho(char *areafile)
     static char progress_indicators[4] =
     {'-', '\\', '|', '/'};
     dword curofs;
-    char *tempdsc;
+    char *tempdsc = NULL;
 
     if (alias == NULL)
     {
@@ -1896,7 +1896,7 @@ static void check_gecho(char *areafile)
     static AREA a;              /* current area */
     char *fn;                   /* file name */
     FILE *fp;                   /* file handle */
-    char *tempdsc;
+    char *tempdsc = NULL;
 
     static char progress_indicators[4] =
     {'-', '\\', '|', '/'};

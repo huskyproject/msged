@@ -8,6 +8,7 @@
  */
 
 #include <string.h>
+#include <stdlib.h>
 #include "winsys.h"
 #include "keys.h"
 #include "menu.h"

@@ -796,11 +796,14 @@ const int drive_letters = 1;
 
 void dir_setdrive(int d)
 {
-    setdisk(d);
+    int e = d;
+    _dos_setdrive(d, &e);
 }
 int dir_getdrive(void)
 {
-    return getdisk();
+    int d;
+    _dos_getdrive(&d);
+    return d;
 }
 #if defined(WINNT) || defined(__NT__)
 #define NOUSER
@@ -830,18 +833,18 @@ char *dir_getdrivelist(void)
     int ct = 0, curd, i;
     char *buf = xmalloc(27);
 
-    curd = getdisk();
+    curd = dir_getdrive();
 
     for (i = 0; i < 26; i++)
     {
-        setdisk(i);
-        if (i == getdisk())
+        dir_setdrive(i);
+        if (i == dir_getdrive())
         {
             buf[ct++] = i + 'A';
         }
     }
     buf[ct] = '\0';
-    setdisk(curd);
+    dir_setdrive(curd);
 
     return buf;
 }

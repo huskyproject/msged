@@ -64,7 +64,7 @@ int strncmpi(const char *s, const char *t, size_t x)
     }
 }
 
-#if !defined(MSC) && !defined(UNIX)
+#if !defined(MSC) && !defined(UNIX) && !defined(_MSC_VER)
 
 int stricmp(const char *s, const char *t)
 {

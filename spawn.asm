@@ -32,8 +32,8 @@
 ;
 ; Assemble with
 ;
-; tasm  /DPASCAL spawn,spawnp           - Turbo Pascal (Tasm only), near
-; tasm  /DPASCAL /DFARCALL spawn,spawnp - Turbo Pascal (Tasm only), far
+; tasm  /DPASCAL_DEF spawn,spawnp       - Turbo Pascal (Tasm only), near
+; tasm  /DPASCAL_DEF /DFARCALL spawn,spawnp - Turbo Pascal (Tasm only), far
 ; ?asm  spawn;                          - C, default model (small)
 ; ?asm  /DMODL=large spawn              - C, large model
 ;
@@ -293,8 +293,9 @@ eretcode        dw      ?               ; EXEC return code
 retflags        dw      ?               ; EXEC return flags
 cgetmcb         dw      ?               ; address of get_mcb
 ;
-parseg  ends
 parseg_size=$-parseg
+parseg  ends
+
 ;
 IFNDEF WATCOM
 param_len       =       (((SIZE parseg + 1) / 2) * 2)     ; make even
@@ -897,7 +898,7 @@ savespace       =       swapbeg - 5ch   ; length of overwritten area
 ;
 ;--------------------------------------------------------------------
 ;
-        IFDEF   PASCAL
+        IFDEF   PASCAL_DEF
         .data
         ELSE
         IFDEF   TC_HUGE
@@ -1178,7 +1179,7 @@ swapout_file    endp
 ;--------------------------------------------------------------------------
 ;
 ;
-        IFDEF   PASCAL
+        IFDEF   PASCAL_DEF
         IFDEF   FARCALL
 do_spawn        PROC    far swapping: word, execfname: dword, params: dword, envlen: word, envp: dword
         ELSE
@@ -1201,7 +1202,7 @@ do_spawn        PROC    uses si di, swapping: word, execfname: ptr, params: ptr,
 ;
         mov     datseg,ds               ; save default DS
 ;
-        IFDEF   PASCAL
+        IFDEF   PASCAL_DEF
         cld
         mov     bx,prefixseg
         ELSE
@@ -1559,7 +1560,7 @@ swoc_ready:
         ELSE
         mov     si,params
         ENDIF
-        IFDEF   PASCAL
+        IFDEF   PASCAL_DEF
         inc     si                      ; skip length byte
         ENDIF
         push    si
@@ -1604,7 +1605,7 @@ cmdcpy_end:
         ELSE
         mov     si,execfname
         ENDIF
-        IFDEF   PASCAL
+        IFDEF   PASCAL_DEF
         inc     si
         ENDIF
         mov     di,filename
@@ -1789,7 +1790,7 @@ emm_name        db      'EMMXXXX0'
 ;
 ;            6) Return an error code (-1).
 ;
-        IFDEF   PASCAL
+        IFDEF   PASCAL_DEF
         IFDEF   FARCALL
 prep_swap       PROC    far pmethod: word, swapfname: dword
         ELSE
@@ -1810,7 +1811,7 @@ prep_swap       PROC    uses si di, pmethod: word, swapfname: ptr
         mov     ds,ax
         ENDIF
 ;
-        IFDEF   PASCAL
+        IFDEF   PASCAL_DEF
         cld
         mov     ax,prefixseg
         ELSE
@@ -2027,7 +2028,7 @@ prep_do_file:
         ELSE
         mov     dx,swapfname
         ENDIF
-        IFDEF   PASCAL
+        IFDEF   PASCAL_DEF
         inc     dx                      ; skip length byte
         ENDIF
         mov     cx,2                    ; hidden attribute

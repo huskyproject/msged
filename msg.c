@@ -77,7 +77,8 @@ long SquishMsgAreaOpen(AREA * a)
     unsigned long k = 0;        /* counter */
     struct stat bstat;          /* stats for sql file */
     unsigned char buffer[4];    /* for reading and writing the sql */
-    
+
+
     a->scanned = 1;
     a->last = 1;
     a->first = 1;
@@ -105,6 +106,7 @@ long SquishMsgAreaOpen(AREA * a)
             return 0;
         }
     }
+
 
     Ahandle = MsgOpenArea((byte *)a->path, MSGAREA_CRIFNEC,
                           ((a->msgtype == JAM) ? MSGTYPE_JAM:MSGTYPE_SQUISH));

@@ -684,9 +684,9 @@ typedef struct
 
 /* Functions for reading some of these structs */
 
-int read_setup_ge    (SETUP_GE *Setup, FILE *);
-int read_areafile_hdr(AREAFILE_HDR *Setup, FILE *);
-int read_areafile_ge (AREAFILE_GE *Setup, FILE *);
+int read_setup_ge    (SETUP_GE *Setup, FILE *fp);
+int read_areafile_hdr(AREAFILE_HDR *Setup, FILE *fp);
+int read_areafile_ge (AREAFILE_GE *Setup, FILE *fp);
 
 
 /* end of file "gestruct.h" */

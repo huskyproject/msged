@@ -9,6 +9,7 @@
 
 #include <string.h>
 #include <ctype.h>
+#include <stdlib.h>
 #include "bmg.h"
 #include "strextra.h"
 
