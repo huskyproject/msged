@@ -210,7 +210,7 @@ int  TTkclose(void);
 int  TTCurSet(int);
 int  TTgotoxy(int row, int col);
 int  TTgetxy(int *row, int *col);
-void TTEnableSCInput(char *special_characters);
+int  TTconfigure(const char *, const char *);
 int  TTGetChr(void);
 int  TTPutChr(unsigned int Ch);
 int  TTWriteStr(unsigned long *b, int len, int row, int col);

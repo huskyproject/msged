@@ -954,7 +954,7 @@ void AssignSwitch(char *swtch, int OnOff)
         break;
 
     case CFG_SW_PSEUDOGRAPHICS:
-        SW->blockgraphics = OnOff;
+        TTconfigure("pseudographics", OnOff?"1":"0");
         break;
 
     default:
@@ -3443,7 +3443,7 @@ static void parseconfig(FILE * fp)
         case CFG_ENABLESC:
             if (value != NULL)
             {
-                TTEnableSCInput(value);
+                TTconfigure("highascii", value);
             }
             else
             {
@@ -3456,7 +3456,7 @@ static void parseconfig(FILE * fp)
                 }
                 buffer[i] = '\0';
                 
-                TTEnableSCInput(buffer);
+                TTconfigure("highascii", buffer);
             }
             break;
 

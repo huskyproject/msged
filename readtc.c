@@ -58,15 +58,17 @@ static char *transform_acs(char *template, char *terminfo)
     return buffer;
 }
 
-void query_termcap(void)
+void query_termcap(int what)
 {
     char *termname;
     char *area;
     char *acs;
 
+    termname = getenv("TERM");
+
     /* READ INFORMATION ON PSEUDO GRAPHICS CHARACTERS */
 
-    if ((termname = getenv("TERM")) != NULL && SW->blockgraphics)
+    if ((termname != NULL) && (what & QUERY_ALTCHARSET))
     {
         /* The Linux people are idiots, can't even get their termcap right */
         if (!strcmp(termname, "linux") ||
@@ -110,6 +112,12 @@ void query_termcap(void)
                 tt_alternate_end = NULL;
             }
         }
+    } else
+    {
+        tt_specials = ASCII_SPECIALS;
+        tt_alternate_start = NULL;
+        tt_alternate_end = NULL;
     }
 }
 #endif
+

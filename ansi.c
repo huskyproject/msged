@@ -134,6 +134,8 @@ static EVT EVent[EBUFSZ];       /* event circular queue */
 static int ebufin = 0;          /* event in */
 static int ebufout = 0;         /* event out */
 
+static int tcflags = 0;         /* what we want to extract from termcap */
+
 static int mykbhit(void);
 static int FullBuffer(void);
 
@@ -1503,7 +1505,7 @@ int TTkopen(void)
 #endif
 
 #ifdef UNIX
-    query_termcap();
+    query_termcap(tcflags);
 #endif    
 
     return 0;
@@ -1642,19 +1644,58 @@ int TTclose(void)
     return 1;
 }
 
-/* With an ANSI/VT100 console, there is no way to distinguish between
-   a national special character and a Meta- (Alt-)
-   Keycombination. Therefore, the user has to explicitly tell us which
-   keystrokes should be interpreted as national special characters and
-   which should be treated as Alt-Keycombinations. */
 
-void TTEnableSCInput(char *special_characters)
+/*
+ * Configure the terminal. Configuration is retained even after TTclose. 
+ *
+ * The ANSI/VT100 terminal accepts the following configuration keywords:
+ *
+ * keyword        possible values
+ *
+ * highascii      A string of high ascii bytes that, if read from the key-
+ *                board shall be reported verbatim to the calling application,
+ *                instead of being interpreted as combination of the Meta key
+ *                with a low ASCII key. You will need to enable high ascii
+ *                alphabet characters (like umlauts or cyrillics) with this.
+ *                An empty string is the deafault.
+ *
+ * highascii      Either "1" or "0". If 1, the termcap database is queried
+ *                to see if there is pseudographics support (as, ac and ae
+ *                entires), and if so , it is enabled. If 0, pseudographics
+ *                is always disabled. "0" is the default.
+ */
+
+int TTconfigure(const char *keyword, const char *value)
 {
-    if (allowed_special_characters != NULL)
+    size_t l;
+    
+    if (!strcmp(keyword,"highascii"))
     {
-        free(allowed_special_characters);
+        if (allowed_special_characters != NULL)
+        {
+            free(allowed_special_characters);
+        }
+        allowed_special_characters =
+            (unsigned char *) malloc(l = (strlen(value) + 1));
+        memcpy(allowed_special_characters, value, l);
     }
-    allowed_special_characters = (unsigned char *) strdup(special_characters);
+    else if (!strcmp(keyword,"pseudographics"))
+    {
+        if (atoi(value))
+        {
+            tcflags |= QUERY_ALTCHARSET;
+        }
+        else
+        {
+            tcflags &= ~QUERY_ALTCHARSET;
+        }
+        query_termcap(tcflags);
+    }
+    else
+    {
+        return 0;
+    }
+    return 1;
 }
 
 

@@ -1,7 +1,9 @@
 #ifndef READTC_H
 #define READTC_H
 
-void query_termcap(void);
+#define QUERY_ALTCHARSET 1
+
+void query_termcap(int what);
 
 extern char *tt_specials;
 extern char *tt_alternate_start;

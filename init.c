@@ -194,13 +194,6 @@ int InitVars(void)
     SW->direct_list = NO;
     SW->areadesc = DSCTAGASIS | DSCDESCASIS;
     SW->areadefinesuser = NO;
-#ifdef UNIX
-    SW->blockgraphics = NO; /* if termcap is setup unproperly, this can
-                               render the terminal unusable, so better have it
-                               off by default */
-#else
-    SW->blockgraphics = YES;
-#endif    
 
 #ifndef UNIX
     ST->comspec = getenv("COMSPEC");

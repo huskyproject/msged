@@ -638,14 +638,23 @@ int TTclose(void)
     return 1;
 }
 
-/* under OS/2, you can always input any special character without
-   lossing the ability to distinguish it from an Alt-Keycombination,
-   so the function TTEnableSCInput does not need to be implemented for
-   everything except the ANSI/VT100 screen module */
 
-void TTEnableSCInput(char *special_characters)
+#pragma warn -par
+
+/*
+ * Configure the terminal. This must be called *before* TTopen!
+ *
+ * The OS/2 VIO terminal does not need any configuration.
+ *
+ */
+
+int TTconfigure(const char *keyword, const char *value)
 {
+    return 0;
 }
+
+#pragma warn +par
+
 
 static int mykbhit(void)
 {
