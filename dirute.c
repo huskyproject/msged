@@ -570,7 +570,7 @@ static int match(const char *name, const char *pattern, int attribute,
 
         if (!(attribute & DIR_READON)) /* read only files not allowed */
         {
-            if (rdonly)
+            if ((!S_ISDIR(mode)) && (rdonly))
             {
                 return 0;
             }
@@ -650,6 +650,18 @@ int dir_findfirst(char *filename, int attribute, struct _dta *dta)
         }
     }
     strcpy(dta->name, de->d_name);
+    if (S_ISDIR(sb.st_mode))
+    {
+        dta->attrib = DIR_DIRECT;
+    }
+    else if (access(fullname, W_OK))
+    {
+        dta->attrib = DIR_READON;
+    }
+    else
+    {
+        dta->attrib = DIR_NORMAL;
+    }
     dta->size = sb.st_size;
     ff_attribute = attribute;
     return 0;
@@ -687,6 +699,18 @@ int dir_findnext(struct _dta *dta)
         }
     }
     strcpy(dta->name, de->d_name);
+    if (S_ISDIR(sb.st_mode))
+    {
+        dta->attrib = DIR_DIRECT;
+    }
+    else if (access(fullname, W_OK))
+    {
+        dta->attrib = DIR_READON;
+    }
+    else
+    {
+        dta->attrib = DIR_NORMAL;
+    }
     dta->size = sb.st_size;
     return 0;
 }

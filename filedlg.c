@@ -32,6 +32,10 @@
 #include <dir.h>
 #endif
 
+#ifdef UNIX
+#include <unistd.h>
+#endif
+
 #include "addr.h"
 #include "config.h"
 #include "nedit.h"
@@ -343,7 +347,7 @@ int GetFiles(char *curdir)
 
     /* Ok, now get the files */
     done = dir_findfirst(sdir, DIR_DIRECT | DIR_NORMAL | DIR_ARCHVD |
-                         DIR_HIDDEN | DIR_SYSTEM, &f);
+                         DIR_HIDDEN | DIR_SYSTEM | DIR_READON, &f);
 
     while(!done)
     {
@@ -496,7 +500,7 @@ int ShowFiles(int maxfiles, struct CURFILE *retdir, int *current)
                 retdir->attrib = files[cur]->attrib;
                 *current = curtop;
                 TrimEdge(retdir->name,retdir->attrib);
-                return key;
+               return key;
             }
             else
             {
@@ -779,12 +783,27 @@ int FileDialog(char *retpath, const char *title)
                     strcat(curdir,curfile.name);  /* Add new dirname.. */
                     strcat(curdir,"/");    /* ..and a trailer */
                     chdir(curdir);
-                }
-                else  /* ".."  bit easier */
-                {
-                    chdir(curfile.name);
                     dlgetcwd(curdir,FILENAME_MAX);
                     AddDirSlash(curdir);
+                }
+                else  /* ".."  bit easier */
+                {                    
+                    sp = strrchr(curdir, '/');
+                    if (sp != NULL)
+                    {
+                        *sp = '\0';
+                        sp = strrchr(curdir, '/');
+                        if (sp != NULL)
+                        {
+                            if (sp == curdir)
+                                sp[1] = '\0';
+                            else
+                                *sp = '\0';
+                            chdir(curdir);
+                            dlgetcwd(curdir,FILENAME_MAX);
+                            AddDirSlash(curdir);
+                        }
+                    }
                 }
             } /* end else if dirattrib */
             
