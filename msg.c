@@ -36,7 +36,7 @@
 #include <share.h>
 #endif
 
-#include <msgapi.h>
+#include <smapi/msgapi.h>
 #include "addr.h"
 #include "nedit.h"
 #include "msged.h"

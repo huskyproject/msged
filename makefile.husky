@@ -2,9 +2,9 @@
 include ../huskymak.cfg
 
 ifeq ($(DEBUG), 1)
-  CFLAGS=	-Wall -I../smapi -I$(INCDIR) -ggdb
+  CFLAGS=	-Wall -I$(INCDIR) -ggdb
 else
-  CFLAGS=	-Wall -I../smapi -I$(INCDIR) -s
+  CFLAGS=	-Wall -I$(INCDIR) -s
 endif
 
 CDEFS=-D$(OSTYPE) -DUSE_MSGAPI -DUSE_FIDOCONFIG -DUNAME=\"$(UNAME)\" \

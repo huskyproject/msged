@@ -8,7 +8,7 @@
  */
 
 #ifdef USE_FIDOCONFIG
-#include "fidoconfig.h"
+#include <fidoconfig/fidoconfig.h>
 #else
 #include <stdlib.h>
 #include <stdio.h>
