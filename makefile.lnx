@@ -2,10 +2,10 @@ CC=	gcc
 CFLAGS=	-Wall -s
 CDEFS=	-DUNIX -DUSE_MSGAPI -DUNAME=\"LNX\"
 #COPT=	-O3 -fomit-frame-pointer -fstrength-reduce -m486
-MSGDIR=	../smapi
+MSGDIR= ../smapi
 
 TARGET=	msged
-MSGAPI=	$(MSGDIR)/smapilnx.a
+MSGAPI=	-lsmapilnx
 
 objs=   addr.o     \
 	ansi.o     \
@@ -61,4 +61,4 @@ objs=   addr.o     \
 	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -I$(MSGDIR) -c $<
 
 $(TARGET): $(objs)
-	$(CC) $(COPT) -o $(TARGET) $(objs) $(MSGAPI) -lcurses
+	$(CC) $(COPT) -o $(TARGET) $(objs) $(MSGAPI) -lncurses
