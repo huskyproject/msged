@@ -30,12 +30,12 @@ TARGET=	msged$(EXE)
 
 ifeq ($(OSTYPE), UNIX)
   osobjs=	ansi$(OBJ) \
-  		readtc$(OBJ)
+		readtc$(OBJ)
   OSLIBS=-l$(TERMCAP)
 endif
 ifeq ($(OSTYPE), OS2)
   osobjs=	os2scr$(OBJ) \
-  		malloc16$(OBJ)
+		malloc16$(OBJ)
 endif
 ifeq ($(OSTYPE), WINNT)
   osobjs=	winntscr$(OBJ)
@@ -95,15 +95,29 @@ objs=   addr$(OBJ)     \
 	win$(OBJ)      \
 	wrap$(OBJ)
 
-all: $(TARGET) msghelp.dat
+
+ifeq ($(OSTYPE), UNIX)
+   all: $(TARGET) testcons maps msghelp.dat
+else
+   all: $(TARGET) maps msghelp.dat
+
+endif
+
+maps:
 	(cd maps && $(MAKE) -f makefile.husky)
 	(cd doc && cd manual && $(MAKE) -f makefile.husky)
+
 
 %$(OBJ): %.c
 	$(CC) $(CFLAGS) $(CDEFS) -c $*.c
 
 $(TARGET): $(objs) $(osobjs)
 	$(CC) $(LFLAGS) -o $(TARGET) $(objs) $(osobjs) $(LIBS) $(OSLIBS)
+
+ifeq ($(OSTYPE), UNIX)
+testcons: testcons$(OBJ)
+	$(CC) $(LFLAGS) -o testcons$(EXE) testcons$(OBJ) $(LIBS) $(OSLIBS)
+endif
 
 msghelp.dat: msghelp.src
 	.$(DIRSEP)$(TARGET) -hc msghelp.src msghelp.dat
@@ -123,6 +137,18 @@ distclean: clean
 	(cd maps && $(MAKE) -f makefile.husky distclean)
 	(cd doc && cd manual && $(MAKE) -f makefile.husky distclean)
 
+ifeq ($(OSTYPE), UNIX)
+
+install: $(TARGET) msghelp.dat
+	-$(MKDIR) $(MKDIROPT) $(CFGDIR)
+	-$(MKDIR) $(MKDIROPT) $(BINDIR)
+	$(INSTALL) $(IBOPT) $(TARGET) $(BINDIR)
+	$(INSTALL) $(IIOPT) msghelp.dat $(CFGDIR)
+	(cd maps && $(MAKE) -f makefile.husky install)
+	(cd doc && cd manual && $(MAKE) -f makefile.husky install)
+	$(INSTALL) $(IBOPT) testcons$(EXE) $(BINDIR)
+
+else
 
 install: $(TARGET) msghelp.dat
 	-$(MKDIR) $(MKDIROPT) $(CFGDIR)
@@ -132,4 +158,4 @@ install: $(TARGET) msghelp.dat
 	(cd maps && $(MAKE) -f makefile.husky install)
 	(cd doc && cd manual && $(MAKE) -f makefile.husky install)
 
-
+endif

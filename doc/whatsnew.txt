@@ -54,6 +54,10 @@ Changes:
 
 Features:
 
+- The Unix version now comes with the "testcons" utility. It is intended
+  mainly for debugging purposes. You will be instructed how to use it when
+  you report a bug concerning Msged not recognising some sort of keystroke.
+
 - You can now globally enable input of high ASCII codes for Unix by
   specifying "EnableSC" without parameters in the configuration file. This is
   useful if you need to enter cyrillics and the like (previously, you had to
