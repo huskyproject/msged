@@ -27,11 +27,15 @@
 #include <time.h>
 #include "specch.h"
 #include "memextra.h"
-#include "addr.h"
-#include "nedit.h"
-#include "msged.h"
 #include "keys.h"
 #include "winsys.h"
+
+#ifndef max
+#define max(a,b) (((a) > (b)) ? (a) : (b))
+#endif
+#ifndef min
+#define min(a,b) (((a) < (b)) ? (a) : (b))
+#endif
 
 #define XMOD(w) ((w->flags & INSBDR) ? 3 : ((w->flags & NBDR) ? 0 : 1))
 #define YMOD(w) ((w->flags & INSBDR) ? 2 : ((w->flags & NBDR) ? 0 : 1))
