@@ -75,9 +75,9 @@ readmaps.is5:
 	mv readmaps.dat readmaps.is5
 
 clean:
-	rm makemaps$(OBJ)
+	-rm makemaps$(OBJ)
 
 distclean: clean
-	rm readmaps.*
-	rm writmaps.*
+	-rm readmaps.*
+	-rm writmaps.*
 

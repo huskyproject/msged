@@ -30,9 +30,9 @@
 @ifinfo
 
 @dircategory Fidonet Software
-@direntry
-* Msged: (msged).               Msged is the message reader and editor.
-@end direntry
+@c @direntry
+@c * Msged: (msged).               Msged is the message reader and editor.
+@c @end direntry
 
 @node Top, Overview, (dir), (dir)
 @top @value{MSGED}
@@ -115,7 +115,7 @@ UNIX environments.
 
 @menu
 * Distribution Archives::       Which archives do I need?
-* Non-Unix Installation::       Installing @value{MSGED} on OS/2, DOS or Windows
+* Non-Unix Installation::       Installing @value{MSGED} on OS/2, DOS, Windows
 * UNIX installation::           Installing @value{MSGED} on Linux or Unix
 * Network Notes::               Using Fido software in a network environment.
 * Known Bugs::                  Known bugs and shortcomings of @value{MSGED}
@@ -192,11 +192,11 @@ This section provides guidelines and additional notes for installing
 @value{MSGED} on OS/2, DOS or Windows.
 
 @menu
-* Non-Unix Installation Guide::
-* 16-Bit DOS Release Notes::
-* 32 Bit DOS Release Notes::
-* OS/2 Release Notes::
-* Windows Release Notes::
+* Non-Unix Installation Guide::  
+* 16-Bit DOS Release Notes::    
+* 32 Bit DOS Release Notes::    
+* OS/2 Release Notes::          
+* Windows Release Notes::       
 @end menu
 
 @node Non-Unix Installation Guide, 16-Bit DOS Release Notes, Non-Unix Installation, Non-Unix Installation
@@ -1356,7 +1356,7 @@ AreaFileFlags 8
 @end example
 
 (If you already have an @code{AreaFileFlags} statement, just add the @samp{8}
-character to its parameters). @xref{Areafile and AreaFileFlags, The @code{AreaFileFlags}
+character to its parameters). @xref{Areafile AreaFileFlags and AreaDesc, The @code{AreaFileFlags}
 Keyword}, for more information.
 
 This will allow @value{MSGED} to use special characters in conjunction with a
@@ -2244,13 +2244,13 @@ are generally case-insensitive.
 @menu
 * Address::                     Specifying your FTN AKAs.
 * Alias::                       Your personal address book.
-* Alterfunc::
+* Alterfunc::                   
 * AreaExcl::                    Excluding areas from the area list.
-* Areafile and AreaFileFlags::  Reading squish.cfg or fastecho.cfg.
+* Areafile AreaFileFlags and AreaDesc::  Reading a tosser config file.
 * AssumeCharset::               Workaround for mails without CHRS kludges.
 * CharsetAlias::                About IBMPC 2 and other wrong CHRS kludges.
 * Color::                       Configuring the screen colors.
-* Colour::
+* Colour::                      
 * CurStart/CurEnd::             Configuring the cursor shape.
 * Domain::                      About Domain Gating.
 * EditKey::                     Configurint the editor's keyboard layout.
@@ -2367,7 +2367,7 @@ Note that you must always specify at least one message attribute
 @findex Alterfunc
 This keyword is presently undocumented.
 
-@node AreaExcl, Areafile and AreaFileFlags, Alterfunc, Keywords
+@node AreaExcl, Areafile AreaFileFlags and AreaDesc, Alterfunc, Keywords
 @subsection AreaExcl
 @cindex excluding certain areas
 @cindex areas, excluding from display
@@ -2390,13 +2390,13 @@ You must specify the @code{AreaExcl} keyword in the configuration file
 @emph{before} the @code{Squish}, @code{Fido}, @code{Quick} and
 @code{Areafile} keywords.
 
-@node Areafile and AreaFileFlags, AssumeCharset, AreaExcl, Keywords
-@subsection Areafile and AreaFileFlags
+@node Areafile AreaFileFlags and AreaDesc, AssumeCharset, AreaExcl, Keywords
+@subsection Areafile, AreaFileFlags and AreaDesc
 
 These keywords are documented in the section about area configuration
 (@pxref{Areafile Parsing,,Reading a Tosser Configuration File (Areafile)}).
 
-@node AssumeCharset, CharsetAlias, Areafile and AreaFileFlags, Keywords
+@node AssumeCharset, CharsetAlias, Areafile AreaFileFlags and AreaDesc, Keywords
 @subsection AssumeCharset
 @cindex default character set
 @cindex character set, default for reading
@@ -4155,7 +4155,7 @@ variable has a certain value.
 @menu
 * Statements: cond-statements.  Formulating Conditional Statements.
 * Conditions: cond-conditions.  Conditions that can be tested.
-* cond-examples::
+* cond-examples::               
 @end menu
 
 @node cond-statements, cond-conditions, Conditionals, Conditionals
@@ -4466,53 +4466,91 @@ Quick  lp  "To Sysop Area"   1
 
 @node Areafile Parsing,  , Manual Area Definition, Area Definitions
 @subsection Reading a Tosser Configuration File (Areafile)
-@findex Areafile
 @cindex tosser configuration, parsing
 @cindex area file, of tosser
 
-This keyword is used to tell @value{MSGED} to read information about netmail
-and echomail areas from a tosser configuration file. This saves you from
-double work: You only have to declare an area once in the tosser
+@value{MSGED} can read your area configuration from a tosser configuration
+file. Supported tossers currently include:
+
+@itemize @bullet
+@item Fastecho 1.45 and above
+@item GEcho 1.20 (but not older versions)
+@item hpt / fidoconfig
+@item Squish 1.11 and above
+@item Generic AREAS.BBS file
+@end itemize
+
+This saves you much work: You only have to declare an area once in the tosser
 configuration file, and MsgEd will automatically always display all areas
-that are configured in your tosser configuration file. The syntax is as
-follows:
+that are configured in your tosser configuration file. 
 
-@example
-@code{Areafile @var{type} @var{filename}}
-@end example
+The following three keywords are used to perform this goal:
 
-The @var{type} parameter designates the type of tosser configuration file to
-use. It can be @samp{Squish}, @samp{Fastecho}, @samp{GEcho} or
-@samp{AreasBBS}. The @var{filename} parameter specifies the path and file
-name of the tosser configuration file that should be read. In case of
-@samp{Gecho}, you must specify the path to your GEcho installation rather
-than a configuration file name. Only GEcho 1.20 is supported.
+@menu
+* Areadesc::                    How to display the area description 
+* AreafileFlags::               Enabling charset or uucp features for all areas
+* Areafile::                    Which tosser config file shall be used
+@end menu
 
-(Plase note that only the area definitions from a Squish configuration file
-will be read. If the Squish configuration file references another
-@file{areas.bbs} file, you have to define it separately for @value{MSGED}
-using a second @code{Areafile} statement).
+@node Areadesc, AreafileFlags, Areafile Parsing, Areafile Parsing
+@subsubsection AreaDesc
+@findex AreaDesc
+@table @asis
+@item Syntax:
+@code{AreaDesc [@var{how}] @var{what} @dots{}}
+@item Examples:
+@code{AreaDesc tag}
+@item
+@code{AreaDesc tag desc}
+@item
+@code{AreaDesc upper tag asis desc}
+@end table
 
-There is one problem with reading echo definitions from tosser configuration
-files: Those files do not contain all information that can be specified in a
-manual area configuration. Certain features of @value{MSGED} need a flag that
-has to be set for each area in order to enable that feature.  For example, in
-order to be able to write mails with umlauts, you must set the 8 flag for
-each area that should have umlauts.
+The tosser configuration file normally stores two sorts if information about
+a message area: its canonical area tag, like @code{MSGED_ECHO}, and a
+description of the area topic, like @code{International Msged support
+conference}. The @code{AreaDesc} keyword is used to tell @value{MSGED} how to
+make up the arealist entry of each area from this information.
 
-@findex AreaFileFlags
-Therefore, the @code{AreaFileFlags} keyword has been introduced. It's syntax
-is as follows:
+The @var{what} parameter specifies what to include. @code{TAG} means to use
+the areatag, and @code{DESC} means to use the description. You can specify
+both parameters separated by a blank like in the example above, in which case
+both information will be displayed, separated by a dash.
 
-@example
-AreaFileFlags @var{flags}
-@end example
+The @var{how} parameter is a modifier for all following @var{what} parameters
+and specifies how this information should be displayed. It can be
+@code{ASIS}, which means to display it as in the config file, or it can be
+@code{UPPER}, which means to display anything in upper case, or @code{LOWER},
+i.E. display everything in lower case letters.
+
+The default value if no @code{AreaDesc} keyword is given is @code{asis tag desc}.
+
+@node AreafileFlags, Areafile, Areadesc, Areafile Parsing
+@subsubsection AreafileFlags
+@findex AreafileFlags
+@table @asis
+@item Syntax:
+@code{AreafileFlags @var{flags}}
+@item Example:
+@code{AreafileFlags 8u}
+@end table
+
+There is one big problem with reading echo definitions from tosser
+configuration files: Those files do not contain all information that can be
+specified in a manual area configuration. Certain features of @value{MSGED}
+need a flag that has to be set for each area in order to enable that feature.
+For example, in order to be able to write mails with umlauts, cyrillic
+characters etc., you must set the 8 flag for each area, designating that
+high ASCII characters are allowable therin. This is where you use the
+@code{AreafileFlags} keyword.
 
 The @var{flags} parameter has the same syntax as the @var{flags} parameter of
 the @code{Fido}, @code{Quick} and @code{Squish} keywords (@pxref{Manual Area
-Definition,,Manual Area Definition}). You must specify the
-@code{AreaFileFlags} keyword before the @code{AreaFile} keywords. Then, all
-areas imported from the area files will have the specified @var{flags}.
+Definition,,Manual Area Definition}). 
+
+You must specify the @code{AreaFileFlags} keyword @emph{before} the
+@code{AreaFile} keyword which it should apply to. Then, all areas imported
+from the area files will have the specified @var{flags}.
 
 If you want only a few, but not all areas form an areafile to have some
 flags, you can manually redefine areas with the syntax described in the
@@ -4528,6 +4566,59 @@ probably won't hurt you. On the other hand, you should only use
 @code{AreaFileFlags} to globally turn on the @samp{8} flag if you know that
 the moderators of the echo areas that you are posting in do not forbid
 8-bit-codes.
+
+@node Areafile,  , AreafileFlags, Areafile Parsing
+@subsubsection Areafile
+@findex Areafile
+@table @asis
+@item Syntax:
+@code{Areafile @var{type} @var{filename}}
+@item Examples:
+@code{Areafile Fastecho c:\fastecho\fastecho.cfg}
+@item
+@code{Areafile Squish c:\squish\squish.cfg}
+@item
+@code{Areafile AreasBBS c:\squish\areas.bbs}
+@item
+@code{Areafile GEcho c:\gecho}
+@item
+@code{Areafile Fidoconfig}
+@end table
+
+This keyword tells @value{MSGED} which areafile to use. The @var{type}
+parameter designates the type of tosser configuration file to use. It can be
+@samp{Squish}, @samp{Fastecho}, @samp{GEcho}, @samp{fidoconfig} or
+@samp{AreasBBS}. The @var{filename} parameter specifies werhe to find the
+tosser configuration that should be read. It's useage depends on the type of
+your tosser:
+
+@itemize @bullet
+@item @samp{AreasBBS}, @samp{Fastecho}
+
+The path to and filename of the configuration file, like
+@code{c:\fastecho\fastecho.cfg}.
+@item @samp{Gecho}
+
+You must specify the path to your GEcho installation directory rather than a
+configuration file name, e.g. @code{c:\gecho}. Only GEcho 1.20 is supported.
+@item @samp{fidoconfig}
+
+According to the Husky policy of doing things, the path to the fidoconfig
+file is read from the default value or from the @samp{FIDOCONFIG} environment
+variable. Hence, for fidoconfig, the second parameter of this keyword is not
+used to configure the path to the config file. Instead, it is used to
+configure how the config file should be treated. Please refer to the chapter
+about fidoconfig support (WHICH IS NOT YET WRITTEN, FIXME - UNTIL THEN SEE
+WHATSNEW.TXT) for more information.
+@item @samp{Squish}
+
+The path to and name of the configuration file, like in
+@code{c:\squish\squish.cfg}. Plase note that only the area definitions from
+this file itself will be read. If the Squish configuration file references
+another @file{areas.bbs} file, you have to define it separately for
+@value{MSGED} using a second @code{Areafile} statement.
+@end itemize
+
 
 @node Compiling, Concept Index, Configuration Reference, Top
 @appendix Compiling the Source Code

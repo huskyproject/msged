@@ -44,6 +44,13 @@
 #define GZONES    0x02          /* gate zones */
 #define BOTH      0x04          /* gate both */
 
+#define DSCTAGASIS   0x01          /* what to import from the areafile  */
+#define DSCTAGUPPER  0x02          /* and how to do it                  */
+#define DSCTAGLOWER  0x04
+#define DSCDESCASIS  0x08
+#define DSCDESCUPPER 0x10
+#define DSCDESCLOWER 0x20
+
 #define FIDO      0x00          /* message base types */
 #define QUICK     0x01
 #define SQUISH    0x02
@@ -403,6 +410,7 @@ struct _swv
     int squish_lock;            /* Lock message base for better speed */
     int carthy;                 /* behaviour of delete_line at last line */
     int direct_list;            /* jump directly to message listing mode */
+    int areadesc;               /* how to build areadesc from areafile */
 };
 
 #ifndef INCL_MAIN

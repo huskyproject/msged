@@ -191,6 +191,7 @@ int InitVars(void)
     SW->receivealladdr  = YES;
     SW->carthy = YES;
     SW->direct_list = NO;
+    SW->areadesc = DSCTAGASIS | DSCDESCASIS;
 
 #ifndef UNIX
     ST->comspec = getenv("COMSPEC");

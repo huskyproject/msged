@@ -16,6 +16,7 @@ struct colorverb
     int color;
 };
 
+char *makeareadesc(char*, char *);
 char *strip_geese_feet(char *s);
 char *striplwhite(char *str);
 char *striptwhite(char *str);

@@ -127,6 +127,7 @@ static char *cfgverbs[] =
     "ReadMap",
     "WriteMap",
     "CharsetAlias",
+    "AreaDesc",
     NULL
 };
 
@@ -195,6 +196,7 @@ static char *cfgverbs[] =
 #define CFG_READMAP        62
 #define CFG_WRITEMAP       63
 #define CFG_CHARSETALIAS   64
+#define CFG_AREADESC       65
 
 static struct colorverb colortable[] =
 {
@@ -1502,7 +1504,6 @@ static void check_fastecho(char *areafile)
     static char progress_indicators[4] =
     {'-', '\\', '|', '/'};
     dword curofs;
-    char *tempdsc = NULL;
 
     if (alias == NULL)
     {
@@ -1587,7 +1588,7 @@ static void check_fastecho(char *areafile)
     }
     a.path = env_expand(feconfig.NetMPath);
     a.tag = xstrdup("NETMAIL");
-    a.description = xstrdup("NETMAIL - FastEcho Primary Netmail Folder");
+    a.description = makeareadesc(a.tag, "FastEcho Primary Netmail Folder");
     kill_trail_slash(a.path);
     strlwr(a.path);
     applyflags (&a, areafileflags);
@@ -1695,20 +1696,8 @@ static void check_fastecho(char *areafile)
         a.tag = xstrdup(fearea.name);
         strupr(a.tag);
 
-        a.recodedsc = 1; /* fastecho.cfg always has IBMPC type characters */
-
-        if (fearea.desc && *fearea.desc)
-        {
-            a.description =
-              xmalloc(strlen(fearea.name) + strlen(fearea.desc) + 4 );
-
-            sprintf (a.description, "%s - %s", fearea.name, fearea.desc);
-            release(tempdsc);
-        }
-        else
-        {
-            a.description = xstrdup(fearea.name);
-        }
+        a.recodedsc   = 1; /* fastecho.cfg always has IBMPC type characters */
+        a.description = makeareadesc(fearea.name, fearea.desc);
 
         if (a.path)
         {
@@ -1896,7 +1885,6 @@ static void check_gecho(char *areafile)
     static AREA a;              /* current area */
     char *fn;                   /* file name */
     FILE *fp;                   /* file handle */
-    char *tempdsc = NULL;
 
     static char progress_indicators[4] =
     {'-', '\\', '|', '/'};
@@ -1964,7 +1952,7 @@ static void check_gecho(char *areafile)
         a.addr.node = Setup.aka[0].node;
         a.addr.point = Setup.aka[0].point;
         a.tag = xstrdup("NETMAIL");
-        a.description = xstrdup("NETMAIL - GEcho Netmail Folder");
+        a.description = makeareadesc(a.tag, "GEcho Netmail Folder");
         a.path = xstrdup(Setup.mailpath);
         kill_trail_slash(a.path);
         applyflags (&a, areafileflags);
@@ -2098,18 +2086,7 @@ static void check_gecho(char *areafile)
 
             a.recodedsc = 1; /* gecho.cfg always has IBMPC type characters */
 
-            if (*Area.comment)
-            {
-                a.description =
-                    xmalloc(strlen(Area.name) + strlen(Area.comment) + 4);
-
-                sprintf (a.description, "%s - %s", Area.name, Area.comment);
-                release(tempdsc);
-            }
-            else
-            {
-                a.description = xstrdup(Area.name);
-            }
+            a.description = makeareadesc(Area.name, Area.comment);
 
             applyflags(&a, areafileflags);
             AddArea(&a);
@@ -2372,6 +2349,189 @@ static void parse_alias(char *value)
                              SW->maxotheraliases * sizeof(struct _alias));
     }
     aliaslist[SW->otheraliases - 1] = a;
+}
+
+/*
+ *  Parses the AREADESC keyword 
+ */
+
+
+static char *areadesctokens[] =
+{
+    "asis",
+    "upper",
+    "lower",
+    "tag",
+    "areatag",
+    "desc",
+    "dsc",
+    "areadesc",
+    NULL
+};
+
+#define AREADESC_ASIS 0
+#define AREADESC_UPPER 1
+#define AREADESC_LOWER 2
+#define AREADESC_TAG 3
+#define AREADESC_AREATAG 4
+#define AREADESC_DESC 5
+#define AREADESC_DSC 6
+#define AREADESC_AREADESC 7
+
+static void parseareadesc(char *value)
+{
+    char *tokens[16];
+    int casemode = 0, i, j;
+    int areadesc = 0;
+
+    memset(tokens, 0, sizeof tokens);
+
+    parse_tokens(value, tokens, 15);
+
+    for (i = 0; tokens[i] != NULL; i++)
+    {
+        for (j = 0; areadesctokens[j] != NULL; j++)
+        {
+            if (!stricmp(tokens[i], areadesctokens[j]))
+            {
+                break;
+            }
+        }
+
+        switch (j)
+        {
+        case AREADESC_ASIS:
+            casemode = 0;
+            break;
+        case AREADESC_UPPER:
+            casemode = 1;
+            break;
+        case AREADESC_LOWER:
+            casemode = 2;
+            break;
+        case AREADESC_TAG:
+        case AREADESC_AREATAG:
+            switch (casemode)
+            {
+            case 0:
+                areadesc |= DSCTAGASIS;
+                break;
+            case 1:
+                areadesc |= DSCTAGUPPER;
+                break;
+            case 2:
+                areadesc |= DSCTAGLOWER;
+                break;
+            default:
+                abort();
+            }
+            break;
+        case AREADESC_DESC:
+        case AREADESC_DSC:
+        case AREADESC_AREADESC:
+            switch (casemode)
+            {
+            case 0:
+                areadesc |= DSCDESCASIS;
+                break;
+            case 1:
+                areadesc |= DSCDESCUPPER;
+                break;
+            case 2:
+                areadesc |= DSCDESCLOWER;
+                break;
+            default:
+                abort();
+            }
+            break;
+        default:
+            printf ("\r\aNot a valid option for the AreaDesc keyword: %s\n",
+                    tokens[i]);
+        }
+    }
+
+    if (areadesc != 0)
+    {
+        SW->areadesc = areadesc;
+    }
+}
+
+/*
+ * This routine takes data read form araefile and makes area description 
+ * from it based on the user's wishes (SW->areadesc).
+ */
+
+char *makeareadesc(char *tag, char *desc)
+{
+    int length = 1; /* zero byte */
+    int taglen = 0, desclen = 0;
+    char *r, *p;
+
+    if (SW->areadesc & (DSCDESCASIS | DSCDESCUPPER | DSCDESCLOWER))
+    {
+        if (desc != NULL)
+        {
+            length += (desclen = strlen(desc));
+        }
+    }
+
+    if (!desclen || (SW->areadesc & (DSCTAGASIS | DSCTAGUPPER | DSCTAGLOWER)))
+    {
+        /* even if TAG is not configured, TAG is used if no DESC is present */
+        if (tag != NULL)
+        {
+            length += (taglen = strlen(tag));
+        }
+    }
+
+    if (desclen && taglen)
+    {
+        length += 3; /* " - " */
+    }
+
+    r = p = xmalloc(length);
+
+    if (r != NULL)
+    {
+        if (taglen)
+        {
+            if (SW->areadesc & DSCTAGLOWER)
+            {
+                while (*tag)  *(p++) = (char)tolower((int)(*(tag++)));
+            }
+            else if (SW->areadesc & DSCTAGUPPER)
+            {
+                while (*tag) *(p++) = (char)toupper((int)(*(tag++)));
+            }
+            else
+            {
+                while (*tag) *(p++) = *(tag++);
+            }
+        }
+        if (taglen && desclen)
+        {
+            *(p++) = ' ';
+            *(p++) = '-';
+            *(p++) = ' ';
+        }
+        if (desclen)
+        {
+            if (SW->areadesc & DSCDESCLOWER)
+            {
+                while (*desc)  *(p++) = (char)tolower((int)(*(desc++)));
+            }
+            else if (SW->areadesc & DSCDESCUPPER)
+            {
+                while (*desc) *(p++) = (char)toupper((int)(*(desc++)));
+            }
+            else
+            {
+                while (*desc) *(p++) = *(desc++);
+            }
+        }
+        *p = '\0';
+    }
+    return r;
 }
 
 /*
@@ -3378,7 +3538,9 @@ static void parseconfig(FILE * fp)
             }
             break;
 
-            
+        case CFG_AREADESC:
+            parseareadesc(value);
+            break;
 
         case -2:   /* skip */
             break;

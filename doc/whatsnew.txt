@@ -52,6 +52,12 @@ Changes:
 
 Features:
 
+- The new keyword "Areadesc" gives you full control on how Msged format the
+  area descriptions in the area list based on the Areafile. You can specify
+  if you want to see only area tags, or only area descriptions, or both, and
+  if you want to uppercase, lowercase, or leave as is any of those strings.
+  See the manual for more information.
+
 - New Key "Alt+T" (function "selchs") introduced. It allows you to manually
   specify the charcter set to use for recoding a mail when reading it. You
   should only need this in rare occasions (like when trying to read Russian

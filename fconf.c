@@ -67,8 +67,9 @@ static void fc_add_area(s_area *fc_area, int netmail, int local)
 
     fc_copy_address(&(a.addr), fc_area->useAka);
 
-    a.description = xstrdup(fc_area->areaName);
-    a.tag = xstrdup(a.description);
+    a.tag = xstrdup(fc_area->areaName);
+    a.description=makeareadesc(fc_area->areaName, fc_area->description);
+
     a.path = xstrdup(fc_area->fileName);
     
     if (strcmp(fc_area->group, "\060") != 0)
