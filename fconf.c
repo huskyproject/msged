@@ -58,7 +58,7 @@
 /* Part 1: Fidoconfig routines that use the Fidoconfig library           */
 /* ===================================================================== */
 
-static void fc_copy_address(ADDRESS *a, s_addr *fc_a)
+static void fc_copy_address(ADDRESS *a, hs_addr *fc_a)
 {
     memset(a, 0, sizeof(ADDRESS));
 

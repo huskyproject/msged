@@ -25,6 +25,7 @@
 #include <string.h>
 #include <time.h>
 #include <errno.h>
+#include <smapi/progprot.h>
 #include <smapi/msgapi.h>
 #include <assert.h>
 #include "addr.h"
@@ -97,31 +98,6 @@ int sopen(char *filename, unsigned int access, int flags,...);
 #define OPENC   O_WRONLY | O_BINARY | O_CREAT   /* open/create */
 #define OPENRW  O_RDWR | O_BINARY               /* open read/write */
 
-/*
- *  get_dword
- *
- *  Reads in a 4 byte word that is stored in little endian (Intel) notation
- *  and converts it to the local representation n an architecture-
- *  independent manner
- */
-
-#define get_dword(ptr)            \
-   ((dword)((ptr)[0]) |           \
-    (((dword)((ptr)[1])) << 8)  | \
-    (((dword)((ptr)[2])) << 16) | \
-    (((dword)((ptr)[3])) << 24))  \
-
-/*
- *  get_word
- *
- *  Reads in a 2 byte word that is stored in little endian (Intel) notation
- *  and converts it to the local representation in an architecture-
- *  independent manner
- */
-
-#define get_word(ptr)         \
-    ((word)(ptr)[0] |         \
-     (((word)(ptr)[1]) << 8 ))
 
 /* prototypes */
 
