@@ -2020,6 +2020,7 @@ static void message_reading_mode(void)
         InitScreen();
         adapt_margins();
         BuildHotSpots();
+        ShowNewArea();
     }
     
     DrawHeader();
