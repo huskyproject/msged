@@ -221,7 +221,7 @@ void ShowNewArea(void)
             ProcessMenu(&MouseMnu, &e, 1);
         }
 
-        TTBeginOutput();
+        TTEndOutput();
     }
 }
 
