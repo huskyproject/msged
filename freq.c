@@ -41,7 +41,8 @@ int bdos(int func, unsigned reg_dx, unsigned char reg_al);
 #endif
 
 #ifdef OS2
-#define INCL_DOSFILEMGR
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <fcntl.h>
 #endif
 
