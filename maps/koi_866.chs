@@ -140,7 +140,7 @@ CP866           ; to set
 \0 \x8A
 \0 \x8b
 \0 \x8C
-\0 \x8D
+\0 \x48      ; don't output 0x8D (softcrxlat), but output latin H
 \0 \x8E
 \0 \x8F
 \0 \x9F

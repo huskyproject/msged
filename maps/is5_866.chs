@@ -68,7 +68,7 @@ CP866		; to set
 \0 \x8a		; 186
 \0 \x8b		; 187
 \0 \x8c		; 188
-\0 \x8d		; 189
+\0 \x48		; 189  Don't output 0x8D (softcrxlat), but output latin H
 \0 \x8e		; 190
 \0 \x8f		; 191
 \0 \x90		; 192

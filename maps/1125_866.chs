@@ -43,7 +43,7 @@ CP866     ; to set
 \0 \x8a   ; 0x8a   cyrillic capital letter ka
 \0 \x8b   ; 0x8b   cyrillic capital letter el
 \0 \x8c   ; 0x8c   cyrillic capital letter em
-\0 \x8d   ; 0x8d   cyrillic capital letter en
+\0 \x48   ; 0x8d   cyrillic capital letter en - use latin h to avoid softcrxlat problems
 \0 \x8e   ; 0x8e   cyrillic capital letter o
 \0 \x8f   ; 0x8f   cyrillic capital letter pe
 \0 \x90   ; 0x90   cyrillic capital letter er
