@@ -187,4 +187,22 @@
   directly enter a file name (that is allowed to con-
   tain a path if necessary) in this entry field.
 *End
+*Begin 7
+
+*High Zone Gating Help
+
+  You don't have an AKA in the destination zone of
+  this mail, i.E. you are sending an inter-zone mail.
+  You must tell Msged how to handle this mail.
+
+  If you enter "Yes", the mail will be adressed to
+  the zone gate for this zone. This is the most
+  reliable way for sending inter-zone messages.
+  If you enter "No", no special precautions will be
+  taken. You should only select this if you have
+  a direct link to the destination zone that your
+  tosser will use to route this mail.
+*End
 *EF
+
+

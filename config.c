@@ -3288,6 +3288,9 @@ static void parseconfig(FILE * fp)
             case 'B':  /* Both */
                 SW->gate = BOTH;
                 break;
+            case 'A':  /* Ask */
+                SW->gate = GASK;
+                break;
             default:
                 break;
             }

@@ -1524,6 +1524,35 @@ char *space_after_period(LINE *ln)
     }
 }
 
+static int askgate(char *which)
+{
+    char str[80];
+    int rc;
+
+    sprintf(str, "Send this message via %s gate?", which);
+
+    while (1)
+    {
+        rc = ChoiceBox("", str, "Yes", "No",
+                       strcmp(which, "zone") ? NULL : "Help");
+
+        switch(rc)
+        {
+        case ID_ONE:
+            return 1;
+        case ID_TWO:
+            return 2;
+        case ID_THREE:
+            if (!strcmp(which, "zone"))
+            {
+                DoHelp(6);
+            }
+            break;
+        }
+    }
+}
+
+
 /*
  *  Sequence of events:
  *
@@ -1556,11 +1585,13 @@ int writemsg(msg * m)
     char *uucp_from;            /* saved UUCP from address */
     char *uucp_to;              /* saved UUCP to address */
     int domain_gated, uucp_gated;
+    int do_zonegate = 0;
     char *s;
     int i, abortWrite, got_origin, got_tear, ctrl;
     static unsigned long now = 0L;
     LOOKUPTABLE *ltable = NULL;
     int write_chrs_kludge;
+
     char *temptext;
 
     domain_gated = 0;
@@ -1619,7 +1650,14 @@ int writemsg(msg * m)
 
 	/* do domain gating */
 
-	if ((SW->gate == GDOMAINS || SW->gate == BOTH) && SW->domains && m->to.domain)
+        if (SW->domains &&
+            m->to.domain &&
+            m->from.domain &&
+            stricmp(m->from.domain, m->to.domain) &&
+            (SW->gate == GDOMAINS || SW->gate == BOTH ||
+             (SW->gate == GASK && askgate("domain"))) &&
+            !m->to.internet /* in this case, "domain" string is e-mail addr */
+           )
 	{
 	    /*
 	     *  If we have two domains and they're different, then we want to
@@ -1628,48 +1666,45 @@ int writemsg(msg * m)
 	     *  we don't want to gate the message (we assume it's destined to
 	     *  our own network).
 	     */
+            
+            for (i = 0; i < SW->domains; i++)
+            {
+                if (!stricmp(domain_list[i].domain, m->to.domain))
+                {
+                    domain_gated = 1;
+                    
+                    if (m->attrib.crash || m->attrib.direct ||
+                        m->attrib.hold  || m->attrib.immediate)
+                    {
+                        int ret;
+                        
+                        ret = ChoiceBox(" Direct Message ",
+                                        " Direct Message "
+                                        "(crash, dir, imm or hold) to?",
+                                        "Domain Gate", "Destination Node", NULL);
+                        
+                        if (ret == ID_ONE)
+                        {
+                            m->to = domain_list[i];
+                            if (domain_list[i].domain)
+                            {
+                                m->to.domain = xstrdup(domain_list[i].domain);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        m->to = domain_list[i];
+                        if (domain_list[i].domain)
+                        {
+                            m->to.domain = xstrdup(domain_list[i].domain);
+                        }
+                    }
+                    break;
+                }
+            }
+        }
 
-	    if (m->to.domain || (m->from.domain && m->to.domain &&
-	      stricmp(m->from.domain, m->to.domain)))
-	    {
-		for (i = 0; i < SW->domains; i++)
-		{
-		    if (!stricmp(domain_list[i].domain, m->to.domain))
-		    {
-			domain_gated = 1;
-
-			if (m->attrib.crash || m->attrib.direct ||
-                            m->attrib.hold  || m->attrib.immediate)
-			{
-			    int ret;
-
-			    ret = ChoiceBox(" Direct Message ",
-                                            " Direct Message "
-                                            "(crash, dir, imm or hold) to?",
-			      "Domain Gate", "Destination Node", NULL);
-
-			    if (ret == ID_ONE)
-			    {
-				m->to = domain_list[i];
-				if (domain_list[i].domain)
-				{
-				    m->to.domain = xstrdup(domain_list[i].domain);
-				}
-			    }
-			}
-			else
-			{
-			    m->to = domain_list[i];
-			    if (domain_list[i].domain)
-			    {
-				m->to.domain = xstrdup(domain_list[i].domain);
-			    }
-			}
-			break;
-		    }
-		}
-	    }
-	}
 
 	/* do uucp gating */
 
@@ -1685,8 +1720,9 @@ int writemsg(msg * m)
 	    {
 		m->to.domain = xstrdup(uucp_gate.domain);
 	    }
-    /* AKA-Matching for UUCP gated messages */
-	    if (m->from.zone != m->to.zone)     /* falsche Zone im From */
+            
+            /* AKA-Matching for UUCP gated messages */
+	    if (m->from.zone != m->to.zone)     
 	    {
 		for (i = 0; i < SW->aliascount; i++)
 		{
@@ -1700,9 +1736,9 @@ int writemsg(msg * m)
 			break;
 		    }
 		}
-    /*          ShowNameAddress(m->isfrom, &m->from, 1, 0, 0);*/
+                /* ShowNameAddress(m->isfrom, &m->from, 1, 0, 0); */
 	    }
-    /* Ende AKA-Matching */
+            /* End of AKA matching */
 	}
 
 	if (m->from.internet || m->from.bangpath)
@@ -1726,12 +1762,16 @@ int writemsg(msg * m)
 	       kludges in echomail areas and the like */
 	if (CurArea.netmail /* || CurArea.uucp */ )
 	{
+
+            /* print INTL kludge */
  	    if (m->from.zone != m->to.zone || m->from.zone != thisnode.zone)
 	    {
 		sprintf(text, "\01INTL %d:%d/%d %d:%d/%d\r", m->to.zone,
 		  m->to.net, m->to.node, m->from.zone, m->from.net, m->from.node);
 		curr = InsertAfter(curr, text);
 	    }
+
+            /* print FMPT / TOPT kludges */
 	    if (m->to.point)
 	    {
 		sprintf(text, "\01TOPT %d\r", m->to.point);
@@ -1748,7 +1788,22 @@ int writemsg(msg * m)
                     curr = InsertAfter(curr, text);
                 }
             }
-	}
+
+            /* see if we want to zonegate and set the ZON flag if
+               necessary. The actual readressing proceudre is done later. */
+
+            if (m->from.zone != m->to.zone && !m->attrib.direct &&
+                !m->attrib.crash && CurArea.netmail &&
+                (SW->gate == GZONES || SW->gate == BOTH ||
+                 m->attrib.zon ||
+                 (SW->gate == GASK && askgate("zone"))
+                ))
+            {
+                do_zonegate = 1;
+                m->attrib.zon = 1;
+            }
+        
+        }
 
 	/* these babies go everywhere */
 
@@ -1803,7 +1858,8 @@ int writemsg(msg * m)
             {
                 int cp;
 
-             /* codepage of this kludge is non-obvious, add CODEPAGE kludge */
+                /* codepage of this kludge is non-obvious,
+                   add CODEPAGE kludge */
 
                 cp = get_codepage_number(ST->output_charset);
                 if (cp != 0)
@@ -2075,9 +2131,7 @@ int writemsg(msg * m)
 	}
 
 	/* do any required zone gating */
-        if (m->from.zone != m->to.zone && !m->attrib.direct &&
-            !m->attrib.crash && CurArea.netmail &&
-            (SW->gate == GZONES || SW->gate == BOTH))
+        if (do_zonegate)
 	{
 	    m->to.node = m->to.zone;
 	    m->to.zone = m->from.zone;

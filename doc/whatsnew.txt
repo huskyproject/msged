@@ -6,6 +6,8 @@ Features, Changes and Fixes in the current development version of MsgEd
 
 Changes:
 
+- The default value of the "Gate" keyword is now "ASK" (see also features).
+
 - Brought Msged/TE in line with FSP 1013 (resp. Charset Kludges). Msged now
   uses and understands the new-style CPxxx CHRS kludges instead of the
   obsolete "IBMPC" charset kludge. In order to be compatible with other
@@ -51,6 +53,10 @@ Changes:
 
 
 Features:
+
+- The "Gate" keyword has a new parameter "Ask". Instead of globally deciding
+  if you want to zonegate all messages or none, with "Gate Ask" you can now
+  individually select if you want to employ zone gating for each message.
 
 - The new keyword "Areadesc" gives you full control on how Msged format the
   area descriptions in the area list based on the Areafile. You can specify

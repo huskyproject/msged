@@ -12,6 +12,8 @@ Category 1: Will certainly be implemented until next release
   Also: Problem with capital / small spelling of lastread file name
   in name keyword on Linux. High time to fix this!!!)
 
+- Document Fidoconfig stuff
+
 Category 2: Might be implemented, but volunteers are always very welcome!
 =========================================================================
 

@@ -138,6 +138,7 @@ int InitVars(void)
 
     /* Initialize all the variables to default values. */
 
+    SW->gate = GASK;
     SW->orgrm = 0xFFFF; /* allow any margin */
     SW->orgqm = 75;     /* don't make quote lines too large */
     SW->tabsize = 4;

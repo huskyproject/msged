@@ -43,6 +43,7 @@
 #define GDOMAINS  0x01          /* gate domains */
 #define GZONES    0x02          /* gate zones */
 #define BOTH      0x04          /* gate both */
+#define GASK      0x08          /* ask if gate should be used */
 
 #define DSCTAGASIS   0x01          /* what to import from the areafile  */
 #define DSCTAGUPPER  0x02          /* and how to do it                  */

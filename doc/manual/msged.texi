@@ -2762,25 +2762,43 @@ internal editor.  Note that control characters in a macro such as ^M
 @code{Gate Domains}
 @item
 @code{Gate Both}
+@item
+@code{Gate Ask}
 @end table
 
 The @var{what} parameter to the @code{Gate} keyword specifies if
 @value{MSGED} should do zone gating (@code{Gate Zones}), domain gating
-(@code{Gate Domains}), or both (@code{Gate Both}). This has nothing to do
-with internet gateways.
+(@code{Gate Domains}), or both (@code{Gate Both}). If you specify @code{Ask}
+as parameter (this is also the default), you will be asked if you want to use
+zone gating for each inter-zone mail that you write.
+
+This has nothing to do with internet gateways!
 
 Domain gating is explained in detail in the section about the @code{Domain}
 keyword (@pxref{Domain,,The @code{Domain} Keyword}).
 
-Zone gating works like this: If you write a mail to a different zone and zone
-gating is enabled, the mail will not be addressed to the receiver in the
-other zone, but it will be addressed to that zone's zone gate (which also has an
-address inside your own zone). The address of the true receiver will be
-encoded in an @@INTL kludge line.
+Zone gating works like this: If you write a mail to a node in a zone
+different from your own, and zone gating is enabled, the mail will not be
+addressed to the receiver in the other zone, but it will be addressed to that
+zone's zone gate (which also has an address inside your own zone). The
+address of the true receiver will be encoded in an @@INTL kludge
+line.
 
-I strongly recommend to at least enable zone gating, because I found that it
-is the only way to really reliable route inter-zone netmail. (In that point,
-I object the original MsgEd documentation's author's opionion).
+If you don't have a direct inter-zone link set up in your tosser, you may
+always enable zone-gating on with the @code{Zone} parameter. All mail that
+crosses zone boundaries will then be sent via the zone gate, which is by far
+the most reliable mail to send inter-zone mail. If, on the other hand, you do
+have a direct inter-zone netmail link, you need the @code{Ask} parameter,
+because then you must decide for each netmail individually if it shall be
+sent directly via this link, or (probably because it is for a zone not
+covered by this link, or because the link partner has not agreed to forward
+mail not destined for himself) must be sent via the zone gate.
+
+Turning zonegating off with the @code{None} parameter is not at all
+recommended. If you send inter-zone mail wihtout zone-gating, there only need
+be one single tosser on the routing path which does not recognise @code{INTL}
+kludges, and the mail will probably disappear. So, don't turn off zonegating
+unless you have direct links for the destination zones you are writing mail to.
 
 @node Group, HelpFile, Gate, Keywords
 @subsection Group
