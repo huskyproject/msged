@@ -148,8 +148,10 @@
  Go to the first message ....................... Home
  Go to the last message ......................... End
  Toggle selection of a message ................ Space
+ Select all messages .............................. +
+ Unselect all messages ............................ -
  Delete selected messages ....................... Del
-
+ Move, copy, or forward selected messages ..... Alt-M
 
 *High                                          End of Help
 *End

@@ -6,6 +6,7 @@ dvi: msged.dvi
 
 info: msged.info
 
+# The DOC target does only work on Tobias Ernst's OS/2 machine ...
 doc: msged.doc
 
 # The INF target does only work on OS/2 ...
@@ -20,11 +21,8 @@ msged.dvi: msged.texi
 msged.info: msged.texi
 	makeinfo --no-split  msged.texi
 
-msged.doc: msged.texi
-	cp msged.texi tmp.texi
-	texi2html -number tmp.texi
-	lynx -dump tmp.html > msged.doc
-	rm tmp.texi
+msged.doc:
+	texi2txt msged.texi
 
 almostclean:
 	-rm msged.fns
@@ -34,7 +32,11 @@ almostclean:
 	-rm msged.cp
 	-rm msged.fn
 	-rm msged.vr
+	-rm msged.kr
+	-rm msged.ke
 	-rm msged.tp
+	-rm msged.kes
+	-rm msged.krs
 	-rm msged.ky
 	-rm msged.pg
 	-rm msged.cps

@@ -24,6 +24,19 @@ Changes:
 
 Features:
 
+- In the message list mode, you can now press '+' to select all messages
+  and '-' to deselect all messages of that area.
+
+- Changes to the behaviour of Alt+M in message listing mode when multiple
+  messages are selected: MsgEd will now ask you where to move, copy or
+  forward the message to *only* *once* and then move all marked message to 
+  the same location. This allows you to easily move the large numbers of mail 
+  (e.g. a whole folder) from one location to another. Every mesage that has
+  been processed will be deselected, so that if you interrupt the moving
+  process for some reason, you can easily continue it afterwards because
+  only those message that have not yet been processed will still be
+  selected.
+
 - New switch: SquishLock. If you add "Switch SquishLock On" to your
   configuration file, MsgEd TE will lock every message area that is entered
   (and of course unlock it when it is left). This will result in a
@@ -172,6 +185,9 @@ Features:
 - Ported MsgEd to Unix.
 
 Fixes:
+
+- Pressing Alt+H did not always show the help screen in the 16 bit DOS
+  version.
 
 - Fix for NT version: Ctrl+C does no longer kill MsgEd.
 

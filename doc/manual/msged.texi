@@ -33,7 +33,8 @@ Fidonet Message Reader and Editor Software for OS/2, DOS and Unix.
 
 @menu
 * Overview::                    What is @value{MSGED}?
-* Introduction::                @value{MSGED} for beginners. 
+* Installation::                Installation and Release Notes. @emph{Read this!}
+* Introduction::                Using @value{MSGED}. A guide for beginners. 
 * Advanced Concepts::           Advanced features and concepts.
 * Keyboard Reference::          How to use and change the key combinations.
 * Configuration Reference::     Explanation of the configuration file.
@@ -42,7 +43,7 @@ Fidonet Message Reader and Editor Software for OS/2, DOS and Unix.
 @end menu
 @end ifinfo
 
-@node Overview, Introduction, Top, Top
+@node Overview, Installation, Top, Top
 @chapter An Overview on @value{MSGED} @value{VERSION}.
 
 @value{MSGED} is a message reader and editor software for Fidonet (and
@@ -74,11 +75,210 @@ possibly also be migrated to the mains team MsgEd over time. There is no
 "rivalry" between Kim and me, it is just that we have a little different
 goals in mind and therefore decided to maintain separate streams of MsgEd.
 
+@node Installation, Introduction, Overview, Top
+@chapter Installation Procedures and Release Notes
+This chapter provides you with information that is necessary to successfully
+install and use @value{MSGED}. Part of this chapter applies to all versions
+of @value{MSGED}, while some sections only apply to a particular operating
+system. If this is the case, the particular operating system is mentioned in
+the section title.
 
-@node Introduction, Advanced Concepts, Overview, Top
+You should carefully read this chapter because it might save you from a lot
+of pain, especially (but not only) when using @value{MSGED} in networked or
+UNIX environments.
+
+@menu
+* Distribution Archives::       
+* DOSish Installation::         
+* UNIX installation::           
+@end menu
+
+@node Distribution Archives, DOSish Installation, Installation, Installation
+@section Which Distribution Archives do I need?
+@value{MSGED} @value{VERSION} is shipped in various distribution
+archives. This section describes the contents of each. You normally do only
+need one file containing th executable and documentation for your platform,
+and maybe the file that contains the printable version of the documentation.
+
+@table @file
+@item MSGTE5_O.ZIP
+This archive contains an OS/2 executable, sample configuration files and a
+manual in OS/2 INF format.
+
+@item MSGTE5_D.ZIP
+This archive contains a 16-Bit DOS executable, sample configuration files and
+a manual in plain text format.
+
+@item MSGTE5_3.ZIP
+This archive contains a 32-Bit DPMI DOS executable, sample configuration
+files and a manual in plain text format.
+
+@item MSGTE5_W.ZIP
+This archive contains a Windows 32 bit executable that has been tested on
+Windows NT, but should also work wiht Windows 95, sample configuration files
+and a manual in HTML format.
+
+@item MSGTE5_L.ZIP
+This archive contains a statically linked, pre-compiled Linux executable,
+sample configuration files and a manual in HTML format.
+
+@item MSGTE5_M.ZIP
+This archive contains the manual for @value{MSGED} in Adobe Acrobat (PDF)
+format. If you intend to print the documentation of @value{MSGED} then you
+should get this file, because printing the PDF version of the manual using
+Adobe Acrobat Reader (which is available on www.adobe.com at no charge) will
+result in the best possible output that looks much nicer than if you would
+print the HTML or plain text documentations.
+
+@item MSGTE5_S.ZIP
+This archive contains the complete C source code for @value{MSGED},
+out-of-the-box makefiles for building @value{MSGED} on DOS, OS/2, Windows,
+and almost every imaginable Unix-like system (tested systems include Linux,
+FreeBSD and IBM AIX), sample configuration files, and the texinfo source code
+for the manual that can be used to build the manual in OS/2 INF, HTML, GNU
+info or DVI format. You will also need @file{SMAPISS.ZIP} if you intend to
+compile @value{MSGED} yourself.
+
+@item SMAPISS.ZIP
+This archive contains a snapshort of the source code level of the SMAPI
+(alternative Squish Message API) that has been used to compile the binary
+versions of @value{MSGED} @value{VERSION}. Note that bug reports for
+@value{MSGED} are only considered if you used exactly this version of the
+SMAPI to compile @value{MSGED} or a newer version obtained from the Linux
+Fidosoft Project. All other versions of the SMAPI (that is @file{SMAPI11.ZIP}
+through @file{SMAPI15.ZIP}) have severe bugs that make it impossible for this
+version of @value{MSGED} to function properly under all circumstances.
+
+@end table
+
+@emph{Attention:} Most of these ZIP-files contain subdirectories, so you
+should use the @samp{-d} option when unzipping them!
+
+@node DOSish Installation, UNIX installation, Distribution Archives, Installation
+@section Installation on OS/2, DOS or Windows
+
+@enumerate
+@item
+Obtain the distribution archive that contains the executable for your
+platform. (You might already have done this).
+
+@item
+Create a subdirectory like for example @file{C:\MSGED}, change into this
+subdiretory, and unzip the distribution archive. Be sure to use the @samp{-d}
+option when unzipping the archive, because some archives contain
+subdirectories. (You might already have done this).
+
+@item
+Rename the file @file{sample.cfg} to @file{msged.cfg} and modify it according
+to your needs with your favoruite text editor. @xref{Configuration Reference}
+for detailed descriptions of each keyword that can be used in this file.
+
+@item
+You should now refer to the platform specific release notes found later in
+this chapter before trying to start @value{MSGED}. They can save you from a lot
+of headaches ;-).
+@c FIXME add xrefs
+
+@item
+Optionally create an icon on your desktop or a batch file that starts the
+proper executable (@file{MSGEDP.EXE} for OS/2, @file{MSGEDNT.EXE} for Windows
+95/98/NT, @file{MSGED.EXE} for DOS, or @file{MSGED32.EXE} for 32-Bit DOS with
+DOS extender) with the directory you created (@file{C:\MSGED} in the example
+above) as working directory).
+
+@item
+Start @value{MSGED}.
+@end enumerate
+
+@node UNIX installation,  , DOSish Installation, Installation
+@section Installation on Linux, FreeBSD, or other Unixes
+If you are using Linux (or FreeBSD with the Linux compatibility libraries),
+you can get the Linux distribution archive which contains a pre-compiled
+binary. If you are running any other Unix you have to compile the source code
+on your own (which usually is not much of a problem).
+@c FIXME add xref
+The following describes the installation of the file from the Linux
+distribution archive. If you have compiled @value{MSGED} yourself, you will
+find the files that are mentioned below in slightly different locations (much
+in the doc/ subdirectory), but they are all present somewhere in the source
+code archive as well.
+
+@enumerate
+@item
+Create a temporary working directory and change into it:
+
+@example
+~ $ mkdir ~/msged-work
+~ $ cd ~/msged-work
+@end example
+
+@item
+Unzip the Linux distribution archive:
+
+@example
+~/msged-work $ unzip ~/msgte5_l.zip
+@end example
+
+@item
+The executable can be either installed system-globally in
+@file{/usr/local/bin} or some other location, or locally in the @file{~/bin}
+subdirectory of your home directory:
+
+@example
+~/msged-work $ su root
+Password:
+/home/someone/msged-work # cp msged /usr/local/bin
+/home/someone/msged-work # exit
+@end example
+
+@item
+At this time, for security reasons, each user that wants to use @value{MSGED}
+needs to have his individual configuration files in his home
+directory. Rename the file @file{sample.cfg} to @file{.msged} and copy it to
+your home directory:
+
+@example
+~/msged-work $ mv sample.cfg ~/.msged
+@end example
+
+@item
+You have to rename and move some other files as well:
+
+@example
+~/msged-work $ mv msghelp.dat ~/.msged.hlp
+~/msged-work $ mv sample.tpl ~/.msged.tpl
+~/msged-work $ mv scheme.004 ~/.msged.colors
+~/msged-work $ mv readmaps.dat ~/.msged.readmaps
+~/msged-work $ mv writmaps.dat ~/.msged.writmaps
+@end example
+
+@item
+Modify the configuration file @file{~/.msged} with your favourite text editor
+according to your needs. @xref{Configuration Reference} for detailed
+descriptions of each keyword that can be used in this file.
+
+@emph{Attention:} The sample configuration file contains a bunch of settings
+that are commented out by default and marked to be Unix specific. You must
+uncomment these settings if you want to use all features of @value{MSGED} on
+Unix!
+
+@item
+You should now refer to the Unix specific release notes found later in
+this chapter before trying to start @value{MSGED}. They can save you from a lot
+of headaches ;-).
+@c FIXME add xref
+
+@end enumerate
+
+@node Introduction, Advanced Concepts, Installation, Top
 @chapter A quick tour through @value{MSGED}
 This chapter will be supplied in a future revision of this
-document.
+document. It will provide an introduction for beginners on using
+@value{MSGED}.
+
+As long as this chapter is not provided, you must help yourself using the
+online help. Nearly everywhere in @value{MSGED}, you can press
+@kbd{Alt}-@kbd{H} to get a somewhat context sensitive help screen.
 
 @node Advanced Concepts, Keyboard Reference, Introduction, Top
 @chapter Advanced Concepts in @value{MSGED}
@@ -110,7 +310,7 @@ special characters via Fidonet.
 * Charset Kludges for the Impatient::  
 * Problems with Special Characters::  
 * Special Characters in Fidonet::  
-* @value{MSGED} and Special Characters::  
+* MsgEd TE and Special Characters::  
 @end menu
 
 @node Charset Kludges for the Impatient, Problems with Special Characters, Special Characters, Special Characters
@@ -120,8 +320,9 @@ The transmission of special characters is handled by FSC 0054 charset
 kludges. If you do not want to work into the technical details and just want
 to assure that your system complies to the standards, simply copy
 @file{READMAPS.DAT} and @file{WRITMAPS.DAT} into the directory you are
-starting @value{MSGED} from, put the following to the beginning of your
-config file:
+starting @value{MSGED} from (on Unix, move and rename them to
+@file{~/msged.readmaps} and @file{~/msged.writmaps}) and put the following to
+the beginning of your config file:
 
 @example
 OutputCharset IBMPC
@@ -158,7 +359,7 @@ Unix or Windows computer using special characters like accented letters or
 umlauts, you cannot expect it to be properly displayed on a DOS or OS/2
 computer, and vice versa, unless special measures are taken.
 
-@node Special Characters in Fidonet, @value{MSGED} and Special Characters, Problems with Special Characters, Special Characters
+@node Special Characters in Fidonet, MsgEd TE and Special Characters, Problems with Special Characters, Special Characters
 @subsection How has this problem been solved in Fidonet?
 This issue of special characters has been a problem for Fidonet in the past,
 but it has been solved by the Fidonet standard FSC 0054, so that you can now
@@ -195,14 +396,16 @@ character sets, everything that you typed in will look just the same on the
 receiver's screen than on yours, including all special characters that have
 been typed.
 
-@node @value{MSGED} and Special Characters,  , Special Characters in Fidonet, Special Characters
+@node MsgEd TE and Special Characters,  , Special Characters in Fidonet, Special Characters
 @subsection How do I configure @value{MSGED} to support FSC 0054?
 @value{MSGED} fully supports FSC 0054. The character set translation files
-are named @file{READMAPS.DAT} and @file{WRITMAPS.DAT}. You can enable character
-set translation support in @value{MSGED} by simply copying these files into
-the directory from which @value{MSGED} is started. If the files can be found
-and are valid, you will be notified that the FSC 0054 character set
-translation engine has been activated. 
+are named @file{READMAPS.DAT} and @file{WRITMAPS.DAT}. You can enable
+character set translation support in @value{MSGED} by simply copying these
+files into the directory from which @value{MSGED} is started. (On Unix, you
+have to move and rename them to @file{~/.msged.readmaps} and
+@file{~/msged.writmaps} instead. If the files can be found and are valid, you
+will be notified that the FSC 0054 character set translation engine has been
+activated when @value{MSGED} starts.
 
 It is important that you use the correct @file{READMAPS.DAT} and
 @file{WRITMAPS.DAT} files that have been shipped with the executable, because
