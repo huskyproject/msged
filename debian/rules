@@ -10,7 +10,7 @@ export DH_COMPAT=3
 export DEBIAN=1
 export PACKAGE=msged
 # Next Line to build debug-versions !
-export DEB_BUILD_OPTIONS=nostrip
+#export DEB_BUILD_OPTIONS=nostrip
 
 configure: configure-stamp
 configure-stamp:
@@ -35,14 +35,6 @@ clean:
 
 	# Add here commands to clean up after the build process.
 	-$(MAKE) clean
-	-rm -f configure-stamp
-	-rm -f build-stamp
-	-rm -rf debian/$(PACKAGE)
-	-rm -f debian/postinst.debhelper
-	-rm -f debian/postrm.debhelper
-	-rm -f debian/prerm.debhelper
-	-rm -f debian/substvars
-	-rm -f debian/files
 	dh_clean
 
 install: build
@@ -53,8 +45,6 @@ install: build
 
 	# Add here commands to install the package into debian/msged.
 	$(MAKE) install DESTDIR=$(CURDIR)/debian/msged
-	mkdir -p $(CURDIR)/debian/msged/usr/share/doc/msged/examples
-	cp doc/sample.* $(CURDIR)/debian/msged/usr/share/doc/msged/examples/
 
 
 # Build architecture-independent files here.
