@@ -2531,8 +2531,29 @@ static void parseconfig(FILE * fp)
             break;
 
         case CFG_AREAFILEFLAGS:
-            release(areafileflags);
-            areafileflags = xstrdup(value);
+            if (value != NULL)
+            {
+                if (areafileflags == NULL)
+                {
+                    areafileflags = xstrdup(value);
+                }
+                else
+                {
+                    areafileflags = xrealloc(areafileflags,
+                                             strlen(areafileflags) +
+                                             strlen(value) + 1 );
+                    s = areafileflags + strlen(areafileflags);
+                    
+                    for (; *value; value++)
+                    {
+                        if (strchr(areafileflags, *value) == NULL)
+                        {
+                            *s++ = *value;
+                            *s = '\0';
+                        }
+                    }
+                }
+            }
             break;
 
         case CFG_FREQAREA:
