@@ -72,6 +72,9 @@ Features:
 
 Fixes:
 
+- If you quota a mail from a person like Bill 'billy' Gates, the quote initals
+  will be BbG now (instead of B'G). mtt
+
 - Fixed bugs in the routine that allowed for redefinition of areas
   (i.E. manual redefition of files that previously have been imported
   from an areafile - sometimes it simply would not work).

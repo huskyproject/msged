@@ -1,13 +1,15 @@
 CC=	gcc
 CFLAGS=	-Wall -s
 CDEFS=	-DUNIX -DUSE_MSGAPI -DUSE_FIDOCONFIG -DUNAME=\"LNX\"
-COPT=	-O3 -fomit-frame-pointer -fstrength-reduce -m486
+COPT=	-O3 -fomit-frame-pointer -fstrength-reduce -m486 -ggdb
 MSGDIR= ../smapi
 FCDIR=  ../fidoconfig
 
 TARGET=	msged
-MSGAPI=	-L$(MSGDIR) -lsmapilnx
-FC= -L$(FCDIR) -lfidoconfig
+#MSGAPI=	-L$(MSGDIR) -lsmapilnx
+MSGAPI=-lsmapilnx
+#FC= -L$(FCDIR) -lfidoconfig
+FC= -lfidoconfig
 
 objs=   addr.o     \
 	ansi.o     \
