@@ -2342,3 +2342,4 @@ static int externalEditor(msg * m)
 
     return SAVE;
 }
+
