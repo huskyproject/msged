@@ -868,6 +868,7 @@ unsigned int TTGetKey(void)
                     break;
                 case 106:
                     ch = Key_C_F10;
+                    break;
                 case 110:
                     ch = Key_Del;
                     break;
