@@ -1097,12 +1097,12 @@ static void set_area_backend(int show_all, int newgrouparea, int newarea)
 void set_area(int newgrouparea)
 {
 
-    return set_area_backend(0, newgrouparea, group_getareano(newgrouparea));
+    set_area_backend(0, newgrouparea, group_getareano(newgrouparea));
 }
 
 void set_nongrouped_area(int newarea)
 {
-    return set_area_backend(1, 0, newarea);
+    set_area_backend(1, 0, newarea);
 }
 
 
