@@ -506,7 +506,7 @@ char *pathcvt(char *path)
     {
         adaptcase(path);
     }
-            
+
     return path;
 }
 
@@ -1193,7 +1193,7 @@ void AddArea(AREA * a)
     {
         converted_path = xmalloc((l = strlen(a->path)) + 5);
         memcpy(converted_path, a->path, l + 1);
-        if (a->msgtype == SQUISH)  
+        if (a->msgtype == SQUISH)
         {
             /* we add the .sqd temporarily so that the case
                adaption on Unix works correctly, because it can
@@ -1760,6 +1760,7 @@ static void check_squish(char *areafile)
             a.addr.notfound = 1;
             a.tag = xstrdup(tokens[1]);
             a.description = xstrdup(tokens[1]);
+            a.path = xstrdup(tokens[2]);
 
             strupr(a.tag);
 
