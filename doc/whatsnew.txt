@@ -15,6 +15,9 @@ Features:
 
 Fixes:
 
+- Fix handling of CHARSET kludge and of CHRS kludge without "level".  Level
+  2 is now assumed as default.
+
 - Redraw problems in dialog box buttons fixed.
 
 Features, Changes and Fixes in Msged 6.0.0
