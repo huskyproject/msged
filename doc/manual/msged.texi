@@ -3983,6 +3983,17 @@ line. You absolutely @emph{must} leave this switch turned on, because origin
 lines are technically necessary for a smooth operation of the
 network. Default: On.
 
+@item PseudoGraphics
+@findex PseudoGraphics
+This switch is currently only of interest for the Unix version. If turned on,
+@value{MSGED} will query your termcap database to see if your terminal can
+draw nice pseudgraphics characters for frames around windows and dialog
+boxes, and if so, use them instead of the default "minus, plus, pipe" - style
+frames. However, on a lot of Unix configurations the termcap database
+contains false information about this capability, or the TERM variable is not
+properly set. Turning on the switch may or may not work on your
+system. Therfore, the default is: Off.
+
 @item QQuotes
 @findex QQuotes
 This switch controls how @value{MSGED} will modify the quote string when

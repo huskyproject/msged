@@ -66,7 +66,7 @@ void query_termcap(void)
 
     /* READ INFORMATION ON PSEUDO GRAPHICS CHARACTERS */
 
-    if ((termname = getenv("TERM")) != NULL)
+    if ((termname = getenv("TERM")) != NULL && SW->blockgraphics)
     {
         /* The Linux people are idiots, can't even get their termcap right */
         if (!strcmp(termname, "linux") ||

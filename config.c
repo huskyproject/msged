@@ -330,6 +330,7 @@ static char *cfgswitches[] =
     "SquishLock",
     "Carthy",
     "DirectList",
+    "PseudoGraphics",
     NULL
 };
 
@@ -381,6 +382,7 @@ static char *cfgswitches[] =
 #define CFG_SW_SQUISH_LOCK          45
 #define CFG_SW_CARTHY               46
 #define CFG_SW_DIRECTLIST           47
+#define CFG_SW_PSEUDOGRAPHICS       48
 
 #ifdef UNIX
 #include <sys/types.h>
@@ -949,6 +951,10 @@ void AssignSwitch(char *swtch, int OnOff)
 
     case CFG_SW_DIRECTLIST:
         SW->direct_list = OnOff;
+        break;
+
+    case CFG_SW_PSEUDOGRAPHICS:
+        SW->blockgraphics = OnOff;
         break;
 
     default:

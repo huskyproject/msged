@@ -413,6 +413,7 @@ struct _swv
     int direct_list;            /* jump directly to message listing mode */
     int areadesc;               /* how to build areadesc from areafile */
     int areadefinesuser;        /* the selected area defines the username */
+    int blockgraphics;          /* use block graphics for drawing frames */
 };
 
 #ifndef INCL_MAIN

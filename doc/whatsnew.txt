@@ -97,7 +97,8 @@ Features:
 
 - The UNIX version now draws pseudographics (instead of the ugly minus plus
   pipe graphics that was used previously) if the termcap entry suggests that
-  the terminal can do it. Looks much nicer than before.
+  the terminal can do it. Looks much nicer than before. You must add
+  "switch pseudographics on" to your config file to enable this.
 
 [ - JAM Support. Still experimental. Thanks to Fedor Lizunkov. ]
 [ JAM SUPPORT DOES NOT WORK YET! DO NOT USE IT! ]
