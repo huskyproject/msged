@@ -341,7 +341,7 @@ char *translate_text (const char *text, LOOKUPTABLE *table)
     {
        if (maxlength != 0)
        {
-          memmove (translated, text, maxlength);
+          memcpy (translated, text, maxlength);
        }
        translated[maxlength] = 0;
        return translated;
