@@ -306,8 +306,14 @@ int collect_events(int delay)
 
 int TTkopen(void)
 {
+    DWORD cmode;
+
     HInput = GetStdHandle(STD_INPUT_HANDLE);
     HOutput = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    GetConsoleMode(HInput, (LPDWORD)&cmode);
+    SetConsoleMode(HInput, cmode & (~ENABLE_PROCESSED_INPUT));
+    
     return 0;
 }
 
