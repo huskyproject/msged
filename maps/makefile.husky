@@ -106,11 +106,11 @@ install: maps
 	$(INSTALL) $(IIOPT) writmaps.is1 $(CFGDIR)
 	$(INSTALL) $(IIOPT) writmaps.is5 $(CFGDIR)
 	$(INSTALL) $(IIOPT) writmaps.ukr $(CFGDIR)
-ifeq (OSTYPE, UNIX)
+ifeq ($(OSTYPE), UNIX)
 	$(LN) $(LNOPT) $(CFGDIR)$(DIRSEP)readmaps.is1 $(CFGDIR)$(DIRSEP)writmaps.dat
-	$(LN) $(LNOPT) $(CFGDIR)$(DIRSEP)writmaps.is1 $(CFGDIR)$(DIRSEP)writmaps.dat
+	$(LN) $(LNOPT) $(CFGDIR)$(DIRSEP)writmaps.is1 $(CFGDIR)$(DIRSEP)readmaps.dat
 else
 	$(LN) $(LNOPT) $(CFGDIR)$(DIRSEP)readmaps.437 $(CFGDIR)$(DIRSEP)writmaps.dat
-	$(LN) $(LNOPT) $(CFGDIR)$(DIRSEP)writmaps.437 $(CFGDIR)$(DIRSEP)writmaps.dat
+	$(LN) $(LNOPT) $(CFGDIR)$(DIRSEP)writmaps.437 $(CFGDIR)$(DIRSEP)readmaps.dat
 endif
 
