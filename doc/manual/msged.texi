@@ -30,9 +30,9 @@
 @ifinfo
 
 @dircategory Fidonet Software
-@c @direntry
-@c * Msged: (msged).               Msged is the message reader and editor.
-@c @end direntry
+@direntry
+* Msged: (msged).               Msged is the message reader and editor.
+@end direntry
 
 @node Top, Overview, (dir), (dir)
 @top @value{MSGED}
@@ -427,7 +427,7 @@ you can make @value{MSGED} read a different configuration file either by
 re-compiling @value{MSGED} and define the @code{MSGEDCFG} macro (this is also
 done automatically when you compile @value{MSGED} with @file{huskymak.cfg} -
 in this case the default location is @file{msged.cfg} in the @file{etc}
-subdirectory that you defined in @file{huskymak.cfg). Or you can simply
+subdirectory that you defined in @file{huskymak.cfg}. Or you can simply
 create a script that calls the @value{MSGED} binary with the @code{-c}
 command line option. Specify the desired file name directly behind the
 @code{-c}. 
