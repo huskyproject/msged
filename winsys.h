@@ -110,6 +110,11 @@ typedef struct _term
 }
 TERM;
 
+#ifdef _AIX     /* prevent a name clash with term.h */
+#define term msged_term
+#endif
+
+
 #ifndef TERMDEF
 extern TERM term;
 #endif
@@ -247,5 +252,6 @@ extern int wnd_force_monochrome;
 extern int wnd_bs_127;
 
 extern int window_resized;
+
 
 #endif

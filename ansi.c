@@ -72,7 +72,6 @@ void block_console(int min, int time)
 #include "unused.h"
 
 #ifdef UNIX
-#include <unistd.h>
 static int waiting = -1;
 #include "keys.h"
 

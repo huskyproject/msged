@@ -21,6 +21,7 @@
 #include "memextra.h"
 #include "config.h"
 #include "fconf.h"
+#include "version.h"
 
 #ifdef USE_FIDOCONFIG
 static void fc_copy_address(ADDRESS *a, s_addr *fc_a)
@@ -98,7 +99,7 @@ static void fc_add_area(s_area *fc_area, int netmail, int local)
 void check_fidoconfig(char *option_string)
 {
 #ifndef USE_FIDOCONFIG
-    printf("\r\aError! This version of "PROGRAM" has been compiled\n"
+    printf("\r\aError! This version of "PROG" has been compiled\n"
            "without support for the FIDOCONFIG standard.\n");
     exit(-1);
 #else
