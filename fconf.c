@@ -423,6 +423,7 @@ static void parse_fc_address(int check_type)
     if (check_type & 1) /* load settings */
     {
         alias = xrealloc(alias, (++SW->aliascount) * sizeof(ADDRESS));
+        memset(alias + SW->aliascount - 1, 0, sizeof(ADDRESS));
         copy_addr(alias + SW->aliascount - 1, &tmp);
     }
     release(tmp.domain);
