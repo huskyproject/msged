@@ -76,7 +76,11 @@
 #include "unused.h"
 #include "mctype.h"
 
-#include <smapi/msgapi.h>
+/* #include <smapi/msgapi.h> 
+   commented out on 2004-08-24 by tobi
+   seems to be not needed, but causes compilation problems under cygwin
+   if nobody needs this within the next few months, these lines
+   should be deleted altogether*/
 
 struct UFILES
 {

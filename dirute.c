@@ -13,6 +13,8 @@
 #include <assert.h>
 #include <ctype.h>
 
+#define __DIRUTE_C
+
 #if defined(__WATCOMC__) && defined(WINNT)
 #include <wtypes.h>
 #endif

@@ -25,9 +25,9 @@ CDEFS=-D$(OSTYPE) -DUSE_MSGAPI -DUSE_FIDOCONFIG -DUNAME=\"$(UNAME)\" \
       -DDEFAULT_CONFIG_FILE=$(MSGEDCFG)
 
 ifeq ($(SHORTNAME), 1)
-  LIBS= -L$(LIBDIR) -lfidoconf -lsmapi -lhuskylib
+  LIBS= -L$(LIBDIR) -lfidoconf -lsmapi -lhusky
 else
-  LIBS= -L$(LIBDIR) -lfidoconfig -lsmapi -lhuskylib
+  LIBS= -L$(LIBDIR) -lfidoconfig -lsmapi -lhusky
 endif
 
 TARGET=	msged$(EXE)
@@ -46,7 +46,10 @@ endif
 ifeq ($(OSTYPE), WINNT)
   osobjs=	winntscr$(OBJ)
 endif
-
+ifeq ($(OSTYPE), Cygwin)
+  osobjs= ansi$(OBJ) readtc$(OBJ)
+    OSLIBS=-ltermcap
+endif
 
 objs=   addr$(OBJ)     \
 	areas$(OBJ)    \
@@ -88,6 +91,7 @@ objs=   addr$(OBJ)     \
 	mxbt$(OBJ)     \
 	normalc$(OBJ)  \
 	nshow$(OBJ)    \
+	patmat$(OBJ)   \
 	quick$(OBJ)    \
 	quote$(OBJ)    \
 	readmail$(OBJ) \

@@ -18,7 +18,7 @@ char *tt_alternate_end = NULL;
 char *tt_showcursor = NULL;
 char *tt_hidecursor = NULL;
 
-#ifdef UNIX
+#if defined(UNIX) || defined(Cygwin)
 
 #define DEC_SPECIALS   "xqlkmjxqlkmja>< p^V&*"
 #define LINUX_SPECIALS   "\225\232\226\234\223\231\205\212\206\214\203\211*><!*^V&*"

@@ -33,7 +33,9 @@
 #include <conio.h>
 #endif
 
-#ifdef UNIX
+
+
+#if defined(UNIX) || defined(Cygwin)
 
 #include <termios.h>            /* struct winsize */
 #include <sys/ioctl.h>          /* ioctl.h        */
@@ -76,7 +78,7 @@ void block_console(int min, int time)
 #include "winsys.h"
 #include "unused.h"
 
-#ifdef UNIX
+#if defined(UNIX) || defined(Cygwin)
 static int waiting = -1;
 #include "keys.h"
 
@@ -112,7 +114,7 @@ int coninit(void);
 void confin(void);
 #endif
 
-#ifdef UNIX
+#if defined(UNIX) || defined(Cygwin)
 volatile
 #endif
 TERM term =
@@ -593,9 +595,9 @@ unsigned int TTGetKey(void)
     int ch;
     
  skip:
-#if defined(OS2) || defined(WINNT)
+#if defined(OS2) || (defined(WINNT) && !defined(Cygwin))
     ch = getch();
-#elif defined(UNIX)
+#elif defined(UNIX) || defined(Cygwin)
     if (waiting != -1)
     {
         ch = waiting;
@@ -613,7 +615,7 @@ unsigned int TTGetKey(void)
     ch = getkey();
 #endif
 
-#ifdef UNIX
+#if defined(UNIX) || defined(Cygwin)
     if (ch >= 127)    /* Treat special characters */
     {
         int assume_meta_key = 1;
@@ -1350,7 +1352,7 @@ static void collect_events(int block)
 {
     int msg;
 
-#ifdef UNIX
+#if defined(UNIX) || defined(Cygwin)
     while (block)
     {
         if (setjmp(jmpbuf))
@@ -1380,7 +1382,7 @@ static void collect_events(int block)
     }
 #endif
     if (mykbhit()
-#ifndef UNIX
+#if ((!defined(UNIX)) && (!defined(Cygwin)))
         || block
 #endif        
         )
@@ -1391,7 +1393,7 @@ static void collect_events(int block)
         
 }
 
-#ifdef UNIX
+#if defined(UNIX) || defined(Cygwin)
 void sigwinch_handler(int sig)
 {
     int newcol, newrow, i, x, y;
@@ -1464,7 +1466,7 @@ int TTkopen(void)
 {
     int x;
 
-#ifdef UNIX
+#if defined(UNIX) || defined(Cygwin)
     struct termios tios;
     struct winsize w;
 
@@ -1485,7 +1487,7 @@ int TTkopen(void)
     coninit();
 #endif
 
-#ifdef UNIX
+#if defined(UNIX) || defined(Cygwin)
     tcgetattr(0, &tios);
     oldtios = tios;
     tios.c_lflag &= ~(ICANON | ISIG);
@@ -1518,12 +1520,12 @@ int TTkopen(void)
     }
 
 #if 1
-#ifdef UNIX
+#if defined(UNIX) || defined(Cygwin)
     signal (SIGWINCH, sigwinch_handler);    
 #endif
 #endif
 
-#ifdef UNIX
+#if defined(UNIX) || defined(Cygwin)
     query_termcap(tcflags);
 #endif    
 
@@ -1572,7 +1574,7 @@ int TTkclose(void)
 #else
     fputs("\033[0m\033[1;1H\033[J", stdout); 
 #endif
-#ifdef UNIX
+#if defined(UNIX) || defined(Cygwin)
     signal (SIGWINCH, SIG_DFL);
     tcsetattr(0, TCSANOW, &oldtios);
 #endif
@@ -1729,7 +1731,7 @@ static int mykbhit(void)
 
 #ifdef SASC
     ret = akbhit();
-#elif defined UNIX
+#elif defined(UNIX) || defined(Cygwin)
 
 
     if (waiting == -1)

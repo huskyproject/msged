@@ -3,6 +3,10 @@
 
 /* released to the public domain */
 
+#ifdef patmat
+#undef patmat
+#endif
+
 int patmat(char *raw, char *pat);
 
 #endif

@@ -124,7 +124,7 @@ TERM;
 
 
 #ifndef TERMDEF
-#ifdef UNIX
+#if defined(UNIX) || defined(Cygwin)
 volatile
 #endif
 extern TERM term;

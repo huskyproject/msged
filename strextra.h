@@ -10,7 +10,9 @@
 #ifndef __STREXTRA_H__
 #define __STREXTRA_H__
 
-#include <huskylib/compiler.h>
+#ifndef __DIRUTE_C
+#include <huskylib/compiler.h> 
+#endif
 
 #ifdef __MINGW32
 #define strncmpi _strncmpi
