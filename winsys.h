@@ -84,6 +84,13 @@
 #define _WHITE            0xF0     /* Blink/light white     */
 #define _BLINK            0x80     /* Blink/intensity bit   */
 
+#define F_NORMAL         0x000     /* Normal Font    */
+#define F_ALTERNATE      0x100     /* Alternate Font */
+
+#define MAKECELL(ch, at) ((unsigned long)(((unsigned long)((unsigned char)ch)) | \
+                                          (((unsigned long)(at)) << 16)))
+                                         
+
 /* hotspot related stuff */
 
 #define MAX_HOTS          30       /* max # of hot spots per group */
@@ -133,7 +140,7 @@ typedef struct _window
     unsigned char battr;        /* border background attr */
     unsigned char flags;        /* SHADOW DBDR SBDR IBDR TITLE */
     char *title;                /* pointer to title memory */
-    unsigned short **buffer;    /* screen save buffer (screen behind) */
+    unsigned long **buffer;    /* screen save buffer (screen behind) */
     struct _window *next;       /* pointer to window above this one */
     struct _window *prev;       /* pointer to window below this one */
 }
@@ -194,33 +201,33 @@ HotGroup;
  *  system-dependant module should provide these functions.
  */
 
-int TTScolor(unsigned int Attr);
-int TTopen(void);
-int TTclose(void);
-int TTkopen(void);
-int TTkclose(void);
-int TTCurSet(int);
-int TTgotoxy(int row, int col);
-int TTgetxy(int *row, int *col);
+int  TTScolor(unsigned int Attr);
+int  TTopen(void);
+int  TTclose(void);
+int  TTkopen(void);
+int  TTkclose(void);
+int  TTCurSet(int);
+int  TTgotoxy(int row, int col);
+int  TTgetxy(int *row, int *col);
 void TTEnableSCInput(char *special_characters);
-int TTGetChr(void);
-int TTPutChr(unsigned int Ch);
-int TTWriteStr(unsigned short *b, int len, int row, int col);
-int TTStrWr(unsigned char *s, int row, int col);
-int TTReadStr(unsigned short *b, int len, int row, int col);
-int TTClear(int x1, int y1, int x2, int y2);
-int TTScroll(int x1, int y1, int x2, int y2, int lines, int Dir);
-int TTEeol(void);
-int TTdelay(int mil);
-int TTGetMsg(EVT * event);
+int  TTGetChr(void);
+int  TTPutChr(unsigned int Ch);
+int  TTWriteStr(unsigned long *b, int len, int row, int col);
+int  TTStrWr(unsigned char *s, int row, int col);
+int  TTReadStr(unsigned long *b, int len, int row, int col);
+int  TTClear(int x1, int y1, int x2, int y2);
+int  TTScroll(int x1, int y1, int x2, int y2, int lines, int Dir);
+int  TTEeol(void);
+int  TTdelay(int mil);
+int  TTGetMsg(EVT * event);
 unsigned int TTGetKey(void);
-void MouseOFF(void);
-void MouseON(void);
-void MouseInit(void);
-void MouseClose(void);
-int GetMouInfo(int *x, int *y);
+void  MouseOFF(void);
+void  MouseON(void);
+void  MouseInit(void);
+void  MouseClose(void);
+int  GetMouInfo(int *x, int *y);
 void TTClearQue(void);
-int TTPeekQue(void);
+int  TTPeekQue(void);
 void TTBeginOutput(void); /* suppresses screen drawing until ... */
 void TTEndOutput(void);   /* .. ttendoutput is called. This improves speed! */ 
 

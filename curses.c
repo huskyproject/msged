@@ -21,6 +21,7 @@
 #include "winsys.h"
 #include "unused.h"
 #include "keys.h"
+#include "specch.h"
 
 int color;
 int vrow, vcol;
@@ -37,6 +38,10 @@ TERM term =
     24,
     0
 };
+
+char *tt_specials = "xqlkmjxqlkmja>< p^V\268*";
+
+/*    "|-****|-*****><!*^v&*" */
 
 #define EBUFSZ 100
 static EVT EVent[EBUFSZ];	/* event circular queue */
@@ -131,9 +136,16 @@ int TTScolor(unsigned int newcolor)
             attr |= A_BLINK;
 	attr |= COLOR_PAIR(((color & 0x07) | ((color & 0x70) >> 1)));
     }
-        
+
+#ifdef A_ALTCHARSET
+    if (color & F_ALTERNATE)
+    {
+        attr |= A_ALTCHARSET;
+    }
+#endif
+
     attrset(attr);
-    bkgdset(attr);
+    bkgdset(attr & (~A_ALTCHARSET));
     
     return 1;
 }
@@ -169,7 +181,7 @@ int TTPutChr(unsigned int ch)
     return 1;
 }
 
-int TTWriteStr(unsigned short *b, int len, int row, int col)
+int TTWriteStr(unsigned long *b, int len, int row, int col)
 {
     int oldcol = color;
     int cut = 0;
@@ -177,8 +189,8 @@ int TTWriteStr(unsigned short *b, int len, int row, int col)
     move(row, col);
     for (; len; len--, b++)
     {
-        int ch = *b & 0xff;
-        int col = (*b & 0xff00) >> 8;
+        int ch = (int)  (*b & 0x000000ffUL);
+        int col = (int)((*b & 0xffff0000UL) >> 16);
         int y, i;
 
         /* control chars are written in ^X notation */
@@ -279,20 +291,22 @@ int TTStrWr(unsigned char *s, int row, int col)
     return 1;
 }
 
-int TTReadStr(unsigned short *b, int len, int row, int col)
+int TTReadStr(unsigned long *b, int len, int row, int col)
 {
     while(len--)
     {
         int ch;
-        unsigned short cell;
+        unsigned long cell;
         
         ch = mvinch(row, col);
         cell = ch & A_CHARTEXT;
         if (ch & (A_DIM | A_BOLD))
-            cell |= 0x0800;
+            cell |= 0x080000;
         if (ch & A_BLINK)
-            cell |= 0x8000;
-        cell |= (ch & 0x0700) | ((ch & 0x7000) << 1);
+            cell |= 0x800000;
+        if (ch & A_ALTCHARSET)
+            cell |= (((unsigned long)F_ALTERNATE) << 16);
+        cell |= (((ch & 0x0700) | ((ch & 0x7000) << 1))) << 8;
         
         *b++ = cell;
         col++;
@@ -323,12 +337,12 @@ int TTScroll(int x1, int y1, int x2, int y2, int lines, int dir)
 #else
     int y;
     int width = x2 - x1 + 1;
-    unsigned short* buf;
+    unsigned long* buf;
     
     if (lines <= 0)
         return 0;
     
-    buf = malloc(width*sizeof(unsigned short));
+    buf = malloc(width*sizeof(unsigned long));
     if (buf == NULL)
         return 0;
     
@@ -419,22 +433,13 @@ static unsigned meta_digits[] =
     Key_A_5, Key_A_6, Key_A_7, Key_A_8, Key_A_9
 };
 
-#define resize_code 9999
-
 unsigned int TTGetKey(void)
 {
     int ch;
 
-
-redo:
-
     ch = getch();
     switch (ch)
     {
-#ifdef KEY_RESIZE
-    case KEY_RESIZE:
-        return resize_code;
-#endif
     case KEY_LEFT:
         return Key_Lft;
     case KEY_RIGHT:
@@ -659,14 +664,6 @@ int TTGetMsg(EVT * e)
     e->y = 0;
     e->msgtype = WND_WM_CHAR;
     e->id = 0;
-    if (e->msg == resize_code)
-    {
-        e->msg = 1;
-        e->msgtype = WND_WM_RESIZE;
-        term.NRow = getmaxy(stdscr);
-        term.NCol = getmaxx(stdscr);
-    }
-        
     return e->msg;
 }
 

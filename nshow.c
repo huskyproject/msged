@@ -141,7 +141,7 @@ void DrawHeader(void)
     WndClear(0, 1, maxx - 1, 4, cm[CM_NINF]);
 
     memset(line, SC8, maxx);  /* clear dividing line */
-    WndPutsn(0, 5, maxx, cm[CM_DTXT], line);
+    WndPutsn(0, 5, maxx, cm[CM_DTXT] | F_ALTERNATE, line);
 
     WndWriteStr(0, 1, cm[CM_FTXT], " From :");  /* header info */
     WndWriteStr(0, 2, cm[CM_FTXT], " To   :");
@@ -150,8 +150,14 @@ void DrawHeader(void)
 
     if (SW->statbar)
     {
+        int l;
         sprintf(line, " %s %s %c ", PROG, VERSION CLOSED, SC7);
-        WndPutsn(0, maxy - 1, maxx, cm[CM_ITXT], line);
+        l = strlen(line) - 2;
+
+        WndPutsn(0, maxy - 1, l, cm[CM_ITXT], line);
+        if (l < (maxx - 1))
+            WndPutsn(l, maxy - 1, (maxx - 1) - l, cm[CM_ITXT] | F_ALTERNATE,
+                     line + l);
     }
 
     TTEndOutput();
@@ -162,7 +168,6 @@ void DrawHeader(void)
  *  Clears the screen (only used with the list function to make it
  *  look better when it returns).
  */
-
 void ClearScreen(void)
 {
     if (SW->statbar)
@@ -204,7 +209,7 @@ void ShowNewArea(void)
 
         WndClear(0, 0, maxx - 29, 0, cm[CM_NINF]);
         memset(line, SC8, maxx + 1);  /* clear dividing line */
-        WndPutsn(0, 5, maxx, cm[CM_DTXT], line);
+        WndPutsn(0, 5, maxx, cm[CM_DTXT] | F_ALTERNATE, line);
         WndWriteStr(2, 0, cm[CM_NINF], tmpbuf);
         if (SW->showaddr)
         {
@@ -450,8 +455,13 @@ void ShowMsgHeader(msg * m)
 
     if (SW->statbar)
     {
+        int l;
         sprintf(line, " %s %s %c ", PROG, VERSION CLOSED, SC7);
-        WndPutsn(0, maxy - 1, maxx - 1, cm[CM_ITXT], line);
+        l = strlen(line);
+        WndPutsn(0, maxy - 1, l - 2, cm[CM_ITXT], line);
+        if (l - 2 < maxx - 1)
+            WndPutsn(l - 2, maxy - 1, (maxx - 1) - (l - 2),
+                     cm[CM_ITXT] | F_ALTERNATE, line + (l - 2));
         WndClear(maxx - 1, maxy - 1, maxx - 1, maxy - 1,  cm[CM_ITXT]); 
     }
     if (!m)
@@ -489,8 +499,16 @@ void ShowMsgHeader(msg * m)
     }
     else
     {
-        WndPutsn((strlen(PROG) + strlen(VERSION CLOSED) + 6), maxy - 1, 18,
-          cm[CM_ITXT], line);
+        int l = strlen(line);
+
+        WndPutsn((strlen(PROG) + strlen(VERSION CLOSED) + 6), maxy - 1,
+                  l - 1, cm[CM_ITXT], line);
+        if (l - 1 < 18)
+        {
+            WndPutsn((strlen(PROG) + strlen(VERSION CLOSED) + 6 + (l - 1)),
+                     maxy - 1, 18 - (l - 1), cm[CM_ITXT] | F_ALTERNATE,
+                     line + (l - 1));
+        }
     }
 
     /*
@@ -502,7 +520,8 @@ void ShowMsgHeader(msg * m)
     if (SW->statbar)
     {
         sprintf(line, "%c %3ldK ", SC7, (long)(corerem() / 1024));
-        WndPutsn(maxx - 7, maxy - 1, 7, cm[CM_ITXT], line);
+        WndPutsn(maxx - 7, maxy - 1, 1, cm[CM_ITXT] | F_ALTERNATE, line);
+        WndPutsn(maxx - 6, maxy - 1, 6, cm[CM_ITXT], line + 1);
     }
 #endif
 
@@ -521,14 +540,16 @@ void ShowMsgHeader(msg * m)
 
     if (m->replyto)
     {
-        sprintf(line, "%6ld%c", m->replyto, SC15);
+        sprintf(line, "%6ld", m->replyto);
     }
     else
     {
         strcpy(line, "       ");
     }
-    line[7] = '\0';
+    line[6] = '\0';
     WndPrintf(maxx - 17, 2, cm[CM_FTXT], line);
+    WndPrintf(maxx - 11, 2, cm[CM_FTXT] | F_ALTERNATE,
+              "%c", (m->replyto) ? SC15: ' ');
 
     for (i = 0; i < 10; i++)
     {
@@ -545,17 +566,23 @@ void ShowMsgHeader(msg * m)
     if (rep && (r == 1))
     {
         sprintf(line, "%c%ld      ", SC14, rep);
+        line[8] = '\0';
+        WndPutsn(maxx - 10, 2, 1, cm[CM_FTXT] | F_ALTERNATE, line);
+        WndWriteStr(maxx - 9, 2, cm[CM_FTXT], line + 1);
     }
     else if (rep && (r > 1))
     {
         sprintf(line, "%c%c%ld     ", SC14, SC14, rep);
+        line[8] = '\0';
+        WndPutsn(maxx - 10, 2, 2, cm[CM_FTXT] | F_ALTERNATE, line);
+        WndWriteStr(maxx - 8, 2, cm[CM_FTXT], line + 2);
+
     }
     else
     {
         strcpy(line, "        ");
+        WndWriteStr(maxx - 10, 2, cm[CM_FTXT], line);
     }
-    line[8] = '\0';
-    WndWriteStr(maxx - 10, 2, cm[CM_FTXT], line);
 
     /* show the rest of the header information */
 
@@ -585,9 +612,8 @@ void PutLine(LINE * l, int y)
 {
     int Attr = (l->block) ? cm[CM_BTXT] : (l->quote) ? cm[CM_QTXT] : (l->hide) ? cm[CM_KTXT] : (l->templt) ? cm[CM_TTXT] : cm[CM_NTXT];
     char *s, *pcr, *plf;
-    static char buf[] =
-    {SC21, '\0'};
-
+    int len;
+    
     strcpy(line, l->text);
 
     pcr = strchr(line, '\r');
@@ -618,13 +644,37 @@ void PutLine(LINE * l, int y)
         {
             *s = '\0';
         }
+        len = s - line;
     }
-    if (SW->showeol && SW->showcr)
+    else
     {
-        strcat(line, buf);
+        len = strlen(line);
     }
-
-    WndPutsn(0, y, maxx, Attr, line);
+    if (len)
+    {
+        if (len > maxx)
+        {
+            len = maxx;
+        }
+        WndPutsn(0, y, len, Attr, line);
+    }
+    if (SW->showcr)
+    {
+        if (line[len] && len < maxx)
+        {
+            WndPutsn(len, y, 1, Attr | F_ALTERNATE, line + len);
+            len++;
+        }
+        if (SW->showeol && len < maxx)
+        {
+            WndPrintf(len, y, Attr | F_ALTERNATE, "%c", SC21);
+            len++;
+        }
+    }
+    if (len < maxx)
+    {
+        WndPutsn(len, y, maxx - len, Attr, " ");
+    }
 }
 
 void MsgScroll(int Dir)

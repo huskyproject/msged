@@ -10,7 +10,7 @@
  *  The mouse thread polls the OS/2 mouse subsystem - I know it *should*
  *  be blocked, but unfortunately a thread that is blocked cannot be
  *  killed and we have to explicitly release the mouse control for the
- *  current screen group (when we exit), if another aplication wants to
+ *  current screen group (when we exit), if another application wants to
  *  be able to use the mouse.
  *
  *  The keyboard thread is blocked and only sends events when a key is
@@ -19,6 +19,7 @@
 
 #include "winsys.h"
 #include "memextra.h"
+#include "specch.h"
 
 #define TERMDEF 1
 
@@ -44,6 +45,9 @@
 #ifndef KBDTRF_FINAL_CHAR_IN
 #define KBDTRF_FINAL_CHAR_IN FINAL_CHAR_IN
 #endif
+
+/* codepage 437 / 850 block graphics */
+char *tt_specials="\272\315\311\273\310\274\263\304\332\277\300\331\261\020\021\334\337\030\031\024\035\000";
 
 TERM term =
 {
@@ -76,7 +80,7 @@ void TTEndOutput(void) {}
 
 int TTScolor(unsigned int Attr)
 {
-    color = Attr;
+    color = Attr & 0xFF; /* we don't need the F_ALTERNATE attribute! */
     return 1;
 }
 
@@ -151,19 +155,25 @@ int TTPutChr(unsigned int Ch)
     return 1;
 }
 
-int TTWriteStr(unsigned short *b, int len, int row, int col)
+int TTWriteStr(unsigned long *b, int len, int row, int col)
 {
     unsigned short *ptr16;
+    int i;
 
     if (len == 0)
     {
         return 1;
     }
 
-    ptr16 = xmalloc16((short)(len *2));
+    ptr16 = xmalloc16((short)(len * 2));
 
-    memmove(ptr16, b, (len *2));
-    VioWrtCellStr((PCH) ptr16, (short)(len * 2), (short)row, (short)col, 0);
+    for (i = 0; i < len; i++)
+    {
+        ptr16[i] =
+            (unsigned short)((b[i] & 0xFFUL) | ((b[i] >> 8) & 0xFF00UL));
+    }
+
+    VioWrtCellStr((PCH) ptr16, (short)(len * 2), (short)row, (short)col & 0xFF, 0);
     xfree16(ptr16);
 
     return 1;
@@ -188,10 +198,11 @@ int TTStrWr(unsigned char *s, int row, int col)
     return 1;
 }
 
-int TTReadStr(unsigned short *b, int len, int row, int col)
+int TTReadStr(unsigned long *b, int len, int row, int col)
 {
     unsigned short l = (short)(len * 2);
-    unsigned char *ptr16;
+    unsigned short *ptr16;
+    int i;
 
     if (l == 0)
     {
@@ -199,7 +210,10 @@ int TTReadStr(unsigned short *b, int len, int row, int col)
     }
     ptr16 = xmalloc16(l);
     VioReadCellStr((PCH) ptr16, &l, (short)row, (short)col, 0);
-    memmove(b, ptr16, l);
+    for (i = 0; i < len; i++)
+    {
+        b[i] = MAKECELL((ptr16[i] & 0xFF), ((ptr16[i] >> 8) & 0xFF));
+    }
     xfree16(ptr16);
 
     return 1;

@@ -38,7 +38,7 @@ char *MakeButton(button * b, int sel)
 void ShowButton(button * b)
 {
     char *s;
-    static unsigned char ublock[2] = {SC16, '\0'};
+    static unsigned char ublock[2] = {'\0', '\0'};
     int len;
     unsigned char attr;
 
@@ -55,17 +55,22 @@ void ShowButton(button * b)
 
     if (!b->down)
     {
-        WndWriteStr(b->x, b->y, attr, s);
-        WndWriteStr(b->x + len, b->y, b->battr, (char *)ublock);
+        WndPutsn(b->x, b->y, 1, attr | F_ALTERNATE, s);
+        WndPutsn(b->x + 1, b->y, len - 2, attr, s + 1);
+        WndPutsn(b->x + len - 1, b->y, 1, attr | F_ALTERNATE, s + len - 1);
+        ublock[0] = SC16;
+        WndWriteStr(b->x + len, b->y, b->battr | F_ALTERNATE, (char *)ublock);
 
         memset(text, SC17, sizeof(text));
         *(text + len) = '\0';
+        WndPutsn(b->x + 1, b->y + 1, len, b->battr | F_ALTERNATE, text);
 
-        WndPutsn(b->x + 1, b->y + 1, len, b->battr, text);
     }
     else
     {
-        WndWriteStr(b->x + 1, b->y, attr, s);
+        WndPutsn(b->x, b->y, 1, attr | F_ALTERNATE, s);
+        WndPutsn(b->x + 1, b->y, len - 2, attr, s + 1);
+        WndPutsn(b->x + len - 1, b->y, 1, attr | F_ALTERNATE, s + len - 1);
         WndWriteStr(b->x, b->y, b->battr, " ");
 
         memset(text, ' ', sizeof(text));

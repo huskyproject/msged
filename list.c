@@ -181,11 +181,13 @@ static void showit(MLHEAD * h, int y, int sel)
     unsigned long msgn;
     char line[384];
     char msgnbuf[9];
+    int l;
 
     TTBeginOutput();
 
     msgn = SW->showrealmsgn ? h->umsgid : h->msgnum;
     sprintf(msgnbuf, "%5ld %c", msgn, h->sel ? SC14 : ' ');
+    l = strlen(msgnbuf - 1);
 
     if (long_subj)
     {
@@ -201,16 +203,34 @@ static void showit(MLHEAD * h, int y, int sel)
 
     if (sel)
     {
-        WndPutsn(1, y, maxx - 2, cm[LS_STXT], line);
+        if (l > 1)
+            WndPutsn(1, y, l - 1, cm[LS_STXT], line);
+        if (l)
+            WndPutsn(l, y, 1, cm[LS_STXT] | F_ALTERNATE, line + l);
+        if (l + 1 < maxx - 2)
+            WndPutsn(l + 1, y, (maxx - 2) - (l + 1), cm[LS_STXT] | F_ALTERNATE,
+                     line + l + 1);
     }
     else if (stricmp(h->to_name, ST->username) == 0 ||
       stricmp(h->fr_name, ST->username) == 0)
     {
-        WndPutsn(1, y, maxx - 2, cm[LS_ITXT], line);
+        if (l > 1)
+            WndPutsn(1, y, l - 1, cm[LS_ITXT], line);
+        if (l)
+            WndPutsn(l, y, 1, cm[LS_ITXT] | F_ALTERNATE, line + l);
+        if (l + 1 < maxx - 2)
+            WndPutsn(l + 1, y, (maxx - 2) - (l + 1), cm[LS_ITXT] | F_ALTERNATE,
+                     line + l + 1);
     }
     else
     {
-        WndPutsn(1, y, maxx - 2, cm[LS_NTXT], line);
+        if (l > 1)
+            WndPutsn(1, y, l - 1, cm[LS_NTXT], line);
+        if (l)
+            WndPutsn(l, y, 1, cm[LS_NTXT] | F_ALTERNATE, line + l);
+        if (l + 1 < maxx - 2)
+            WndPutsn(l + 1, y, (maxx - 2) - (l + 1), cm[LS_NTXT] | F_ALTERNATE,
+                     line + l + 1);
     }
 
     TTEndOutput();
@@ -644,7 +664,9 @@ begin:
             char line[255];
             sprintf(line, "%c %3ldK ", SC7, (long)(corerem() / 1024));
             WndCurr(WndTop());
-            WndPutsn(maxx - 7, maxy - 1, 7, cm[CM_ITXT], line);
+            WndPutsn(maxx - 7, maxy - 1, 1, cm[CM_ITXT] | F_ALTERNATE,
+                     line + 1);
+            WndPutsn(maxx - 6, maxy - 1, 6, cm[CM_ITXT], line + 1);
             WndCurr(hWnd);
         }
 #endif
@@ -654,17 +676,20 @@ begin:
         if (long_subj)
         {
             char tmp[8];
+
+            WndWriteStr(25, 0, cm[LS_TTXT], "Subject");
+
             memset(tmp, SC8, 7);
             *(tmp + 7) = '\0';
-            WndWriteStr(25, 0, cm[LS_TTXT], "Subject");
-            WndWriteStr(41, 0, cm[LS_BTXT], tmp);
+            WndWriteStr(41, 0, cm[LS_BTXT] | F_ALTERNATE, tmp);
         }
         else
         {
             char tmp[8];
+
             memset(tmp, SC8, 7);
             *(tmp + 7) = '\0';
-            WndWriteStr(25, 0, cm[LS_BTXT], tmp);
+            WndWriteStr(25, 0, cm[LS_BTXT] | F_ALTERNATE, tmp);
             WndWriteStr(25, 0, cm[LS_TTXT], "To");
             WndWriteStr(41, 0, cm[LS_TTXT], "Subject");
         }

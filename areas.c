@@ -59,7 +59,9 @@ void BuildList(char ***lst)
             {
                 unread = a->messages;
             }
-            sprintf(line, "%c%-*.*s", unread ? SC14 : ' ',
+
+            /* F_ALTERNATE for SC14 is set in SelShowItem */
+            sprintf(line, "%c%-*.*s", unread ? (SC14) : ' ',
               maxx - 25, maxx - 25, a->description);
             line[strlen(line)] = ' ';
             sprintf(line + maxx - 23, "%6lu%6lu%6lu",
@@ -90,7 +92,15 @@ static void SelShowItem(char *text, int y, int len, int Attr, int indent)
 
     strcpy(line + indent, text);
     line[sizeof(line)-1] = 0;
-    WndPutsn(1, y, len, Attr, line);
+    if (indent)
+    {
+        WndPutsn(1, y, indent, Attr, line);
+    }
+    WndPutsn(1 + indent, y, 1, Attr | F_ALTERNATE, line + indent);
+    if (len > (indent + 1))
+    {
+        WndPutsn(2 + indent, y, len - (indent + 1), Attr, line+indent+1);
+    }
 }
 
 static void SelShowPage(char **text, int top, int bot, int len, int pos, int Attr, int indent)

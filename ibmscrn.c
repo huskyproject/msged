@@ -24,10 +24,16 @@
 #include <dos.h>
 #endif
 
+#include <stdlib.h>
+
 #include "winsys.h"
 #include "vio.h"
 #include "dosasm.h"
 #include "unused.h"
+#include "specch.h"
+
+/* codepage 437 / 850 block graphics */
+char *tt_specials="\272\315\311\273\310\274\263\304\332\277\300\331\261\020\021\334\337\030\031\024\035\000";
 
 #define EBUFSZ 100
 #define TERMDEF 1
@@ -64,8 +70,8 @@ void TTEndOutput(void) {}
 int TTScolor(unsigned int Attr)
 {
     VIOsetfore(Attr & 0x000f);
-    VIOsetback((Attr & 0xfff0) / 0x10);
-    color = Attr;
+    VIOsetback((Attr & 0x00f0) / 0x10);
+    color = Attr & 0x00ff;
     return 0;
 }
 
@@ -133,20 +139,33 @@ int TTPutChr(unsigned int Ch)
     return 0;
 }
 
-int TTWriteStr(unsigned short *b, int len, int row, int col)
+int TTWriteStr(unsigned long *b, int len, int row, int col)
 {
-    VIOputr(col, row, len, 1, b);
+    unsigned short *buf = malloc(len * sizeof(unsigned short));
+    int i;
+
+    if (buf != NULL)
+    {
+        for (i = 0; i < len; i++)
+        {
+            buf[i] = 
+                (unsigned short)((b[i] & 0xFFUL) | ((b[i] >> 8) & 0xFF00UL));
+        }
+        
+        VIOputr(col, row, len, 1, buf);
+        free(buf);
+    }
     return 0;
 }
 
 int TTStrWr(unsigned char *s, int row, int col)
 {
-    unsigned short line[200];
+    unsigned long line[200];
     int i = 0;
 
     while (*s)
     {
-        line[i] = ((unsigned)*s & 0xff) | (color << 8);
+        line[i] = ((unsigned long)(*s) & 0xffUL) | (((unsigned long)color) << 16);
         s++;
         i++;
     }
@@ -154,9 +173,16 @@ int TTStrWr(unsigned char *s, int row, int col)
     return 0;
 }
 
-int TTReadStr(unsigned short *b, int len, int row, int col)
+int TTReadStr(unsigned long *b, int len, int row, int col)
 {
+    int i;
+    unsigned short * bc = (unsigned short *)b;
+
     VIOgetra(col, row, col + len - 1, row, b);
+    for (i = len - 1;  i >= 0; i--)
+    {
+        b[i] = MAKECELL((bc[i] & 0xFF), ((bc[i] >> 8) & 0xFF));
+    }
     return 0;
 }
 

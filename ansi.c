@@ -95,6 +95,9 @@ static unsigned meta_digits[] =
 };
 #endif
 
+#include "readtc.h"
+
+
 int vcol, vrow;                 /* cursor position         */
 int color = 7;                  /* current color on screen */
 int cur_start = 0;
@@ -123,7 +126,7 @@ TERM term =
     0
 };
 
-static unsigned char *scrnbuf, *colbuf;
+static unsigned int *scrnbuf, *colbuf;
 
 
 #define EBUFSZ 100
@@ -183,12 +186,9 @@ void TTEndOutput(void) {}
   
 int TTScolor(unsigned int Attr)
 {
-    color = Attr;
-
     if (wnd_force_monochrome)
     {
         printf ("%c%c0%sm",0x1b,0x5b,mono_colors[Attr&0x7F]);
-        return 1;
     }
     else
     {
@@ -205,15 +205,33 @@ int TTScolor(unsigned int Attr)
         }
         printf("%d;%dm", ansi_foreground_colors[Attr&0x7],
                ansi_background_colors[(Attr >> 4) & 0x7]);
-    
-        return 1;
     }
+    if ((Attr & F_ALTERNATE) && (!(color & F_ALTERNATE)) && tt_alternate_start)
+    {
+        fputs(tt_alternate_start, stdout);
+    }
+    else
+    if ((!(Attr & F_ALTERNATE)) && (color & F_ALTERNATE) && tt_alternate_end)
+    {
+        fputs(tt_alternate_end, stdout);
+    }
+    color = Attr;
+    return 1;
 }
 
 int TTCurSet(int st)
 {
-    unused(st);
-    return 0;
+    if (st && tt_showcursor)
+    {
+        fputs(tt_showcursor, stdout);
+        fflush(stdout);
+    }
+    else if (!st && tt_hidecursor)
+    {
+        fputs(tt_hidecursor, stdout);
+        fflush(stdout);
+    }
+    return 1;
 }
 
 static int TTgotoxy_noflush(int row, int col)
@@ -259,7 +277,7 @@ int TTgetxy(int *row, int *col)
 int TTPutChr(unsigned int Ch)
 {
     putchar(Ch & 0xff);
-    scrnbuf[vrow * term.NCol + vcol] = (Ch & 0xff);
+    scrnbuf[vrow * term.NCol + vcol] = (Ch & 0xffff);
     colbuf[vrow * term.NCol + vcol] = color;
     TTgotoxy(vrow, vcol);
     /*
@@ -274,7 +292,7 @@ int TTPutChr(unsigned int Ch)
     return 1;
 }
 
-int TTWriteStr(unsigned short *b, int len, int row, int col)
+int TTWriteStr(unsigned long *b, int len, int row, int col)
 {
     int x;
     int thiscol, oldcol = color, restorecol = 0;
@@ -286,8 +304,8 @@ int TTWriteStr(unsigned short *b, int len, int row, int col)
         {
             break;  /* don't write out of area */
         }
-        scrnbuf[vrow * term.NCol + vcol + x] = (*b & 0xff);
-        thiscol = (*b & 0xff00U) >> 8;
+        scrnbuf[vrow * term.NCol + vcol + x] = (*b & 0x0000ffffUL);
+        thiscol = (*b & 0xffff0000UL) >> 16;
         colbuf[vrow * term.NCol + vcol + x] = thiscol;
         if (thiscol != color)
         {
@@ -308,6 +326,8 @@ int TTWriteStr(unsigned short *b, int len, int row, int col)
 int TTStrWr(unsigned char *s, int row, int col)
 {
     size_t len;
+    int i;
+
     len = strlen((char *)s);
 
     if (row >= term.NRow || col >= term.NCol)
@@ -323,14 +343,18 @@ int TTStrWr(unsigned char *s, int row, int col)
     }
     
     TTgotoxy_noflush(row, col);
-    memcpy(&scrnbuf[vrow * term.NCol + vcol], s, len);
-    memset(&colbuf[vrow * term.NCol + vcol], color % 256, len);
+        
+    for (i = 0 ; i < len; i++)
+    {
+        scrnbuf[vrow * term.NCol + vcol + i] = s[i];
+        colbuf[vrow * term.NCol + vcol + i] = color;
+    }
     fputs(s, stdout);
     TTgotoxy(row, col + len);
     return 1;
 }
 
-int TTReadStr(unsigned short *b, int len, int row, int col)
+int TTReadStr(unsigned long *b, int len, int row, int col)
 {
     int x;
     if (row >= term.NRow || col >= term.NCol)
@@ -347,20 +371,29 @@ int TTReadStr(unsigned short *b, int len, int row, int col)
     for (x = 0; x < len; x++)
     {
         b[x] = scrnbuf[row * term.NCol + col + x];
-        b[x] |= (colbuf[row * term.NCol + col + x] << 8);
+        b[x] |= (((unsigned long)colbuf[row * term.NCol + col + x]) << 16);
     }
     return 1;
 }
 
 int TTScroll(int x1, int y1, int x2, int y2, int lines, int Dir)
 {
-    int y, x, x3, orgcolor;
+    int y, xp, x, x3, orgcolor;
     int diff = x2 - x1 + 1;
+    char *buffer;
 
+    buffer = malloc(diff);
+    if (buffer == NULL)
+    {
+        TTkclose();
+        fprintf (stderr, "Out of memory!\n");
+        abort();
+    }
 
     if (x1 < 0 || y1 <0 || x2 >= term.NCol || y2 >= term.NRow || lines<1)
     {
-            abort();
+        free(buffer);
+        abort();
         return 0;
     }
 
@@ -370,13 +403,19 @@ int TTScroll(int x1, int y1, int x2, int y2, int lines, int Dir)
         {
             for (y = y1; y < y2; y++)
             {
-                memcpy(&scrnbuf[y * term.NCol + x1],
-                       &scrnbuf[(y + 1) * term.NCol + x1], diff);
-                memcpy(&colbuf[y * term.NCol + x1],
-                       &colbuf[(y + 1) * term.NCol + x1], diff);
+                for (x = x1; x < x1 + diff; x++)
+                {
+                    scrnbuf[y * term.NCol + x] =
+                        scrnbuf[(y + 1) * term.NCol + x];
+                    colbuf[y * term.NCol + x] =
+                        colbuf[(y + 1) * term.NCol + x];
+                }
             }
-            memset(&scrnbuf[y2 * term.NCol + x1], ' ', diff);
-            memset(&colbuf[y2 * term.NCol + x1], color, diff);
+            for (x = x1; x < x1 + diff; x++)
+            {
+                scrnbuf[y2 * term.NCol + x] = ' ';
+                colbuf[y2 * term.NCol + x] = color;
+            }
         }
     }
     else
@@ -385,13 +424,19 @@ int TTScroll(int x1, int y1, int x2, int y2, int lines, int Dir)
         {
             for (y = y2; y > y1; y--)
             {
-                memcpy(&scrnbuf[y * term.NCol + x1],
-                       &scrnbuf[(y - 1) * term.NCol + x1], diff);
-                memcpy(&colbuf[y * term.NCol + x1],
-                       &colbuf[(y - 1) * term.NCol + x1], diff);
+                for (x = x1; x < x1 + diff; x++)
+                {
+                    scrnbuf[y * term.NCol + x] =
+                        scrnbuf[(y - 1) * term.NCol + x];
+                    colbuf[y * term.NCol + x] =
+                        colbuf[(y - 1) * term.NCol + x];
+                }
             }
-            memset(&scrnbuf[y1 * term.NCol + x1], ' ', diff);
-            memset(&colbuf[y1 * term.NCol + x1], color, diff);
+            for (x = x1; x < x1 + diff; x++)
+            {
+                scrnbuf[y1 * term.NCol + x] = ' ';
+                colbuf[y1 * term.NCol + x] = color;
+            }
         }
     }
     
@@ -400,7 +445,7 @@ int TTScroll(int x1, int y1, int x2, int y2, int lines, int Dir)
     for (y = y1; y <= y2; y++)
     {
         TTgotoxy_noflush(y, x1);
-        x = x3 = x1;
+        xp = x3 = x1;
         TTScolor(colbuf[y * term.NCol + x1]);
        
         while (x3 <= x2)
@@ -413,17 +458,24 @@ int TTScroll(int x1, int y1, int x2, int y2, int lines, int Dir)
                     continue;
                 }
             }
-            fwrite(&scrnbuf[y * term.NCol + x], x3 - x + 1, 1, stdout);
+
+            for (x = 0; x < x3-xp + 1; x++)
+            {
+                buffer[x] = scrnbuf[y * term.NCol + xp + x];
+            }
+            
+            fwrite(buffer, x3 - xp + 1, 1, stdout);
             if (x3 < x2)
             {
                 TTScolor(colbuf[y * term.NCol + x3 + 1]);
             }
-            x = ++x3;
+            xp = ++x3;
         }
     }
 
     TTScolor(orgcolor);
     TTgotoxy_noflush(y1, x1);
+    free(buffer);
     fflush(stdout);
     return 1;
 }
@@ -1278,7 +1330,7 @@ void sigwinch_handler(int sig)
 {
     int newcol, newrow, i, x, y;
     struct winsize w;
-    unsigned char *newbuf, *oldbuf;
+    unsigned int *newbuf, *oldbuf;
 
     ioctl(fileno(stderr), TIOCGWINSZ, &w);
     newcol = w.ws_col; newrow = w.ws_row;
@@ -1289,7 +1341,7 @@ void sigwinch_handler(int sig)
         {
                /* +3 to provide buffer for incorrect calls to the 
                   Win... routines if the window is very small */
-            newbuf = malloc((newcol + 3) * (newrow + 3));
+            newbuf = malloc((newcol + 3) * (newrow + 3) * sizeof(unsigned));
             oldbuf = i ? scrnbuf : colbuf;
             
             if (newbuf == NULL)
@@ -1344,6 +1396,8 @@ void sigwinch_handler(int sig)
 
 int TTkopen(void)
 {
+    int x;
+
 #ifdef UNIX
     struct termios tios;
     struct winsize w;
@@ -1382,23 +1436,30 @@ int TTkopen(void)
 #endif
                /* +3 to provide buffer for incorrect calls to the 
                   Win... routines if the window is very small */
-    scrnbuf = malloc((term.NRow + 3) * (term.NCol + 3));
-    colbuf = malloc((term.NRow + 3) * (term.NCol + 3));
+    scrnbuf = malloc((term.NRow + 3) * (term.NCol + 3) * sizeof(unsigned));
+    colbuf = malloc((term.NRow + 3) * (term.NCol + 3) * sizeof(unsigned));
     if (scrnbuf == NULL || colbuf == NULL)
     {
         TTkclose();
         fprintf (stderr, "Out of memory!\n");
         abort();
     }
-        
-    memset(scrnbuf, ' ', term.NRow * term.NCol);
-    memset(colbuf, 11, term.NRow * term.NCol);
+
+    for (x = 0; x < term.NRow * term.NCol; x++)
+    {
+        scrnbuf[x] = ' ';
+        colbuf[x] = 11;
+    }
 
 #if 1
 #ifdef UNIX
     signal (SIGWINCH, sigwinch_handler);    
 #endif
 #endif
+
+#ifdef UNIX
+    query_termcap();
+#endif    
 
     return 0;
 }
@@ -1438,6 +1499,7 @@ static void TTRepaint(void)
 
 int TTkclose(void)
 {
+    TTScolor(0x07);
 #ifdef SASC
     confin();
     fputs("\033[31m", stdout);

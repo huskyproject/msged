@@ -35,8 +35,15 @@
 #define YMOD(w) ((w->flags & INSBDR) ? 2 : ((w->flags & NBDR) ? 0 : 1))
 
 /* double and single border chars */
+/*
 unsigned char Dbdr[6] = {SC1, SC2, SC3, SC4, SC5, SC6};
 unsigned char Sbdr[6] = {SC7, SC8, SC9, SC10, SC11, SC12};
+*/
+
+#define Dbdr(x) SC(((x)+1))
+#define Sbdr(x) SC(((x)+7))
+#define Bdr(y,x) (((y) != SBDR) ? Dbdr((x)) : Sbdr((x)))
+
 
 int wnd_bs_127 = 0;           /* Is ASCII 127 backspace on ANSI console ? */
 int wnd_suppress_shadows = 0; /* do not suppress window shadows */
@@ -46,11 +53,10 @@ int wnd_force_monochrome = 1;
 int wnd_force_monochrome = 0; /* do not enforce monochrome output */
 #endif
 
-int FillChr = SC13;           /* fill char for fields */
 unsigned long wndid = 20;     /* unique window ID */
 WND *CW = NULL;               /* current window */
 
-static void WDrwBox(int x1, int y1, int x2, int y2, unsigned char *Bdrc, int Battr, int ins);
+static void WDrwBox(int x1, int y1, int x2, int y2, int Bdrt, int Battr, int ins);
 
 static char line[255];
 
@@ -76,7 +82,7 @@ int CheckMousePos(int x1, int y1, int x2, int y2)
 WND *WndOpen(int x1, int y1, int x2, int y2, int Bdr, int BAttr, int Attr)
 {
     WND *w;
-    unsigned short ch;
+    unsigned long ch;
     int i, k = 0;
     static int first_win = 1;
 
@@ -120,7 +126,7 @@ WND *WndOpen(int x1, int y1, int x2, int y2, int Bdr, int BAttr, int Attr)
 
     if ((!(Bdr & NOSAVE)) || (Bdr & SHADOW))
     {
-        w->buffer = xmalloc(sizeof(unsigned short *) * ((y2 - y1) + 2));
+        w->buffer = xmalloc(sizeof(unsigned long *) * ((y2 - y1) + 2));
 
         if (!w->buffer)
         {
@@ -129,7 +135,7 @@ WND *WndOpen(int x1, int y1, int x2, int y2, int Bdr, int BAttr, int Attr)
 
         for (i = y1; i <= y2; i++)
         {
-            w->buffer[k] = xmalloc(sizeof(unsigned short) * ((x2 - x1) + 2));
+            w->buffer[k] = xmalloc(sizeof(unsigned long) * ((x2 - x1) + 2));
             if (!w->buffer[k])
             {
                 return NULL;
@@ -152,22 +158,22 @@ WND *WndOpen(int x1, int y1, int x2, int y2, int Bdr, int BAttr, int Attr)
         k = 1;
         for (i = y1 + 1; i <= y2; i++)
         {
-            ch = (unsigned short)w->buffer[k][x2 - x1];
-            ch &= 0x00FF;
-            ch |= ((unsigned short)(DGREY | _BLACK) << 8);
+            ch = (unsigned long)w->buffer[k][x2 - x1];
+            ch &= 0xFF00FFFFUL;
+            ch |= ((unsigned long)(DGREY | _BLACK) << 16);
             TTWriteStr(&ch, 1, i, x2);
-            ch = (unsigned short)w->buffer[k][x2 - x1 - 1];
-            ch &= 0x00FF;
-            ch |= ((unsigned short)(DGREY | _BLACK) << 8);
+            ch = (unsigned long)w->buffer[k][x2 - x1 - 1];
+            ch &= 0xFF00FFFFUL;
+            ch |= ((unsigned long)(DGREY | _BLACK) << 16);
             TTWriteStr(&ch, 1, i, x2 - 1);
             k++;
         }
         k = y2 - y1;
         for (i = 2; i <= (x2 - x1); i++)
         {
-            ch = (unsigned short)w->buffer[k][i];
-            ch &= 0x00FF;
-            ch |= ((unsigned short)(DGREY | _BLACK) << 8);
+            ch = (unsigned long)w->buffer[k][i];
+            ch &= 0xFF00FFFFUL;
+            ch |= ((unsigned long)(DGREY | _BLACK) << 16);
             TTWriteStr(&ch, 1, y2, i + x1);
         }
     }
@@ -185,11 +191,11 @@ WND *WndOpen(int x1, int y1, int x2, int y2, int Bdr, int BAttr, int Attr)
     {
         if (Bdr & SBDR)
         {
-            WDrwBox(w->x1, w->y1, w->x2, w->y2, Sbdr, BAttr, Bdr & INSBDR ? 1 : 0);
+            WDrwBox(w->x1, w->y1, w->x2, w->y2, SBDR, BAttr, Bdr & INSBDR ? 1 : 0);
         }
         else
         {
-            WDrwBox(w->x1, w->y1, w->x2, w->y2, Dbdr, BAttr, Bdr & INSBDR ? 1 : 0);
+            WDrwBox(w->x1, w->y1, w->x2, w->y2, DBDR, BAttr, Bdr & INSBDR ? 1 : 0);
         }
     }
 
@@ -278,10 +284,10 @@ void WndClose(WND * w)
  *  WndDrwBox; Draws a box at the specified position. Internal function.
  */
 
-static void WDrwBox(int x1, int y1, int x2, int y2, unsigned char *Bdrc, int Battr, int ins)
+static void WDrwBox(int x1, int y1, int x2, int y2, int Bdrt, int Battr, int ins)
 {
     unsigned int i, width;
-    unsigned short cell, *pcell, *p;
+    unsigned long cell, *pcell, *p;
     int xmod = ins ? 2 : 0;
     int ymod = ins ? 1 : 0;
 
@@ -290,17 +296,18 @@ static void WDrwBox(int x1, int y1, int x2, int y2, unsigned char *Bdrc, int Bat
 
     /* write corner chars */
 
-    cell = (unsigned short)Bdrc[2] | (unsigned short)(Battr << 8);
+    cell = MAKECELL(Bdr(Bdrt,2), Battr | F_ALTERNATE);
     TTWriteStr(&cell, 1, y1 + ymod, x1 + xmod);
 
-    cell = (unsigned short)Bdrc[3] | (unsigned short)(Battr << 8);
+    cell = MAKECELL(Bdr(Bdrt,3), Battr | F_ALTERNATE);
     TTWriteStr(&cell, 1, y1 + ymod, x2 - xmod);
 
-    cell = (unsigned short)Bdrc[4] | (unsigned short)(Battr << 8);
+    cell = MAKECELL(Bdr(Bdrt,4), Battr | F_ALTERNATE);
     TTWriteStr(&cell, 1, y2 - ymod, x1 + xmod);
 
-    cell = (unsigned short)Bdrc[5] | (unsigned short)(Battr << 8);
+    cell = MAKECELL(Bdr(Bdrt,5), Battr | F_ALTERNATE);
     TTWriteStr(&cell, 1, y2 - ymod, x2 - xmod);
+
 
     /* write top & bottom horiziontal border chars */
 
@@ -309,7 +316,7 @@ static void WDrwBox(int x1, int y1, int x2, int y2, unsigned char *Bdrc, int Bat
     p = pcell;
     for (i = 0; i < width; i++)
     {
-        *p = (unsigned short)Bdrc[1] | (unsigned short)(Battr << 8);
+        *p = MAKECELL(Bdr(Bdrt,1), Battr | F_ALTERNATE);
         p++;
     }
     TTWriteStr(pcell, width, y1 + ymod, x1 + 1 + xmod);
@@ -318,7 +325,7 @@ static void WDrwBox(int x1, int y1, int x2, int y2, unsigned char *Bdrc, int Bat
 
     /* write left & right vertical border chars */
 
-    cell = (unsigned short)Bdrc[0] | (unsigned short)(Battr << 8);
+    cell = MAKECELL(Bdr(Bdrt,0), Battr | F_ALTERNATE);
     for (i = y1 + 1 + ymod; i < y2 - ymod; i++)
     {
         TTWriteStr(&cell, 1, i, x1 + xmod);
@@ -336,7 +343,7 @@ static void WDrwBox(int x1, int y1, int x2, int y2, unsigned char *Bdrc, int Bat
 void WndBox(int x1, int y1, int x2, int y2, int Attr, int type)
 {
     int xmod, ymod;
-    unsigned char *Bdrc = (type & DBDR) ? Dbdr : Sbdr;
+    int Bdrt = (type & DBDR) ? DBDR : SBDR;
 
     if (CW == NULL)
     {
@@ -351,7 +358,7 @@ void WndBox(int x1, int y1, int x2, int y2, int Attr, int type)
         return;
     }
 
-    WDrwBox(x1 + CW->x1 + xmod, y1 + CW->y1 + ymod, x2 + CW->x1 + xmod, y2 + CW->y1 + ymod, Bdrc, Attr, 0);
+    WDrwBox(x1 + CW->x1 + xmod, y1 + CW->y1 + ymod, x2 + CW->x1 + xmod, y2 + CW->y1 + ymod, Bdrt, Attr, 0);
 }
 
 /*
@@ -396,9 +403,9 @@ void WndTitle(const char *title, int Attr)
 {
     int cntr;
     int pos, i, len;
-    unsigned short ch;
+    unsigned long ch;
     int ymod;
-    unsigned char *Bdrc = Sbdr;
+    int Bdrt = SBDR;
     int m = 0;
 
     if (CW == NULL)
@@ -437,15 +444,15 @@ void WndTitle(const char *title, int Attr)
         {
             if (CW->flags & SBDR)
             {
-                Bdrc = Sbdr;
+                Bdrt = SBDR;
             }
             else
             {
-                Bdrc = Dbdr;
+                Bdrt = DBDR;
             }
         }
 
-        ch = (unsigned short)Bdrc[1] | (unsigned short)(CW->battr << 8);
+        ch = MAKECELL(Bdr(Bdrt,1), CW->battr | F_ALTERNATE);
         for (i = CW->x1 + 1; i < CW->x2; i++)
         {
             TTWriteStr(&ch, 1, CW->y1 + ymod, i);
@@ -834,7 +841,9 @@ int WndGetLine(int x, int y, int len, char *buf, int Attr, int *pos, int nokeys,
     int row = y, col = x;
     int xmod, ymod, i;
     unsigned int ch = 0;
-    unsigned char fill = (fil) ? (unsigned char)FillChr : (unsigned char) ' ';
+    unsigned char fill;
+
+    fill= (fil) ? SC13 : (unsigned char) ' ';
 
     if (CW == NULL)
     {
@@ -847,7 +856,7 @@ int WndGetLine(int x, int y, int len, char *buf, int Attr, int *pos, int nokeys,
     if (disp)
     {
         TTBeginOutput();
-        WndFillField(col, row, len + 1, fill, Attr);
+        WndFillField(col, row, len + 1, fill, Attr | F_ALTERNATE);
         WndPutsn(col, row, len, Attr, buf);
         TTEndOutput();
     }
@@ -913,14 +922,15 @@ int WndGetLine(int x, int y, int len, char *buf, int Attr, int *pos, int nokeys,
                         memmove(buf + i - 1, buf + i, strlen(buf + i) + 1);
                         i--;
                         WndWriteStr(col + i, row, Attr, buf + i);
-                        WndPrintf(col + strlen(buf), row, Attr, "%c", fill);
+                        WndPrintf(col + strlen(buf), row, Attr | F_ALTERNATE,
+                                  "%c", fill);
                     }
                     else
                     {
                         i--;
                         *(buf + i) = '\0';
                         WndGotoXY(i + col, row);
-                        WndPutc(fill, Attr);
+                        WndPutc(fill, Attr | F_ALTERNATE);
                     }
                     TTEndOutput();
                 }
@@ -932,7 +942,8 @@ int WndGetLine(int x, int y, int len, char *buf, int Attr, int *pos, int nokeys,
                     TTBeginOutput();
                     memmove(buf + i, buf + i + 1, strlen(buf + i + 1) + 1);
                     WndWriteStr(col + i, row, Attr, buf + i);
-                    WndPrintf(col + strlen(buf), row, Attr, "%c", fill);
+                    WndPrintf(col + strlen(buf), row, Attr | F_ALTERNATE,
+                              "%c", fill);
                     TTEndOutput();
                 }
                 break;
@@ -960,7 +971,8 @@ int WndGetLine(int x, int y, int len, char *buf, int Attr, int *pos, int nokeys,
                     if (nokeys)
                     {
                         strcpy(buf, "");
-                        WndFillField(col, row, len + 1, fill, Attr);
+                        WndFillField(col, row, len + 1, fill,
+                                     Attr | F_ALTERNATE);
                         i = 0;
                         WndGotoXY(i + col, row);
                     }

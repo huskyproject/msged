@@ -3532,6 +3532,7 @@ void opening(char *cfgfile, char *areafile)
     adapt_margins();
 
     hCurr = WndTop();
+
     hWnd = WndPopUp(42, 6, SBDR | SHADOW, cm[IN_BTXT], cm[IN_NTXT]);
 
     WndPutsCen(0, cm[IN_NTXT], PROG " Mail Reader");

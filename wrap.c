@@ -2326,7 +2326,6 @@ static void bytecount(void)
 
 static void toggle_ins(void)
 {
-    static unsigned char buf[4] = {SC8, SC8, SC8, '\0'};
     insert = !insert;
     if (insert)
     {
@@ -2334,7 +2333,10 @@ static void toggle_ins(void)
     }
     else
     {
-        WndWriteStr(maxx - 5, 5, cm[CM_DTXT], (char *)buf);
+        unsigned char buf[4];
+
+        buf[0]=SC8; buf[1]=SC8; buf[2]=SC8; buf[3]='\0';
+        WndWriteStr(maxx - 5, 5, cm[CM_DTXT] | F_ALTERNATE, (char *)buf);
     }
 }
 
@@ -2578,9 +2580,11 @@ static void UpdateXY(void)
     {
         sprintf(line, "%c X: %03d  Y: %03d", SC7, x, currline);
 #if defined(MSDOS)
-        WndPutsn(maxx - (17 + 16), maxy - 1, 16, cm[CM_ITXT], line);
+        WndPutsn(maxx - (17 + 16), maxy - 1, 1, cm[CM_ITXT] | F_ALTERNATE, line);
+        WndPutsn(maxx - (16 + 16), maxy - 1, 15, cm[CM_ITXT], line + 1);
 #else
-        WndPutsn(maxx - 17, maxy - 1, 16, cm[CM_ITXT], line);
+        WndPutsn(maxx - 17, maxy - 1, 1, cm[CM_ITXT] | F_ALTERNATE, line);
+        WndPutsn(maxx - 16, maxy - 1, 15, cm[CM_ITXT], line + 1);
 #endif
     }
 }
@@ -2597,7 +2601,8 @@ static void UpdateMem(void)
         {
             oldmem = mem;
             sprintf(line, "%c %3ldK ", SC7, (long)(corerem() / 1024));
-            WndPutsn(maxx - 7, maxy - 1, 7, cm[CM_ITXT], line);
+            WndPutsn(maxx - 7, maxy - 1, 1, cm[CM_ITXT] | F_ALTERNATE, line);
+            WndPutsn(maxx - 6, maxy - 1, 6, cm[CM_ITXT], line + 1);
         }
 #endif
     }
@@ -2608,7 +2613,6 @@ int editmsg(msg * m, int quote)
     EVT event;
     int editcrstate = 0;
     unsigned int ch;
-    static unsigned char buf[4] = {SC8, SC8, SC8, '\0'};
 
     x = 1;
     y = 1;
@@ -2771,7 +2775,10 @@ int editmsg(msg * m, int quote)
 
     if (insert)
     {
-        WndWriteStr(maxx - 5, 5, cm[CM_DTXT], (char *)buf);
+        unsigned char buf[4];
+        
+        buf[0]=SC8; buf[1]=SC8; buf[2]=SC8; buf[3]='\0';
+        WndWriteStr(maxx - 5, 5, cm[CM_DTXT] | F_ALTERNATE, (char *)buf);
     }
 
     if (SW->editcronly)

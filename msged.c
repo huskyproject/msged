@@ -1234,14 +1234,23 @@ static void scan_areas(int all)
     if (SW->statbar)
     {
         sprintf(line, "%c %3ldK ", SC7, (long)(corerem() / 1024));
-        WndPutsn(maxx - 7, maxy - 1, 7, cm[CM_ITXT], line);
+        WndPutsn(maxx - 7, maxy - 1, 1, cm[CM_ITXT] | F_ALTERNATE, line + 1);
+        WndPutsn(maxx - 6, maxy - 1, 6, cm[CM_ITXT], line + 1);
     }
 #endif
 
     if (SW->statbar && !SW->dmore)
     {
+        int l;
+
         sprintf(line, "%ld of %ld %c", CurArea.current, CurArea.messages, SC7);
-        WndPutsn((strlen(PROG) + strlen(VERSION CLOSED) + 6), maxy - 1, 18, cm[CM_ITXT], line);
+        l = strlen(line);
+
+        WndPutsn((strlen(PROG) + strlen(VERSION CLOSED) + 6),
+                 maxy - 1, l - 1, cm[CM_ITXT], line);
+        WndPutsn((strlen(PROG) + strlen(VERSION CLOSED) + 6 + l - 1),
+                 maxy - 1, 18 - (l - 1), cm[CM_ITXT] | F_ALTERNATE,
+                 line + l - 1);
     }
     TTgotoxy(x,y);
 
