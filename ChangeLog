@@ -1,3 +1,23 @@
+2002-02-10 Sunday 16:01  tobi
+
+	* maintmsg.c (1.8), doc/whatsnew.txt (1.72): Fix: In template text
+	in forwarded and redirected messages, the areatag was filled in
+	incorrectly if the area grouping feature (group separators etc.)
+	was used.
+
+2002-02-10 Sunday 12:40  tobi
+
+	* readmail.c (1.43), doc/whatsnew.txt (1.71): Fixed handling of
+	CHARSET kludge and of CHRS kludge without level argument.
+
+2002-02-10 Sunday 01:11  tobi
+
+	* doc/whatsnew.txt (1.70): Updated whatsnew.
+
+2002-02-10 Sunday 01:08  tobi
+
+	* control.c (1.4): Fixed redraw problem in dialog box buttons.
+
 2001-12-03 Monday 22:01  pas
 
 	* areas.c (1.11): Fixed off-by-one error in area list scrolling,
@@ -207,14 +227,15 @@
 2001-06-20 Wednesday 22:21  tobi
 
 	* config.c (1.44), msged.c (1.19), nshow.c (1.11,
-	msged-6_0_0-release), readmail.c (1.39), template.c (1.5,
-	msged-6_0_0-release), version.h (1.7), doc/manual/msged.texi
-	(1.54): stepped version number to 6.0
+	msged-6_0_1-release, msged-6_0_0-release), readmail.c (1.39),
+	template.c (1.5, msged-6_0_1-release, msged-6_0_0-release),
+	version.h (1.7), doc/manual/msged.texi (1.54): stepped version
+	number to 6.0
 
 2001-06-20 Wednesday 21:02  tobi
 
-	* doc/sample.tpl (1.3, msged-6_0_0-release): removed bogus strings
-	from sample.tpl
+	* doc/sample.tpl (1.3, msged-6_0_1-release, msged-6_0_0-release):
+	removed bogus strings from sample.tpl
 
 2001-06-03 Sunday 01:12  tobi
 
@@ -227,26 +248,29 @@
 
 2001-06-03 Sunday 01:07  tobi
 
-	* date.h (1.3, msged-6_0_0-release): removed cr
+	* date.h (1.3, msged-6_0_1-release, msged-6_0_0-release): removed
+	cr
 
 2001-06-02 Saturday 23:57  tobi
 
-	* date.c (1.5, msged-6_0_0-release), date.h (1.2), template.c
-	(1.4), doc/sample.tpl (1.2), doc/whatsnew.txt (1.66): @o and @w
-	features in template file
+	* date.c (1.5, msged-6_0_1-release, msged-6_0_0-release), date.h
+	(1.2), template.c (1.4), doc/sample.tpl (1.2), doc/whatsnew.txt
+	(1.66): @o and @w features in template file
 
 2001-06-02 Saturday 23:57  tobi
 
-	* filedlg.c (1.12, msged-6_0_0-release): removed cr
+	* filedlg.c (1.12, msged-6_0_1-release, msged-6_0_0-release):
+	removed cr
 
 2001-05-25 Friday 08:33  tobi
 
-	* makefile.lnx (1.22, msged-6_0_0-release): fixed lnx makefile
+	* makefile.lnx (1.22, msged-6_0_1-release, msged-6_0_0-release):
+	fixed lnx makefile
 
 2001-05-02 Wednesday 00:32  tobi
 
-	* .cvs2cl (1.1, msged-6_0_0-release): initiated the automatic
-	ChangeLog feature
+	* .cvs2cl (1.1, msged-6_0_1-release, msged-6_0_0-release):
+	initiated the automatic ChangeLog feature
 
 2001-04-22 Sunday 13:12  tobi
 
@@ -272,8 +296,8 @@
 
 2001-04-14 Saturday 17:00  joerg.jaspert
 
-	* maps/makefile.husky (1.13, msged-6_0_0-release): Symlinks now
-	without path
+	* maps/makefile.husky (1.13, msged-6_0_1-release,
+	msged-6_0_0-release): Symlinks now without path
 
 2001-04-12 Thursday 22:30  joerg.jaspert
 
@@ -294,24 +318,30 @@
 
 2001-04-12 Thursday 13:03  tobi
 
-	* timezone.c (1.1), timezone.h (1.1, msged-6_0_0-release): added
-	missing files
+	* timezone.c (1.1), timezone.h (1.1, msged-6_0_1-release,
+	msged-6_0_0-release): added missing files
 
 2001-04-11 Wednesday 23:06  tobi
 
-	* Makefile (1.13), addr.h (1.4, msged-6_0_0-release), config.c
-	(1.42), init.c (1.28), makefile.bcd (1.13), makefile.bco (1.12,
-	msged-6_0_0-release), makefile.bcw (1.14, msged-6_0_0-release),
-	makefile.bsd (1.20, msged-6_0_0-release), makefile.djg (1.16),
-	makefile.emo (1.13, msged-6_0_0-release), makefile.emx (1.3,
-	msged-6_0_0-release), makefile.hco (1.10, msged-6_0_0-release),
-	makefile.ibo (1.11, msged-6_0_0-release), makefile.lnx (1.21),
-	makefile.mgw (1.5, msged-6_0_0-release), makefile.qcd (1.12,
-	msged-6_0_0-release), makefile.rxw (1.15, msged-6_0_0-release),
-	makefile.sun (1.11, msged-6_0_0-release), makefile.unx (1.18,
-	msged-6_0_0-release), makefile.wcd (1.13), makefile.wco (1.15,
-	msged-6_0_0-release), makefile.wcw (1.14, msged-6_0_0-release),
-	makefile.wcx (1.12, msged-6_0_0-release), makemsgn.c (1.15,
+	* Makefile (1.13), addr.h (1.4, msged-6_0_1-release,
+	msged-6_0_0-release), config.c (1.42), init.c (1.28), makefile.bcd
+	(1.13), makefile.bco (1.12, msged-6_0_1-release,
+	msged-6_0_0-release), makefile.bcw (1.14, msged-6_0_1-release,
+	msged-6_0_0-release), makefile.bsd (1.20, msged-6_0_1-release,
+	msged-6_0_0-release), makefile.djg (1.16), makefile.emo (1.13,
+	msged-6_0_1-release, msged-6_0_0-release), makefile.emx (1.3,
+	msged-6_0_1-release, msged-6_0_0-release), makefile.hco (1.10,
+	msged-6_0_1-release, msged-6_0_0-release), makefile.ibo (1.11,
+	msged-6_0_1-release, msged-6_0_0-release), makefile.lnx (1.21),
+	makefile.mgw (1.5, msged-6_0_1-release, msged-6_0_0-release),
+	makefile.qcd (1.12, msged-6_0_1-release, msged-6_0_0-release),
+	makefile.rxw (1.15, msged-6_0_1-release, msged-6_0_0-release),
+	makefile.sun (1.11, msged-6_0_1-release, msged-6_0_0-release),
+	makefile.unx (1.18, msged-6_0_1-release, msged-6_0_0-release),
+	makefile.wcd (1.13), makefile.wco (1.15, msged-6_0_1-release,
+	msged-6_0_0-release), makefile.wcw (1.14, msged-6_0_1-release,
+	msged-6_0_0-release), makefile.wcx (1.12, msged-6_0_1-release,
+	msged-6_0_0-release), makemsgn.c (1.15, msged-6_0_1-release,
 	msged-6_0_0-release), msged.h (1.32), readmail.c (1.38),
 	doc/whatsnew.txt (1.65), doc/manual/msged.texi (1.52): support for
 	generating tzuztc kludge lines
@@ -329,18 +359,22 @@
 2001-04-11 Wednesday 22:22  tobi
 
 	* maps/: iso_850.chs (1.4), iso_865.chs (1.2), iso_asc.chs (1.4),
-	iso_ibm.chs (1.5), iso_mac.chs (1.4) (utags: msged-6_0_0-release):
-	support for non-standard euro currency sign in latin-1 codepage
+	iso_ibm.chs (1.5), iso_mac.chs (1.4) (utags: msged-6_0_0-release,
+	msged-6_0_1-release): support for non-standard euro currency sign
+	in latin-1 codepage
 
 2001-04-11 Wednesday 22:18  tobi
 
 	* doc/whatsnew.txt (1.64), doc/manual/msged.texi (1.51),
-	maps/850_865.chs (1.1, msged-6_0_0-release), maps/865_850.chs (1.1,
-	msged-6_0_0-release), maps/865_866.chs (1.1, msged-6_0_0-release),
-	maps/865_asc.chs (1.1, msged-6_0_0-release), maps/865_ibm.chs (1.1,
-	msged-6_0_0-release), maps/865_iso.chs (1.1, msged-6_0_0-release),
-	maps/866_865.chs (1.1, msged-6_0_0-release), maps/ibm_865.chs (1.1,
-	msged-6_0_0-release), maps/iso_865.chs (1.1), maps/makefile (1.3,
+	maps/850_865.chs (1.1, msged-6_0_1-release, msged-6_0_0-release),
+	maps/865_850.chs (1.1, msged-6_0_1-release, msged-6_0_0-release),
+	maps/865_866.chs (1.1, msged-6_0_1-release, msged-6_0_0-release),
+	maps/865_asc.chs (1.1, msged-6_0_1-release, msged-6_0_0-release),
+	maps/865_ibm.chs (1.1, msged-6_0_1-release, msged-6_0_0-release),
+	maps/865_iso.chs (1.1, msged-6_0_1-release, msged-6_0_0-release),
+	maps/866_865.chs (1.1, msged-6_0_1-release, msged-6_0_0-release),
+	maps/ibm_865.chs (1.1, msged-6_0_1-release, msged-6_0_0-release),
+	maps/iso_865.chs (1.1), maps/makefile (1.3, msged-6_0_1-release,
 	msged-6_0_0-release), maps/makefile.husky (1.11): added recoding
 	tables for codepage 865
 
@@ -355,8 +389,8 @@
 2001-04-10 Tuesday 23:49  joerg.jaspert
 
 	* Makefile (1.12), doc/manual/makefile.husky (1.8,
-	msged-6_0_0-release), maps/makefile.husky (1.10): Debian-specific
-	changes
+	msged-6_0_1-release, msged-6_0_0-release), maps/makefile.husky
+	(1.10): Debian-specific changes
 
 2001-04-04 Wednesday 23:11  tobi
 
@@ -365,11 +399,13 @@
 
 2001-04-04 Wednesday 22:28  tobi
 
-	* ansi.c (1.29, msged-6_0_0-release): ansification
+	* ansi.c (1.29, msged-6_0_1-release, msged-6_0_0-release):
+	ansification
 
 2001-04-04 Wednesday 22:27  tobi
 
-	* readtc.c (1.5, msged-6_0_0-release): deleted empty line
+	* readtc.c (1.5, msged-6_0_1-release, msged-6_0_0-release): deleted
+	empty line
 
 2001-04-03 Tuesday 22:39  tobi
 
@@ -378,9 +414,10 @@
 
 2001-04-03 Tuesday 21:27  tobi
 
-	* addr.h (1.3), config.c (1.40), freq.c (1.7, msged-6_0_0-release),
-	init.c (1.26), msged.h (1.30), readmail.c (1.37), doc/whatsnew.txt
-	(1.63), doc/manual/msged.texi (1.50): new switch "domainmsgid"
+	* addr.h (1.3), config.c (1.40), freq.c (1.7, msged-6_0_1-release,
+	msged-6_0_0-release), init.c (1.26), msged.h (1.30), readmail.c
+	(1.37), doc/whatsnew.txt (1.63), doc/manual/msged.texi (1.50): new
+	switch "domainmsgid"
 
 2001-04-03 Tuesday 19:51  tobi
 
@@ -444,12 +481,14 @@
 2000-12-27 Wednesday 22:05  tobi
 
 	* ansi.c (1.28), charset.c (1.14), curses.c (1.10,
-	msged-6_0_0-release), ibmscrn.c (1.10, msged-6_0_0-release), msg.c
-	(1.19), normal.h (1.2, msged-6_0_0-release), normalc.c (1.2,
-	msged-6_0_0-release), os2scr.c (1.8, msged-6_0_0-release), win.c
-	(1.11, msged-6_0_0-release), winntscr.c (1.11,
-	msged-6_0_0-release), winsys.h (1.13, msged-6_0_0-release):
-	optimization
+	msged-6_0_1-release, msged-6_0_0-release), ibmscrn.c (1.10,
+	msged-6_0_1-release, msged-6_0_0-release), msg.c (1.19), normal.h
+	(1.2, msged-6_0_1-release, msged-6_0_0-release), normalc.c (1.2,
+	msged-6_0_1-release, msged-6_0_0-release), os2scr.c (1.8,
+	msged-6_0_1-release, msged-6_0_0-release), win.c (1.11,
+	msged-6_0_1-release, msged-6_0_0-release), winntscr.c (1.11,
+	msged-6_0_1-release, msged-6_0_0-release), winsys.h (1.13,
+	msged-6_0_1-release, msged-6_0_0-release): optimization
 
 2000-12-03 Sunday 18:59  sms
 
@@ -472,8 +511,8 @@
 
 2000-11-16 Thursday 11:01  tobi
 
-	* fecfg145.c (1.5, msged-6_0_0-release): fixed domain bug in
-	fastecho routines introduced previously
+	* fecfg145.c (1.5, msged-6_0_1-release, msged-6_0_0-release): fixed
+	domain bug in fastecho routines introduced previously
 
 2000-11-11 Saturday 23:52  tobi
 
@@ -514,8 +553,8 @@
 
 2000-10-15 Sunday 23:48  tobi
 
-	* init.c (1.25), msg.c (1.14), msg.h (1.3, msged-6_0_0-release),
-	readmail.c (1.35): work on jam code
+	* init.c (1.25), msg.c (1.14), msg.h (1.3, msged-6_0_1-release,
+	msged-6_0_0-release), readmail.c (1.35): work on jam code
 
 2000-10-15 Sunday 23:48  tobi
 
@@ -528,9 +567,9 @@
 
 2000-10-01 Sunday 22:21  tobi
 
-	* fecfg145.c (1.4), fecfg145.h (1.7, msged-6_0_0-release),
-	gestr120.c (1.4, msged-6_0_0-release), gestr120.h (1.5), msg.c
-	(1.13): some details
+	* fecfg145.c (1.4), fecfg145.h (1.7, msged-6_0_1-release,
+	msged-6_0_0-release), gestr120.c (1.4, msged-6_0_1-release,
+	msged-6_0_0-release), gestr120.h (1.5), msg.c (1.13): some details
 
 2000-09-13 Wednesday 18:43  sms
 
@@ -544,8 +583,8 @@
 2000-09-03 Sunday 19:11  tobi
 
 	* maps/: 1125_866.chs (1.3), is5_866.chs (1.6), koi_866.chs (1.3)
-	(utags: msged-6_0_0-release): softcrxlat workarounds for codepage
-	866
+	(utags: msged-6_0_0-release, msged-6_0_1-release): softcrxlat
+	workarounds for codepage 866
 
 2000-09-03 Sunday 19:05  tobi
 
@@ -562,8 +601,8 @@
 2000-09-03 Sunday 16:33  tobi
 
 	* .cvsignore (1.1), doc/manual/.cvsignore (1.1), maps/.cvsignore
-	(1.1) (utags: msged-6_0_0-release): added .cvsignore files, thanks
-	to max khon for the tip
+	(1.1) (utags: msged-6_0_0-release, msged-6_0_1-release): added
+	.cvsignore files, thanks to max khon for the tip
 
 2000-09-02 Saturday 23:04  tobi
 
@@ -614,8 +653,8 @@
 
 2000-07-05 Wednesday 13:46  tobi
 
-	* dirute.c (1.14, msged-6_0_0-release), makefile.wcw (1.13): more
-	watcom fixes
+	* dirute.c (1.14, msged-6_0_1-release, msged-6_0_0-release),
+	makefile.wcw (1.13): more watcom fixes
 
 2000-07-05 Wednesday 13:14  tobi
 
@@ -670,7 +709,7 @@
 
 2000-06-13 Tuesday 19:27  nestyurkin.nikolay
 
-	* dirute.h (1.13, msged-6_0_0-release): fix
+	* dirute.h (1.13, msged-6_0_1-release, msged-6_0_0-release): fix
 
 2000-06-12 Monday 21:00  tobi
 
@@ -685,15 +724,19 @@
 2000-06-11 Sunday 02:01  tobi
 
 	* Makefile (1.7), areas.c (1.8), config.c (1.38), fconf.c (1.12),
-	fecfg145.h (1.6), group.c (1.2), group.h (1.2,
+	fecfg145.h (1.6), group.c (1.2), group.h (1.2, msged-6_0_1-release,
 	msged-6_0_0-release), init.c (1.23), list.c (1.15,
-	msged-6_0_0-release), main.h (1.2, msged-6_0_0-release), maintmsg.c
-	(1.7, msged-6_0_0-release), makemsgn.c (1.13), menu.c (1.4,
-	msged-6_0_0-release), menu.h (1.3, msged-6_0_0-release), misc.c
-	(1.6, msged-6_0_0-release), misc.h (1.3, msged-6_0_0-release),
-	msged.c (1.14), msged.h (1.26), doc/scheme.001 (1.2,
-	msged-6_0_0-release), doc/scheme.002 (1.2, msged-6_0_0-release),
-	doc/scheme.003 (1.2, msged-6_0_0-release), doc/scheme.004 (1.3,
+	msged-6_0_1-release, msged-6_0_0-release), main.h (1.2,
+	msged-6_0_1-release, msged-6_0_0-release), maintmsg.c (1.7,
+	msged-6_0_0-release), makemsgn.c (1.13), menu.c (1.4,
+	msged-6_0_1-release, msged-6_0_0-release), menu.h (1.3,
+	msged-6_0_1-release, msged-6_0_0-release), misc.c (1.6,
+	msged-6_0_1-release, msged-6_0_0-release), misc.h (1.3,
+	msged-6_0_1-release, msged-6_0_0-release), msged.c (1.14), msged.h
+	(1.26), doc/scheme.001 (1.2, msged-6_0_1-release,
+	msged-6_0_0-release), doc/scheme.002 (1.2, msged-6_0_1-release,
+	msged-6_0_0-release), doc/scheme.003 (1.2, msged-6_0_1-release,
+	msged-6_0_0-release), doc/scheme.004 (1.3, msged-6_0_1-release,
 	msged-6_0_0-release), doc/whatsnew.txt (1.56),
 	doc/manual/msged.texi (1.41): group features for msged
 
@@ -723,8 +766,8 @@
 2000-05-26 Friday 23:04  tobi
 
 	* Makefile (1.6), makefile.unx (1.16), testcons.c (1.1,
-	msged-6_0_0-release), doc/whatsnew.txt (1.55): Added the testcons
-	utility.
+	msged-6_0_1-release, msged-6_0_0-release), doc/whatsnew.txt (1.55):
+	Added the testcons utility.
 
 2000-05-26 Friday 21:49  tobi
 
@@ -732,8 +775,8 @@
 
 2000-05-26 Friday 18:21  tobi
 
-	* addr.c (1.4, msged-6_0_0-release), doc/todo.txt (1.18),
-	doc/whatsnew.txt (1.54): Fixed a core dump
+	* addr.c (1.4, msged-6_0_1-release, msged-6_0_0-release),
+	doc/todo.txt (1.18), doc/whatsnew.txt (1.54): Fixed a core dump
 
 2000-05-20 Saturday 12:47  tobi
 
@@ -742,7 +785,8 @@
 2000-05-20 Saturday 12:38  tobi
 
 	* maps/: 850_asc.chs (1.2), 850_ibm.chs (1.3), 850_iso.chs (1.2)
-	(utags: msged-6_0_0-release): Fixes for Euro currency support
+	(utags: msged-6_0_0-release, msged-6_0_1-release): Fixes for Euro
+	currency support
 
 2000-05-17 Wednesday 20:36  sms
 
@@ -752,8 +796,8 @@
 
 	* ansi.c (1.26), config.c (1.37), ibmscrn.c (1.7), init.c (1.22),
 	msged.h (1.25), os2scr.c (1.7), readtc.c (1.4), readtc.h (1.2,
-	msged-6_0_0-release), winntscr.c (1.10), winsys.h (1.12): internal
-	restructuring; added TTconfigure
+	msged-6_0_1-release, msged-6_0_0-release), winntscr.c (1.10),
+	winsys.h (1.12): internal restructuring; added TTconfigure
 
 2000-05-17 Wednesday 10:11  tobi
 
@@ -781,8 +825,8 @@
 
 2000-05-14 Sunday 23:34  tobi
 
-	* doc/: sample.cfg (1.7, msged-6_0_0-release), todo.txt (1.15):
-	more fixes for lastread
+	* doc/: sample.cfg (1.7, msged-6_0_1-release, msged-6_0_0-release),
+	todo.txt (1.15): more fixes for lastread
 
 2000-05-14 Sunday 23:34  tobi
 
@@ -808,11 +852,12 @@
 2000-05-12 Friday 22:48  tobi
 
 	* config.c (1.32), init.c (1.19), msged.h (1.21), msghelp.src (1.5,
-	msged-6_0_0-release), readmail.c (1.31), doc/todo.txt (1.13),
-	doc/whatsnew.txt (1.46), doc/manual/msged.texi (1.35): Implemented
-	"Gate Ask" feature, set it to default, implemented help for it and
-	updated the docs. Now you can send mails directly to inter-zone
-	links of yours, but send all other inter-zone mails via zone gate.
+	msged-6_0_1-release, msged-6_0_0-release), readmail.c (1.31),
+	doc/todo.txt (1.13), doc/whatsnew.txt (1.46), doc/manual/msged.texi
+	(1.35): Implemented "Gate Ask" feature, set it to default,
+	implemented help for it and updated the docs. Now you can send
+	mails directly to inter-zone links of yours, but send all other
+	inter-zone mails via zone gate.
 
 2000-05-10 Wednesday 12:41  tobi
 
@@ -820,10 +865,11 @@
 
 2000-05-10 Wednesday 12:31  tobi
 
-	* config.c (1.31), config.h (1.4, msged-6_0_0-release), fconf.c
-	(1.10), init.c (1.18), msged.h (1.20), doc/todo.txt (1.11),
-	doc/whatsnew.txt (1.45), doc/manual/msged.texi (1.34),
-	maps/makefile (1.2): Implemented AreaDesc keyword
+	* config.c (1.31), config.h (1.4, msged-6_0_1-release,
+	msged-6_0_0-release), fconf.c (1.10), init.c (1.18), msged.h
+	(1.20), doc/todo.txt (1.11), doc/whatsnew.txt (1.45),
+	doc/manual/msged.texi (1.34), maps/makefile (1.2): Implemented
+	AreaDesc keyword
 
 2000-05-10 Wednesday 10:28  tobi
 
@@ -846,8 +892,9 @@
 2000-04-28 Friday 00:17  tobi
 
 	* areas.c (1.7), charset.c (1.13), makefile.sun (1.9), quote.c
-	(1.6, msged-6_0_0-release), template.c (1.3): - fixed some
-	protection violations (Alt+T) - fixed redirection origin handling
+	(1.6, msged-6_0_1-release, msged-6_0_0-release), template.c (1.3):
+	- fixed some protection violations (Alt+T) - fixed redirection
+	origin handling
 
 2000-04-26 Wednesday 14:50  sms
 
@@ -865,7 +912,8 @@
 
 2000-04-24 Monday 20:41  sms
 
-	* doc/README.Mak (1.4, msged-6_0_0-release): updated README.Mak
+	* doc/README.Mak (1.4, msged-6_0_1-release, msged-6_0_0-release):
+	updated README.Mak
 
 2000-04-24 Monday 20:39  sms
 
@@ -934,11 +982,13 @@
 
 2000-04-08 Saturday 03:05  tobi
 
-	* bmg.c (1.2, msged-6_0_0-release), config.c (1.30), dirute.c
-	(1.10), dirute.h (1.11), gestr120.h (1.4), ibmscrn.c (1.5),
-	makefile.qcd (1.9), mnu.c (1.2, msged-6_0_0-release), msg.c (1.12),
-	spawn.asm (1.2, msged-6_0_0-release), strextra.c (1.4,
-	msged-6_0_0-release): Quick C / Microsoft C fixes
+	* bmg.c (1.2, msged-6_0_1-release, msged-6_0_0-release), config.c
+	(1.30), dirute.c (1.10), dirute.h (1.11), gestr120.h (1.4),
+	ibmscrn.c (1.5), makefile.qcd (1.9), mnu.c (1.2,
+	msged-6_0_1-release, msged-6_0_0-release), msg.c (1.12), spawn.asm
+	(1.2, msged-6_0_1-release, msged-6_0_0-release), strextra.c (1.4,
+	msged-6_0_1-release, msged-6_0_0-release): Quick C / Microsoft C
+	fixes
 
 2000-04-08 Saturday 02:21  tobi
 
@@ -991,8 +1041,9 @@
 
 	* makefile.husky (1.7), doc/manual/makefile.husky (1.1),
 	doc/manual/msged.texi (1.31), maps/README (1.5,
-	msged-6_0_0-release), maps/makefile (1.1), maps/makefile.husky
-	(1.1): Enabled makefile.husky / huskymak.cfg support in Msged
+	msged-6_0_1-release, msged-6_0_0-release), maps/makefile (1.1),
+	maps/makefile.husky (1.1): Enabled makefile.husky / huskymak.cfg
+	support in Msged
 
 2000-03-13 Monday 23:47  sms
 
@@ -1025,8 +1076,9 @@
 
 2000-01-31 Monday 00:52  tobi
 
-	* charset.c (1.11), charset.h (1.6, msged-6_0_0-release), init.c
-	(1.17), maincmds.h (1.2, msged-6_0_0-release), menu.c (1.3), menu.h
+	* charset.c (1.11), charset.h (1.6, msged-6_0_1-release,
+	msged-6_0_0-release), init.c (1.17), maincmds.h (1.2,
+	msged-6_0_1-release, msged-6_0_0-release), menu.c (1.3), menu.h
 	(1.2), misc.c (1.3), misc.h (1.2), msged.h (1.19), readmail.c
 	(1.27), doc/todo.txt (1.6), doc/whatsnew.txt (1.42),
 	doc/manual/msged.texi (1.30): Implemented manual charset kludge
@@ -1073,24 +1125,27 @@
 
 2000-01-19 Wednesday 21:40  tobi
 
-	* maps/: 1125_is5.chs (1.3, msged-6_0_0-release), 866_is5.chs (1.4,
-	msged-6_0_0-release), is5_1125.chs (1.2, msged-6_0_0-release),
-	is5_866.chs (1.5), is5_asc.chs (1.3, msged-6_0_0-release),
-	koi_1125.chs (1.4, msged-6_0_0-release): New bugfixes for the
+	* maps/: 1125_is5.chs (1.3, msged-6_0_1-release,
+	msged-6_0_0-release), 866_is5.chs (1.4, msged-6_0_1-release,
+	msged-6_0_0-release), is5_1125.chs (1.2, msged-6_0_1-release,
+	msged-6_0_0-release), is5_866.chs (1.5), is5_asc.chs (1.3,
+	msged-6_0_1-release, msged-6_0_0-release), koi_1125.chs (1.4,
+	msged-6_0_1-release, msged-6_0_0-release): New bugfixes for the
 	translation maps.
 
 2000-01-19 Wednesday 21:03  tobi
 
 	* maps/: 1125_is5.chs (1.2), 1125_koi.chs (1.2,
-	msged-6_0_0-release), 866_is5.chs (1.3), 866_koi.chs (1.2,
-	msged-6_0_0-release), is5_1125.chs (1.1), is5_866.chs (1.4),
-	is5_asc.chs (1.2), koi_1125.chs (1.3), koi_866.chs (1.2): Bugfixes
-	for the cyrillic charset tables
+	msged-6_0_1-release, msged-6_0_0-release), 866_is5.chs (1.3),
+	866_koi.chs (1.2, msged-6_0_1-release, msged-6_0_0-release),
+	is5_1125.chs (1.1), is5_866.chs (1.4), is5_asc.chs (1.2),
+	koi_1125.chs (1.3), koi_866.chs (1.2): Bugfixes for the cyrillic
+	charset tables
 
 2000-01-19 Wednesday 19:08  tobi
 
-	* maps/ibm_asc.chs (1.5, msged-6_0_0-release): Fixed typos in this
-	map.
+	* maps/ibm_asc.chs (1.5, msged-6_0_1-release, msged-6_0_0-release):
+	Fixed typos in this map.
 
 2000-01-19 Wednesday 18:41  tobi
 
@@ -1100,13 +1155,14 @@
 2000-01-19 Wednesday 18:23  tobi
 
 	* fido.c (1.6), init.c (1.16), readmail.c (1.23), textfile.c
-	(1.12), wrap.c (1.12, msged-6_0_0-release), doc/sample.cfg (1.6),
-	doc/whatsnew.txt (1.40), doc/manual/msged.texi (1.29),
-	maps/1125_866.chs (1.2), maps/is5_866.chs (1.3): - Fixed the
-	SoftCRXlat translation method to work on the transport charset	
-	instead of the local charset. This affects specifically the problem
-	with   the cyrillic big en ("H"). Please refer to the entry for the
-	keyword   "SoftCRXlat" in the updated Msged manual.
+	(1.12), wrap.c (1.12, msged-6_0_1-release, msged-6_0_0-release),
+	doc/sample.cfg (1.6), doc/whatsnew.txt (1.40),
+	doc/manual/msged.texi (1.29), maps/1125_866.chs (1.2),
+	maps/is5_866.chs (1.3): - Fixed the SoftCRXlat translation method
+	to work on the transport charset   instead of the local charset.
+	This affects specifically the problem with   the cyrillic big en
+	("H"). Please refer to the entry for the keyword   "SoftCRXlat" in
+	the updated Msged manual.
 
 2000-01-19 Wednesday 16:42  tobi
 
@@ -1123,23 +1179,29 @@
 	* charset.c (1.10), charset.h (1.5), config.c (1.28), init.c
 	(1.15), msged.h (1.18), readmail.c (1.22), doc/README.Mak (1.3),
 	doc/whatsnew.txt (1.37), doc/manual/msged.texi (1.27),
-	maps/1125_ibm.chs (1.2, msged-6_0_0-release), maps/850_ibm.chs
-	(1.2), maps/866_ibm.chs (1.3, msged-6_0_0-release), maps/README
-	(1.4), maps/can_ibm.chs (1.4, msged-6_0_0-release),
-	maps/dut_ibm.chs (1.4, msged-6_0_0-release), maps/fin_ibm.chs (1.4,
-	msged-6_0_0-release), maps/frn_ibm.chs (1.4, msged-6_0_0-release),
-	maps/grm_ibm.chs (1.4, msged-6_0_0-release), maps/ibm_850.chs (1.4,
-	msged-6_0_0-release), maps/ibm_asc.chs (1.4), maps/ibm_iso.chs
-	(1.4, msged-6_0_0-release), maps/ibm_mac.chs (1.4,
-	msged-6_0_0-release), maps/ibm_swe.chs (1.4, msged-6_0_0-release),
-	maps/ibm_vt1.chs (1.4, msged-6_0_0-release), maps/iso_ibm.chs
-	(1.4), maps/itl_ibm.chs (1.4, msged-6_0_0-release),
-	maps/mac_ibm.chs (1.4, msged-6_0_0-release), maps/nor_ibm.chs (1.4,
-	msged-6_0_0-release), maps/prt_ibm.chs (1.4, msged-6_0_0-release),
-	maps/spn_ibm.chs (1.4, msged-6_0_0-release), maps/swe_ibm.chs (1.4,
-	msged-6_0_0-release), maps/swi_ibm.chs (1.4, msged-6_0_0-release),
-	maps/uk_ibm.chs (1.4, msged-6_0_0-release): Upgraded Msged to
-	support FSP 1013 WRT charset kludges
+	maps/1125_ibm.chs (1.2, msged-6_0_1-release, msged-6_0_0-release),
+	maps/850_ibm.chs (1.2), maps/866_ibm.chs (1.3, msged-6_0_1-release,
+	msged-6_0_0-release), maps/README (1.4), maps/can_ibm.chs (1.4,
+	msged-6_0_1-release, msged-6_0_0-release), maps/dut_ibm.chs (1.4,
+	msged-6_0_1-release, msged-6_0_0-release), maps/fin_ibm.chs (1.4,
+	msged-6_0_1-release, msged-6_0_0-release), maps/frn_ibm.chs (1.4,
+	msged-6_0_1-release, msged-6_0_0-release), maps/grm_ibm.chs (1.4,
+	msged-6_0_1-release, msged-6_0_0-release), maps/ibm_850.chs (1.4,
+	msged-6_0_1-release, msged-6_0_0-release), maps/ibm_asc.chs (1.4),
+	maps/ibm_iso.chs (1.4, msged-6_0_1-release, msged-6_0_0-release),
+	maps/ibm_mac.chs (1.4, msged-6_0_1-release, msged-6_0_0-release),
+	maps/ibm_swe.chs (1.4, msged-6_0_1-release, msged-6_0_0-release),
+	maps/ibm_vt1.chs (1.4, msged-6_0_1-release, msged-6_0_0-release),
+	maps/iso_ibm.chs (1.4), maps/itl_ibm.chs (1.4, msged-6_0_1-release,
+	msged-6_0_0-release), maps/mac_ibm.chs (1.4, msged-6_0_1-release,
+	msged-6_0_0-release), maps/nor_ibm.chs (1.4, msged-6_0_1-release,
+	msged-6_0_0-release), maps/prt_ibm.chs (1.4, msged-6_0_1-release,
+	msged-6_0_0-release), maps/spn_ibm.chs (1.4, msged-6_0_1-release,
+	msged-6_0_0-release), maps/swe_ibm.chs (1.4, msged-6_0_1-release,
+	msged-6_0_0-release), maps/swi_ibm.chs (1.4, msged-6_0_1-release,
+	msged-6_0_0-release), maps/uk_ibm.chs (1.4, msged-6_0_1-release,
+	msged-6_0_0-release): Upgraded Msged to support FSP 1013 WRT
+	charset kludges
 
 2000-01-18 Tuesday 22:13  sms
 
@@ -1148,7 +1210,8 @@
 2000-01-18 Tuesday 01:58  tobi
 
 	* curses.c (1.8), list.c (1.12), textfile.h (1.3,
-	msged-6_0_0-release): Fixed message list display.
+	msged-6_0_1-release, msged-6_0_0-release): Fixed message list
+	display.
 
 2000-01-18 Tuesday 01:24  tobi
 
@@ -1179,8 +1242,8 @@
 1999-11-30 Tuesday 22:17  sms
 
 	* freq.c (1.5), helpinfo.c (1.2), makemsgn.c (1.9), misc.c (1.2),
-	readmail.c (1.21), screen.c (1.4, msged-6_0_0-release): fixed some
-	misuses of ++ in several files
+	readmail.c (1.21), screen.c (1.4, msged-6_0_1-release,
+	msged-6_0_0-release): fixed some misuses of ++ in several files
 
 1999-11-11 Thursday 16:23  tobi
 
@@ -1194,16 +1257,18 @@
 1999-11-08 Monday 01:35  tobi
 
 	* maps/: 1125_866.chs (1.1), 1125_asc.chs (1.1,
-	msged-6_0_0-release), 1125_ibm.chs (1.1), 1125_is5.chs (1.1),
-	1125_koi.chs (1.1), 866_1125.chs (1.1, msged-6_0_0-release),
-	866_ibm.chs (1.2), 866_koi.chs (1.1), is5_asc.chs (1.1),
-	koi_1125.chs (1.1), koi_866.chs (1.1), koi_asc.chs (1.1,
+	msged-6_0_1-release, msged-6_0_0-release), 1125_ibm.chs (1.1),
+	1125_is5.chs (1.1), 1125_koi.chs (1.1), 866_1125.chs (1.1,
+	msged-6_0_1-release, msged-6_0_0-release), 866_ibm.chs (1.2),
+	866_koi.chs (1.1), is5_asc.chs (1.1), koi_1125.chs (1.1),
+	koi_866.chs (1.1), koi_asc.chs (1.1, msged-6_0_1-release,
 	msged-6_0_0-release): Another bunch of cyrillic conversion maps
 
 1999-11-07 Sunday 20:53  tobi
 
-	* maps/: 866_asc.chs (1.1, msged-6_0_0-release), 866_ibm.chs (1.1):
-	Added cyrillic translit conversion tables.
+	* maps/: 866_asc.chs (1.1, msged-6_0_1-release,
+	msged-6_0_0-release), 866_ibm.chs (1.1): Added cyrillic translit
+	conversion tables.
 
 1999-10-26 Tuesday 10:30  tobi
 
@@ -1252,8 +1317,8 @@
 	curses.c (1.7), ibmscrn.c (1.4), list.c (1.10), msged.c (1.11),
 	nshow.c (1.8), os2scr.c (1.5), readtc.c (1.1), win.c (1.9),
 	winntscr.c (1.8), readtc.h (1.1), specch.h (1.2,
-	msged-6_0_0-release), winsys.h (1.9), wrap.c (1.11): - Added
-	support for pseudographics on Unix
+	msged-6_0_1-release, msged-6_0_0-release), winsys.h (1.9), wrap.c
+	(1.11): - Added support for pseudographics on Unix
 
 1999-10-25 Monday 01:11  sms
 
@@ -1333,8 +1398,8 @@
 1999-10-14 Thursday 23:24  tobi
 
 	* maps/: 866_is5.chs (1.2), is5_866.chs (1.2), makemaps.c (1.2,
-	msged-6_0_0-release): Bugfix for the makemaps tool, and added more
-	charset translation tables.
+	msged-6_0_1-release, msged-6_0_0-release): Bugfix for the makemaps
+	tool, and added more charset translation tables.
 
 1999-10-14 Thursday 18:07  sms
 
@@ -1376,8 +1441,8 @@
 
 1999-10-13 Wednesday 22:27  sms
 
-	* strextra.c (1.3), strextra.h (1.4, msged-6_0_0-release): GCC 2.95
-	fixes
+	* strextra.c (1.3), strextra.h (1.4, msged-6_0_1-release,
+	msged-6_0_0-release): GCC 2.95 fixes
 
 1999-10-13 Wednesday 17:40  tobi
 
@@ -1402,9 +1467,9 @@
 
 1999-09-04 Saturday 01:46  tobi
 
-	* userlist.c (1.4, msged-6_0_0-release), doc/todo.txt (1.3),
-	doc/whatsnew.txt (1.27): Fixed bug in userlist handling for entries
-	like "echolist" w/o komma.
+	* userlist.c (1.4, msged-6_0_1-release, msged-6_0_0-release),
+	doc/todo.txt (1.3), doc/whatsnew.txt (1.27): Fixed bug in userlist
+	handling for entries like "echolist" w/o komma.
 
 1999-08-25 Wednesday 20:07  tobi
 
@@ -1420,9 +1485,9 @@
 1999-08-23 Monday 21:15  tobi
 
 	* charset.c (1.8), charset.h (1.4), fido.c (1.4), msg.c (1.9),
-	quick.c (1.4, msged-6_0_0-release), readmail.c (1.19),
-	doc/whatsnew.txt (1.25), doc/manual/msged.texi (1.26): Added
-	character set translation/recoding for the mail header.
+	quick.c (1.4, msged-6_0_1-release, msged-6_0_0-release), readmail.c
+	(1.19), doc/whatsnew.txt (1.25), doc/manual/msged.texi (1.26):
+	Added character set translation/recoding for the mail header.
 
 1999-08-23 Monday 21:13  tobi
 
@@ -1494,11 +1559,11 @@
 1999-08-02 Monday 00:10  tobi
 
 	* areas.c (1.4), config.c (1.22), init.c (1.13), list.c (1.5),
-	list.h (1.2, msged-6_0_0-release), mprotos.h (1.2,
-	msged-6_0_0-release), msged.c (1.8), msged.h (1.15), nshow.c (1.4),
-	doc/whatsnew.txt (1.24): - Added the DirectList switch and
-	corresponding source code for allowing	 direct drop to message
-	list mode from area selection.
+	list.h (1.2, msged-6_0_1-release, msged-6_0_0-release), mprotos.h
+	(1.2, msged-6_0_1-release, msged-6_0_0-release), msged.c (1.8),
+	msged.h (1.15), nshow.c (1.4), doc/whatsnew.txt (1.24): - Added the
+	DirectList switch and corresponding source code for allowing  
+	direct drop to message list mode from area selection.
 
 1999-07-24 Saturday 20:44  tobi
 
@@ -1548,7 +1613,8 @@
 1999-05-11 Tuesday 14:11  tobi
 
 	* contrib/: README (1.1), kdeconsole (1.1) (utags:
-	msged-6_0_0-release): Added contrib subdirectory
+	msged-6_0_0-release, msged-6_0_1-release): Added contrib
+	subdirectory
 
 1999-04-21 Wednesday 11:57  tobi
 
@@ -1581,38 +1647,40 @@
 1999-04-05 Monday 23:54  tobi
 
 	* config.c (1.19), dirute.c (1.5), dirute.h (1.5), filedlg.c (1.1),
-	filedlg.h (1.1, msged-6_0_0-release), gestr120.c (1.3), init.c
-	(1.11), makefile.bcd (1.7), makefile.bco (1.6), makefile.bcw (1.8),
-	makefile.bsd (1.11), makefile.djg (1.8), makefile.emo (1.7),
-	makefile.hco (1.6), makefile.ibo (1.6), makefile.lnx (1.13),
-	makefile.qcd (1.6), makefile.rxw (1.10), makefile.sun (1.4),
-	makefile.unx (1.9), makefile.wcd (1.6), makefile.wco (1.6),
-	makefile.wcw (1.6), makefile.wcx (1.6), msged.h (1.13), msghelp.src
-	(1.4), quote.c (1.4), textfile.c (1.7), textfile.h (1.2), win.c
-	(1.7), winsys.h (1.7), wrap.c (1.7), doc/whatsnew.txt (1.22),
-	doc/manual/msged.texi (1.21): Added file dialog box routines from
-	Frank Adam (with quite some modifications), and improved user
-	interface for import, export, print and pipe.
+	filedlg.h (1.1, msged-6_0_1-release, msged-6_0_0-release),
+	gestr120.c (1.3), init.c (1.11), makefile.bcd (1.7), makefile.bco
+	(1.6), makefile.bcw (1.8), makefile.bsd (1.11), makefile.djg (1.8),
+	makefile.emo (1.7), makefile.hco (1.6), makefile.ibo (1.6),
+	makefile.lnx (1.13), makefile.qcd (1.6), makefile.rxw (1.10),
+	makefile.sun (1.4), makefile.unx (1.9), makefile.wcd (1.6),
+	makefile.wco (1.6), makefile.wcw (1.6), makefile.wcx (1.6), msged.h
+	(1.13), msghelp.src (1.4), quote.c (1.4), textfile.c (1.7),
+	textfile.h (1.2), win.c (1.7), winsys.h (1.7), wrap.c (1.7),
+	doc/whatsnew.txt (1.22), doc/manual/msged.texi (1.21): Added file
+	dialog box routines from Frank Adam (with quite some
+	modifications), and improved user interface for import, export,
+	print and pipe.
 
 1999-03-18 Thursday 18:31  tobi
 
 	* config.c (1.18), date.c (1.3), environ.c (1.5,
-	msged-6_0_0-release), flags.c (1.1, msged-6_0_0-release), flags.h
-	(1.1, msged-6_0_0-release), freq.c (1.3), init.c (1.10),
-	makefile.bcd (1.6), makefile.bco (1.5), makefile.bcw (1.7),
+	msged-6_0_1-release, msged-6_0_0-release), flags.c (1.1,
+	msged-6_0_1-release, msged-6_0_0-release), flags.h (1.1,
+	msged-6_0_1-release, msged-6_0_0-release), freq.c (1.3), init.c
+	(1.10), makefile.bcd (1.6), makefile.bco (1.5), makefile.bcw (1.7),
 	makefile.bsd (1.10), makefile.djg (1.7), makefile.emo (1.6),
 	makefile.hco (1.5), makefile.ibo (1.5), makefile.lnx (1.12),
 	makefile.qcd (1.5), makefile.rxw (1.9), makefile.sun (1.3),
 	makefile.unx (1.8), makefile.wcd (1.5), makefile.wco (1.5),
 	makefile.wcw (1.5), makefile.wcx (1.5), makemsgn.c (1.7), mctype.h
-	(1.2, msged-6_0_0-release), msg.c (1.7), msged.h (1.12), nshow.c
-	(1.3), quick.c (1.3), quote.c (1.3), readmail.c (1.17), userlist.c
-	(1.3), doc/whatsnew.txt (1.21), doc/manual/msged.texi (1.20): -
-	Support for @FLAGS kludge lines. Msged now will write a FLAGS
-	kludge	 line if flags that are not supported by the current
-	storage format	 have to be saved, and it recognises flags in FLAGS
-	kludge lines in   messages that it reads. See FSC 0053 for further
-	information.
+	(1.2, msged-6_0_1-release, msged-6_0_0-release), msg.c (1.7),
+	msged.h (1.12), nshow.c (1.3), quick.c (1.3), quote.c (1.3),
+	readmail.c (1.17), userlist.c (1.3), doc/whatsnew.txt (1.21),
+	doc/manual/msged.texi (1.20): - Support for @FLAGS kludge lines.
+	Msged now will write a FLAGS kludge   line if flags that are not
+	supported by the current storage format   have to be saved, and it
+	recognises flags in FLAGS kludge lines in   messages that it reads.
+	See FSC 0053 for further information.
 	
 	- Support for the following new message flags:	 kfs, a/s, imm,
 	tfs, lock, cfm, zon, hub   Especially kfs is important: If you send
@@ -1711,13 +1779,13 @@
 1999-01-07 Thursday 12:58  tobi
 
 	* config.c (1.13), config.h (1.3), fconf.c (1.1), fconf.h (1.1,
-	msged-6_0_0-release), makefile.bcd (1.5), makefile.bco (1.4),
-	makefile.bcw (1.6), makefile.bsd (1.9), makefile.djg (1.6),
-	makefile.emo (1.5), makefile.hco (1.4), makefile.ibo (1.4),
-	makefile.lnx (1.10), makefile.qcd (1.4), makefile.rxw (1.8),
-	makefile.unx (1.7), makefile.wcd (1.4), makefile.wco (1.4),
-	makefile.wcw (1.4), makefile.wcx (1.4), msged.h (1.9),
-	doc/whatsnew.txt (1.18): Added support for the Husky project
+	msged-6_0_1-release, msged-6_0_0-release), makefile.bcd (1.5),
+	makefile.bco (1.4), makefile.bcw (1.6), makefile.bsd (1.9),
+	makefile.djg (1.6), makefile.emo (1.5), makefile.hco (1.4),
+	makefile.ibo (1.4), makefile.lnx (1.10), makefile.qcd (1.4),
+	makefile.rxw (1.8), makefile.unx (1.7), makefile.wcd (1.4),
+	makefile.wco (1.4), makefile.wcw (1.4), makefile.wcx (1.4), msged.h
+	(1.9), doc/whatsnew.txt (1.18): Added support for the Husky project
 	fidoconfig standard.
 
 1999-01-07 Thursday 01:16  tobi
@@ -1732,10 +1800,11 @@
 
 	* ansi.c (1.9), config.c (1.12), dirute.c (1.3), dirute.h (1.3),
 	init.c (1.8), msged.h (1.8), strextra.c (1.2), strextra.h (1.2),
-	vsevops.c (1.2, msged-6_0_0-release), doc/whatsnew.txt (1.17):
-	Added the AdaptiveCase Feature. It allows MsgEd running on Unix to
-	cope with mixed case file names in DOSish message bases or nodelist
-	directories. See the Whatsnew.Txt file for more information.
+	vsevops.c (1.2, msged-6_0_1-release, msged-6_0_0-release),
+	doc/whatsnew.txt (1.17): Added the AdaptiveCase Feature. It allows
+	MsgEd running on Unix to cope with mixed case file names in DOSish
+	message bases or nodelist directories. See the Whatsnew.Txt file
+	for more information.
 
 1999-01-06 Wednesday 00:53  tobi
 
@@ -1752,13 +1821,14 @@
 	* addr.c (1.2), ansi.c (1.8), areas.c (1.3), config.c (1.11),
 	init.c (1.7), list.c (1.4), makefile.bsd (1.8), makefile.lnx (1.9),
 	makefile.unx (1.6), msged.c (1.5), msged.h (1.7), nedit.h (1.2,
-	msged-6_0_0-release), nshow.c (1.2), readmail.c (1.15), system.c
-	(1.2, msged-6_0_0-release), win.c (1.6), winsys.h (1.4), wrap.c
-	(1.5), wrap.h (1.2, msged-6_0_0-release), doc/whatsnew.txt (1.16):
-	- Removed any dependencies to the curses library. Msged does not
-	need it any   more.  - Msged now recognises SIGWINCH and tries to
-	behave appropriately, i.E.    to resize it's display.  - Fixed some
-	bugs in the editor and wrapping routine.
+	msged-6_0_1-release, msged-6_0_0-release), nshow.c (1.2),
+	readmail.c (1.15), system.c (1.2, msged-6_0_1-release,
+	msged-6_0_0-release), win.c (1.6), winsys.h (1.4), wrap.c (1.5),
+	wrap.h (1.2, msged-6_0_1-release, msged-6_0_0-release),
+	doc/whatsnew.txt (1.16): - Removed any dependencies to the curses
+	library. Msged does not need it any   more.  - Msged now recognises
+	SIGWINCH and tries to behave appropriately, i.E.    to resize it's
+	display.  - Fixed some bugs in the editor and wrapping routine.
 
 1999-01-03 Sunday 12:48  tobi
 
@@ -1860,8 +1930,8 @@
 
 1998-10-30 Friday 22:22  tobi
 
-	* rdirent.h (1.2, msged-6_0_0-release): Removed a pragma pack
-	statement
+	* rdirent.h (1.2, msged-6_0_1-release, msged-6_0_0-release):
+	Removed a pragma pack statement
 
 1998-10-30 Friday 22:21  tobi
 
@@ -1937,12 +2007,12 @@
 	ibm_asc.chs (1.3), ibm_iso.chs (1.3), ibm_mac.chs (1.3),
 	ibm_swe.chs (1.3), ibm_vt1.chs (1.3), iso_850.chs (1.3),
 	iso_asc.chs (1.3), iso_ibm.chs (1.3), iso_mac.chs (1.3),
-	itl_ibm.chs (1.3), mac_850.chs (1.3, msged-6_0_0-release),
-	mac_ibm.chs (1.3), mac_iso.chs (1.3, msged-6_0_0-release),
-	nor_ibm.chs (1.3), prt_ibm.chs (1.3), spn_ibm.chs (1.3),
-	swe_ibm.chs (1.3), swi_ibm.chs (1.3), uk_ibm.chs (1.3) (utags:
-	msged-te-05-second-try, msged-te-05): Added the charset files
-	again.
+	itl_ibm.chs (1.3), mac_850.chs (1.3, msged-6_0_1-release,
+	msged-6_0_0-release), mac_ibm.chs (1.3), mac_iso.chs (1.3,
+	msged-6_0_1-release, msged-6_0_0-release), nor_ibm.chs (1.3),
+	prt_ibm.chs (1.3), spn_ibm.chs (1.3), swe_ibm.chs (1.3),
+	swi_ibm.chs (1.3), uk_ibm.chs (1.3) (utags: msged-te-05-second-try,
+	msged-te-05): Added the charset files again.
 
 1998-09-21 Monday 23:07  tobi
 
@@ -1971,9 +2041,9 @@
 
 1998-09-21 Monday 00:28  tobi
 
-	* doc/manual/makefile (1.4, msged-6_0_0-release,
-	msged-te-05-second-try, msged-te-05): Updated makefile for
-	documentation files.
+	* doc/manual/makefile (1.4, msged-6_0_1-release,
+	msged-6_0_0-release, msged-te-05-second-try, msged-te-05): Updated
+	makefile for documentation files.
 
 1998-09-21 Monday 00:28  tobi
 
@@ -2059,8 +2129,9 @@
 
 1998-09-16 Wednesday 23:46  tobi
 
-	* memextra.c (1.3, msged-6_0_0-release, msged-te-05-second-try,
-	msged-te-05): Removed some dependencies on MSgEd.
+	* memextra.c (1.3, msged-6_0_1-release, msged-6_0_0-release,
+	msged-te-05-second-try, msged-te-05): Removed some dependencies on
+	MSgEd.
 
 1998-09-16 Wednesday 23:41  tobi
 
@@ -2091,8 +2162,9 @@
 
 1998-09-15 Tuesday 17:35  tobi
 
-	* help.h (1.3, msged-6_0_0-release, msged-te-05-second-try,
-	msged-te-05): Removed superfluous ^M characters. (Arghl.)
+	* help.h (1.3, msged-6_0_1-release, msged-6_0_0-release,
+	msged-te-05-second-try, msged-te-05): Removed superfluous ^M
+	characters. (Arghl.)
 
 1998-09-15 Tuesday 17:21  tobi
 
@@ -2105,18 +2177,19 @@
 1998-09-10 Thursday 00:17  tobi
 
 	* charset.c (1.4), config.c (1.6), echotoss.c (1.2,
-	msged-6_0_0-release, msged-te-05-second-try, msged-te-05), fido.c
-	(1.2, msged-te-05-second-try, msged-te-05), fido.h (1.2,
-	msged-6_0_0-release, msged-te-05-second-try, msged-te-05), init.c
-	(1.4), keycode.c (1.2, msged-6_0_0-release, msged-te-05-second-try,
+	msged-6_0_1-release, msged-6_0_0-release, msged-te-05-second-try,
+	msged-te-05), fido.c (1.2, msged-te-05-second-try, msged-te-05),
+	fido.h (1.2, msged-6_0_1-release, msged-6_0_0-release,
+	msged-te-05-second-try, msged-te-05), init.c (1.4), keycode.c (1.2,
+	msged-6_0_1-release, msged-6_0_0-release, msged-te-05-second-try,
 	msged-te-05), msg.c (1.6, msged-te-05-second-try, msged-te-05),
 	msg.h (1.2, msged-te-05-second-try, msged-te-05), msged.h (1.3),
 	quick.c (1.2, msged-te-05-second-try, msged-te-05), quick.h (1.2,
-	msged-6_0_0-release, msged-te-05-second-try, msged-te-05),
-	readmail.c (1.7, msged-te-05): - Added switch for lowercasing all
-	filenames - Added support for area locking in the API abstraction
-	layer (although it   later turned out to be better NOT to use this,
-	at least on Unix) - Misc. other changes.
+	msged-6_0_1-release, msged-6_0_0-release, msged-te-05-second-try,
+	msged-te-05), readmail.c (1.7, msged-te-05): - Added switch for
+	lowercasing all filenames - Added support for area locking in the
+	API abstraction layer (although it   later turned out to be better
+	NOT to use this, at least on Unix) - Misc. other changes.
 
 1998-09-10 Thursday 00:12  tobi
 
@@ -2134,8 +2207,9 @@
 
 1998-08-30 Sunday 14:40  tobi
 
-	* helpcmp.c (1.2, msged-6_0_0-release, msged-te-05-second-try,
-	msged-te-05): Cosmetic change in the help compiler.
+	* helpcmp.c (1.2, msged-6_0_1-release, msged-6_0_0-release,
+	msged-te-05-second-try, msged-te-05): Cosmetic change in the help
+	compiler.
 
 1998-08-30 Sunday 14:39  tobi
 
@@ -2243,15 +2317,15 @@
 
 1998-08-19 Wednesday 23:27  tobi
 
-	* dosasm.h (1.2, msged-6_0_0-release, msged-te-05-second-try,
-	msged-te-05): Fixed the timeslicing code for the DOS and DPMI
-	versions.
+	* dosasm.h (1.2, msged-6_0_1-release, msged-6_0_0-release,
+	msged-te-05-second-try, msged-te-05): Fixed the timeslicing code
+	for the DOS and DPMI versions.
 
 1998-08-19 Wednesday 23:26  tobi
 
-	* dosasm.c (1.2, msged-6_0_0-release), ibmscrn.c (1.2) (utags:
-	msged-te-05-second-try, msged-te-05): Fixed the time slicing code
-	for the DOS and DPMI versions.
+	* dosasm.c (1.2, msged-6_0_1-release, msged-6_0_0-release),
+	ibmscrn.c (1.2) (utags: msged-te-05-second-try, msged-te-05): Fixed
+	the time slicing code for the DOS and DPMI versions.
 
 1998-08-19 Wednesday 23:26  tobi
 
@@ -2284,15 +2358,15 @@
 1998-08-17 Monday 09:38  tobi
 
 	* list.c (1.3, msged-te-05-second-try), maintmsg.c (1.3),
-	maintmsg.h (1.2, msged-6_0_0-release, msged-te-05-second-try)
-	(utags: msged-te-05): - Added new keys + and - in list screen to
-	allow marking/demarking of ALL	 messages in that area - Fixed
-	Alt+M in message list screen so that it moves all marked messages, 
-	 but only asks once where to move them. (Same for copying,
-	forwarding,   redirecting, and deleting).  - Added a progress info
-	window with the possibility to interrupt the   process for copying,
-	forwarding, redirecting and deleting a set of marked   messages in
-	message list screen.
+	maintmsg.h (1.2, msged-6_0_1-release, msged-6_0_0-release,
+	msged-te-05-second-try) (utags: msged-te-05): - Added new keys +
+	and - in list screen to allow marking/demarking of ALL	 messages
+	in that area - Fixed Alt+M in message list screen so that it moves
+	all marked messages,   but only asks once where to move them. (Same
+	for copying, forwarding,   redirecting, and deleting).	- Added a
+	progress info window with the possibility to interrupt the  
+	process for copying, forwarding, redirecting and deleting a set of
+	marked	 messages in message list screen.
 
 1998-08-17 Monday 09:36  tobi
 
@@ -2423,14 +2497,15 @@
 1998-07-22 Wednesday 23:56  tobi
 
 	* maintmsg.c (1.2), makemsgn.c (1.3, msged-te-05), readmail.c
-	(1.3), readmail.h (1.2, msged-6_0_0-release,
+	(1.3), readmail.h (1.2, msged-6_0_1-release, msged-6_0_0-release,
 	msged-te-05-second-try, msged-te-05): Corrected some bugs when
 	forwarding, copying, moving and redirecting mails.
 
 1998-07-22 Wednesday 23:54  tobi
 
-	* editmail.h (1.2, msged-6_0_0-release, msged-te-05-second-try,
-	msged-te-05): Corrected keybinding of the emacskill function.
+	* editmail.h (1.2, msged-6_0_1-release, msged-6_0_0-release,
+	msged-te-05-second-try, msged-te-05): Corrected keybinding of the
+	emacskill function.
 
 1998-07-22 Wednesday 23:54  tobi
 
