@@ -5,7 +5,7 @@ COPT=
 MSGDIR=	../smapi
 
 TARGET=	msged
-MSGAPI=	smapiunx
+MSGAPI=	smapiunix 
 
 objs=	addr.o     \
 	ansi.o     \
