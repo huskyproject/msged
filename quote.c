@@ -270,7 +270,7 @@ LINE *makequote(LINE * l, char *isfrom)
         {
             s++;
         }
-	if (!m_isalnum(*s)) s++; //mtt
+	if (!m_isalnum(*s)) s++; /* mtt */
         initial[i++] = *s;
         while (*s && !m_isspace(*s))
         {

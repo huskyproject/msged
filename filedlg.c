@@ -45,6 +45,11 @@
 #define chdir _chdir
 #endif
 
+#ifdef __IBMC__
+#define chdir _chdir
+#define getcwd _getcwd
+#endif
+
 #include "addr.h"
 #include "config.h"
 #include "nedit.h"
@@ -62,7 +67,7 @@
 #include "unused.h"
 #include "mctype.h"
 
-struct UFILES 
+struct UFILES
 {
     int attrib;
     char *name;
@@ -160,7 +165,7 @@ static void KillFiles(void)
     int i;
 
     if (files != NULL)
-    {        
+    {
         for (i = 0; i < fmax; i++)
         {
             if (files[i] != NULL)
@@ -228,7 +233,7 @@ static int GetDirs(char *curdir, int start)
     strcat(sdir,"*.*");
 #else
     strcat(sdir,"*");
-#endif    
+#endif
 
     done = dir_findfirst(sdir,DIR_DIRECT,&f);
 
@@ -294,7 +299,7 @@ static void ShowCurDir(char *curdir)
             cp[j] = curdir[i];
     }
     cp[j] = '\0';
-        
+
     WndFillField(fdp_curdirx, fdp_curdiry, fdp_curdirlength + 1, ' ',
                  cm[DL_WTXT]);
     WndPrintf(fdp_curdirx, fdp_curdiry, cm[DL_WTXT], "%s", cp);
@@ -316,7 +321,7 @@ int GetFiles(char *curdir)
 
     if(NULL == FileFilter || !*FileFilter) /* let's not search for nothing. */
     {
-#ifdef MSDOS        
+#ifdef MSDOS
 	strcpy(FileFilter,"*.*");
 #else
         strcpy(FileFilter,"*");
@@ -340,10 +345,10 @@ int GetFiles(char *curdir)
             {
                 files[count]->name = xmalloc(sizeof(char) * 6);
                 if(NULL == files[count]->name) return -1;
-                
+
                 strcpy(files[count]->name,"");
                 /* We want drives up top, see below */
-                
+
                 files[count++]->attrib = DRVATTR;
             }
             drvflag++;
@@ -362,7 +367,7 @@ int GetFiles(char *curdir)
     {
         if(!(f.attrib & DIR_DIRECT))
         {
-            
+
             files[count]->name = strdup(f.name);
             if(NULL == files[count]->name) break;
             files[count]->attrib = f.attrib;
@@ -495,7 +500,7 @@ int ShowFiles(int maxfiles, struct CURFILE *retdir, int *current)
             done = 0;
             /*WndPrintf(6,top-1,cm[DL_WTXT],":");
               WndPrintf(13,19,cm[DL_WTXT] | _BLINK,":"); */
-            
+
             while(!done)     /* PITA or bug,but getline assumes edit
                                 is done if cursor goes passed the end */
             {
@@ -514,7 +519,7 @@ int ShowFiles(int maxfiles, struct CURFILE *retdir, int *current)
                     if(!*temp || *temp == '\t') drop = 0;
                     done = 1; /* Also traps accidental TAB */
                     break;
-                    
+
                 default:
                     drop = 0;
                 }
@@ -538,7 +543,7 @@ int ShowFiles(int maxfiles, struct CURFILE *retdir, int *current)
                 retdir->attrib = 0;
                 return 13;
             }
-            
+
 	case Key_Esc:
             return 27;
 
@@ -555,7 +560,7 @@ int ShowFiles(int maxfiles, struct CURFILE *retdir, int *current)
                 }
             }
             break;
-            
+
 	case Key_Dwn:
             if(cur < maxfiles)
             {
@@ -571,7 +576,7 @@ int ShowFiles(int maxfiles, struct CURFILE *retdir, int *current)
                 }
             }
             break;
-            
+
 	case Key_Home:
             curtop = 0; cur = 0;
             prnflag = 1;
@@ -614,7 +619,7 @@ int ShowFiles(int maxfiles, struct CURFILE *retdir, int *current)
             cur = curtop;
             prnflag = 1;
             break;
-            
+
 	default:
             if(m_isalnum(key))
             {
@@ -626,7 +631,7 @@ int ShowFiles(int maxfiles, struct CURFILE *retdir, int *current)
                 {
                     i = 0;
                 }
-                
+
                 for(; i <= maxfiles; i++)
                 {
                     if(toupper(key) == toupper(*files[i]->name))
@@ -638,7 +643,7 @@ int ShowFiles(int maxfiles, struct CURFILE *retdir, int *current)
                 }
             }
 
-            
+
         } /* end switch */
 
         if(prnflag) /* This is set if a display refresh is required */
@@ -715,7 +720,7 @@ static void AddDirSlash(char *path)
     }
 }
 
-       
+
 static void ImpExpDlgInit(const char *title)
 {
     IEDhCurr = WndTop();
@@ -759,7 +764,7 @@ static char *dlgetcwd(char *storehere, int buflen)
     }
     return storehere;
 }
-                
+
 
 /*
  * Analyse user input if the input was a complete path with filename.
@@ -795,7 +800,7 @@ static int process_fileinput(char *retpath, char *curdir)
         {
             /* change dir succeeded -
                change drive letters as well */
-                        
+
             if (drive_letters)
             {
                 if (curfile.name[1] == ':')
@@ -803,7 +808,7 @@ static int process_fileinput(char *retpath, char *curdir)
                     dir_setdrive(toupper(*curfile.name) - 'A');
                 }
             }
-            
+
             /* the path existed. good. use it. */
             dlgetcwd(curdir,FILENAME_MAX);
             AddDirSlash(curdir);
@@ -825,11 +830,11 @@ static int process_fileinput(char *retpath, char *curdir)
     {
         sp = curfile.name;
     }
-    
+
     /* Now we have evaluted the path component in the user
        entry. Now let's see about the rest. It could be a file
        mask, a subdirectory name, or a file name. */
-    
+
     if (sp)
     {
         if(strchr(sp, '?') || strchr(sp, '*'))
@@ -895,7 +900,7 @@ int FileDialog(char *retpath, const char *title)
         strcpy(curfile.name, retpath);
         process_fileinput(retpath, curdir);
     }
-        
+
 
     AddDirSlash(curdir);
     ImpExpDlgInit(title);
@@ -909,7 +914,7 @@ int FileDialog(char *retpath, const char *title)
         ShowCurDir(curdir);
 
         key = ShowFiles(max,&curfile,&cur); /* Go get user input */
-        
+
         if(key == Key_Ent)
         {
             if(curfile.attrib == DRVATTR)  /* User asking for drive */
@@ -932,7 +937,7 @@ int FileDialog(char *retpath, const char *title)
                     AddDirSlash(curdir);
                 }
                 else  /* ".."  bit easier */
-                {                    
+                {
                     sp = strrchr(curdir, '/');
                     if (sp != NULL)
                     {
@@ -951,9 +956,9 @@ int FileDialog(char *retpath, const char *title)
                     }
                 }
             } /* end else if dirattrib */
-            
+
             /* user entered a file or filter, or selected a file. */
-            else if (*curfile.name) 
+            else if (*curfile.name)
             {
                 if (process_fileinput(retpath, curdir))
                 {
@@ -975,14 +980,14 @@ int FileDialog(char *retpath, const char *title)
             break;
         }
     }  /* end while */
-    
+
     KillFiles();
     ImpExpDlgDone();
 
     /* Restore startup locations */
     if (drive_letters)
         dir_setdrive(homedisk);
-    
+
     chdir(homedir);
     return retval;
 }
