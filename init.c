@@ -166,6 +166,7 @@ int InitVars(void)
     ST->comspec = getenv("SHELL");
 #endif    
     ST->outfile = xstrdup("msged.txt");
+    ST->infile  = NULL;
     ST->quotestr = xstrdup(" > ");
     ST->echotoss = xstrdup("echotoss.log");
     ST->lastread = xstrdup("lastread");

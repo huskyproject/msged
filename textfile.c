@@ -53,9 +53,19 @@ void import(LINE * l)
     LINE *n;
     int ret;
 
-    fn[0] = '\0';
+    if (ST->infile)
+    {
+        strcpy(fn, ST->infile);
+    }
+    else
+    {
+        fn[0] = '\0';
+    }
 
     ret = GetString(" Import File ", "Name of file to import?", fn, PATHLEN);
+
+    release(ST->infile);
+    ST->infile = xstrdup(fn);
 
     TTCurSet(1);
 
