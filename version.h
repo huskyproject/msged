@@ -9,7 +9,7 @@
 
 #define VERNUM "6.0"
 #define VERPATCH ".1"
-#define VERBRANCH "-stable"
+#define VERBRANCH "-release"
 #define VERPROJECT "TE"
 
 #ifdef MSDOS
