@@ -15,6 +15,7 @@
 #include <string.h>
 #include <time.h>
 #include <errno.h>
+#include <assert.h>
 
 #if !defined(UNIX) && !defined(SASC)
 #include <io.h>
@@ -61,6 +62,12 @@ extern word _stdc msgapierr;
 static MSG *Ahandle = NULL;     /* area handle */
 static MSGH *mh = NULL;         /* message handle */
 static XMSG xmsg;               /* squish message header */
+
+                                /* these are used by the JAM routines only */
+static char *global_text = NULL;
+static unsigned long global_pos = 0;
+static unsigned long global_len;
+static unsigned long global_msgn;
 
 static UMSGID replyto = 0;      /* to ensure correct uplinks when mxx is used */
 
@@ -721,6 +728,36 @@ static dword strip_whitel(void)
     return cptr - cinfbuf;
 }
 
+int JamMsgWriteText(char *text, unsigned long msgn, unsigned long mlen)
+{
+    int l;
+    
+    if (global_text == NULL)
+    {
+        global_text = xmalloc(mlen + 1);
+        global_pos  = 0;
+        global_len  = mlen;
+        global_msgn = msgn;
+    }
+
+    if (text != NULL)
+        l = strlen(text);
+    else
+        l = 0;
+
+    assert(global_len == mlen);
+    assert(global_pos + l <= mlen);
+
+    if (l)
+    {
+        memcpy(global_text + global_pos, text, l);
+        global_text[global_pos + l] = '\0';
+        global_pos += l;
+    }
+
+    return TRUE;
+}
+
 
 /*
  *  SquishMsgWriteText; Writes message text (and header if a new
@@ -758,6 +795,8 @@ int SquishMsgWriteText(char *text, unsigned long msgn, unsigned long mlen)
             if (new)
             {
                 clen = strip_whitel();
+
+                                /* we could fix this to not use append. */
                 MsgWriteMsg(mh, FALSE, &xmsg, NULL, 0L, mlen, clen,
                   (byte *)cinfbuf);
                 MsgWriteMsg(mh, TRUE, NULL, (byte *)&cz,
@@ -778,6 +817,8 @@ int SquishMsgWriteText(char *text, unsigned long msgn, unsigned long mlen)
         }
         else
         {
+                                /* I THINK we might also be able to fix this
+                                   not to use append. */
             MsgWriteMsg(mh, TRUE, NULL, (byte *)&cz, sizeof(char),
               mlen, 0L, NULL);
         }
@@ -857,18 +898,34 @@ int SquishMsgWriteText(char *text, unsigned long msgn, unsigned long mlen)
             }
             else
             {
+                                /* we'd need to intercept this call if we want
+                                   to make it work with JAM api */
+
                 MsgWriteMsg(mh, FALSE, &xmsg, (byte *)text,
                   strlen(text), mlen, clen, (byte *)cinfbuf);
             }
         }
         else
         {
+                                /* this does NOT work with JAM api */
             MsgWriteMsg(mh, TRUE, NULL, (byte *)text, strlen(text),
               mlen, 0L, NULL);
         }
     }
 
     return TRUE;
+}
+
+int JamMsgClose(void)
+{
+    if (SquishMsgWriteText(global_text, global_msgn, global_len) != TRUE)
+        return FALSE;
+    if (global_text != NULL)
+    {
+        xfree(global_text); global_text = NULL;
+        global_text = NULL;
+    }
+    return SquishMsgClose();
 }
 
 /*
