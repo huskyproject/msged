@@ -362,7 +362,7 @@ FreeBSD or any other Unix-like system.
 @subsection Installation Procedure
 @xref{Husky Installation Procedure,,Installing @value{MSGED} as part of the
 Husky Project Tools}, if you want to use @value{MSGED} in conjunction with
-the hpt Tosser and other Husky Project tools. 
+the hpt Tosser and other Husky Project tools.
 
 The rest of this subsection only covers manual installation of @value{MSGED}
 as a standalone message reader, and may be skipped if you are using
@@ -510,7 +510,7 @@ start using @value{MSGED}.
 The only thing that you need to adjust is the codepage setting. @value{MSGED}
 is designed to do codepage translation, so that if your computer uses a
 different characters set compared to what is commonly encountered in fidonet
-echos, @value{MSGED} will handle the job of translation those messages to a
+echos, @value{MSGED} will handle the job of translating those messages to a
 character set your local terminal can handle, and likewise translate text you
 type back so that it is stored in a way other users can read it. This is
 important for most non-English languages (like German, French, Russian
@@ -622,8 +622,6 @@ the QuickBBS / Hudson Message Base routines
 @item
 the Fido *.MSG routines
 
-@item
-the routines for reading a @file{fastecho.cfg} configuration file.
 @end itemize
 
 This means that you presently must restrict yourself to a Squish message base
