@@ -10,8 +10,8 @@
 #define BETA 1   /* beta test release? */
 
 #if BETA
-#define CLOSED   " 05 (pre)"
-#define PIDBETA  ".05.pre"
+#define CLOSED   " 05"
+#define PIDBETA  ".05"
 #else
 #define CLOSED   ""
 #define PIDBETA  ""
