@@ -85,6 +85,11 @@ all: $(TARGET)
 .c.obj:
 	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
 
+# there is a bug in MS C, leading to an internal compiler error
+# when trying to optimize ibmscrn.c 
+ibmscrn.obj: ibmscrn.c
+	$(CC) $(CFLAGS) $(CDEFS) -c ibmscrn.c
+
 $(TARGET): $(objs)
 	$(CC) $(COPT) -Fe$(TARGET) -F 2000 *.obj $(MSGAPI)
 

@@ -88,7 +88,7 @@
 #define F_NORMAL         0x000     /* Normal Font    */
 #define F_ALTERNATE      0x100     /* Alternate Font */
 
-#define MAKECELL(ch, at) ((unsigned long)(((unsigned long)((unsigned char)ch)) | \
+#define MAKECELL(ch, at) ((unsigned long)(((unsigned long)((unsigned char)(ch))) | \
                                           (((unsigned long)(at)) << 16)))
                                          
 
