@@ -53,6 +53,7 @@ int bdos(int func, unsigned reg_dx, unsigned char reg_al);
 #include "addr.h"
 #include "nedit.h"
 #include "msged.h"
+#include "flags.h"
 #include "memextra.h"
 #include "strextra.h"
 #include "config.h"
@@ -297,13 +298,17 @@ msg *readmsg(unsigned long n)
 		break;
 
 	    case 'F':
-		if (strncmp(text + 1, "FMPT", 4) != 0)
+		if (strncmp(text + 1, "FMPT", 4) == 0)
 		{
-		    break;
-		}
-		s = text + 5;
-		m->from.point = atoi(s + 1);
-		break;
+                    s = text + 5;
+                    m->from.point = atoi(s + 1);
+                }
+                else if (strncmp(text + 1, "FLAGS", 5) == 0)
+                {
+                    parseflags(text + 7, m);
+                }
+
+                break;
 
 	    case 'T':
 		if (strncmp(text + 1, "TOPT", 4) != 0)
@@ -1544,11 +1549,14 @@ int writemsg(msg * m)
 		    {
 			domain_gated = 1;
 
-			if (m->attrib.crash || m->attrib.crash)
+			if (m->attrib.crash || m->attrib.direct ||
+                            m->attrib.hold  || m->attrib.immediate)
 			{
 			    int ret;
 
-			    ret = ChoiceBox(" Crash ", "Crash message to?",
+			    ret = ChoiceBox(" Direct Message ",
+                                            " Direct Message "
+                                            "(crash, dir, imm or hold) to?",
 			      "Domain Gate", "Destination Node", NULL);
 
 			    if (ret == ID_ONE)
@@ -1672,54 +1680,17 @@ int writemsg(msg * m)
 	    curr = InsertAfter(curr, text);
 	}
 
-	if (SW->echoflags && CurArea.echomail)
+	if ((SW->echoflags && CurArea.echomail) || (CurArea.netmail))
 	{
 	    char flags[255];
 
-	    /* FLAGS control line */
+            printflags(flags, m, CurArea.msgtype, CurArea.echomail);
 
-	    *flags = '\0';
-	    if (m->attrib.priv)
-	    {
-		strcat(flags, " PVT");
-	    }
-	    if (m->attrib.crash)
-	    {
-		strcat(flags, " CRA");
-	    }
-	    if (m->attrib.attach)
-	    {
-		strcat(flags, " FIL");
-	    }
-	    if (m->attrib.killsent)
-	    {
-		strcat(flags, " K/S");
-	    }
-	    if (m->attrib.hold)
-	    {
-		strcat(flags, " HLD");
-	    }
-	    if (m->attrib.direct)
-	    {
-		strcat(flags, " DIR");
-	    }
-	    if (m->attrib.freq)
-	    {
-		strcat(flags, " FRQ");
-	    }
-	    if (m->attrib.rreq)
-	    {
-		strcat(flags, " RRQ");
-	    }
-	    if (m->attrib.rcpt)
-	    {
-		strcat(flags, " CFM");
-	    }
-	    if (*flags)
-	    {
-		sprintf(text, "\01FLAGS%s\r", flags);
-		curr = InsertAfter(curr, text);
-	    }
+            if (*flags)
+            {
+                sprintf(text, "\01FLAGS %s\r", flags);
+                curr = InsertAfter(curr, text);
+            }
 	}
 
 	if (!SW->usetearlines || SW->usepid || CurArea.netmail)

@@ -2095,6 +2095,7 @@ are generally case-insensitive.
 * EnableSC::                    Enabling input of ``Umlauts'' on Unix.
 * Fido::                        Specifying a Fido *.MSG format mail area
 * FreqArea::                    Specifying an area to place file requests in.
+* FreqFlags::                   Specifying flags for file request messages.
 * Function::                    Creating keyboard macros.
 * Gate::                        Enabling Domain- and/or Zone gating.
 * Group::                       Different templates for different areas.
@@ -2437,9 +2438,10 @@ process special national characters, you can f`req @file{syscons.tgz} at
 This keyword is described in the section about manual message area definition
 (@pxref{Manual Area Definition,, Manual Area Definition}).
 
-@node FreqArea, Function, Fido, Keywords
+@node FreqArea, FreqFlags, Fido, Keywords
 @subsection FreqArea
 @findex FreqArea
+@cindex file requests, message area
 @table @asis
 @item Syntax:
 @code{FreqArea @var{area-tag}}
@@ -2452,7 +2454,42 @@ written when the @key{Ctrl}-@key{F} function is invoked.  If not
 defined, @samp{NETMAIL} is the default areatag.  Only one file request area
 may be defined.
 
-@node Function, Gate, FreqArea, Keywords
+@node FreqFlags, Function, FreqArea, Keywords
+@subsection FreqFlags
+@findex FreqFlags
+@cindex flavour, of file requests
+@cindex flags, for file requests
+@cindex file requests, flags
+@table @asis
+@item Syntax:
+@code{FreqFlags @var{flag} [@var{flag} @dots{}]}
+@item Example:
+@code{FreqFlags CRA K/S}
+@end table
+
+This keyword defines the flags that are set for file request message
+generated using the @key{Ctrl}-@key{F} feature. If not defined, @samp{DIR
+K/S} is the default. The @samp{FRQ} flag will be appended in any case, so
+will the local message area flags (usaually @samp{PVT LOC}). Any flags
+defined in FSC 0053 are electible, yet the only ones that are useful for file
+request messages are listed below. 
+
+@example
+HLD @r{place file request on hold for the caller}
+CRA @r{crash delivery, dial out as soon cost setup permits it}
+IMM @r{immediate deilivery, dial out immediately}
+DIR @r{direct mail, you have do dial out manually}
+K/S @r{kill the file request mail after it has been sent}
+@end example
+
+You should at least specify one flag out of @samp{HLD CRA IMM DIR}, because
+if none of these is present, the file request will be routed and consequently
+be ignored by the destination system. 
+
+If you want to specify multiple file request flags, separate them by white
+spaces, as shown in the example above.
+
+@node Function, Gate, FreqFlags, Keywords
 @subsection Function
 @findex Function
 @cindex function key macros
@@ -3511,12 +3548,15 @@ default. Default: On.
 
 @item EchoFlags
 @findex EchoFlags
-When this switch is set to on, @value{MSGED} will append a FLAGS control line
-to messages entered in echomail areas whenever there are message attributes.
-For example, entering a private message into an echomail area will cause
-Msged to add a @samp{FLAGS PVT} control line to the beginning of the message
-text. Do not change this switch unless you know what you are doing. Default:
-On.
+When this switch is set to on, @value{MSGED} will append a FLAGS control
+kludge line to messages entered in echomail areas whenever there are message
+attributes other than Loc, Snt and Rcv, and it will recognise FLAGS control
+lines in echomail areas. (Note that Msged always writes FLAGS control lines
+in netmail areas when necessary and always recognises these lines for netmail
+messages). Setting this switch to on allows the transportation of all sorts
+of message flags in echomail areas. These flags, however, do not make too
+much sense in echomail areas (or why would you want to set a Pvt flag in an
+echo area for example?). However, the default is On.
 
 @item EditCROnly
 @findex EditCROnly

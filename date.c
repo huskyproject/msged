@@ -18,6 +18,7 @@
 #include "memextra.h"
 #include "strextra.h"
 #include "date.h"
+#include "mctype.h"
 
 static char *month[] =
 {
@@ -156,7 +157,7 @@ time_t parsedate(char *ds)
         s = strtok(NULL, ":");
         if (s != NULL)
         {
-            while (isspace(*s))
+            while (m_isspace(*s))
             {
                 s++;
             }
@@ -220,7 +221,7 @@ time_t parsedate(char *ds)
         {
             return 0;
         }
-        while (isspace(*s))
+        while (m_isspace(*s))
         {
             s++;
         }

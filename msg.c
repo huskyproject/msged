@@ -286,6 +286,8 @@ msg *SquishMsgReadHeader(unsigned long n, int type)
     m->attrib.areq = (xmsg.attr & MSGARQ) != 0;
     m->attrib.ureq = (xmsg.attr & MSGURQ) != 0;
 
+    m->attrib.lock = (xmsg.attr & MSGLOCKED) != 0;
+
     if (xmsg.attr & MSGSCANNED)
     {
         m->scanned = 1;
@@ -588,6 +590,10 @@ int SquishMsgWriteHeader(msg * m, int type)
     if (m->attrib.ureq)
     {
         xmsg.attr |= MSGURQ;
+    }
+    if (m->attrib.lock)
+    {
+        xmsg.attr |= MSGLOCKED;
     }
 
     if (new == FALSE)

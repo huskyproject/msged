@@ -65,6 +65,8 @@ int bdos(int func, unsigned reg_dx, unsigned char reg_al);
 #include "dialogs.h"
 #include "help.h"
 #include "makemsgn.h"
+#include "flags.h"
+#include "mctype.h"
 
 /*
  *  Define record for the FileRequest list.
@@ -85,9 +87,9 @@ static char *get_desc(char *txt)
 
     do
     { 
-        for(; isspace(*cp) && *cp; cp++);    /* skip white spaces  */
+        for(; m_isspace(*cp) && *cp; cp++);    /* skip white spaces  */
 
-        if ( (!isdigit(*cp)) &&              /* not a file size    */
+        if ( (!m_isdigit(*cp)) &&              /* not a file size    */
              (*cp != '[' || *cp != '(') &&   /* not a file counter */
              (stricmp(cp,"KB"))              /* not a "KB" unit    */
            )
@@ -95,7 +97,7 @@ static char *get_desc(char *txt)
             break;
         }
 
-        for(; (!isspace(*cp)) && *cp; cp++); /* skip this word     */
+        for(; (!m_isspace(*cp)) && *cp; cp++); /* skip this word     */
         
     } while (*cp);
 
@@ -589,13 +591,16 @@ void makefreq(void)
                     m->soteot = 0;
                     m->time_arvd = 0;
                     clear_attributes(&m->attrib);
-                    m->attrib.sent = 0;
-                    m->attrib.orphan = 0;
-                    m->attrib.local = 1;
-                    m->scanned = 0;
+                    if (ST->freqflags != NULL)
+                    {
+                        parseflags(ST->freqflags, m);
+                    }
+                    else
+                    {
+                        m->attrib.killsent = 1;
+                        m->attrib.direct = 1;
+                    }
                     m->attrib.freq = 1;
-                    m->attrib.direct = 1;
-                    m->attrib.killsent = 1;
                     m->subj=xstrdup(txt);
                         
                         
@@ -632,13 +637,16 @@ void makefreq(void)
             m->soteot = 0;
             m->time_arvd = 0;
             clear_attributes(&m->attrib);
-            m->attrib.sent = 0;
-            m->attrib.orphan = 0;
-            m->attrib.local = 1;
-            m->scanned = 0;
+            if (ST->freqflags != NULL)
+            {
+                parseflags(ST->freqflags, m);
+            }
+            else
+            {
+                m->attrib.killsent = 1;
+                m->attrib.direct = 1;
+            }
             m->attrib.freq = 1;
-            m->attrib.direct = 1;
-            m->attrib.killsent = 1;
             m->subj=xstrdup(txt);
                 
             if (strlen(txt)!=0)

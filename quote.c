@@ -9,12 +9,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 #include <time.h>
+#include <ctype.h>
 #include "addr.h"
 #include "nedit.h"
 #include "memextra.h"
 #include "strextra.h"
+#include "mctype.h"
 #include "msged.h"
 #include "wrap.h"
 #include "quote.h"
@@ -57,7 +58,7 @@ int is_quote(char *text)
             continue;
 
         default:
-            if (!isalnum(*c))
+            if (!m_isalnum(*c))
             {
                 return FALSE;
             }
@@ -161,7 +162,7 @@ int is_blank(LINE * l)
             s++;
         }
 
-        while (*s && isspace(*s))
+        while (*s && m_isspace(*s))
         {
             s++;
         }
@@ -178,7 +179,7 @@ int is_blank(LINE * l)
     else
     {
         s = l->text;
-        while (*s && isspace(*s))
+        while (*s && m_isspace(*s))
         {
             s++;
         }
@@ -228,7 +229,7 @@ char *replace_noise(char *text)
 
     if (!SW->hardquote)
     {
-        while (*s && isspace(*s))
+        while (*s && m_isspace(*s))
         {
             s++;
         }
@@ -264,13 +265,13 @@ LINE *makequote(LINE * l, char *isfrom)
 
     while (s && *s && i < 10)
     {
-        while (*s && isspace(*s))
+        while (*s && m_isspace(*s))
         {
             s++;
         }
-	if (!isalnum(*s)) s++; //mtt
+	if (!m_isalnum(*s)) s++; //mtt
         initial[i++] = *s;
-        while (*s && !isspace(*s))
+        while (*s && !m_isspace(*s))
         {
             s++;
         }

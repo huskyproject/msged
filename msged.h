@@ -96,22 +96,32 @@
 
 struct _attributes
 {
-    unsigned int priv     : 1;  /* private message flag */
-    unsigned int crash    : 1;  /* crash mail */
-    unsigned int rcvd     : 1;  /* received by addressee */
-    unsigned int sent     : 1;  /* message sent */
-    unsigned int attach   : 1;  /* file attached */
-    unsigned int forward  : 1;  /* message in transit */
-    unsigned int orphan   : 1;  /* unknown destination */
-    unsigned int killsent : 1;  /* kill after sending */
-    unsigned int local    : 1;  /* local message */
-    unsigned int hold     : 1;  /* hold for pickup */
-    unsigned int direct   : 1;  /* do no gating on this msg */
-    unsigned int freq     : 1;  /* file request */
-    unsigned int rreq     : 1;  /* return receipt requested */
-    unsigned int rcpt     : 1;  /* return receipt */
-    unsigned int areq     : 1;  /* audit trail request */
-    unsigned int ureq     : 1;  /* update file request */
+    unsigned int priv      : 1;  /* private message flag */
+    unsigned int crash     : 1;  /* crash mail */
+    unsigned int rcvd      : 1;  /* received by addressee */
+    unsigned int sent      : 1;  /* message sent */
+    unsigned int attach    : 1;  /* file attached */
+    unsigned int forward   : 1;  /* message in transit */
+    unsigned int orphan    : 1;  /* unknown destination */
+    unsigned int killsent  : 1;  /* kill after sending */
+    unsigned int local     : 1;  /* local message */
+    unsigned int hold      : 1;  /* hold for pickup */
+    unsigned int direct    : 1;  /* do no gating on this msg */
+    unsigned int freq      : 1;  /* file request */
+    unsigned int rreq      : 1;  /* return receipt requested */
+    unsigned int rcpt      : 1;  /* return receipt */
+    unsigned int areq      : 1;  /* audit trail request */
+    unsigned int ureq      : 1;  /* update file request */
+
+    /* extended attributes only found in @FLAGS kludge line */
+    unsigned int kfs       : 1;  /* kill file when sent */
+    unsigned int as        : 1;  /* archive when sent */
+    unsigned int immediate : 1;  /* immediate delivery */
+    unsigned int tfs       : 1;  /* truncate file when sent */
+    unsigned int lock      : 1;  /* do not process this mail */
+    unsigned int cfm       : 1;  /* confirm receipt request */
+    unsigned int zon       : 1;  /* send mail via zone gate */
+    unsigned int hub       : 1;  /* hub routing */
 };
 
 /* Structure defining an alias for header and cc: entry */
@@ -310,7 +320,8 @@ struct _sv
     char *freqarea;             /* area tag for area to make f.req.in */
     char *input_charset;        /* charset  assumed when reading mail
                                    without CHRS kludge. */
-    char *uucpreplyto;          /* a replyto: string for e-mail */        
+    char *uucpreplyto;          /* a replyto: string for e-mail */
+    char *freqflags;            /* flags to use for file requests */
 };
 
 /* These are the system switches, for access across the system */

@@ -6,6 +6,26 @@ Features, Changes and Fixes in the current development version of MsgEd
 
 Features:
 
+- Support for @FLAGS kludge lines. Msged now will write a FLAGS kludge
+  line if flags that are not supported by the current storage format
+  have to be saved, and it recognises flags in FLAGS kludge lines in 
+  messages that it reads. See FSC 0053 for further information.
+
+- Support for the following new message flags: 
+  kfs, a/s, imm, tfs, lock, cfm, zon, hub
+  Especially kfs is important: If you send file attaches to points of other
+  sysops, you should always set kfs to insure that the message is killed on
+  the remote node's system! (Of course it will also be deleted on your
+  system, so only send non-vital copies if you use kfs ...)
+
+- New keyword FreqFlags. As argument to this keyword, you can specify a
+  blank separated list of flags to use for file request messages. The default
+  value is DIR K/S, if you do not override it by using the FreqFlags
+  keywords. Msged will also always set the FRQ flag and any flags that are
+  particular to the area that the file reqest is generated in (usually PVT
+  LOC). Example:
+  FreqFlags CRA K/S
+
 - If you want to insert a Reply-To: line into gated e-mail messages,
   you can now put
     UUCPReplyTo your@e.mail

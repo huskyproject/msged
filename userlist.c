@@ -30,6 +30,7 @@
 #include "nshow.h"
 #include "userlist.h"
 #include "screen.h"
+#include "mctype.h"
 
 #define SELBOX_WRTOVER  7
 #if defined(MSDOS) && (!defined(__FLAT__))
@@ -226,15 +227,15 @@ ADDRESS lookup(char *name, char *fn)
 
                 /*  Use the name as it was found in the userlist */
                 i = strlen(buf) - 1;
-                while (i > 0 && isspace(buf[i]))
+                while (i > 0 && m_isspace(buf[i]))
                 {
                     i--;
                 }
-                while (i > 0 && !isspace(buf[i]))
+                while (i > 0 && !m_isspace(buf[i]))
                 {
                     i--;
                 }
-                while (i > 0 && isspace(buf[i]))
+                while (i > 0 && m_isspace(buf[i]))
                 {
                     i--;
                 }
@@ -273,16 +274,16 @@ ADDRESS lookup(char *name, char *fn)
                 }
 
                 p = buf + strlen(buf) - 1;
-                while ((p >= buf) && (isspace(*p)))
+                while ((p >= buf) && (m_isspace(*p)))
                 {
                     *p = '\0';
                     p--;
                 }
-                while ((p >= buf) && (!isspace(*p)))
+                while ((p >= buf) && (!m_isspace(*p)))
                 {
                     p--;
                 }
-                if ((p >= buf) && (isspace(*p)))
+                if ((p >= buf) && (m_isspace(*p)))
                 {
                     p++;
                 }

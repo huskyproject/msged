@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include "mctype.h"
 #include <time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -573,20 +574,25 @@ int ChangeAttrib(msg * m)
     int ch, done = 0;
 
     hCurr = WndTop();
-    hWnd = WndPopUp(62, 11, SBDR | SHADOW, cm[IN_BTXT], cm[IN_NTXT]);
+    hWnd = WndPopUp(62, 13, SBDR | SHADOW, cm[IN_BTXT], cm[IN_NTXT]);
 
     /* put up some help for the befuddled user */
 
-    WndTitle(" Message Attributes ", cm[IN_NTXT]);
+    WndTitle(" Message Attributes (Alt-Z: erase all)", cm[IN_NTXT]);
 
-    WndWriteStr(2, 1, cm[IN_NTXT], "Private             <Alt-P>   Crash               <Alt-C>");
-    WndWriteStr(2, 2, cm[IN_NTXT], "File Attach         <Alt-A>   Kill/Sent           <Alt-K>");
-    WndWriteStr(2, 3, cm[IN_NTXT], "Hold                <Alt-H>   Direct              <Alt-D>");
-    WndWriteStr(2, 4, cm[IN_NTXT], "Sent                <Alt-S>   Received            <Alt-R>");
-    WndWriteStr(2, 5, cm[IN_NTXT], "Orphan              <Alt-O>   File Request        <Alt-F>");
-    WndWriteStr(2, 6, cm[IN_NTXT], "Return Rcpt         <Alt-E>   Return Rcpt Request <Alt-Q>");
-    WndWriteStr(2, 7, cm[IN_NTXT], "Audit Request       <Alt-I>   File Update Request <Alt-U>");
-    WndWriteStr(2, 8, cm[IN_NTXT], "Local               <Alt-L>   Zap all attribs     <Alt-Z>");
+    WndWriteStr(2, 0, cm[IN_NTXT], "Private             <Alt-P>   Crash               <Alt-C>");
+    WndWriteStr(2, 1, cm[IN_NTXT], "File Attach         <Alt-A>   Kill/Sent           <Alt-K>");
+    WndWriteStr(2, 2, cm[IN_NTXT], "Hold                <Alt-H>   Direct              <Alt-D>");
+    WndWriteStr(2, 3, cm[IN_NTXT], "Sent                <Alt-S>   Received            <Alt-R>");
+    WndWriteStr(2, 4, cm[IN_NTXT], "Orphan              <Alt-O>   File Request        <Alt-F>");
+    WndWriteStr(2, 5, cm[IN_NTXT], "Return Rcpt         <Alt-E>   Return Rcpt Request <Alt-Q>");
+    WndWriteStr(2, 6, cm[IN_NTXT], "Audit Request       <Alt-I>   File Update Request <Alt-U>");
+    WndWriteStr(2, 7, cm[IN_NTXT], "Local               <Alt-L>   Intransit (Forward) <Alt-T>");
+    WndWriteStr(2, 8, cm[IN_NTXT], "Kill File when Sent <Alt-X>   Truncate File w. S. <Alt-Y>");
+    WndWriteStr(2, 9, cm[IN_NTXT], "Archive when Sent   <Alt-J>   Immediate Delivery  <Alt-V>");
+    WndWriteStr(2,10, cm[IN_NTXT], "Lock                <Alt-W>   Confirm Rcpt Req    <Alt-M>");
+    WndWriteStr(2,11, cm[IN_NTXT], "Route via Zone Gate <Alt-G>   Route via Hub       <Alt-B>");
+/*  WndWriteStr(2,12, cm[IN_NTXT], "           Zap (erase) all attributes  <Alt-Z>           "); */
 
     WndCurr(hCurr);  /* make parent window active so we can write to it */
 
@@ -664,6 +670,43 @@ int ChangeAttrib(msg * m)
             m->attrib.local ^= 1;
             break;
 
+        case Key_A_T:
+            m->attrib.forward ^= 1;
+            break;
+
+        case Key_A_X:
+            m->attrib.kfs ^= 1;
+            break;
+
+        case Key_A_Y:
+            m->attrib.tfs ^= 1;
+            break;
+            
+        case Key_A_J:
+            m->attrib.as ^= 1;
+            break;
+            
+        case Key_A_V:
+            m->attrib.immediate ^= 1;
+            break;
+            
+        case Key_A_W:
+            m->attrib.lock ^= 1;
+            break;
+            
+        case Key_A_M:
+            m->attrib.cfm ^= 1;
+            break;
+            
+        case Key_A_G:
+            m->attrib.zon ^= 1;
+            break;
+            
+        case Key_A_B:
+            m->attrib.hub ^= 1;
+            break;
+            
+            
         case Key_A_Z:
             m->attrib.attach = 0;
             m->attrib.priv = 0;
@@ -680,6 +723,15 @@ int ChangeAttrib(msg * m)
             m->attrib.orphan = 0;
             m->attrib.areq = 0;
             m->attrib.local = 0;
+            m->attrib.forward = 0;
+            m->attrib.kfs = 0;
+            m->attrib.as = 0;
+            m->attrib.immediate = 0;
+            m->attrib.tfs = 0;
+            m->attrib.lock = 0;
+            m->attrib.cfm = 0;
+            m->attrib.zon = 0;
+            m->attrib.hub = 0;
             m->scanned = 0;
             break;
 
@@ -746,6 +798,42 @@ int ChangeAttrib(msg * m)
                 m->attrib.local ^= 1;
                 break;
 
+            case 'T':
+                m->attrib.forward ^= 1;
+                break;
+
+            case 'X':
+                m->attrib.kfs ^= 1;
+                break;
+
+            case 'Y':
+                m->attrib.tfs ^= 1;
+                break;
+
+            case 'J':
+                m->attrib.as ^= 1;
+                break;
+
+            case 'V':
+                m->attrib.immediate ^= 1;
+                break;
+
+            case 'W':
+                m->attrib.lock ^= 1;
+                break;
+
+            case 'M':
+                m->attrib.cfm ^= 1;
+                break;
+
+            case 'G':
+                m->attrib.zon ^= 1;
+                break;
+
+            case 'B':
+                m->attrib.hub ^= 1;
+                break;
+
             case 'Z':
                 m->attrib.attach = 0;
                 m->attrib.priv = 0;
@@ -762,6 +850,15 @@ int ChangeAttrib(msg * m)
                 m->attrib.orphan = 0;
                 m->attrib.areq = 0;
                 m->attrib.local = 0;
+                m->attrib.forward = 0;
+                m->attrib.kfs = 0;
+                m->attrib.as = 0;
+                m->attrib.immediate = 0;
+                m->attrib.tfs = 0;
+                m->attrib.lock = 0;
+                m->attrib.cfm = 0;
+                m->attrib.zon = 0;
+                m->attrib.hub = 0;
                 m->scanned = 0;
                 break;
 
@@ -913,7 +1010,7 @@ static char *addr_lookup(char *name, ADDRESS * tmp)
             {
                 /* Check to see if an address has been entered. */
 
-                if (isdigit(xname[0]) || xname[0] == ':' ||
+                if (m_isdigit(xname[0]) || xname[0] == ':' ||
                   xname[0] == '/' || xname[0] == '.')
                 {
                     *tmp = parsenode(xname);
@@ -1362,7 +1459,7 @@ int EditHeader(msg * m)
                 ch = ChangeAddress(&m->to, 2, (m->isto) ? strlen(m->isto) : 0);
             }
 /* AKA-Matching */
-            if (m->from.zone != m->to.zone)     /* falsche Zone im From */
+            if (m->from.zone != m->to.zone)     /* wrong zone in "from" */
             {
                 for (i = 0; i < SW->aliascount; i++)
                 {
@@ -1378,7 +1475,7 @@ int EditHeader(msg * m)
                 }
                 ShowNameAddress(m->isfrom, &m->from, 1, 0, 0);
             }
-/* Ende AKA-Matching */
+/* end of  AKA matching */
             ShowNameAddress(m->isto, &m->to, 2, 0, 0);
             break;
 
@@ -1582,7 +1679,7 @@ static void GetFileCCs(char *file, NA * names[], int *idx)
     while (fgets(buf, sizeof(buf) - 1, fp) != NULL)
     {
         s = buf;
-        while (*s && isspace(*s))
+        while (*s && m_isspace(*s))
         {
             s++;
         }
@@ -1593,7 +1690,7 @@ static void GetFileCCs(char *file, NA * names[], int *idx)
         }
 
         t = s + strlen(s) - 1;
-        while (t > s && isspace(*t))
+        while (t > s && m_isspace(*t))
         {
             t--;
         }
@@ -1769,7 +1866,7 @@ void save(msg * m)
     while (current && *s && !strncmpi(s + 1, "c:", 2))
     {
         s += 3;
-        while (*s && isspace(*s))
+        while (*s && m_isspace(*s))
         {
             s++;
         }
@@ -1787,7 +1884,7 @@ void save(msg * m)
         {
             while (*s != '\0' && s != NULL)
             {
-                while (*s && isspace(*s))
+                while (*s && m_isspace(*s))
                 {
                     s++;
                 }
@@ -1986,7 +2083,7 @@ static void crosspost(msg * m)
     {
         s += 3;
 
-        while (*s && isspace(*s))
+        while (*s && m_isspace(*s))
         {
             s++;
         }
@@ -2010,7 +2107,7 @@ static void crosspost(msg * m)
                     t = s + strlen(s) - 1;
                 }
             }
-            while (*s && isspace(*s))
+            while (*s && m_isspace(*s))
             {
                 s++;
             }

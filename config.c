@@ -121,6 +121,7 @@ static char *cfgverbs[] =
     "Elseif",
     "Endif",
     "UucpReplyTo",
+    "FreqFlags",
     NULL
 };
 
@@ -183,6 +184,7 @@ static char *cfgverbs[] =
 #define CFG_ELSEIF         56
 #define CFG_ENDIF          57
 #define CFG_UUCPREPLYTO    58
+#define CFG_FREQFLAGS      59
 
 static struct colorverb colortable[] =
 {
@@ -3267,6 +3269,11 @@ static void parseconfig(FILE * fp)
         case CFG_UUCPREPLYTO:
             release(ST->uucpreplyto);
             ST->uucpreplyto = xstrdup(value);
+            break;
+
+        case CFG_FREQFLAGS:
+            release (ST->freqflags);
+            ST->freqflags = xstrdup(value);
             break;
 
         case -2:   /* skip */

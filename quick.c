@@ -503,7 +503,7 @@ int QuickMsgWriteHeader(msg * m, int type)
     header.priv = m->attrib.priv;
     header.rcvd = m->attrib.rcvd;
     header.local = m->attrib.local;
-    header.xx1 = 0;
+    header.xx1 = m->attrib.hold;
     header.killsent = m->attrib.killsent;
     header.sent = m->attrib.sent;
     header.attach = m->attrib.attach;

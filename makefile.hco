@@ -22,6 +22,7 @@ objs=   addr.obj     \
 	environ.obj  \
 	fconf.obj    \
 	fecfg145.obj \
+	flags.obj    \
 	fido.obj     \
 	freq.obj     \
 	gestr120.obj \

@@ -185,6 +185,7 @@ int InitVars(void)
     ST->freqarea = NULL;
     ST->special_characters = NULL;
     ST->uucpreplyto = NULL;
+    ST->freqflags = NULL;
 
     uucp_gate.notfound = 1;
 

@@ -33,6 +33,7 @@ OBJS=   addr.obj     \
 	fconf.obj    \
 	fido.obj     \
 	fecfg145.obj \
+	flags.obj    \
 	freq.obj     \
 	gestr120.obj \
 	getopts.obj  \

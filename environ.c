@@ -25,6 +25,7 @@ start:
 
   while (*cpsrc)
   { if (*cpsrc=='%')
+    {
       if (isVar)
       { *cpvar=0; isVar=0;
 #ifndef UNIX
@@ -49,7 +50,9 @@ start:
       {
         isVar=1; invar = 0;
       }
+    }
     else
+    {
       if (isVar)
       { int novar = 0;
         
@@ -78,6 +81,7 @@ start:
       { *cpdest++=*cpsrc;
         if ((++l)>=maxlen) goto error;
       }
+    }
 
     cpsrc++;
   }

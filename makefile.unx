@@ -23,6 +23,7 @@ objs=	addr.o     \
 	environ.o  \
 	fconf.o    \
 	fecfg145.o \
+	flags.o    \
 	fido.o     \
 	freq.o     \
 	gestr120.o \
