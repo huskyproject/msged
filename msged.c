@@ -84,7 +84,7 @@ int scan = 0;                   /* set scan = 1 to scan for new mail at startup 
 static int endMain = 0;
 static int errorlevel = 0;
 int direction = RIGHT;          /* travel direction in msgbase */
-char msgbuf[BUFLEN];            /* message buffer used for reading */
+char *msgbuf = NULL;            /* message buffer used for reading, size: BUFLEN */
 int msgederr = 0;               /* errno for msged */
 int set_rcvd = 1;               /* used to tell readmsg() not to set rcvd */
 
@@ -264,7 +264,7 @@ static void edithdr(void)
     /*  TE 07/2000: We have to rewrite all the message, not just
         the header, because of the @FLAGS kludge which is in the body
         MsgWriteHeader(message, WR_HEADER); */
-    writemsg(message); 
+    writemsg(message);
 
     message = KillMsg(message);
 }
@@ -1047,7 +1047,7 @@ static void set_area_backend(int show_all, int newgrouparea, int newarea)
     int done = 0;
     int ret;
     int temp;
-    
+
     if (CurArea.status)         /* close current area, if open */
     {
         highest();
@@ -1376,7 +1376,7 @@ static void next_area(void)
     {
         NewArea = (SW->grouparea + 1) % SW->groupareas;
     } while (group_getareano(NewArea) < 0);
-    
+
     while (((long)arealist[group_getareano(NewArea)].messages <=
       (long)arealist[group_getareano(NewArea)].lastread) &&
            arealist[group_getareano(NewArea)].scanned)
@@ -1432,7 +1432,7 @@ static void prev_area(void)
         NewArea--;
         NewArea = (NewArea < 0) ? SW->groupareas - 1 : NewArea;
     } while (group_getareano(NewArea)< 0);
-    
+
     while ((((long)arealist[group_getareano(NewArea)].messages -
             (long)arealist[group_getareano(NewArea)].lastread) <= 0) &&
            arealist[group_getareano(NewArea)].scanned)
@@ -1601,8 +1601,8 @@ static int start(char *cfg, char *afn)
     {
         /* don't allow a separator to be come current area */
         SW->area = group_getareano(++(SW->grouparea));
-    } while (SW->area < 0); 
-    
+    } while (SW->area < 0);
+
     message = NULL;
     return 0;
 }
@@ -2022,25 +2022,25 @@ static void message_reading_mode(void)
         BuildHotSpots();
         ShowNewArea();
     }
-    
+
     DrawHeader();
-    
+
     endMain = 0;
     message = KillMsg(message);
     message = readmsg(CurArea.current);
-    
+
     if (!CurArea.status || message == NULL || !CurArea.messages)
     {
         ClearMsgScreen();
         ShowMsgHeader(message);
         ChoiceBox(" Notice ", "There are no messages stored in this area", "  Ok  ", NULL, NULL);
     }
-    
+
     newmsg = 1;
-    
+
     while (!endMain)
     {
-        
+
         if (!CurArea.messages || newmsg || !CurArea.status || message == NULL)
         {
             TTBeginOutput();
@@ -2049,11 +2049,11 @@ static void message_reading_mode(void)
             {
                 ClearMsgScreen();
             }
-            
+
             ShowMsgHeader(message);
-            
+
             newmsg = 0;
-            
+
             if (message != NULL)
             {
                 RefreshMsg(message->text, 6);
@@ -2061,7 +2061,7 @@ static void message_reading_mode(void)
 
             TTEndOutput();
         }
-        
+
         oldmsg = CurArea.current;
         command = MnuGetMsg(&event, hMnScr->wid);
         switch (event.msgtype)
@@ -2070,7 +2070,7 @@ static void message_reading_mode(void)
             window_resized = 1;  /* we'll exit to redraw the
                                     screen */
             break;
-            
+
         case WND_WM_COMMAND:
             switch (command)
             {
@@ -2080,16 +2080,16 @@ static void message_reading_mode(void)
                 case ID_LNDN:
                     link_from();
                     break;
-                    
+
                 case ID_LNUP:
                     link_to();
                     break;
-                    
+
                 default:
                     break;
                 }
                 break;
-                
+
             case MOU_LBTDN:
             case LMOU_RPT:
                 switch (event.id)
@@ -2097,29 +2097,29 @@ static void message_reading_mode(void)
                 case ID_SCRUP:
                     Go_Up();
                     break;
-                    
+
                 case ID_SCRDN:
                     Go_Dwn();
                     break;
-                    
+
                 case ID_MGLFT:
                     left();
                     break;
-                    
+
                 case ID_MGRGT:
                     right();
                     break;
-                    
+
                 default:
                     break;
                 }
                 break;
-                
+
             default:
                 break;
             }
             break;
-            
+
         case WND_WM_MOUSE:
             switch (command)
             {
@@ -2128,38 +2128,38 @@ static void message_reading_mode(void)
                 {
                     command = ProcessMenu(&MouseMnu, &event, 0);
                 }
-                
+
                 if (command == ID_QUIT)
                 {
                     quit();
                 }
                 break;
-                
+
             default:
                 break;
             }
             break;
-            
+
         case WND_WM_CHAR:
             switch (command)
             {
             case Key_PgUp:
                 Go_PgUp();
                 break;
-                
+
             case Key_PgDn:
             case Key_Spc:
                 Go_PgDwn();
                 break;
-                
+
             case Key_Up:
                 Go_Up();
                 break;
-                
+
             case Key_Dwn:
                 Go_Dwn();
                 break;
-                
+
             default:
                 if (command & 0xff)
                 {
@@ -2186,9 +2186,9 @@ static void message_reading_mode(void)
             }
             break;
         }
-        
+
         if (window_resized && endMain == 0) endMain = 2;
-        
+
         if (CurArea.messages > 0 &&
             (!message || oldmsg != CurArea.current || CurArea.current == 0))
         {

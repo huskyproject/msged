@@ -130,6 +130,8 @@ int InitVars(void)
 {
     /* Allocate some memory & initialize it. */
 
+    msgbuf = xmalloc(BUFLEN);
+
     string_vars = xmalloc(sizeof(struct _sv));
     switch_vars = xmalloc(sizeof(struct _swv));
 
@@ -249,5 +251,7 @@ void DeinitMem(void)
     }
     release(switch_vars);
     release(string_vars);
+
+    release(msgbuf);
 }
 

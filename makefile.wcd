@@ -4,7 +4,7 @@
 CC=	wcl
 
 CSWITCH= -zq -wx -I.. -bt=dos -ml -k8192
-COPT=-oneatx
+COPT=-oneas
 MSGAPI= ..\smapi\smapiwcd.lib
 CDEFS=  -DMSDOS -DUSE_MSGAPI -DUSE_CRITICAL
 CFLAGS=$(CDEFS) $(COPT) $(CSWITCH)

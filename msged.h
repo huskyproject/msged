@@ -468,7 +468,7 @@ extern int cur_end;               /* cursor sizes */
 extern int rot13;                 /* rot13 this message? */
 extern int stripSoft;             /* strip soft-crs? */
 extern int softcrxlat;            /* soft cr replacement if not zero */
-extern char msgbuf[BUFLEN];       /* message buffer for reading */
+extern char *msgbuf;              /* message buffer for reading, size BUFLEN */
 extern int msgederr;              /* global error number */
 extern int cmd_dbginfo;           /* show debugging info at startup? */
 extern int areas_type;            /* areas read from fastecho */
