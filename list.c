@@ -519,7 +519,7 @@ begin:
 
     if (in_list || !CurArea.status)  /* stop recursion */
     {
-        return;
+        return 0;
     }
     else
     {
