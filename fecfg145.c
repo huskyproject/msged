@@ -317,7 +317,6 @@ int read_fe_node(Node *n, FILE *fp)
 {
     unsigned char buffer[FE_NODE_SIZE];
     unsigned char *pbuf;
-    unsigned short temp;
 
     if (read_fe_address(&(n->addr), fp) == -1) return -1;
     if (read_fe_address(&(n->arcdest), fp) == -1) return -1;
