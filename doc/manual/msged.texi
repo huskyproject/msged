@@ -1369,6 +1369,12 @@ pseudo name @samp{UUCP}. The advantage of this is that your message templates
 will generate strings like @samp{Hello Joe!} instead of @samp{Hello UUCP!}
 @dots{}
 
+If you want to insert Reply-To lines into outgoing mail, and if your gateway
+supports them, of course, you might also wish to use the @samp{UucpReplyTo}
+keyword. Reply-To lines are used to tell the receiver's software that replys
+should be directed to an alternative e-mail account instead of the one you
+are mailing from. @xref{UucpReplyTo,,The @code{UucpReplyTo} Keyword}, for more information.
+
 There is yet another task to be done before you can use the gateway
 addressing features of @value{MSGED}. For historical reasons, the gateway
 addressing features are disabled by default, and you have to enable them on a
@@ -1405,7 +1411,7 @@ the e-mail address that the mail is coming from in the message header field.
 
 @value{MSGED} also supports newsgroups, i.E. echomail areas that are being
 received from an internet gateway, as long as the @samp{u} flag ist turned on
-for these areas.. In newsgroups, @value{MSGED} will handle mails (postings)
+for these areas. In newsgroups, @value{MSGED} will handle mails (postings)
 just as in netmail areas, i.E. it will display the sender's e-mail address in
 the message header. If you do a private reply (i.E. a reply to a netmail area
 using @key{Alt}-@key{N}), the e-mail reply will correctly be addressed to
@@ -2124,6 +2130,7 @@ are generally case-insensitive.
 * UserOffset::                  Each user has a different lastread pointer.
 * UUCP::                        Configuring your internet gateway.
 * UucpName::                    Configuring your internet gateway.
+* UucpReplyTo::                 Redirecting e-mail replies.
 @end menu
 
 
@@ -3291,7 +3298,7 @@ your are using to send Internet/Usenet e-mail.
 @xref{Internet Gateways,,Using @value{MSGED} for e-mail and newsgroups},
 for more information.
 
-@node UucpName,  , UUCP, Keywords
+@node UucpName, UucpReplyTo, UUCP, Keywords
 @subsection UucpName
 @findex UucpName
 @cindex UUCP gateway name
@@ -3318,6 +3325,47 @@ software allows any name to be put into the FTN header field.
 @xref{Internet Gateways,,Using @value{MSGED} for e-mail and newsgroups},
 for more information.
 
+@node UucpReplyTo,  , UucpName, Keywords
+@subsection UucpName
+@findex UucpReplyTo
+@cindex Reply-To: header lines
+@cindex redirecting e-mail replies
+@table @asis
+@item Syntax:
+@code{UucpReplyTo @var{email@@address}}
+@item Example:
+@code{UucpReplyTo user@@some.domain.com (Joe Sysop)}
+@end table
+
+The Internet e-mail standards specified so-called @samp{Reply-To:} header
+lines. The presence of such a header line speicifes that any reply to this
+message should not be sent to the sender of the mail, but to the alternate
+e-mail account that is specified in the @samp{Reply-To:} header. 
+
+A common scenario is the following: You have two e-mail accounts, one at home
+and one at your university or at your office. You have set up the account at
+your university to send copies of all incoming messages to your account at
+home. Then you want, of course, that all replies to any e-mail you write are
+directed at your university account, because you can read any mail that
+arrives at the university both at the university or at home, while an e-mail
+that you receive at home won't be visible at the university. Therefore, if
+you are writing an e-mail from your home account, you want to insert a
+@samp{Reply-To:} header line that points at your university account.
+
+If you sepcify the @samp{UucpReplyTo} configuration keyword, Msged will
+insert such header lines whenever a netmail is created that is addressed to
+your UUCP gateway. The e-mail address that you specify as arugment to the
+@samp{UucpReplyTo} keyword may also include realname configuration in
+parentheses, like shown in the example above. The header line that is created
+by the example above would look like
+
+@example
+Reply-To: user@@some.domain.com (Joe Sysop)
+@end example
+
+Please note that of course the whole thing can only work if your gateway
+software can recognise @code{Reply-To:} headers in fido netmail. As always, 
+Fidogate can, while others probably can't.
 
 @node Switches, Conditionals, Keywords, Configuration Reference
 @section Switches
