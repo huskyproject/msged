@@ -108,48 +108,49 @@ distclean: clean
 
 install: maps
 	-$(MKDIR) $(MKDIROPT) $(CFGDIR)
-	$(INSTALL) $(IIOPT) readmaps.437 $(CFGDIR)
-	$(INSTALL) $(IIOPT) readmaps.850 $(CFGDIR)
-	$(INSTALL) $(IIOPT) readmaps.865 $(CFGDIR)
-	$(INSTALL) $(IIOPT) readmaps.866 $(CFGDIR)
-	$(INSTALL) $(IIOPT) readmaps.koi $(CFGDIR)
-	$(INSTALL) $(IIOPT) readmaps.is1 $(CFGDIR)
-	$(INSTALL) $(IIOPT) readmaps.is5 $(CFGDIR)
-	$(INSTALL) $(IIOPT) readmaps.ukr $(CFGDIR)
-	$(INSTALL) $(IIOPT) writmaps.437 $(CFGDIR)
-	$(INSTALL) $(IIOPT) writmaps.850 $(CFGDIR)
-	$(INSTALL) $(IIOPT) writmaps.865 $(CFGDIR)
-	$(INSTALL) $(IIOPT) writmaps.866 $(CFGDIR)
-	$(INSTALL) $(IIOPT) writmaps.koi $(CFGDIR)
-	$(INSTALL) $(IIOPT) writmaps.is1 $(CFGDIR)
-	$(INSTALL) $(IIOPT) writmaps.is5 $(CFGDIR)
-	$(INSTALL) $(IIOPT) writmaps.ukr $(CFGDIR)
+	-$(MKDIR) $(MKDIROPT) $(CFGDIR)$(DIRSEP)msged
+	$(INSTALL) $(IIOPT) readmaps.437 $(CFGDIR)$(DIRSEP)msged
+	$(INSTALL) $(IIOPT) readmaps.850 $(CFGDIR)$(DIRSEP)msged
+	$(INSTALL) $(IIOPT) readmaps.865 $(CFGDIR)$(DIRSEP)msged
+	$(INSTALL) $(IIOPT) readmaps.866 $(CFGDIR)$(DIRSEP)msged
+	$(INSTALL) $(IIOPT) readmaps.koi $(CFGDIR)$(DIRSEP)msged
+	$(INSTALL) $(IIOPT) readmaps.is1 $(CFGDIR)$(DIRSEP)msged
+	$(INSTALL) $(IIOPT) readmaps.is5 $(CFGDIR)$(DIRSEP)msged
+	$(INSTALL) $(IIOPT) readmaps.ukr $(CFGDIR)$(DIRSEP)msged
+	$(INSTALL) $(IIOPT) writmaps.437 $(CFGDIR)$(DIRSEP)msged
+	$(INSTALL) $(IIOPT) writmaps.850 $(CFGDIR)$(DIRSEP)msged
+	$(INSTALL) $(IIOPT) writmaps.865 $(CFGDIR)$(DIRSEP)msged
+	$(INSTALL) $(IIOPT) writmaps.866 $(CFGDIR)$(DIRSEP)msged
+	$(INSTALL) $(IIOPT) writmaps.koi $(CFGDIR)$(DIRSEP)msged
+	$(INSTALL) $(IIOPT) writmaps.is1 $(CFGDIR)$(DIRSEP)msged
+	$(INSTALL) $(IIOPT) writmaps.is5 $(CFGDIR)$(DIRSEP)msged
+	$(INSTALL) $(IIOPT) writmaps.ukr $(CFGDIR)$(DIRSEP)msged
 ifeq ($(OSTYPE), UNIX)
 	cd $(CFGDIR) ;\
 	$(LN) $(LNOPT) readmaps.is1 readmaps.dat ;\
 	$(LN) $(LNOPT) writmaps.is1 writmaps.dat
 else
-	$(LN) $(LNOPT) $(CFGDIR)$(DIRSEP)readmaps.437 $(CFGDIR)$(DIRSEP)readmaps.dat
-	$(LN) $(LNOPT) $(CFGDIR)$(DIRSEP)writmaps.437 $(CFGDIR)$(DIRSEP)writmaps.dat
+	$(LN) $(LNOPT) $(CFGDIR)$(DIRSEP)msged$(DIRSEP)readmaps.437 $(CFGDIR)$(DIRSEP)msged$(DIRSEP)readmaps.dat
+	$(LN) $(LNOPT) $(CFGDIR)$(DIRSEP)msged$(DIRSEP)writmaps.437 $(CFGDIR)$(DIRSEP)msged$(DIRSEP)writmaps.dat
 endif
 
 uninstall:
-	-$(RM) $(CFGDIR)$(DIRSEP)readmaps.437
-	-$(RM) $(CFGDIR)$(DIRSEP)readmaps.850
-	-$(RM) $(CFGDIR)$(DIRSEP)readmaps.865
-	-$(RM) $(CFGDIR)$(DIRSEP)readmaps.866
-	-$(RM) $(CFGDIR)$(DIRSEP)readmaps.koi
-	-$(RM) $(CFGDIR)$(DIRSEP)readmaps.is1
-	-$(RM) $(CFGDIR)$(DIRSEP)readmaps.is5
-	-$(RM) $(CFGDIR)$(DIRSEP)readmaps.ukr
-	-$(RM) $(CFGDIR)$(DIRSEP)writmaps.437
-	-$(RM) $(CFGDIR)$(DIRSEP)writmaps.850
-	-$(RM) $(CFGDIR)$(DIRSEP)writmaps.865
-	-$(RM) $(CFGDIR)$(DIRSEP)writmaps.866
-	-$(RM) $(CFGDIR)$(DIRSEP)writmaps.koi
-	-$(RM) $(CFGDIR)$(DIRSEP)writmaps.is1
-	-$(RM) $(CFGDIR)$(DIRSEP)writmaps.is5
-	-$(RM) $(CFGDIR)$(DIRSEP)writmaps.ukr
-	-$(RM) $(CFGDIR)$(DIRSEP)readmaps.dat
-	-$(RM) $(CFGDIR)$(DIRSEP)writmaps.dat
+	-$(RM) $(CFGDIR)$(DIRSEP)msged$(DIRSEP)readmaps.437
+	-$(RM) $(CFGDIR)$(DIRSEP)msged$(DIRSEP)readmaps.850
+	-$(RM) $(CFGDIR)$(DIRSEP)msged$(DIRSEP)readmaps.865
+	-$(RM) $(CFGDIR)$(DIRSEP)msged$(DIRSEP)readmaps.866
+	-$(RM) $(CFGDIR)$(DIRSEP)msged$(DIRSEP)readmaps.koi
+	-$(RM) $(CFGDIR)$(DIRSEP)msged$(DIRSEP)readmaps.is1
+	-$(RM) $(CFGDIR)$(DIRSEP)msged$(DIRSEP)readmaps.is5
+	-$(RM) $(CFGDIR)$(DIRSEP)msged$(DIRSEP)readmaps.ukr
+	-$(RM) $(CFGDIR)$(DIRSEP)msged$(DIRSEP)writmaps.437
+	-$(RM) $(CFGDIR)$(DIRSEP)msged$(DIRSEP)writmaps.850
+	-$(RM) $(CFGDIR)$(DIRSEP)msged$(DIRSEP)writmaps.865
+	-$(RM) $(CFGDIR)$(DIRSEP)msged$(DIRSEP)writmaps.866
+	-$(RM) $(CFGDIR)$(DIRSEP)msged$(DIRSEP)writmaps.koi
+	-$(RM) $(CFGDIR)$(DIRSEP)msged$(DIRSEP)writmaps.is1
+	-$(RM) $(CFGDIR)$(DIRSEP)msged$(DIRSEP)writmaps.is5
+	-$(RM) $(CFGDIR)$(DIRSEP)msged$(DIRSEP)writmaps.ukr
+	-$(RM) $(CFGDIR)$(DIRSEP)msged$(DIRSEP)readmaps.dat
+	-$(RM) $(CFGDIR)$(DIRSEP)msged$(DIRSEP)writmaps.dat
 

@@ -20,8 +20,8 @@ ifndef MSGEDCFG
 endif
 
 CDEFS=-D$(OSTYPE) -DUSE_MSGAPI -DUSE_FIDOCONFIG -DUNAME=\"$(UNAME)\" \
-      $(ADDCDEFS) -DREADMAPSDAT=\"$(CFGDIR)/readmaps.dat\" \
-      -DWRITMAPSDAT=\"$(CFGDIR)/writmaps.dat\" \
+      $(ADDCDEFS) -DREADMAPSDAT=\"$(CFGDIR)/msged/readmaps.dat\" \
+      -DWRITMAPSDAT=\"$(CFGDIR)/msged/writmaps.dat\" \
       -DDEFAULT_CONFIG_FILE=$(MSGEDCFG)
 
 ifeq ($(SHORTNAME), 1)
@@ -160,7 +160,8 @@ install: $(TARGET) msghelp.dat
 	-$(MKDIR) $(MKDIROPT) $(BINDIR)
 	$(INSTALL) $(IBOPT) $(TARGET) $(BINDIR)
 	-$(MKDIR) $(MKDIROPT) $(CFGDIR)
-	$(INSTALL) $(IIOPT) msghelp.dat $(CFGDIR)
+	-$(MKDIR) $(MKDIROPT) $(CFGDIR)/msged
+	$(INSTALL) $(IIOPT) msghelp.dat $(CFGDIR)/msged
 	(cd maps && $(MAKE) -f makefile.husky install)
 	(cd doc && cd manual && $(MAKE) -f makefile.husky install)
 
