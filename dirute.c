@@ -447,7 +447,14 @@ int dir_findfirst(char *filename, int attribute, struct _dta *dta)
         firstbit[p - filename] = '\0';
         strcpy(lastbit, p + 1);
     }
-    dir = opendir(firstbit);
+    if (!*firstbit)
+    {
+        dir = opendir("/");
+    }
+    else
+    {
+        dir = opendir(firstbit);
+    }
     if (dir == NULL)
     {
         return -1;
