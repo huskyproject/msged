@@ -1,5 +1,29 @@
 include ../../../huskymak.cfg
 
+ifdef HTMLDIR
+
+ifdef INFODIR
+all: html info
+install: install-html install-info
+else
+all: html
+install: install-html
+endif
+
+else
+
+ifdef INFODIR
+all: info
+install: install-info
+else
+all:
+	@echo
+install:
+	@echo
+endif
+
+endif
+
 html: msged_toc.html
 
 dvi: msged.dvi
@@ -60,13 +84,12 @@ distclean: clean
 msged.inf: msged.texi clean
 	texi2i msged.texi
 
-ifdef INFODIR
-install: info
+install-info: info
 	-$(MKDIR) $(MKDIROPT) $(INFODIR)
 	$(INSTALL) msged.info $(INFODIR)
 	install-info --info-dir=$(INFODIR)  $(INFODIR)$(DIRSEP)msged.info
-else
-install:
-	@echo
-endif
+
+install-html: html
+	-$(MKDIR) $(MKDIROPT) $(HTMLDIR)
+	$(INSTALL) msged_*.html $(HTMLDIR)
 
