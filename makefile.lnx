@@ -21,11 +21,11 @@ INCDIR=..
 # options for installing programs
 IBOPT=-s -c
 
-CC=	cc
+CC=	gcc
 CFLAGS=	-I$(INCDIR)
 CDEFS=	-DUNIX -DUSE_MSGAPI -DUNAME=\"LNX\" -DREADMAPSDAT='"$(READMAPS)"' -DWRITMAPSDAT='"$(WRITMAPS)"' -DDEFAULT_CONFIG_FILE='"$(DEFAULT_CONFIG_FILE)"'
 COPT=	-O3
-LFLAGS= -L../smapi -L../fidoconfig -s
+LFLAGS= -L../smapi -s
 
 TARGET=	msged
 MSGAPI=-lsmapilnx
