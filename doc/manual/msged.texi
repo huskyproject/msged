@@ -1286,11 +1286,11 @@ many areas a lot easier.
 @subsubsection Sorting Areas by Group
 The most basic group feature of the area list is that it can display areas
 grou-sorted, i.E. first all areas of the first group, then all areas of the
-second group, and so on. To achieve this, use the @code{SortArea} keyword as
+second group, and so on. To achieve this, use the @code{SortAreas} keyword as
 follows:
 
 @example
-SortArea G
+SortAreas G
 @end example
 
 Most probably, you will further want to sort the area inside the group. If,
@@ -1298,7 +1298,7 @@ for example, you want to sort all netmail areas to the beginning of each
 group, and then sort the areas alphabetically by description, you would use
 
 @example
-SortArea GND
+SortAreas GND
 @end example
 
 Once you have activated sorting areas by group, @value{MSGED} will draw
@@ -3811,7 +3811,7 @@ after that one, and so on.
 
 Please note that the arealist feature of displaying Group separators can of
 course only work if the @samp{G} ciretrium is the first criterium in your
-@code{SortArea} statement.
+@code{SortAreas} statement.
 
 @node Squish, SwapPath, SortAreas, Keywords
 @subsection Squish
