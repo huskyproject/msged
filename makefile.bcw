@@ -2,11 +2,11 @@
 # Borland C++ 4.0
 
 #CC=     BCC
-CC=    BCC32
+CC=      BCC32
 CFLAGS= -WC
 CDEFS=  -D__NT__ -DWINNT  -DUSE_MSGAPI
 LFLAGS= -WC
-COPT=   -O
+COPT=   
 MSGDIR= ..\smapi
 
 
@@ -14,6 +14,8 @@ TARGET= msgednt.exe
 TMPLIB= msgedbcw.lib
 LIB=    tlib
 MSGAPI= $(MSGDIR)\smapibcw.lib
+
+default: $(TARGET)
 
 OBJS=   addr.obj     \
 	areas.obj    \
@@ -60,7 +62,7 @@ OBJS=   addr.obj     \
 	vsev.obj     \
 	vsevops.obj  \
 	win.obj      \
-        conioscr.obj \
+	winntscr.obj \
 	wrap.obj
 
 # Thunderbirds are go!
