@@ -1,0 +1,49 @@
+# $Id$
+# Microsoft Visual C++ Makefile to build DLL version of MsgEd
+# (c) Andrey Reznik 2:5020/2999
+#
+# This file is a part of MsgEd HUSKY module
+
+DEBUG=0
+CC=cl
+EXENAMEFLAG=-Fe
+SRC_DIR=.\
+
+CFLAGS=-nologo -MD -W3 -GX -O2 -I. -I.. -FR -YX -FD -c
+LFLAGS=
+CDEFS= -DWIN32 -DNDEBUG -D_CONSOLE -D_MBCS -D__NT__ -D_MAKE_DLL -DUSE_MSGAPI
+
+OBJ=.obj
+EXE=.exe
+RM=del
+RMOPT=
+
+LIBS=  ..\fidoconf\fconfmvc.lib ..\smapi\smapimvc.lib msvcrt.lib Kernel32.lib user32.lib /link /nodefaultlib /opt:nowin98
+
+OBJS=  addr.obj areas.obj bmg.obj charset.obj config.obj control.obj date.obj dialogs.obj dirute.obj dlgbox.obj dlist.obj echotoss.obj environ.obj fconf.obj fecfg145.obj fido.obj filedlg.obj flags.obj freq.obj gestr120.obj getopts.obj group.obj help.obj helpcmp.obj helpinfo.obj init.obj keycode.obj list.obj maintmsg.obj makemsgn.obj memextra.obj menu.obj misc.obj mnu.obj msg.obj msged.obj mxbt.obj normalc.obj nshow.obj quick.obj quote.obj readmail.obj screen.obj strextra.obj system.obj template.obj textfile.obj timezone.obj userlist.obj vsev.obj vsevops.obj win.obj winntscr.obj wrap.obj
+
+SYMBOLIC=
+NULL=
+
+default: all
+
+.c.obj:
+    $(CC) $(CFLAGS) $(CDEFS) $<
+
+all: commonprogs
+
+clean: commonclean
+
+distclean: commondistclean
+
+commonprogs: msged$(EXE) $(SYMBOLIC)
+    $(NULL)
+
+msged$(EXE): $(OBJS)
+    $(CC) $(LFLAGS) $(EXENAMEFLAG)msged$(EXE) $(OBJS) $(LIBS)
+
+commonclean: $(SYMBOLIC)
+    -$(RM) $(RMOPT) *$(OBJ)
+
+commondistclean: clean $(SYMBOLIC)
+    -$(RM) $(RMOPT) msged$(EXE)
