@@ -17,10 +17,6 @@
 #include <stdio.h>
 #include <string.h>
 
-typedef unsigned char   byte;
-typedef unsigned short  word;
-typedef unsigned long   dword;
-
 #include "gestr120.h"
 #include "memextra.h"
 

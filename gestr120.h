@@ -38,11 +38,9 @@
 
 /* --- Data types */
 
-/*
-**  typedef unsigned char   byte;   ( 8-bit)
-**  typedef unsigned short  word;   (16-bit)
-**  typedef unsigned long   dword;  (32-bit)
-*/
+typedef unsigned char   byte;   /* ( 8-bit) */
+typedef unsigned short  word;   /* (16-bit) */
+typedef unsigned long   dword;  /* (32-bit) */
 
 typedef struct
    {
@@ -690,7 +688,3 @@ int read_areafile_ge (AREAFILE_GE *Setup, FILE *fp);
 
 
 /* end of file "gestruct.h" */
-
-
-
-

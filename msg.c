@@ -1000,9 +1000,13 @@ int SquishAreaSetLast(AREA * a)
         {
             if (errno != EACCES && errno != EMFILE)
             {
+#ifdef UNIX
+                fd = sopen(work, O_BINARY | O_WRONLY | O_CREAT,
+                  SH_DENYNO, S_IWOTH);
+#else
                 fd = sopen(work, O_BINARY | O_WRONLY | O_CREAT,
                   SH_DENYNO, S_IWRITE | S_IREAD);
-
+#endif
                 if (fd == -1)
                 {
                     ret = FALSE;

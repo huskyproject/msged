@@ -30,10 +30,10 @@
  */
 
 #define get_dword(ptr)            \
-   ((dword)((ptr)[0]) |           \
-    (((dword)((ptr)[1])) << 8)  | \
-    (((dword)((ptr)[2])) << 16) | \
-    (((dword)((ptr)[3])) << 24))  \
+   ((unsigned long)((ptr)[0]) |           \
+    (((unsigned long)((ptr)[1])) << 8)  | \
+    (((unsigned long)((ptr)[2])) << 16) | \
+    (((unsigned long)((ptr)[3])) << 24))  \
 
 /*
  *  get_word
@@ -44,8 +44,8 @@
  */
 
 #define get_word(ptr)         \
-    ((word)(ptr)[0] |         \
-     (((word)(ptr)[1]) << 8 ))
+    ((unsigned short)(ptr)[0] |         \
+     (((unsigned short)(ptr)[1]) << 8 ))
 
 
 /*
@@ -159,14 +159,17 @@ int read_fe_config(CONFIG *c, FILE *fp)
 
     c->maxPKTmsgs = get_word(pbuf); pbuf += 2;
     c->RouteCnt = get_word(pbuf); pbuf += 2;
-    c->maxPACKratio = get_word(pbuf); pbuf += 2;
+    c->maxPACKratio = *pbuf++;
+    c->SemaphoreTimer = *pbuf++;
     c->PackerCnt = *pbuf++;
     c->UnpackerCnt = *pbuf++;
     c->GroupCnt = *pbuf++;
     c->OriginCnt = *pbuf++;
     c->mailer = get_word(pbuf); pbuf += 2;
+    c->maxarcsize = get_word(pbuf); pbuf += 2;
+    c->maxarcdays = get_word(pbuf); pbuf += 2;
 
-    memcpy(c->reserved, pbuf, 810); pbuf += 810;
+    memcpy(c->reserved, pbuf, 806); pbuf += 806;
 
     c->AreaRecSize = get_word(pbuf); pbuf += 2;
     c->GrpDefRecSize = get_word(pbuf); pbuf += 2;
@@ -201,22 +204,45 @@ int read_fe_extension_header(ExtensionHeader *h, FILE *fp)
     return 0;
 }
 
+int read_fe_address(FEAddress *a, FILE *fp)
+{
+    unsigned char buffer[FE_ADDRESS_SIZE];
+    unsigned char *pbuf;
+
+    pbuf = buffer;
+
+    if (fread(buffer, FE_ADDRESS_SIZE, 1, fp) != 1)
+    {
+        return -1;
+    }
+
+    a->zone = get_word(pbuf); pbuf += 2;
+    a->net = get_word(pbuf); pbuf += 2;
+    a->node = get_word(pbuf); pbuf += 2;
+    a->point = get_word(pbuf); pbuf += 2;
+
+    assert(pbuf - buffer == FE_ADDRESS_SIZE);
+
+    return 0;
+}
+            
+
 int read_fe_sysaddress(SysAddress *a, FILE *fp)
 {
     unsigned char buffer[FE_SYS_ADDRESS_SIZE];
     unsigned char *pbuf;
 
-    pbuf = buffer;
+    pbuf = buffer + FE_ADDRESS_SIZE;;
 
-    if (fread(buffer, FE_SYS_ADDRESS_SIZE, 1, fp) != 1)
+    if (read_fe_address(&(a->main), fp) == -1)
     {
         return -1;
     }
 
-    a->main.zone = get_word(pbuf); pbuf += 2;
-    a->main.net = get_word(pbuf); pbuf += 2;
-    a->main.node = get_word(pbuf); pbuf += 2;
-    a->main.point = get_word(pbuf); pbuf += 2;
+    if (fread(buffer, FE_SYS_ADDRESS_SIZE - FE_ADDRESS_SIZE, 1, fp) != 1)
+    {
+        return -1;
+    }
 
     memcpy(a->domain, pbuf, 28); pbuf += 28;
 
@@ -232,7 +258,7 @@ int read_fe_area(Area *a, FILE *fp)
 {
     unsigned char buffer[FE_AREA_SIZE];
     unsigned char *pbuf;
-    word temp;
+    unsigned short temp;
 
     pbuf = buffer;
 
@@ -287,3 +313,46 @@ int read_fe_area(Area *a, FILE *fp)
     return 0;
 }
 
+int read_fe_node(Node *n, FILE *fp)
+{
+    unsigned char buffer[FE_NODE_SIZE];
+    unsigned char *pbuf;
+    unsigned short temp;
+
+    if (read_fe_address(&(n->addr), fp) == -1) return -1;
+    if (read_fe_address(&(n->arcdest), fp) == -1) return -1;
+
+    pbuf = buffer + (2 * FE_ADDRESS_SIZE);
+    
+    if (fread(buffer, (FE_NODE_SIZE - (2 * FE_ADDRESS_SIZE)), 1, fp) != 1)
+    {
+        return -1;
+    }
+
+    n->aka = *pbuf++;
+    n->autopassive = *pbuf++;
+    n->newgroup = *pbuf++;
+    n->resv1 = *pbuf++;
+
+    n->flags.flags1 = get_word(pbuf); pbuf+=2;
+    n->flags.flags2 = *pbuf++;
+    n->afixflags.afixflags = get_word(pbuf); pbuf+=2;
+
+    n->resv2 = get_word(pbuf); pbuf+=2;
+    memcpy(n->password, pbuf, 9); pbuf+=9;
+    memcpy(n->areafixpw, pbuf, 9); pbuf+=9;
+
+    n->sec_level  = get_word(pbuf);  pbuf+=2;
+    n->groups     = get_dword(pbuf); pbuf+=4;
+    n->resv3      = get_dword(pbuf); pbuf+=4;
+    n->resv4      = get_word(pbuf);  pbuf+=2;
+    n->maxarcsize = get_word(pbuf);  pbuf+=2;
+
+    memcpy(n->name, pbuf, 36); pbuf+=36;
+
+    n->areas[0] = *pbuf++;
+
+    assert(pbuf - buffer == FE_AREA_SIZE);
+
+    return 0;
+}

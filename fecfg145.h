@@ -1,7 +1,7 @@
 /*
  *  FECFG145.H
  *
- *  'C' Structures of FastEcho 1.45.
+ *  'C' Structures of FastEcho 1.45 (also work for 1.46)
  *  Copyright (c) 1995 by Tobias Burchhardt.  Last update: 30 Jun 1995.
  *  Modified by Aleksandar Ivanisevic 30 Oct 1996.
  *  Minor alterations by Andrew Clarke 22 Dec 1996.
@@ -22,8 +22,6 @@ that are used by MsgEd, such reader functions can be found in fecfg145.c.
 #endif
 
 */
-
-typedef unsigned long dword;
 
 /********************************************************
  * FASTECHO.CFG = <CONFIG>                              *
@@ -71,7 +69,7 @@ typedef unsigned long dword;
 #define KILLEMPTY               0x00000004l
 #define KILLDUPES               0x00000008l
 #define CLEANTEARLINE           0x00001000l
-#define IMPORT_INNCLUDEUSERSBBS 0x00002000l
+#define IMPORT_INCLUDEUSERSBBS  0x00002000l
 #define KILLSTRAYATTACHES       0x00004000l
 #define PURGE_PROCESSDATE       0x00008000l
 #define MAILER_RESCAN           0x00010000l
@@ -118,7 +116,8 @@ enum BBSSoft
     ProBoard130 /* Unused */,
     ProBoard200,
     ProBoard202,
-    Maximus202
+    Maximus202,
+    Maximus300
 };
 
 /********************************************************
@@ -210,9 +209,6 @@ enum ARCmailExt
  * Types and other definitions                          *
  ********************************************************/
 
-typedef unsigned char byte;
-typedef unsigned short word;    /* normal int = 16 bit */
-
 enum ARCers
 {
     ARC_Unknown = -1, ARC_SeaArc, ARC_PkArc, ARC_Pak,
@@ -240,18 +236,18 @@ enum AreaFixSendTo
 
 typedef struct
 {
-    word zone, net, node, point;
+    unsigned short zone, net, node, point;
 }
-Address;
+FEAddress;
 #define FE_ADDRESS_SIZE 8
 
 #define _MAXPATH 56
 
 typedef struct CONFIGURATION
 {
-    word revision;
-    dword flags;
-    word NodeCnt, AreaCnt, unused1;
+    unsigned short revision;
+    unsigned long flags;
+    unsigned short NodeCnt, AreaCnt, unused1;
     char NetMPath[_MAXPATH];
     char MsgBase[_MAXPATH];
     char InBound[_MAXPATH];
@@ -271,77 +267,80 @@ typedef struct CONFIGURATION
     char LocalInBound[_MAXPATH];
     char ExtAfter[_MAXPATH - 4];
     char ExtBefore[_MAXPATH - 4];
-    byte unused4[480];
+    unsigned char unused4[480];
     struct
     {
-        byte what;
+        unsigned char what;
         char object[31];
-        word conference;
+        unsigned short conference;
     }
     CC[10];
-    byte security, loglevel;
-    word def_days, def_messages;
-    byte unused5[462];
-    word autorenum;
-    word def_recvdays;
-    byte openQQQs, Swapping;
-    word compressafter;
-    word afixmaxmsglen;
-    word compressfree;
+    unsigned char security, loglevel;
+    unsigned short def_days, def_messages;
+    unsigned char unused5[462];
+    unsigned short autorenum;
+    unsigned short def_recvdays;
+    unsigned char openQQQs, Swapping;
+    unsigned short compressafter;
+    unsigned short afixmaxmsglen;
+    unsigned short compressfree;
     char TempPath[_MAXPATH];
-    byte graphics, BBSSoftware;
+    unsigned char graphics, BBSSoftware;
     char AreaFixHelp[_MAXPATH];
-    byte unused6[504];
-    word AreaFixFlags;
-    byte QuietLevel, Buffers;
-    byte FWACnt;  /* # of ForwardAreaFix records */
-    byte GDCnt;   /* # of Group Default records */
+    unsigned char unused6[504];
+    unsigned short AreaFixFlags;
+    unsigned char QuietLevel, Buffers;
+    unsigned char FWACnt;  /* # of ForwardAreaFix records */
+    unsigned char GDCnt;   /* # of Group Default records */
     struct
     {
-        word flags;
-        word days[2];
-        word msgs[2];
+        unsigned short flags;
+        unsigned short days[2];
+        unsigned short msgs[2];
     }
     rescan_def;
-    dword duperecords;
+    unsigned long duperecords;
     struct
     {
-        byte inb;
-        byte outb;
+        unsigned char inb;
+        unsigned char outb;
     }
     arcext;
-    word AFixRcptLen;
-    byte AkaCnt, resv;  /* # of Aka records stored */
-    word maxPKT;
-    byte sharing, sorting;
+    unsigned short AFixRcptLen;
+    unsigned char AkaCnt, resv;  /* # of Aka records stored */
+    unsigned short maxPKT;
+    unsigned char sharing, sorting;
     struct
     {
         char name[36];
-        dword resv;
+        unsigned long resv;
     }
     sysops[11];
     char AreaFixLog[_MAXPATH];
     char TempInBound[_MAXPATH];
-    word maxPKTmsgs;
-    word RouteCnt;                /* # of PackRoute records */
-    word maxPACKratio;
-    byte PackerCnt, UnpackerCnt;  /* # of Packers and Unpackers records */
-    byte GroupCnt, OriginCnt;     /* # of GroupNames and Origin records */
-    word mailer;
-    char reserved[810];
+    unsigned short maxPKTmsgs;
+    unsigned short RouteCnt;              /* # of PackRoute records */
+    unsigned char maxPACKratio;
+    unsigned char SemaphoreTimer;
+    unsigned char PackerCnt, UnpackerCnt; /* # of Packer + Unpacker records */
+    unsigned char GroupCnt, OriginCnt;    /* # of GroupName + Origin records */
+    unsigned short mailer;
+    unsigned short maxarcsize, maxarcdays;
+    char reserved[806];
 
-    word AreaRecSize, GrpDefRecSize;  /*
-                                       *  Size of Area and GroupDefaults
-                                       *  records stored in this file
-                                       */
+    unsigned short AreaRecSize, GrpDefRecSize;
+                                       /*
+                                        *  Size of Area and GroupDefaults
+                                        *  records stored in this file
+                                        */
 
-    word MaxAreas, MaxNodes;    /* Current max values for this config */
-    word NodeRecSize;           /* Size of each stored Node record */
+    unsigned short MaxAreas, MaxNodes; /* Current max values for this config */
+    unsigned short NodeRecSize;        /* Size of each stored Node record */
 
-    dword offset;               /*
-                                 *  This is the offset from the current
-                                 *  file-pointer to the 1st Node
-                                 */
+    unsigned long offset;              /*
+                                        *  This is the offset from the current
+                                        *  file-pointer to the 1st Node
+                                        */
 }
 CONFIG;
 #define FE_CONFIG_SIZE 4644
@@ -357,95 +356,92 @@ CONFIG;
 
 typedef struct
 {
-    Address addr;               /* Main address */
-    Address arcdest;            /* ARCmail fileattach address */
-    byte aka, autopassive, newgroup, resv1;
+    FEAddress addr;               /* Main address */
+    FEAddress arcdest;            /* ARCmail fileattach address */
+    unsigned char aka, autopassive, newgroup, resv1;
     struct
     {
         unsigned short flags1;
 /*
-        word passive          : 1;
-        word dddd             : 1;   Type 2+/4D
-        word arcmail060       : 1;
-        word tosscan          : 1;
-        word umlautnet        : 1;
-        word exportbyname     : 1;
-        word allowareacreate  : 1;
-        word disablerescan    : 1;
-        word arc_status       : 2;   NetmailStatus for ARCmail attaches
-        word arc_direct       : 1;   Direct flag for ARCmail attaches
-        word noattach         : 1;   don't create a ARCmail file attach
-        word mgr_status       : 2;   NetMailStatus for AreaFix receipts
-        word mgr_direct       : 1;   Direct flag for ...
-        word not_help         : 1;
+        unsigned passive          : 1;
+        unsigned dddd             : 1;   Type 2+/4D
+        unsigned arcmail060       : 1;
+        unsigned tosscan          : 1;
+        unsigned umlautnet        : 1;
+        unsigned exportbyname     : 1;
+        unsigned allowareacreate  : 1;
+        unsigned disablerescan    : 1;
+        unsigned arc_status       : 2;   NetmailStatus for ARCmail attaches
+        unsigned arc_direct       : 1;   Direct flag for ARCmail attaches
+        unsigned noattach         : 1;   don't create a ARCmail file attach
+        unsigned mgr_status       : 2;   NetMailStatus for AreaFix receipts
+        unsigned mgr_direct       : 1;   Direct flag for ...
+        unsigned not_help         : 1;
+        unsigned not_notify       : 1;
+        unsigned packer           : 4;
+        unsigned packpriority     : 1;
+        unsigned resv             : 2;
 */
-
-/*
-        word not_notify       : 1;
-        word packer           : 4;
-        word packpriority     : 1;
-        word resv             : 2;
-*/
-
-        byte flags2;
+        unsigned char flags2;
     }
     flags;                      /* 24 bits total! */
     struct
     {
 /*
-        word type             : 2;     Type of AreaFix: None (human),
-                                       Normal or Advanced (FSC-57)
-        word noforward        : 1;     Don't forward AFix requests
-        word allowremote      : 1;
-        word allowdelete      : 1;     flags for different FSC-57 requests
-        word allowrename      : 1;     all 3 reserved for future use
-        word binarylist       : 1;
-        word addplus          : 1;     add '+' when requesting new area
-        word addtear          : 1;     add tearline to the end of requests
-        word sendto           : 3;     name of this systems's AreaFix robot
-        word resv             : 4;
+        unsigned type             : 2;     Type of AreaFix: None (human),
+                                           Normal or Advanced (FSC-57)
+        unsigned noforward        : 1;     Don't forward AFix requests
+        unsigned allowremote      : 1;
+        unsigned allowdelete      : 1;     flags for different FSC-57 requests
+        unsigned allowrename      : 1;     all 3 reserved for future use
+        unsigned binarylist       : 1;
+        unsigned addplus          : 1;     add '+' when requesting new area
+        unsigned addtear          : 1;     add tearline to the end of requests
+        unsigned sendto           : 3;     name of this systems's AreaFix robot
+        unsigned resv             : 4;
 */
-        word afixflags;
+        unsigned short afixflags;
     }
     afixflags;
-    word resv2;
-    char password[9];           /* .PKT password */
-    char areafixpw[9];          /* AreaFix password */
-    word sec_level;
-    dword groups;               /* Bit-field, Byte 0/Bit 7 = 'A' etc. */
+    unsigned short resv2;
+    char password[9];          /* .PKT password */
+    char areafixpw[9];         /* AreaFix password */
+    unsigned short sec_level;
+    unsigned long groups;      /* Bit-field, UCHAR 0/Bit 7 = 'A' etc. */
     /* FALSE means group is active */
-    dword resv3;
-    word resv4;
-    word maxarcsize;
-    char name[36];              /* Name of sysop */
-    byte areas[1];              /*
-                                 *  Bit-field with CONFIG.MaxAreas / 8
-                                 *  bits, Byte 0/Bit 7 is conference #0
-                                 */
+    unsigned long resv3;
+    unsigned short resv4;
+    unsigned short maxarcsize;
+    char name[36];             /* Name of sysop */
+    unsigned char areas[1];    /*
+                                *  Bit-field with CONFIG.MaxAreas / 8
+                                *  bits, Unsigned Char 0/Bit 7 is conference #0
+                                */
 }
-Node;                           /*
-                                 *  Total size of each record is stored in
-                                 *  CONFIG.NodeRecSize.
-                                 */
+Node;                          /*
+                                *  Total size of each record is stored in
+                                *  CONFIG.NodeRecSize.
+                                */
+#define FE_NODE_SIZE (80 + (2 * FE_ADDRESS_SIZE))
 
 
 typedef struct
 {
     char name[52];
-    word board;                 /* 1-200 Hudson, others reserved/special */
-    word conference;            /* 0 ... CONFIG.MaxAreas-1 */
-    word read_sec, write_sec;
+    unsigned short board;        /* 1-200 Hudson, others reserved/special */
+    unsigned short conference;   /* 0 ... CONFIG.MaxAreas-1 */
+    unsigned short read_sec, write_sec;
     struct
     {
-        unsigned aka    : 8;    /* 0 ... CONFIG.AkaCnt */
-        unsigned group  : 8;    /* 0 ... CONFIG.GroupCnt */
+        unsigned aka    : 8;     /* 0 ... CONFIG.AkaCnt */
+        unsigned group  : 8;     /* 0 ... CONFIG.GroupCnt */
     }
     info;
     struct
     {
         unsigned storage: 4;
         unsigned atype  : 4;
-        unsigned origin : 5;    /* # of origin line */
+        unsigned origin : 5;     /* # of origin line */
         unsigned resv   : 3;
     }
     flags;
@@ -467,9 +463,9 @@ typedef struct
         unsigned resv       : 3;
     }
     advflags;
-    word resv1;
-    dword seenbys;              /* LSB = Aka0, MSB = Aka31        */
-    dword resv2;
+    unsigned short resv1;
+    unsigned long seenbys;              /* LSB = Aka0, MSB = Aka31        */
+    unsigned long resv2;
     short days;
     short messages;
     short recvdays;
@@ -517,13 +513,13 @@ Area;
 
 typedef struct
 {
-    word type;                  /* EH_...                           */
-    dword offset;               /* length of field excluding header */
+    unsigned short type;                /* EH_...                           */
+    unsigned long offset;               /* length of field excluding header */
 }
 ExtensionHeader;
 #define FE_EXTHEADER_SIZE 6
 
-#define EH_AREAFIX      0x0001  /* CONFIG.FWACnt * <ForwardAreaFix> */
+#define EH_AREAFIX      0x0001          /* CONFIG.FWACnt * <ForwardAreaFix> */
 
 enum AreaFixAreaListFormat
 {
@@ -532,24 +528,24 @@ enum AreaFixAreaListFormat
 
 typedef struct
 {
-    word nodenr;
+    unsigned short nodenr;
     struct
     {
 /*
-        word newgroup : 8;
-        word active   : 1;
-        word valid    : 1;
-        word uncond   : 1;
-        word format   : 3;
-        word resv     : 2;
+        unsigned newgroup : 8;
+        unsigned active   : 1;
+        unsigned valid    : 1;
+        unsigned uncond   : 1;
+        unsigned format   : 3;
+        unsigned resv     : 2;
 */
-        word flags;
+        unsigned short flags;
     }
     flags;
     char file[_MAXPATH];
-    word sec_level;
-    word resv1;
-    dword groups;
+    unsigned short sec_level;
+    unsigned short resv1;
+    unsigned long groups;
     char resv2[4];
 }
 ForwardAreaFix;
@@ -569,10 +565,10 @@ GroupNames;
 
 typedef struct
 {
-    byte group;
-    byte resv[15];
+    unsigned char group;
+    unsigned char resv[15];
     Area area;
-    byte nodes[1];              /* variable, c.MaxNodes / 8 bytes */
+    unsigned char nodes[1];     /* variable, c.MaxNodes / 8 bytes */
 }
 GroupDefaults;
 
@@ -580,10 +576,10 @@ GroupDefaults;
 
 typedef struct
 {
-    Address main;
+    FEAddress main;
     char domain[28];
-    word pointnet;
-    dword flags;                /* unused */
+    unsigned short pointnet;
+    unsigned long flags;        /* unused */
 }
 SysAddress;
 #define FE_SYS_ADDRESS_SIZE FE_ADDRESS_SIZE + 34
@@ -600,8 +596,8 @@ OriginLines;
 
 typedef struct
 {
-    Address dest;
-    Address routes[MAX_ROUTE];
+    FEAddress dest;
+    FEAddress routes[MAX_ROUTE];
 }
 PackRoute;
 
@@ -613,8 +609,8 @@ typedef struct
     char tag[6];
     char command[_MAXPATH];
     char list[4];
-    byte ratio;
-    byte resv[7];
+    unsigned char ratio;
+    unsigned char resv[7];
 }
 Packers;
 
@@ -628,8 +624,8 @@ Packers;
 typedef struct
 {
     char command[_MAXPATH];
-    byte callingconvention;
-    byte resv[7];
+    unsigned char callingconvention;
+    unsigned char resv[7];
 }
 Unpackers;
 
@@ -647,23 +643,23 @@ Unpackers;
  * Routines to access Node.areas, Node.groups           *
  ********************************************************/
 
-#if 0
+#ifdef INC_FE_BAMPROCS
 
-word AddBam(byte * bam, word nr)
+unsigned short AddBam(unsigned char * bam, unsigned short nr)
 {
-    byte c, d;
+    unsigned char c, d;
     c = 1 << (7 - (nr & 7));
     d = bam[nr / 8] & c;
     bam[nr / 8] |= c;
     return d;
 }
 
-void FreeBam(byte * bam, word nr)
+void FreeBam(unsigned char * bam, unsigned short nr)
 {
     bam[nr / 8] &= ~(1 << (7 - (nr & 7)));
 }
 
-word GetBam(byte * bam, word nr)
+unsigned short GetBam(unsigned char * bam, unsigned short nr)
 {
     if (bam[nr / 8] & (1 << (7 - (nr & 7))))
     {
@@ -688,40 +684,40 @@ word GetBam(byte * bam, word nr)
 
 struct fe_date                  /* Used in FASTECHO.DAT */
 {
-    word year;
-    byte day;
-    byte month;
+    unsigned short year;
+    unsigned char day;
+    unsigned char month;
 };
 
 typedef struct
 {
-    char signature[10];         /* contains 'FASTECHO\0^Z' */
-    word revision;
-    struct fe_date lastupdate;  /* last time file was updated */
-    word NodeCnt, AreaCnt;
-    dword startnode, startarea; /* unix timestamp of last reset */
-    word NodeSize, AreaSize;    /* size of StatNode and StatArea records */
+    char signature[10];                /* contains 'FASTECHO\0^Z' */
+    unsigned short revision;
+    struct fe_date lastupdate;         /* last time file was updated */
+    unsigned short NodeCnt, AreaCnt;
+    unsigned long startnode, startarea;/* unix timestamp of last reset */
+    unsigned short NodeSize, AreaSize; /* size of StatNode and StatArea records */
     char resv[32];
 }
 STATHEADER;
 
 typedef struct
 {
-    Address adr;
-    dword import, export;
+    FEAddress adr;
+    unsigned long import, export;
     struct fe_date lastimport, lastexport;
-    dword dupes;
-    dword importbytes, exprotbytes;
+    unsigned long dupes;
+    unsigned long importbytes, exprotbytes;
 }
 StatNode;
 
 typedef struct
 {
-    word conference;            /* conference # of area */
-    dword tagcrc;               /* CRC32 of area tag    */
-    dword import, export;
+    unsigned short conference;         /* conference # of area */
+    unsigned long tagcrc;              /* CRC32 of area tag    */
+    unsigned long import, export;
     struct fe_date lastimport, lastexport;
-    dword dupes;
+    unsigned long dupes;
 }
 StatArea;
 
@@ -729,9 +725,18 @@ StatArea;
 /* Functions for reading some of these structs in a portable manner        */
 /* ======================================================================= */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int read_fe_config(CONFIG *c, FILE *fp);
 int read_fe_extension_header(ExtensionHeader *h, FILE *fp);
 int read_fe_sysaddress(SysAddress *a, FILE *fp);
 int read_fe_area(Area *a, FILE *fp);
+int read_fe_node(Node *a, FILE *fp);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
