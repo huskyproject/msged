@@ -1,6 +1,14 @@
 MSGED TE (TOBI'S EDITION) 6.0 - DOCUMENTATION OF NEW FEATURES AND CHANGES
 =========================================================================
 
+Features, Changes and Fixes in Msged TE 6.0.2
+---------------------------------------------
+
+Fixes:
+
+- Next attempt at fixing CHARSET kludge handling with absent level argument
+  ... :-)
+
 Features, Changes and Fixes in Msged TE 6.0.1
 ---------------------------------------------
 
