@@ -4,9 +4,7 @@ TODO-List for Msged
 Category 1: Will certainly be implemented until next release
 ============================================================
 
-- Document Fidoconfig stuff
-
-- Write docs about grouping
+- Write docs about grouping. Fix grouping !?
 
 - Fix: Maxx and Maxy do not currently override termcap :-(
 
