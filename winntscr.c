@@ -452,26 +452,36 @@ static int FullBuffer(void)
     }
 }
 
-int TTStrWr(unsigned char *s, int row, int col)
+int TTStrWr(unsigned char *s, int row, int col, int len)
 {
-    DWORD i, len;
+    DWORD i;
     COORD coord;
     LPWORD pwattr;
-    pwattr = (LPWORD) malloc(strlen((char *)s) * sizeof *pwattr);
+    DWORD ntlen;
+
+    if (len < 0)
+        len = strlen((char *)s);
+
+    ntlen = len;
+
+    if (len == 0)
+        return 1;
+
+    pwattr = (LPWORD) malloc(len * sizeof *pwattr);
     if (pwattr == NULL)
     {
         return 0;
     }
     coord.X = (SHORT) col;
     coord.Y = (SHORT) row;
-    for (i = 0; i < strlen((char *)s); i++)
+    for (i = 0; i < len; i++)
     {
         *(pwattr + i) = color;
     }
-    WriteConsoleOutputCharacterA(HOutput, s, (DWORD) strlen(s), coord, &len);
-    WriteConsoleOutputAttribute(HOutput, pwattr, (DWORD) strlen(s), coord, &len);
+    WriteConsoleOutputCharacterA(HOutput, s, (DWORD) len, coord, &ntlen);
+    WriteConsoleOutputAttribute(HOutput, pwattr, (DWORD) len, coord, &ntlen);
     free(pwattr);
-    TTgotoxy(row, col + len);
+    TTgotoxy(row, col + ntlen);
     return 1;
 }
 

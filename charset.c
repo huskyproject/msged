@@ -9,6 +9,7 @@
 #include <time.h>
 #include <stdio.h>
 #include <string.h>
+#include <assert.h>
 
 #include "addr.h"
 #include "memextra.h"
@@ -408,7 +409,7 @@ char *translate_text (const char *text, LOOKUPTABLE *table)
     {
         if (dstidx>=maxlength)
         {
-            translated=realloc(translated, maxlength += 40);
+            translated=realloc(translated, (maxlength += 40) + 1);
         }
 
         switch (table->level)
@@ -450,17 +451,14 @@ char *translate_text (const char *text, LOOKUPTABLE *table)
             translated[dstidx++] = table->lookuptable[tblidx];
             if (dstidx>=maxlength)
             {
-               translated=realloc(translated, maxlength += 40);
+               translated=realloc(translated, (maxlength += 40) + 1);
             }
             translated[dstidx++] = table->lookuptable[tblidx+1];
             continue;
         }
     }
 
-    if (dstidx>=maxlength)
-    {
-        translated=realloc(translated, maxlength += 40);
-    }
+    assert(dstidx <= maxlength);
     translated[dstidx++]=0;
 
     return translated;

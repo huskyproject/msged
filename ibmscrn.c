@@ -163,12 +163,14 @@ int TTWriteStr(unsigned long *b, int len, int row, int col)
     return 0;
 }
 
-int TTStrWr(unsigned char *s, int row, int col)
+int TTStrWr(unsigned char *s, int row, int col, int len)
 {
     unsigned long line[200];
     int i = 0;
 
-    while (*s)
+    unused(len);
+
+    while (*s && i < sizeof(line))
     {
         line[i] = ((unsigned long)(*s) & 0xffUL) | (((unsigned long)color) << 16);
         s++;

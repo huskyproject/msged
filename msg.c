@@ -189,7 +189,11 @@ long SquishMsgAreaOpen(AREA * a)
         close(sql);
     }
 
-    a->last = MsgHighMsg(Ahandle);
+    if (Ahandle->type != MSGTYPE_JAM)
+        a->last = MsgHighMsg(Ahandle);
+    else
+        a->last = Ahandle->num_msg; /* work around bug in JAM api */
+
     a->status = 1;
 
     if (a->last >= 1 && a->current == 0)
@@ -397,8 +401,7 @@ char *SquishMsgReadText(unsigned long n)
                 }
             }
             next = msgbuf;
-            end = msgbuf + strlen(msgbuf);
-            normalize(msgbuf);
+            end = msgbuf + normalize(msgbuf);
         }
         else
         {
@@ -455,8 +458,7 @@ char *SquishMsgReadText(unsigned long n)
             return xstrdup(msgbuf);
         }
         *(msgbuf + (size_t) l + (size_t) i) = '\0';
-        normalize(msgbuf + (size_t) l);
-        end = msgbuf + strlen(msgbuf);
+        end = msgbuf + l + normalize(msgbuf + (size_t) l);
         next = msgbuf;
         t = strchr(next, '\n');
     }
@@ -745,7 +747,7 @@ int JamMsgWriteText(char *text, unsigned long msgn, unsigned long mlen)
         }
     }
 
-    
+
     if (global_text == NULL)
     {
         global_text = xmalloc(mlen + 1);
@@ -760,7 +762,7 @@ int JamMsgWriteText(char *text, unsigned long msgn, unsigned long mlen)
         l = 0;
 
     assert(global_len == mlen);
-    assert(global_pos + l <= mlen);  /* fails with JAM !? */
+    assert(global_pos + l <= mlen);
 
     if (l)
     {
@@ -932,13 +934,21 @@ int SquishMsgWriteText(char *text, unsigned long msgn, unsigned long mlen)
 
 int JamMsgClose(void)
 {
+    int rv = TRUE;
+    int srv = TRUE;
+
     if (global_text != NULL)
     {
         if (SquishMsgWriteText(global_text, global_msgn, global_len) != TRUE)
-        xfree(global_text); global_text = NULL;
-        global_text = NULL;
+            rv = ERR_CLOSE_MSG;
+        xfree(global_text);
     }
-    return SquishMsgClose();
+
+    srv = SquishMsgClose();
+    global_ctrl = 1;            /* reset! */
+    global_text = NULL;
+    global_pos  = 0;
+    return (rv != TRUE ? rv : srv);
 }
 
 /*
@@ -1054,7 +1064,7 @@ int SquishAreaSetLast(AREA * a)
     int ret = TRUE;
     int fd;
     unsigned char buffer[4];
-    
+
     if (mh != NULL)
     {
         MsgCloseMsg(mh);

@@ -179,19 +179,21 @@ int TTWriteStr(unsigned long *b, int len, int row, int col)
     return 1;
 }
 
-int TTStrWr(unsigned char *s, int row, int col)
+int TTStrWr(unsigned char *s, int row, int col, int len)
 {
-    int l = strlen((char *)s);
     char *ptr16;
 
-    if (l == 0)
+    if (len < 0)
+        len = strlen((char *)s);
+
+    if (len == 0)
     {
         return 0;
     }
-    ptr16 = xmalloc16(l);
+    ptr16 = xmalloc16(len);
 
-    memmove(ptr16, s, l);
-    VioWrtCharStrAtt((char *)ptr16, (short)l, (short)row, (short)col,
+    memmove(ptr16, s, len);
+    VioWrtCharStrAtt((char *)ptr16, (short)len, (short)row, (short)col,
                      (PBYTE) &color, 0);
     xfree16(ptr16);
 

@@ -12,29 +12,33 @@
 #include "misc.h"
 #include "normal.h"
 
-void normalize(char *s)
+int normalize(char *s) /* int: returns new string length */
 {
     char *tmp = s;
+    char *org = s;
 
     while (*s)
     {
-        if (stripSoft && ((unsigned char)*s == 0x8d) && !softcrxlat)
+        switch ((unsigned char)(*s))
         {
+          case 0x0a:
             s++;
-        }
-        else if (*s == 0x0a)
-        {
+            break;
+          case 0x0d:
             s++;
-        }
-        else if (*s == 0x0d)
-        {
-            s++, *tmp++ = '\n';
-        }
-        else
-        {
+            *tmp++ = '\n';
+            break;
+          case 0x8d:
+            if (stripSoft && !softcrxlat)
+            {
+                s++;
+                break;
+            }
+          default:
             *tmp++ = (char)DOROT13((int)*s);
             s++;
         }
     }
     *tmp = '\0';
+    return tmp - org;
 }

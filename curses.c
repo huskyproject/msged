@@ -237,17 +237,22 @@ int TTWriteStr(unsigned long *b, int len, int row, int col)
     return 1;
 }
 
-int TTStrWr(unsigned char *s, int row, int col)
+int TTStrWr(unsigned char *s, int row, int col, int len)
 {
     int cut = 0;
-    size_t len;
     int y,i;
     
     if (s == NULL)
         return 1;
+
+    if (len < 0)
+        len = strlen((const char *)s);
+
+    if (len == 0)
+        return 1;
     
     move(row, col);
-    for (len = strlen((const char*)s); len; len--, s++)
+    for ( ; len; len--, s++)
     {
         /* control chars are written in ^X notation */
         if (*s < ' ')

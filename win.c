@@ -465,7 +465,7 @@ void WndTitle(const char *title, int Attr)
     CW->title = xstrdup(title);
 
     TTScolor(Attr);
-    TTStrWr((unsigned char *)title, CW->y1 + ymod, pos);
+    TTStrWr((unsigned char *)title, CW->y1 + ymod, pos, -1);
 
     if (m)
     {
@@ -487,7 +487,6 @@ void WndWriteStr(int x, int y, int Attr, char *Str)
 {
     int row, col, len;
     int m = 0;
-    char *trunc, ch = 0;
     char *PrintStr = Str;
 
     if (Str == NULL)
@@ -536,19 +535,18 @@ void WndWriteStr(int x, int y, int Attr, char *Str)
         MouseOFF();
     }
 
-    trunc = NULL;
     if ((col + len - 1) > CW->x2 - XMOD(CW))
     {
-        PrintStr = xstrdup(Str);
-        trunc = PrintStr + ((CW->x2 - XMOD(CW)) - col + 1);
-        ch = *trunc;
-        *trunc = '\0';
+        len = ((CW->x2 - XMOD(CW)) - col + 1);
+        PrintStr = xmalloc(len + 1);
+        memcpy(PrintStr, Str, len);
+        PrintStr[len] = '\0';
     }
 
     TTBeginOutput();
 
     TTScolor(Attr);
-    TTStrWr((unsigned char *)PrintStr, row, col);
+    TTStrWr((unsigned char *)PrintStr, row, col, len);
 
     if (PrintStr != Str)
     {

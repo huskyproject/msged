@@ -325,12 +325,12 @@ int TTWriteStr(unsigned long *b, int len, int row, int col)
     return 1;
 }
 
-int TTStrWr(unsigned char *s, int row, int col)
+int TTStrWr(unsigned char *s, int row, int col, int len)
 {
-    size_t len;
     int i;
 
-    len = strlen((char *)s);
+    if (len < 0)
+        len = strlen((char *)s);
 
     if (row >= term.NRow || col >= term.NCol)
     {

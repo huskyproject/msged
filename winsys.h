@@ -214,7 +214,7 @@ int  TTconfigure(const char *, const char *);
 int  TTGetChr(void);
 int  TTPutChr(unsigned int Ch);
 int  TTWriteStr(unsigned long *b, int len, int row, int col);
-int  TTStrWr(unsigned char *s, int row, int col);
+int  TTStrWr(unsigned char *s, int row, int col, int len);
 int  TTReadStr(unsigned long *b, int len, int row, int col);
 int  TTClear(int x1, int y1, int x2, int y2);
 int  TTScroll(int x1, int y1, int x2, int y2, int lines, int Dir);
