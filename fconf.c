@@ -177,8 +177,11 @@ void check_fidoconfig(char *option_string)
             }
 
                                 /* area to place file requests in */
-            release(ST->freqarea);
-            ST->freqarea = xstrdup(fc_config->netMailArea.areaName);
+	    if (fc_config->netMailAreaCount > 0)
+	    {
+	        release(ST->freqarea);
+		ST->freqarea = xstrdup(fc_config->netMailAreas[0].areaName);
+	    }
 
                                 /* fido user list */
             if (fc_config->nodelistDir != NULL &&
@@ -195,10 +198,19 @@ void check_fidoconfig(char *option_string)
         {
                                 /* netmail, dupe, bad */
 
-            fc_add_area(&(fc_config->netMailArea), 1, 0);
             fc_add_area(&(fc_config->dupeArea), 0, 1);
             fc_add_area(&(fc_config->badArea), 0, 1);
             
+                                /* netmail areas */
+            for (i=0; i<fc_config->netMailAreaCount; i++)
+            {
+                fc_area = &(fc_config->netMailAreas[i]);
+                if (fc_area->msgbType != MSGTYPE_PASSTHROUGH)
+                {
+                    fc_add_area(fc_area, 1, 0);
+                }
+            }
+      
                                 /* local areas */
             for (i=0; i<fc_config->localAreaCount; i++)
             {
