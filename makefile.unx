@@ -1,8 +1,13 @@
-CC=	cc
-CFLAGS=
+READMAPSDAT=~/home/fido/etc/msged.readmaps
+WRITMAPSDAT=~/home/fido/etc/msged.writmaps
+DEFAULTCONFIGFILE=~/.msged
+
+CC=cc
+CFLAGS=-DREADMAPSDAT=\"$(READMAPSDAT)\" -DWRITMAPSDAT=\"$(WRITMAPSDAT)\" -DDEFAULT_CONFIG_FILE=\"$(DEFAULTCONFIGFILE)\"
 CDEFS=	-DUNIX -DUSE_MSGAPI
 COPT=
 MSGDIR=	../smapi
+
 
 TARGET=	msged
 MSGAPI=	smapiunix

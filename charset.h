@@ -36,12 +36,14 @@ LOOKUPTABLE *get_writetable      (const char *, int*);
 void         strip_control_chars (char *);
 char        *translate_text      (const char *, LOOKUPTABLE *);
 
+#ifndef READMAPSDAT
 #ifdef UNIX
 #define READMAPSDAT "~/.msged.readmaps"
 #define WRITMAPSDAT "~/.msged.writmaps"
 #else
 #define READMAPSDAT "readmaps.dat"
 #define WRITMAPSDAT "writmaps.dat"
+#endif
 #endif
 
 #endif
