@@ -662,10 +662,7 @@ int SquishMsgWriteHeader(msg * m, int type)
 
     if (type == WR_HEADER || !new)
     {
-        if (MsgWriteMsg(mh, FALSE, &xmsg, NULL, 0L, 0L, 0L, NULL) == -1)
-        {
-            return FALSE;
-        }
+        MsgWriteMsg(mh, FALSE, &xmsg, NULL, 0L, 0L, 0L, NULL);
         MsgCloseMsg(mh);
         mh = NULL;
     }
@@ -742,38 +739,28 @@ int SquishMsgWriteText(char *text, unsigned long msgn, unsigned long mlen)
             if (new)
             {
                 clen = strip_whitel();
-                if (MsgWriteMsg(mh, FALSE, &xmsg, NULL, 0L, mlen, clen,
-                                 (byte *)cinfbuf) == -1)
-                {
-                    goto write_error;
-                }
-                if (MsgWriteMsg(mh, TRUE, NULL, (byte *)&cz,
-                                sizeof(char), mlen, 0L, NULL) == -1)
-                {
-                    goto write_error;
-                }
+                MsgWriteMsg(mh, FALSE, &xmsg, NULL, 0L, mlen, clen,
+                  (byte *)cinfbuf);
+                MsgWriteMsg(mh, TRUE, NULL, (byte *)&cz,
+                  sizeof(char), mlen, 0L, NULL);
             }
             else
             {
                 mh = MsgOpenMsg(Ahandle, MOPEN_RW, n);
                 if (mh == NULL)
                 {
-                    goto write_error;
+                    ready = FALSE;
+                    ctrl = TRUE;
+                    new = FALSE;  /* we only change the header */
+                    return FALSE;
                 }
-                if (MsgWriteMsg(mh, FALSE, &xmsg, NULL, 0L, mlen, 0L,
-                                NULL) == -1)
-                {
-                    goto write_error;
-                }
+                MsgWriteMsg(mh, FALSE, &xmsg, NULL, 0L, mlen, 0L, NULL);
             }
         }
         else
         {
-            if (MsgWriteMsg(mh, TRUE, NULL, (byte *)&cz, sizeof(char),
-                            mlen, 0L, NULL) == -1)
-            {
-                goto write_error;
-            }
+            MsgWriteMsg(mh, TRUE, NULL, (byte *)&cz, sizeof(char),
+              mlen, 0L, NULL);
         }
 
         if (new)
@@ -839,44 +826,30 @@ int SquishMsgWriteText(char *text, unsigned long msgn, unsigned long mlen)
                 mh = MsgOpenMsg(Ahandle, MOPEN_CREATE, n);
                 if (mh == NULL)
                 {
-                    goto write_error;
+                    ready = FALSE;
+                    ctrl = TRUE;
+                    new = FALSE;
+                    return FALSE;
                 }
 
                 /* messy, but it works */
-                if (MsgWriteMsg(mh, FALSE, &xmsg, (byte *)text,
-                                strlen(text), mlen, clen,
-                                (byte *)cinfbuf) == -1)
-                {
-                    goto write_error;
-                }
+                MsgWriteMsg(mh, FALSE, &xmsg, (byte *)text,
+                  strlen(text), mlen, clen, (byte *)cinfbuf);
             }
             else
             {
-                if (MsgWriteMsg(mh, FALSE, &xmsg, (byte *)text,
-                                 strlen(text), mlen, clen,
-                                (byte *)cinfbuf) == -1)
-                {
-                    goto write_error;
-                }
+                MsgWriteMsg(mh, FALSE, &xmsg, (byte *)text,
+                  strlen(text), mlen, clen, (byte *)cinfbuf);
             }
         }
         else
         {
-            if (MsgWriteMsg(mh, TRUE, NULL, (byte *)text, strlen(text),
-                            mlen, 0L, NULL) == -1)
-            {
-                goto write_error;
-            }
+            MsgWriteMsg(mh, TRUE, NULL, (byte *)text, strlen(text),
+              mlen, 0L, NULL);
         }
     }
 
     return TRUE;
-
-    write_error:
-        ready = FALSE;
-        ctrl = TRUE;
-        new = FALSE;
-        return FALSE;
 }
 
 /*
@@ -908,8 +881,6 @@ int SquishMsgClose(void)
 
 int SquishMsgAreaClose(void)
 {
-    int result = TRUE;
-    
     if (Ahandle == NULL)
     {
         return TRUE;
@@ -921,12 +892,16 @@ int SquishMsgAreaClose(void)
 
     if (MsgCloseArea(Ahandle) == -1)
     {
-        result = ERR_CLOSE_AREA;
+        printf("\n!SquishMsgAreaClose(): Area didn't close, error %ud!\n", msgapierr);
+        exit(-1);
+        return ERR_CLOSE_AREA;
     }
-
-    CurArea.status = 0;
-    Ahandle = NULL;
-    return result;
+    else
+    {
+        CurArea.status = 0;
+        Ahandle = NULL;
+        return TRUE;
+    }
 }
 
 /*
