@@ -1,13 +1,17 @@
 CC=	 gcc
-CFLAGS=	-Wall -Zomf -Zcrtdll -s
+CFLAGS=	-Wall -Zomf -Zsys -s
 CDEFS=	-DOS2 -DUSE_MSGAPI
-#COPT=        -O3 -fomit-frame-pointer -fstrength-reduce -m486
-MSGDIR=	..\smapi
+COPT=   -O3 -fomit-frame-pointer -fstrength-reduce
+#-m486
+MSGDIR=	../smapi
+
+.SUFFIXES:
+.SUFFIXES: .c .obj
 
 TARGET=	msgedp.exe
 TMPLIB= msgedemo.lib
 LIB=    emxomfar
-MSGAPI=	$(MSGDIR)\smapiemo.lib
+MSGAPI=	$(MSGDIR)/smapiemo.lib
 
 objs=	addr.obj     \
 	areas.obj    \
@@ -62,7 +66,7 @@ objs=	addr.obj     \
 
 .c.obj:
 	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -I$(MSGDIR) -c $<
-        $(LIB) r $(TMPLIB) $@
+	$(LIB) r $(TMPLIB) $@
 
 $(TARGET): $(objs)
 	$(CC) $(COPT) $(CFLAGS) -Zlinker "/pm:vio" -o $(TARGET) msged.obj $(TMPLIB) $(MSGAPI)
