@@ -2062,6 +2062,7 @@ int writemsg(msg * m)
                 else
                 {
                     make_tearline(text);
+                    strcat(text, "\r");
 		}
 
 		/* make sure it is not longer than 35 characters + \r*/

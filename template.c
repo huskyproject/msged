@@ -57,10 +57,10 @@ static char **parse_words_to_array(char *string, int nmembers)
 void make_tearline(char *buf)
 {
     /* add the tearline */
-    
+
     if (SW->usepid)
     {
-        sprintf(buf, "---\n");
+        sprintf(buf, "---");
     }
     else
 #ifdef HAVE_UNAME
@@ -68,14 +68,14 @@ void make_tearline(char *buf)
     {
         struct utsname uts;
         uname(&uts);
-        
-        sprintf(buf, "--- %s %s (%s/%s (%s))\n", PROG, VERNUM VERPATCH,
+
+        sprintf(buf, "--- %s %s (%s/%s (%s))", PROG, VERNUM VERPATCH,
                 uts.sysname, uts.release, uts.machine);
     }
     else
-#endif        
+#endif
     {
-        sprintf(buf, "--- %s %s\n", PROG, VERNUM VERPATCH);
+        sprintf(buf, "--- %s %s", PROG, VERNUM VERPATCH);
     }
 }
 
@@ -128,7 +128,7 @@ int MakeTemplateMsg(msg * m, msg * oldmsg, int olda, int type)
                 monthbuf = xstrdup(buf+2);
                 use_month = parse_words_to_array(monthbuf, 12);
                 continue;
-                
+
             case 'f':
                 if (!(type & MT_FOR))
                 {
@@ -255,22 +255,23 @@ int MakeTemplateMsg(msg * m, msg * oldmsg, int olda, int type)
                 strcpy(buf, "\n");
                 ln = addline(ln, xstrdup(buf));
             }
-            
+
             if (SW->usetearlines && SW->edittearlines)
             {
                 make_tearline(buf);
+                strcat(buf, "\n");
                 ln = addline(ln, xstrdup(buf));
             }
-            
+
             if (SW->useoriginlines && SW->editoriginlines)
             {
                 /* add the origin line */
-                
+
                 GetOrigin(buf2);
                 sprintf(buf, " * Origin: %s (%s)\n", buf2,
                         SW->domainorigin ? show_address(&(m->from)) :
                         show_4d(&(m->from)));
-                
+
                 ln = addline(ln, xstrdup(buf));
             }
         }
