@@ -213,7 +213,7 @@ void group_build_arealist(void)
             grouparealist[SW->groupareas] = i;
             if (i == SW->area)
             {
-                SW->grouparea = i;
+                SW->grouparea = SW->groupareas;
             }
             SW->groupareas++;
         }

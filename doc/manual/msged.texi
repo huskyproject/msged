@@ -163,16 +163,16 @@ plain text documentations.
 This archive contains the complete C source code for @value{MSGED},
 out-of-the-box makefiles for building @value{MSGED} on DOS, OS/2, Windows,
 and almost every imaginable Unix-like system (tested systems include Linux,
-FreeBSD and IBM AIX), sample configuration files, and the texinfo source code
-for the manual that can be used to build the manual in OS/2 INF, HTML, GNU
-info or DVI format.
+FreeBSD and Tru64 Unix), sample configuration files, and the texinfo source
+code for the manual that can be used to build the manual in OS/2 INF, HTML,
+GNU info or DVI format.
 @end table
 
-For compiling @value{MSGED}, you also need the @samp{smapi} library,
-and, if you want support for the @file{fidoconfig} config file standard,
-then you also need the @samp{fidoconfig library}. Both libraries are
-distributed by the husky team. The filenames of the release versions of those
-libaries that have been used to build @value{MSGED} @value{VERSION} are
+For compiling @value{MSGED}, you also need the @samp{smapi} library, and, if
+you want full support for the @file{fidoconfig} config file standard, then
+you also need the @samp{fidoconfig library}. Both libraries are distributed
+by the husky team. The filenames of the release versions of those libaries
+that can be used to build @value{MSGED} @value{VERSION} are
 
 @table @file
 @item smapi-1.6.4.tar.gz
@@ -227,6 +227,10 @@ R:\MSGED> COPY READMAPS.850 READMAPS.DAT
 R:\MSGED> COPY WRITMAPS.850 WRITMAPS.DAT
 @end example
 
+Please note that the filenames for the Ukrainian codepage 1125 differ from
+this naming scheme, they are called @file{READMAPS.UKR} and
+@file{WRITMAPS.UKR}.
+
 If there is no @file{READMAPS.XXX} file corresponding to the @samp{Active
 Codepage} returned by the @code{CHCP} command, see if there is a
 @file{READMAPS.XXX} file for one of the prepared codepages. If there is, use
@@ -244,7 +248,7 @@ files, charset kludge lines, codepages, and character set recoding.
 
 @item
 Rename the file @file{sample.cfg} to @file{msged.cfg} and modify it according
-to your needs with your favoruite text editor.
+to your needs with your favourite text editor.
 @xref{Configuration Reference,,Configuration Reference},
 for detailed descriptions of each keyword that can be used in this file.
 
@@ -345,8 +349,8 @@ This section provides information on installing @value{MSGED} on Linux,
 FreeBSD or any other Unix-like system.
 
 @menu
-* UNIX Installation Procedure::  How to install @value{MSGED}.
-* Notes on UNIX terminal I/O::  How @value{MSGED} handles the terminal.
+* UNIX Installation Procedure::   How to install @value{MSGED}.
+* Notes on UNIX terminal I/O::    How @value{MSGED} handles the terminal.
 * Notes on UNIX keyboard input::  Escape Meta Alt Control Shift ;-)
 * Notes on Big Endian Hardware::  Running @value{MSGED} on RISC processors.
 * Colors in the Unix version::  How to enable colors.
@@ -410,13 +414,27 @@ Password:
 @end example
 
 @item
-At this time, for security reasons, each user that wants to use @value{MSGED}
-needs to have his individual configuration files in his home
-directory. Copy the file @file{sample.cfg} to @file{~/.msged}:
+@value{MSGED} by default searches it's configuration file in the current
+user's home directory, i.E. you need to copy the file @file{sample.cfg} to
+@file{~/.msged}:
 
 @example
 ~/msged-work $ cp sample.cfg ~/.msged
 @end example
+
+If you are an administrator and want to install @value{MSGD} system-globally,
+you can make @value{MSGED} read a different configuration file either by
+re-compiling @value{MSGED} and define the @code{MSGEDCFG} macro (this is also
+done automatically when you compile @value{MSGED} with @file{huskymak.cfg} -
+in this case the default location is @file{msged.cfg} in the @file{etc}
+subdirectory that you defined in @file{huskymak.cfg). Or you can simply
+create a script that calls the @value{MSGED} binary with the @code{-c}
+command line option. Specify the desired file name directly behind the
+@code{-c}. 
+
+If you do this, you should, in the global configuration file, use a statement
+like @code{include ~/.msged}, so that each user can indivudally configure his
+own user name and other user specific settings.
 
 @item
 You have to copy some other files as well:
@@ -4911,9 +4929,32 @@ According to the Husky policy of doing things, the path to the fidoconfig
 file is read from the default value or from the @samp{FIDOCONFIG} environment
 variable. Hence, for fidoconfig, the second parameter of this keyword is not
 used to configure the path to the config file. Instead, it is used to
-configure how the config file should be treated. Please refer to the chapter
-about fidoconfig support (WHICH IS NOT YET WRITTEN, FIXME - UNTIL THEN SEE
-WHATSNEW.TXT) for more information.
+configure how the config file should be treated. This can be:
+
+@itemize  @bullet
+@item @samp{Areas}
+
+Only the mail area configuration (echo-, local and netmail areas) is read
+from fidoconfig, i.E. the fidoconfig file is only used like any other
+areafile. This is also the default behaviour if you omit the second
+parameter.
+
+@item @samp{Settings}
+
+If you specify @samp{Areafile Fidoconfig Settings}, @value{MSGED} will read
+as much configuration settings from the fidoconfig file as possible. Among
+other things, this is the user name(s), the Fido AKA(s) and the echotoss log
+file position. Mail area configuration, on the other hand, is @emph{not} read.
+
+@item @samp{Both}
+
+With this setting, both the general configuration settings and the mail area
+configuration will be read from fidoconfig.
+@end itemize
+
+The fidoconfig routines are able to follow include statements inside the
+fidoconfig file automatically.
+
 @item @samp{Squish}
 
 The path to and name of the configuration file, like in
@@ -4929,13 +4970,22 @@ another @file{areas.bbs} file, you have to define it separately for
 @cindex source code
 @cindex compiling the source code
 This appendix provides information on how to compile the source code of
-@value{MSGED}. You will have to do this if either you are using a platform
-for which no binary distribution is provided (like FreeBSD, AIX, Rhapsody,
-and other Unix systems), or if you want to do modifications on the source
-code, or if you are just curious :-).
+@value{MSGED}. Most of the information of this chapter applies to all
+supported platfroms (including Unix, OS/2, Windows and DOS).
 
-Most of the information of this chapter applies to all supported platfroms
-(including Unix, OS/2, Windows and DOS).
+This appendix only covers stand-alone compilation of @value{MSGED}. You can
+also decide to build @value{MSGED} in the Husky environment, i.E. link
+@value{MSGED} against the fidoconfig library and use the @file{huskymak.cfg}
+compile configuration file. If you want to do this, please refer to the
+compliation and installation instructions which are provided by the Husky
+team. They can be found in the file @file{INSTALL} in the @file{huskybse}
+package. 
+
+In the following we are assuming you don't want to deal with
+@file{huskymak.cfg}, don't want to download @file{fidoconfig} etc., but
+simply build a standard @value{MSGED} executable for your operating
+system. It will still be able to read mail areas from a @file{fidoconfig}
+type areafile, as @value{MSGED} also has it's own fidoconfig access routines.
 
 @menu
 * Preparations::                Obtaining and unpacking the files.
@@ -4949,22 +4999,23 @@ Most of the information of this chapter applies to all supported platfroms
 @node Preparations, Configuring, Compiling, Compiling
 @section Step 1: Preparing the build directories; Obtaining the SMAPI
 Besides the source code of @value{MSGED}, which is supplied in
-@file{MSGTE5_S.ZIP}, you need the source code of the special edition of the
-Squish Message API, from here on called @dfn{Smapi}, that is required to build
-@value{MSGED}.
+@file{msged-te-06.tar.gz} or in @file{MSGTE6_S.ZIP}, you need the source code
+of the special edition of the Squish Message API, from here on called
+@dfn{Smapi}, that is required to build @value{MSGED}.
 
 Unfortunately, there are a lot of different versions of the Smapi floating
-around. The best choice would be if you would use the snapshot of exactly that
-release level of the Smapi that I used to compile the binary releases. It can
-be found as @file{SMAPISS.ZIP} on all sites that carry the @value{MSGED}
-source code. Alternatively, you can use any @emph{newer} Smapi from the same
-development stream, which is made available on a regular basis by Michael
-Espey for file request and by Thomas Winter for non-anonymous CVS checkout. -
-All other versions of the Smapi or the Msgapi32 are probably not suited for
-building @value{MSGED}. They are definitely not suited if you want to compile
-for Unix.
+around. The best choice would be if you would use the same version of Smapi
+that I used to compile the binary releases. for @value{MSGED}
+@value{VERSION}, this is Smapi 1.6.3, which can be obtained as
+@file{smapi-1.6.3.tar.gz} or as @file{smapi163.zip}. You should be able to
+obtain these files from the same location you got @value{MSGED} from.
 
-After you have obtained @file{SMAPISS.ZIP} and @file{MSGTE5_S.ZIP}, unzip
+Alternatively, you can use any @emph{newer} Smapi from the Husky development
+stream. All other versions of the Smapi or the Msgapi32 are probably not
+suited for building @value{MSGED}. They are definitely not suited if you want
+to compile for Unix.
+
+After you have obtained @file{SMAPI163.ZIP} and @file{MSGTE6_S.ZIP}, unzip
 them into two directories at the same level.  The files in the archives stick
 to the 8.3 notation, so you can even do this on FAT drives. You should use
 either Info-ZIP for unpacking these files, or use pkunzip with the @samp{-d}
@@ -4982,37 +5033,24 @@ On OS/2, this could look  as follows:
 [C:\COMPILE\SMAPI] unzip c:\download\smapiss.zip
 @end example
 
-while on Unix, it would look like this:
+If you use the version in @file{.tar.gz} format, you don't need to make the
+subdirectories - the @file{.tar.gz} files already contain them. So, on Unix,
+it would probably look like this:
 
 @example
-  $ cd ~
-~ $ mkdir smapi
-~ $ mkdir msged
-~ $ cd msged
-~/msged $ unzip ~/downloads/msgte5_s.zip
-~/msged $ cd ../smapi
-~/smapi $ unzip ~/downloads/smapiss.zip
+~ $ mkdir ~/compile
+~ $ cd ~/compile
+~/compile $ tar xzf ~/downloads/msged-te-06.tar.gz
+~/compile $ tar xzf ~/downloads/smapi-1.6.3.tar.gz
+
 @end example
 
 @node Configuring, Path Names, Preparations, Compiling
 @section Configuring - Selecting the proper Makefile for your Compiler
+
 @value{MSGED} does not provide a @code{configure} skript. It rather provides
-a set of different makefiles. You ``configure'' the source code by simply
-renaming the makefile of your choice to @file{makefile}. You have do to this
-in both the @file{smapi} and the @file{msged} directory. For instance, on
-OS/2 with IBM C, you would use:
-
-@example
-[C:\COMPILE\SMAPI] copy makefile.ibo makefile
-[C:\COMPILE\SMAPI] copy ..\msged\makefile.ibo ..\msged\makefile
-@end example
-
-while on Unix, you would use:
-
-@example
-~/smapi $ cp makefile.unx makefile
-~/smpai $ cp ../msged/makefile.unx ../msged/makefile
-@end example
+a set of different makefiles. You ``configure'' the source code by selecting
+the makefile of your choice.
 
 The following compilers and target operating systems are supported:
 
@@ -5027,6 +5065,9 @@ makefile.emo | OS/2 with EMX 0.9c GCC 2.7.2
 makefile.ibo | OS/2 with IBM CSET/2 or Visual Age C++
 makefile.rxw | 95/NT with RSXNT + EMX GCC 2.7.2
 makefile.unx | Any UNIX, BSD or Linux with any compiler
+makefile.bsd | FreeBSD with GCC
+makefile.lnx | Linux with GCC
+makefile.mgw | 95/NT via Mingw32 cpd (running on Unix)
 @end example
 
 The following makefiles are also provided, but they are not supported, either
@@ -5037,9 +5078,7 @@ makefiles along with the others, but I cannot make any promises.
 @example
 Makefile     | Platform
 -------------+----------------------------------------------
-makefile.bsd | FreeBSD with GCC; links the SMAPI dynamically
 makefile.hco | OS/2 with Metware High C
-makefile.lnx | Linux with GCC; links the SMAPI dynamically
 makefile.qcd | DOS with MS Quick C
 makefile.wcd | DOS with Watcom C
 makefile.wcw | NT with Watcom C
@@ -5047,19 +5086,9 @@ makefile.wco | OS/2 with Watcom C
 makefile.wcx | DOS/386 with Watcom C
 @end example
 
-Special note: Linux and FreeBSD users should, for the first try, use
-@file{makefile.unx} rather than @file{makefile.lnx}
-resp. @file{makefile.bsd}. @file{makefile.unx} is idiot proof: it statically
-links the Smapi, and it works on any Unix-like system that has any half Posix
-compliant "cc" available.
-
-The files @file{makefile.lnx} and @file{makefile.bsd} should @emph{only} be
-used if you want to link the Smapi dynamically, and if you know what that
-means and what you are doing.
-
-If you are annoyed by the executable generated with @file{makefile.unx}
-annouces itself as @samp{MsgEd/UNX} rather than @samp{MsgEd/LNX}, you can
-edit the @code{UNAME} preprocessor define in @file{makefile.unx}.
+There is also a file which is simply named @file{Makefile}. This file is for
+building using a @file{huskymak.cfg} environment, and will not be described
+in this manual.
 
 @node Path Names, Building the Executables, Configuring, Compiling
 @section Selecting Path Names
@@ -5076,9 +5105,11 @@ Charset Input Map       readmaps.dat    ~/.msged.readmaps
 Charset Output Map      writmaps.dat    ~/.msged.writmaps
 @end example
 
+These path's will be different if you compile via @file{huskymak.cfg}.
+
 On Non-Unix systems, you normally do not need to change the default (which
 is finding everything in the current directoy). On Unix, you might want to
-change the locations if you are administrater and want to provide a
+change the locations if you are administrator and want to provide a
 system-wide default configuration (that can then include files in the user
 home directory if necessary). You can do this by redefining variables in the
 Makefile. Just have a look at the first three lines of @file{makefile.unx}
@@ -5089,12 +5120,15 @@ to see how it works.
 Now that you have done all necessary preparations, compilation is easy:
 
 @enumerate
-@item Change into the @file{smapi} directory and type @code{make}. This will
-generate a library, whose name depends on the makefile you used. For instance
+@item Change into the @file{smapi} directory and type @code{make -f
+MAKEFILENAME} (replace @code{MAKEFILENAME} with the name of the makefile that
+you have selected in the previous step). This will generate a library, the
+name of which depends on the makefile you used. For instance
 @file{libsmapiunx.a} or @file{smapiibo.lib}.
 
-@item Change into the @file{msged} directory and type @code{make}. This will
-gnereate the executable, whose name depends on the makefile you used. For
+@item Change into the @file{msged} directory and type @code{make -f
+MAKEFILENAME} (again substituting the proper makefile name). This will
+genereate the executable, whose name depends on the makefile you used. For
 instance @file{msgedp.exe} or @file{msged} or @file{msged.exe}.
 
 @item If, on Unix, you get errors about unresolved symbols when linking the
@@ -5125,10 +5159,10 @@ and on Unix:
 
 In order for @value{MSGED} to behave smoothly in environments where mails
 with special national characters are received and/or transmitted (i.E.:
-everywhere in Europe), you must create @file{readmaps.dat} and
-@file{writmaps.dat} files @emph{that match your local character map
-settings}. On Unix, this is easily done thanks to the shell expansion
-feature:
+everywhere in Europe, both Western Europe and particularly in Russia), you must
+create @file{readmaps.dat} and @file{writmaps.dat} files @emph{that match
+your local character map settings}. On Unix, this is easily done thanks to
+the shell expansion feature:
 
 @example
 ~/msged $ cd ~/msged/maps
@@ -5149,13 +5183,13 @@ specify all character map files that are to be included into
 [C:\COMPILE\MSGED] cd c:\compile\msged\maps
 [C:\COMPILE\MSGED\MAPS] icc makemaps.c
  (...)
-[C:\COMPILE\MSGED\MAPS] makemaps IBMPC IBM_ISO.CHS ISO_IBM.CHS
-IBM_ASC.CHS IBM_MAC.CHS MAC_IBM.CHS IBM_850.CHS 850_IBM.CHS
+[C:\COMPILE\MSGED\MAPS] makemaps CP437 IBM_ISO.CHS ISO_IBM.CHS
+IBM_ASC.CHS IBM_MAC.CHS MAC_IBM.CHS IBM_850.CHS 850_IBM.CHS 866_IBM.CHS 1125_IBM.CHS
 @end example
 
 Finally, you may want to create the documentation in your favourite output
 format. This requires quite some prerequisite software to be installed on
-your system, so you probably might simply want to grab @file{MSGTE5_M.ZIP}.
+your system, so you probably might simply want to grab @file{MSGTE6_M.ZIP}.
 
 But if you really want to compile the manual by hand, proceed as follows:
 Change to the @file{doc/manual} subdirectory:

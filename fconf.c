@@ -1,10 +1,33 @@
 /*
  *  fconf.c
  *
- *  Written on 08-Jan-98 by Tobias Ernst.
+ *  Written by Tobias Ernst et. al.
  *  Released to the public domain.
  *
  *  Reads a husky project fidoconfig config file.
+ *
+ *  There are two ways of reading the fidoconfig file: If the macro
+ *  USE_FIDOCONFIG is defined, we will use the routines of the fidoconfig
+ *  library. This is very easy, but as soon as a single new keyword is
+ *  introduced to fidoconfig, you must recompile (or at least relink, but
+ *  usually the interface also changes) Msged, because otherwise the
+ *  library routines will complain about unknown keywords.
+ *
+ *  Therefore, this file also contains routines that directly parse the
+ *  fidoconfig file and simply ignore all unknown keywords. This is good for
+ *  doing binary releases, as this code has a high chance of continuing to work
+ *  even if the fidoconfig library is modified and new keywords are introduced.
+ *  It is even resistant against the addition of new flags to area definitions
+ *  - but of course if area definitions would be changed fundamentally, this
+ *  code has to be adapted.
+ *
+ *  Using the USE_FIDOCONFIG code is your choice if you compile Msged on your
+ *  own and have no problem to update and recompile Msged every time you
+ *  upgrade your fidoconfig and other Husky sources.
+ *
+ *  For doing binary releases, or if you don't want to regularly update Msged
+ *  along with the other tools, you should not use the USE_FIDOCONFIG code.
+ *
  */
 
 #ifdef USE_FIDOCONFIG
@@ -31,7 +54,9 @@
 
 #ifdef USE_FIDOCONFIG
 
-/* USE_FIDOCONFIG means to use the fidoconfig libraries */
+/* ===================================================================== */
+/* Part 1: Fidoconfig routines that use the Fidoconfig library           */
+/* ===================================================================== */
 
 static void fc_copy_address(ADDRESS *a, s_addr *fc_a)
 {  
@@ -259,8 +284,9 @@ void check_fidoconfig(char *option_string)
 }
 #else
 
-/* Our own version of parsing routines for fidoconfig - this one cannot get the
-   full info out of fidoconfig, but only the area info. */
+/* ===================================================================== */
+/* Part 2: Fidoconfig routines that directly parse the Fidoconfig file   */
+/* ===================================================================== */
 
 static void read_fidoconfig_file (char *filename);
 static ADDRESS fc_default_address;
@@ -272,8 +298,7 @@ void check_fidoconfig(char *option_string)
     
     if (option_string != NULL)
     {
-        printf ("\r\nOnly loading area info from fidoconfig, because this
-binary is not linked\nagainst fidoconfig libaries.\n");
+        printf ("\r\nOnly loading area info from fidoconfig, because this binary is not linked\nagainst fidoconfig libaries.\n");
     }
 
     filename = getenv("FIDOCONFIG");
@@ -306,7 +331,7 @@ static void parse_fc_address(void)
         ADDRESS tmp;
         
         fc_default_address_set = 1;
-        parsenode(token);
+        tmp = parsenode(token);
         memcpy(&fc_default_address, &tmp, sizeof(ADDRESS));
     }
 }
@@ -315,10 +340,12 @@ static void parse_fc_include(void)
 {
     char *token = strtok(NULL, " \t");
     char *fn;
+    char *duptoken;
 
     if (token != NULL)
     {
-        fn = pathcvt(token);
+        duptoken = xstrdup(token);
+        fn = pathcvt(duptoken);
         read_fidoconfig_file(fn);
         xfree(fn);
     }
@@ -379,7 +406,7 @@ static void parse_fc_area(int type)
 {
     static AREA a;
     char *area_description = NULL;
-    char *token, *next;
+    char *token;
     int option;
 
     memset(&a, 0, sizeof(AREA));
@@ -400,7 +427,7 @@ static void parse_fc_area(int type)
         printf ("\r\nFidoconfig *area statement missing argument.\n");
         return;
     }
-    else if (stricmp(token, "passthrough"))
+    else if (!stricmp(token, "passthrough"))
     {
         xfree(a.tag);
         return;
@@ -428,7 +455,7 @@ static void parse_fc_area(int type)
     token = strtok(NULL, " \t");
     while (token != NULL)
     {
-        if (token[0] = '-')
+        if (token[0] == '-')
         {
             option = 0;
             if (!stricmp(token + 1, "b"))
@@ -595,14 +622,14 @@ static void read_fidoconfig_file (char *filename)
         memmove(line, start, l+1);
 
         /* trim trailing spaces */
-        while (l && line[l - 1] == ' ' || line[l - 1] == '\t')
+        while (l && (line[l - 1] == ' ' || line[l - 1] == '\t'))
         {
             line[l - 1] = '\0';
             l--;
         }
 
         /* strip comments */
-        if (*line='#')
+        if (*line == '#')
         {
             *line='\0';
         }
