@@ -108,8 +108,10 @@ USER user_list[MAXUSERS];       /* list of users */
 ADDRESS uucp_gate;              /* the uucp gate */
 
 unsigned int *macros[41];       /* function key macros + 1 for autostart */
-int maxx;                       /* maximum screen columns */
-int maxy;                       /* maximum screen rows */
+int maxx = 80;                  /* maximum screen columns */
+int maxy = 25;                  /* maximum screen rows */
+int maxx_force = 0;
+int maxy_force = 0;
 int rot13;
 int stripSoft = 0;
 int softcrxlat = 0;

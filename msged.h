@@ -457,6 +457,8 @@ extern msg *message;              /* current message */
 extern unsigned int *macros[41];  /* macros */
 extern int maxy;                  /* max y pos, 1 origin */
 extern int maxx;                  /* max x pos, 1 origin */
+extern int maxx_force;
+extern int maxy_force;
 extern int cur_start;             /* these are ega/vga default */
 extern int cur_end;               /* cursor sizes */
 extern int rot13;                 /* rot13 this message? */

@@ -43,12 +43,18 @@ int InitScreen(void)
         term.Abil |= NOMOUSE;
     }
     TTopen();
-    maxx = term.NCol;
+    if (maxx_force)
+        maxx = maxx_force;
+    else
+        maxx = term.NCol;
     if (maxx >= sizeof(line))
     {
         maxx = sizeof(line) - 1;
     }
-    maxy = term.NRow;
+    if (maxy_force)
+        maxy = term.NRow;
+    else
+        maxy = term.NRow;
     hMnScr = WndOpen(0, 0, maxx - 1, maxy - 1, NBDR, 0, cm[CM_NTXT]);
     SW->redraw = TRUE;
     return 0;

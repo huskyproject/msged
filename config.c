@@ -3489,11 +3489,11 @@ static void parseconfig(FILE * fp)
             break;
 
         case CFG_MAXX:
-            maxx = (int)strtol(value, NULL, 0);
+            maxx_force = (int)strtol(value, NULL, 0);
             break;
 
         case CFG_MAXY:
-            maxy = (int)strtol(value, NULL, 0);
+            maxy_force = (int)strtol(value, NULL, 0);
             break;
 
         case CFG_TEMPLATE:
