@@ -24,13 +24,13 @@ INSTDIR=~/bin
 IBOPT=-s -c
 
 CC=	cc
-CFLAGS=	-Wall -I../smapi -I../fidoconfig
+CFLAGS=	-I../smapi -I../fidoconfig
 CDEFS=	-DUNIX -DUSE_MSGAPI -DUNAME=\"UNX\" -DREADMAPSDAT='"$(READMAPS)"' -DWRITMAPSDAT='"$(WRITMAPS)"' -DDEFAULT_CONFIG_FILE='"$(DEFAULT_CONFIG_FILE)"'
 COPT=	-O3
 LFLAGS= -L../smapi -L../fidoconfig -s
 
 TARGET=	msged
-MSGAPI=-lsmapibsd
+MSGAPI=-lsmapiunix
 TERMCAP=-ltermcap
 
 objs=   addr.o     \
