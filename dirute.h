@@ -67,10 +67,10 @@ struct _dta
 
 #define DIR_DIRECT 1
 #define DIR_NORMAL 2
-#define DIR_ARCHVD
+#define DIR_ARCHVD 0
 #define DIR_READON 4
-#define DIR_HIDDEN
-#define DIR_SYSTEM
+#define DIR_HIDDEN 0
+#define DIR_SYSTEM 0
 #define DIR_ICASE  8
 #define DIR_NO_WILDCARDS 16
 
