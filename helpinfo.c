@@ -13,6 +13,7 @@
 #include <string.h>
 #include <errno.h>
 #include "help.h"
+#include "memextra.h"
 
 static char *line = NULL;
 static FILE *fp;
