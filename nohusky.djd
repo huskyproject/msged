@@ -1,0 +1,104 @@
+# look for libs in c:\lib
+LIBDIR=c:\lib
+
+# install programs in c:\bin
+BINDIR=c:\bin
+
+# look for includes here
+INCDIR=c:\include
+
+# options for installing programs
+IBOPT=-s
+
+
+CC=	gcc
+
+ifeq ($(DEBUG), 1)
+  CFLAGS= -Wall -g -I$(INCDIR)
+else
+  CFLAGS= -Wall -s -I$(INCDIR)
+endif
+
+CDEFS=	-D__FLAT__ -DUSE_MSGAPI
+
+COPT= -O3
+# -fomit-frame-pointer -fstrength-reduce -m486
+
+TARGET= msged32.exe
+MSGAPI= $(LIBDIR)/smapidjg.a
+
+objs=	addr.o     \
+	areas.o    \
+	bmg.o	   \
+	charset.o  \
+	config.o   \
+	control.o  \
+	date.o	   \
+	dialogs.o  \
+	dirute.o   \
+	dlgbox.o   \
+	dlist.o    \
+	dosasm.o   \
+	dosmisc.o  \
+	echotoss.o \
+	environ.o  \
+	fconf.o    \
+	fecfg145.o \
+	fido.o     \
+	filedlg.o  \
+	flags.o    \
+	freq.o     \
+	gestr120.o \
+	getopts.o  \
+	help.o	   \
+	helpcmp.o  \
+	helpinfo.o \
+	ibmscrn.o  \
+	init.o	   \
+	keycode.o  \
+	list.o	   \
+	maintmsg.o \
+	makemsgn.o \
+	memextra.o \
+	menu.o	   \
+	misc.o	   \
+	mnu.o	   \
+	mouse4.o   \
+	msg.o	   \
+	msged.o    \
+	mxbt.o	   \
+	normalc.o  \
+	nshow.o    \
+	quick.o    \
+	quote.o    \
+	readmail.o \
+	screen.o   \
+	strextra.o \
+	system.o   \
+	template.o \
+	textfile.o \
+	userlist.o \
+	vio.o	   \
+	vsev.o	   \
+	vsevops.o  \
+	win.o	   \
+	wrap.o
+
+all: $(TARGET)
+
+.c.o:
+	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
+
+$(TARGET): $(objs)
+	$(CC) $(COPT) -o $(TARGET) *.o $(MSGAPI)
+
+clean:
+	del *.o
+        del *.bak
+
+distclean: clean
+	del $(TARGET)
+
+install: $(TARGET)
+	copy $(TARGET) $(BINDIR)
+
