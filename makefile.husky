@@ -1,0 +1,89 @@
+# include Husky-Makefile-Config
+include ../huskymak.cfg
+
+ifeq ($(DEBUG), 1)
+  CFLAGS=	-Wall -I../smapi -I$(INCDIR) -ggdb
+else
+  CFLAGS=	-Wall -I../smapi -I$(INCDIR) -s
+endif
+
+CDEFS=	-D$(OSTYPE) -DUSE_MSGAPI -DUSE_FIDOCONFIG -DUNAME=\"LNX\" $(ADDCDEFS)
+COPT=	-O3 -fomit-frame-pointer -fstrength-reduce
+LFLAGS= -L$(LIBDIR)
+
+TARGET=	msged$(EXE)
+MSGAPI=-lsmapi
+FC=-lfidoconfig
+
+objs=   addr$(OBJ)     \
+	ansi$(OBJ)     \
+	areas$(OBJ)    \
+	bmg$(OBJ)      \
+	charset$(OBJ)  \
+	config$(OBJ)   \
+	control$(OBJ)  \
+	curses$(OBJ)   \
+	date$(OBJ)     \
+	dialogs$(OBJ)  \
+	dirute$(OBJ)   \
+	dlgbox$(OBJ)   \
+	dlist$(OBJ)    \
+	echotoss$(OBJ) \
+	environ$(OBJ)  \
+	fconf$(OBJ)    \
+	fecfg145$(OBJ) \
+	fido$(OBJ)     \
+	filedlg$(OBJ)  \
+	flags$(OBJ)    \
+	freq$(OBJ)     \
+	gestr120$(OBJ) \
+	getopts$(OBJ)  \
+	help$(OBJ)     \
+	helpcmp$(OBJ)  \
+	helpinfo$(OBJ) \
+	init$(OBJ)     \
+	keycode$(OBJ)  \
+	list$(OBJ)     \
+	maintmsg$(OBJ) \
+	makemsgn$(OBJ) \
+	memextra$(OBJ) \
+	menu$(OBJ)     \
+	misc$(OBJ)     \
+	mnu$(OBJ)      \
+	msg$(OBJ)      \
+	msged$(OBJ)    \
+	mxbt$(OBJ)     \
+	normalc$(OBJ)  \
+	nshow$(OBJ)    \
+	quick$(OBJ)    \
+	quote$(OBJ)    \
+	readmail$(OBJ) \
+        readtc$(OBJ)   \
+	screen$(OBJ)   \
+	strextra$(OBJ) \
+	system$(OBJ)   \
+	template$(OBJ) \
+	textfile$(OBJ) \
+	userlist$(OBJ) \
+	vsev$(OBJ)     \
+	vsevops$(OBJ)  \
+	win$(OBJ)      \
+	wrap$(OBJ)
+
+all: $(TARGET)
+
+.c$(OBJ):
+	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
+
+$(TARGET): $(objs)
+	$(CC) $(COPT) $(LFLAGS) -o $(TARGET) $(objs) $(MSGAPI) $(FC)
+
+clean:
+	-$(RM) *$(OBJ) *~
+
+distclean: clean
+	-$(RM) $(TARGET)
+
+install: $(TARGET)
+	install $(IBOPT) $(TARGET) $(BINDIR)
+
