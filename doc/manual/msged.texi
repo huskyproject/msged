@@ -324,6 +324,7 @@ FreeBSD or any other Unix-like system.
 * Notes on UNIX keyboard input::  Escape Meta Alt Control Shift ;-)
 * Notes on Big Endian Hardware::  Running @value{MSGED} on RISC processors.
 * Colors in the Unix version::  How to enable colors.
+* Case Sensitivity::            About case sensitivity problems.
 @end menu
 
 @node UNIX Installation Procedure, Notes on UNIX terminal I/O, UNIX installation, UNIX installation
@@ -515,7 +516,7 @@ This means that you presently must restrict yourself to a Squish message base
 and a @file{squish.cfg} configuration file if you want to run @value{MSGED}
 on big endian hardware. This will be definietly fixed in a future release.
 
-@node Colors in the Unix version,  , Notes on Big Endian Hardware, UNIX installation
+@node Colors in the Unix version, Case Sensitivity, Notes on Big Endian Hardware, UNIX installation
 @subsection Colors in the Unix version
 
 The UNIX verison of @value{MSGED}, by default, presents itself in spartanic
@@ -547,6 +548,29 @@ example above to your configuration file, parts of the screen or message text
 are invisible, your terminal probably does not correctly support ANSI color
 codes.
 
+@node Case Sensitivity,  , Colors in the Unix version, UNIX installation
+@subsection Case Sensitivity Problems
+By default, the Unix version of MsgEd TE behaves case-sensitively (like any
+program running on a Unix file system), i.E. it uses all filenames that it
+reads from configuration file exactly as they are spelled, and all filenames
+that it creates (i.E. by appending filename extensions) are created in lower
+case.
+
+This may lead to problems if you are sharing a message base between the Unix
+versin of MsgEd and DOSish fidonet programs (i.E. fidonet programms running
+on DOS, OS/2 or Windows, or simply a Windows or OS/2 fileserver that holds
+the message base). Those programs tend to create a real mess of filenames by
+mixing both lower-, upper- and mixed-case spelling. If you are running the
+Unix version of MsgEd in such an environment, you should add the line
+
+@example
+Switch AdaptiveCase On
+@end example
+
+as the first line in your configuration file. This
+will effectivly make MsgEd behave case-insensitive and should avoid most
+problems with case sensitivity (@pxref{List of Switches,,List of available
+switches}).
 
 @node Network Notes, Known Bugs, UNIX installation, Installation
 @section Using @value{MSGED} and other Fido software in networked environments
@@ -569,7 +593,9 @@ software that uses the Squish, JAM or Hudson message base format. I feel
 enforced to devote a section of this documentation to these problems to save
 you from encoutering severe unexpected problems in your installation,
 especially as with the addition of Linux or Unix to such a network, the
-problems tend to increase dramatically.
+problems tend to increase dramatically. - Another issue in such networks, case
+sensitivity problems, as already been described above (@pxref{Case
+Sensitivity,,About Case Sensitivity Problems}).
 
 @menu
 * Access Synchronisation::      Description of the general problem.
@@ -2533,7 +2559,7 @@ be used for areas belonging to this group. The first message template file
 that you have specified with the @code{Template} keyword has number 0, the
 second has number 1, and so on.
 
-@epmh{Attention:} The @code{group} keyword must be specified @emph{after} any
+@emph{Attention:} The @code{group} keyword must be specified @emph{after} any
 @code{name} or @code{template} keywords, but @emph{before} any area
 definitions.
 
@@ -3330,6 +3356,27 @@ Switch SEEN-BYs On
 The following switches are available:
 
 @table @code
+@item AdaptiveCase
+@findex AdaptiveCase
+@cindex case sensitivity
+@cindex dos file systems, using from unix
+The @code{AdaptiveCase} switch is only relevant if you are running the
+Unix/Linux version of Msged. It should be turned on if you are accessing
+DOSish file systems (via Samba, NFS or the FAT or HPFS file system drivers),
+from Msged running on Unix, or if DOS programs have access to your Unix file
+system. DOSish fidonet programs usually create a really messed up message base
+with mixed case spelling (i.E. it might contain both @code{.MSG},
+@code{.msg} and @code{.Msg} file name extensions in a single netmail
+directory). If the @code{AdaptiveCase} switch is turned on, each time that
+Msged tries to open or create a file, it will first do a search over the
+directory to determine the correct spelling of a file. This enables Msged
+to cope with such mixed spelling as it is often found in DOSish message
+base directories. - On the other hand, if only Unix programs have access to
+your message base and the message base is stored on a Unix file system, you can turn this
+switch off. This will give you a little performance improvement and save you
+about 200 kilobytes of memory (which is otherwise used for directory
+caching).  Default: Off.
+
 @item ArealistExactMatch
 @findex ArealistExactMatch
 When the area list is displayed, you can search a message area by entering the
@@ -3455,8 +3502,8 @@ lines by turning the @code{ImportFN} switch off. Default: On.
 If you turn the @code{LowerCase} switch on, @value{MSGED} will convert all
 file names that it reads from the configuration file or from any areafile to
 lower case before it attempts to read to, write from, or create any
-file. This might be helpful if you are using case-sensitive file systems like
-Linux ext2fs or BSD ufs.
+file. This switch is not very helpful - if you think you need it, you should
+probably use @code{AdaptiveCase} instead.
 
 @item MSGIDs
 @findex MSGIDs
