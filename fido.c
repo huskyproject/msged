@@ -25,7 +25,7 @@
 #include <string.h>
 #include <time.h>
 #include <errno.h>
-#include <compiler.h>
+#include <msgapi.h>
 #include "addr.h"
 #include "nedit.h"
 #include "msged.h"
