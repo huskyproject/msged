@@ -7,6 +7,7 @@ Features, Changes and Fixes in the current development version of MsgEd
 Changes:
 
 - Reorganized the Makefiles, please read doc/README.Mak !!!
+  (Currently the makefiles are broken. Please wait another few days.)
 
 - Changed the semantics of AssumeCharset. Now it also works for mails that
   do have a charset kludge, but the charset is unknown. This seems to be

@@ -47,6 +47,7 @@
 #include "quote.h"
 #include "textfile.h"
 #include "filedlg.h"
+#include "keys.h"
 
 #define TEXTLEN 2048
 
@@ -223,7 +224,7 @@ char *getfilename(char *buf)
 void export_text(msg *mesg, LINE *line)
 {
     LINE *l;
-    FILE *f;
+    FILE *f = NULL;
     int destination = 0, mode = 0, ret = 0, x1, x2;
     char fn[2048];
     int (*closefunc)(FILE *) = NULL;
@@ -304,6 +305,7 @@ void export_text(msg *mesg, LINE *line)
         break;
 
     case 2:                     /* pipe */
+        fn[0] = '\0';
 #ifdef HAVE_POPEN
         if (!GetString("Pipe Text To External Program", "Command Line", fn,
                        2047))
@@ -343,7 +345,11 @@ void export_text(msg *mesg, LINE *line)
     case 0:                     /* file */
     case 1:
         closefunc = fclose;
-        if (((f = fopen(fn, "r")) != NULL) && (!isatty(fileno(f))))
+        if (((f = fopen(fn, "r")) != NULL) && (!isatty(fileno(f)))
+#ifdef __DJGPP__ /* DJGPP's isatty is buggy, it returns 0 for "PRN" */
+            && destination != 1
+#endif
+            )
         {
             ret = ChoiceBox("Attention", "File already exists!",
                             "Append", "Overwrite", "Cancel");
@@ -359,6 +365,8 @@ void export_text(msg *mesg, LINE *line)
                 fclose(f);
                 f = fopen(fn, "w");
                 break;
+                
+            case Key_Esc:
             case ID_THREE:
                 fclose(f);
                 return;
@@ -368,6 +376,8 @@ void export_text(msg *mesg, LINE *line)
         }
         else
         {
+            if (f != NULL)
+                fclose(f);
             f = fopen(fn, "w");
         }
 
@@ -432,7 +442,11 @@ void export_text(msg *mesg, LINE *line)
     }
 
     /* if output is to printer output a formfeed */
-    if (isatty(fileno(f)))
+    if (isatty(fileno(f)) 
+#ifdef __DJGPP__  /* see above */
+        || destination == 1
+#endif
+        )
     {
         fputc(12, f);
     }

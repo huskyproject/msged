@@ -32,6 +32,10 @@
 #include <dir.h>
 #endif
 
+#ifdef __DJGPP__
+#include <unistd.h>
+#endif
+
 #ifdef UNIX
 #include <unistd.h>
 #endif
@@ -428,6 +432,7 @@ int ShowFiles(int maxfiles, struct CURFILE *retdir, int *current)
     int nattr = cm[DL_ENRM], hattr = cm[DL_ESEL];
     char temp[FILENAME_MAX + 1];
     static int cur;
+    int directzap = 1; /* directly go to the enter field? */
 
     /* Init things */
     curtop = *current;
@@ -446,11 +451,21 @@ int ShowFiles(int maxfiles, struct CURFILE *retdir, int *current)
     /* Ok, wait for user */
     while(1)
     {
-        WndPrintf(fdp_listx + 1, top + (cur - curtop), hattr,
+        if (!(directzap && retdir->name[0]))
+        {
+            WndPrintf(fdp_listx + 1, top + (cur - curtop), hattr,
                   ">%-*.*s<", fnlen, fnlen, files[cur]->name);
-        key = GetKey();
-        WndPrintf(fdp_listx + 1, top + (cur - curtop), nattr,
+            key = GetKey();
+            WndPrintf(fdp_listx + 1, top + (cur - curtop), nattr,
                   " %-*.*s ", fnlen, fnlen, files[cur]->name);
+            directzap = 0;
+        }
+        else
+        {
+            key = Key_Tab;
+            strcpy(temp, retdir->name);
+        }
+
         switch(key)
         {
 	case Key_F1:
@@ -466,8 +481,17 @@ int ShowFiles(int maxfiles, struct CURFILE *retdir, int *current)
              * Esc will take us back to the flist area.
              * The input is parsed elsewhere
              */
-            *temp = '\0';
-            inppos = done = 0;
+            if (!directzap)
+            {
+                *temp = '\0';
+                inppos = 0;
+            }
+            else
+            {
+                directzap = 0;
+                inppos = strlen(temp);
+            }
+            done = 0;
             /*WndPrintf(6,top-1,cm[DL_WTXT],":");
               WndPrintf(13,19,cm[DL_WTXT] | _BLINK,":"); */
             
@@ -669,7 +693,6 @@ static void FixPath(char *path)
         if(*p == '\\') *p = '/';
         p++;
     }
-    
 }
 
 
@@ -738,12 +761,117 @@ static char *dlgetcwd(char *storehere, int buflen)
                 
 
 /*
+ * Split a file name into drive, path, dir, change to the given
+ * directory, and return the path name 
+ */
+
+int process_fileinput(char *retpath, char *curdir)
+{
+    char *sp;
+    int savech;
+    int retval = 0;
+
+    FixPath(curfile.name);
+
+    /* split in path and file */
+    sp = strrchr(curfile.name, '/');
+    if (sp != NULL)
+    {
+        /* user entered a path. */
+
+        if (sp == curfile.name || (drive_letters && *(sp - 1) == ':'))
+        {
+            /* special treatment for root */
+            savech = sp[1];
+            sp[1] = '\0';
+        }
+        else
+        {
+            savech = -1;
+            *sp = '\0';
+        }
+        if (!chdir(curfile.name))
+        {
+            /* change dir succeeded -
+               change drive letters as well */
+                        
+            if (drive_letters)
+            {
+                if (curfile.name[1] == ':')
+                {
+                    dir_setdrive(toupper(*curfile.name) - 'A');
+                }
+            }
+            
+            /* the path existed. good. use it. */
+            dlgetcwd(curdir,FILENAME_MAX);
+            AddDirSlash(curdir);
+
+            sp++;
+            if (savech != -1)
+                *sp = (char) savech;
+        }
+        else
+        {
+            sp = NULL;
+            fprintf(stderr, "\a");
+            fflush(stderr);
+            curfile.name[0]='\0';
+            /* path does not exist. beep and do nothing */
+        }
+    }
+    else
+    {
+        sp = curfile.name;
+    }
+    
+    /* Now we have evaluted the path component in the user
+       entry. Now let's see about the rest. It could be a file
+       mask, a subdirectory name, or a file name. */
+    
+    if (sp)
+    {
+        if(strchr(sp, '?') || strchr(sp, '*'))
+        {
+            /* it is a file mask */
+            strcpy(FileFilter, sp);
+            curfile.name[0]='\0';
+        }
+        else if (!chdir(sp))
+        {
+            /* it is another subdirectory */
+            dlgetcwd(curdir,FILENAME_MAX);
+            AddDirSlash(curdir);
+            curfile.name[0]='\0';
+        }
+        else
+        {
+            /* it is a file name that the user wishes to use */
+            retval = 1;
+            strcpy(retpath, curdir);
+            strcat(retpath, sp);
+            if (sp != curfile.name)
+            {
+                memmove(curfile.name, sp, strlen(sp) + 1);
+            }
+        }
+    }
+    else
+    {
+        curfile.name[0]='\0';
+    }
+
+    return retval;
+}
+
+
+/*
  * The main routine
  */
 
 int FileDialog(char *retpath, const char *title)
 {
-    int key = 0,max,cur = 0,retval, savech;
+    int key = 0,max,cur = 0,retval=0;
     char curdir[FILENAME_MAX + 1];
     char homedir[FILENAME_MAX + 1], *sp;
 
@@ -755,7 +883,19 @@ int FileDialog(char *retpath, const char *title)
     GetAvDrives();
 
     dlgetcwd(homedir, FILENAME_MAX);  /* save home location */
-    strcpy(curdir,homedir);
+
+    if (!(*retpath))
+    {
+        strcpy(curdir,homedir);
+        curfile.name[0]='\0';
+    }
+    else
+    {
+        strcpy(curfile.name, retpath);
+        process_fileinput(retpath, curdir);
+    }
+        
+
     AddDirSlash(curdir);
     ImpExpDlgInit(title);
 
@@ -814,85 +954,10 @@ int FileDialog(char *retpath, const char *title)
             /* user entered a file or filter, or selected a file. */
             else if (*curfile.name) 
             {
-                FixPath(curfile.name);
-
-                /* split in path and file */
-                sp = strrchr(curfile.name, '/');
-                if (sp != NULL)
+                if (process_fileinput(retpath, curdir))
                 {
-                    /* user entered a path. */
-
-                    if (sp == curfile.name ||
-                        (drive_letters && *(sp - 1) == ':'))
-                    {
-                        /* special treatment for root */
-                        savech = sp[1];
-                        sp[1] = '\0';
-                    }
-                    else
-                    {
-                        savech = -1;
-                        *sp = '\0';
-                    }
-                    if (!chdir(curfile.name))
-                    {
-                        /* change dir succeeded -
-                           change drive letters as well */
-                        
-                        if (drive_letters)
-                        {
-                            if (curfile.name[1] == ':')
-                            {
-                                dir_setdrive(toupper(*curfile.name) - 'A');
-                            }
-                        }
-
-                        /* the path existed. good. use it. */
-                        dlgetcwd(curdir,FILENAME_MAX);
-                        AddDirSlash(curdir);
-
-                        sp++;
-                        if (savech != -1)
-                            *sp = (char) savech;
-                    }
-                    else
-                    {
-                        sp = NULL;
-                        fprintf(stderr, "\a");
-                        fflush(stderr);
-                        /* path does not exist. beep and do nothing */
-                    }
-                }
-                else
-                {
-                    sp = curfile.name;
-                }
-
-                /* Now we have evaluted the path component in the user
-                   entry. Now let's see about the rest. It could be a file
-                   mask, a subdirectory name, or a file name. */
-                        
-                if (sp)
-                {
-                    if(strchr(sp, '?') || strchr(sp, '*'))
-                    {
-                        /* it is a file mask */
-                        strcpy(FileFilter, sp);
-                    }
-                    else if (!chdir(sp))
-                    {
-                        /* it is another subdirectory */
-                        dlgetcwd(curdir,FILENAME_MAX);
-                        AddDirSlash(curdir);
-                    }
-                    else
-                    {
-                        /* it is a file name that the user wishes to use */
-                        retval = 1;
-                        strcpy(retpath, curdir);
-                        strcat(retpath, sp);
-                        break;
-                    }
+                    retval = 1; /* it is a valid file */
+                    break;
                 }
             }
 
@@ -905,6 +970,7 @@ int FileDialog(char *retpath, const char *title)
 	{
             retval = 0;
             *retpath = '\0';
+            *curfile.name = '\0';
             break;
         }
     }  /* end while */
