@@ -1,3 +1,18 @@
+2001-07-06 Friday 01:20  tobi
+
+	* charset.c (1.14.2.1), config.c (1.44.2.2), doc/manual/msged.texi
+	(1.54.2.1): fsc 54 -> fsp 1013
+
+2001-07-06 Friday 01:01  tobi
+
+	* gestr120.h (1.5.2.1): enabled jam depending on msgapi version
+	(also pertains to config.c)
+
+2001-07-06 Friday 00:59  tobi
+
+	* config.c (1.44.2.1): implemented sanity check to make sure we
+	have a readmap for ibmpc
+
 2001-06-20 Wednesday 22:31  tobi
 
 	* doc/whatsnew.txt (1.67.2.1): adapted version in whatsnew list
