@@ -1,11 +1,11 @@
 
-There are two sets of Makefiles: One for use with other software of the
-husky project (husky.*) and one for standalone-compiling of MsgEd TE
+There are two kinds of Makefiles: One for use with other software of the
+husky project (Makefile) and one for standalone-compiling of MsgEd TE
 (makefile.*).
 
-To use the Husky-Makefiles, you have to create a Makefile-Config (huskymak.cfg)
+To use the Husky-Makefile, you have to create a Makefile-Config (huskymak.cfg)
 in the directory above the MsgEd sources.
-A sample and some notes on the new Makefiles (README.Makefiles) are included
+A sample and some notes on the new Makefile (README.Makefiles) are included
 in the husky-common package which can be found on
 "http://husky.physcip.uni-stuttgart.de/".
 
