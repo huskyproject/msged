@@ -239,27 +239,38 @@ LOOKUPTABLE * get_writetable(const char *charset_name, int *allowed)
 {
     int i;
 
-    if (charset_name == NULL)
-    {
-        charset_name = "ASCII";
-    }
+ 
     if (writemaps == NULL)
     {
         *allowed=0;
         return NULL;
     }
-    if (!strcmp(writemaps->charset_name, charset_name))
+    if (charset_name != NULL)
     {
-        *allowed=1;
-        return NULL;  /* no translation necessary */
-    }
-    for (i = 0; i < writemaps->n_tables; i++)  /* find an ideal table */
-    {
-        if (!strcmp(writemaps->tables[i].to_charset, charset_name) &&
-            !strcmp(writemaps->tables[i].from_charset,
-                    writemaps->charset_name) )
+        if (!strcmp(writemaps->charset_name, charset_name))
         {
             *allowed=1;
+            return NULL;  /* no translation necessary */
+        }
+        for (i = 0; i < writemaps->n_tables; i++)  /* find an ideal table */
+        {
+            if (!strcmp(writemaps->tables[i].to_charset, charset_name) &&
+                !strcmp(writemaps->tables[i].from_charset,
+                        writemaps->charset_name) )
+            {
+                *allowed=1;
+                return writemaps->tables+i;
+            }
+        }
+    }
+    for (i = 0; i < writemaps->n_tables; i++) /* find a to ASCII table */
+    {
+        if (!strcmp(writemaps->tables[i].to_charset, "ASCII")&&
+            !strcmp(writemaps->tables[i].from_charset,
+                    writemaps->charset_name))
+        {
+            *allowed = 0; /* don't write CHRS kludge if we translate
+                             to ASCII anyway */
             return writemaps->tables+i;
         }
     }
@@ -310,7 +321,6 @@ char *translate_text (const char *text, LOOKUPTABLE *table)
           memmove (translated, text, maxlength);
        }
        translated[maxlength] = 0;
-       strip_control_chars(translated);
        return translated;
     }
 
@@ -372,7 +382,6 @@ char *translate_text (const char *text, LOOKUPTABLE *table)
         translated=realloc(translated, maxlength += 40);
     }
     translated[dstidx++]=0;
-    strip_control_chars(translated);
 
     return translated;
 }
