@@ -5,14 +5,23 @@
  *  Copyright (c) 1995 by Tobias Burchhardt.  Last update: 30 Jun 1995.
  *  Modified by Aleksandar Ivanisevic 30 Oct 1996.
  *  Minor alterations by Andrew Clarke 22 Dec 1996.
+ *  Modfications by Tobias Ernst 04 Oct 1998
  */
 
 #ifndef __FECFG145_H__
 #define __FECFG145_H__
 
+/*
+We don't set pragma pack anymore. The result is that the structures below
+are probably larger than their pendants in the binary file. You need to write
+protable reader functions for reading them from file. For those structures
+that are used by MsgEd, such reader functions can be found in fecfg145.c.
+
 #if defined(PACIFIC) || defined(MSC) || defined(__EMX__) || defined(__IBMC__) || defined(__HIGHC__) || defined(UNIX) || defined(__DJGPP__)
 #pragma pack(1)
 #endif
+
+*/
 
 typedef unsigned long dword;
 
@@ -203,7 +212,7 @@ enum ARCmailExt
 
 typedef unsigned char byte;
 typedef unsigned short word;    /* normal int = 16 bit */
- 
+
 enum ARCers
 {
     ARC_Unknown = -1, ARC_SeaArc, ARC_PkArc, ARC_Pak,
@@ -234,6 +243,7 @@ typedef struct
     word zone, net, node, point;
 }
 Address;
+#define FE_ADDRESS_SIZE 8
 
 #define _MAXPATH 56
 
@@ -334,6 +344,7 @@ typedef struct CONFIGURATION
                                  */
 }
 CONFIG;
+#define FE_CONFIG_SIZE 4644
 
 /*
  *  To directly access the 'Nodes' and/or 'Areas' while bypassing the
@@ -426,43 +437,34 @@ typedef struct
     word read_sec, write_sec;
     struct
     {
-/*
-        word aka    : 8;       0 ... CONFIG.AkaCnt
-        word group  : 8;       0 ... CONFIG.GroupCnt
-*/
-        word akagroup;
+        unsigned aka    : 8;    /* 0 ... CONFIG.AkaCnt */
+        unsigned group  : 8;    /* 0 ... CONFIG.GroupCnt */
     }
     info;
     struct
     {
-/*
-        word storage: 4;
-        word atype  : 4;
-        word origin : 5;       # of origin line
-        word resv   : 3;
-*/
-        word flags;
+        unsigned storage: 4;
+        unsigned atype  : 4;
+        unsigned origin : 5;    /* # of origin line */
+        unsigned resv   : 3;
     }
     flags;
     struct
     {
-/*
-        word autoadded  : 1;
-        word tinyseen   : 1;
-        word cpd        : 1;
-        word passive    : 1;
-        word keepseen   : 1;
-        word mandatory  : 1;
-        word keepsysop  : 1;
-        word killread   : 1;
-        word disablepsv : 1;
-        word keepmails  : 1;
-        word hide       : 1;
-        word nomanual   : 1;
-        word umlaut     : 1;
-        word resv       : 3;
-*/
-        word advflags;
+        unsigned autoadded  : 1;
+        unsigned tinyseen   : 1;
+        unsigned cpd        : 1;
+        unsigned passive    : 1;
+        unsigned keepseen   : 1;
+        unsigned mandatory  : 1;
+        unsigned keepsysop  : 1;
+        unsigned killread   : 1;
+        unsigned disablepsv : 1;
+        unsigned keepmails  : 1;
+        unsigned hide       : 1;
+        unsigned nomanual   : 1;
+        unsigned umlaut     : 1;
+        unsigned resv       : 3;
     }
     advflags;
     word resv1;
@@ -475,6 +477,8 @@ typedef struct
     char desc[52];
 }
 Area;
+
+#define FE_AREA_SIZE 190
 
 /********************************************************
  * Optional Extensions                                  *
@@ -517,6 +521,7 @@ typedef struct
     dword offset;               /* length of field excluding header */
 }
 ExtensionHeader;
+#define FE_EXTHEADER_SIZE 6
 
 #define EH_AREAFIX      0x0001  /* CONFIG.FWACnt * <ForwardAreaFix> */
 
@@ -580,6 +585,7 @@ typedef struct
     dword flags;                /* unused */
 }
 SysAddress;
+#define FE_SYS_ADDRESS_SIZE FE_ADDRESS_SIZE + 34
 
 #define EH_ORIGINS      0x0008  /* CONFIG.OriginCnt * <OriginLines> */
 
@@ -717,5 +723,14 @@ typedef struct
     dword dupes;
 }
 StatArea;
+
+/* ======================================================================= */
+/* Functions for reading some of these structs in a portable manner        */
+/* ======================================================================= */
+
+int read_fe_config(CONFIG *c, FILE *fp);
+int read_fe_extension_header(ExtensionHeader *h, FILE *fp);
+int read_fe_sysaddress(SysAddress *a, FILE *fp);
+int read_fe_area(Area *a, FILE *fp);
 
 #endif
