@@ -223,11 +223,14 @@ msg *readmsg(unsigned long n)
 		break;
 
 	    case 'C':
-		if (strncmp(text + 1, "CHRS:", 5) != 0)
+		if (strncmp(text + 1, "CHRS:", 5) == 0)
 		{
-		   break;
-		}
-		s = text + 6;
+                    s = text + 6;
+                }
+                else if (strncmp(text + 1, "CHARSET:", 8) == 0)
+                {
+                    s = text + 9;
+                }
 
 		strcpy(tmp, s + 1);
 		memset(tokens, 0, sizeof(tokens));
