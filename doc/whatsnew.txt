@@ -1,8 +1,18 @@
-MSGED TE (TOBI'S EDITION) 06 - DOCUMENTATION OF NEW FEATURES AND CHANGES
-========================================================================
+MSGED TE (TOBI'S EDITION) - DOCUMENTATION OF NEW FEATURES AND CHANGES
+=====================================================================
 
-Features, Changes and Fixes in the current development version of MsgEd
+Features, Changes and Fixes in the current Msged 6.1 development branch
 -----------------------------------------------------------------------
+
+Changes:
+
+Features:
+
+Fixes:
+
+
+Features, Changes and Fixes in Msged 6.0.0
+------------------------------------------
 
 Changes:
 
