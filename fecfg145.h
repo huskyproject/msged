@@ -10,7 +10,7 @@
 #ifndef __FECFG145_H__
 #define __FECFG145_H__
 
-#if defined(PACIFIC) || defined(MSC) || defined(__EMX__) || defined(__IBMC__) || defined(__HIGHC__) || defined(UNIX)
+#if defined(PACIFIC) || defined(MSC) || defined(__EMX__) || defined(__IBMC__) || defined(__HIGHC__) || defined(UNIX) || defined(__DJGPP__)
 #pragma pack(1)
 #endif
 

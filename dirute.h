@@ -83,7 +83,7 @@ struct _dta
     char name[13];
 };
 
-#ifdef __TURBOC__
+#if defined(__TURBOC__) || defined(__DJGPP__)
 
 #include <dir.h>
 
