@@ -1,8 +1,7 @@
 ;
 ; This file is a charset conversion module in text form.
 ;
-; This module Converts IBM extended characters to ASCII,
-; or to UK characters.
+; This module Converts IBM extended characters (CP437) to plain ASCII
 ;
 ; Format: ID, version, level,
 ;         from charset, to charset,
@@ -29,7 +28,7 @@
 2		; level number
 ;
 CP437		; from set
-ASCII		; to set (change to UK for UK character set)
+ASCII		; to set
 ;
 \0 C		; C with cedilla
 u e		; u dieresis
@@ -52,7 +51,7 @@ a e		; ae
 A E		; AE
 \0 o		; o circumflex
 o e		; o dieresis
-\0 o		; o acute
+\0 o		; o grave
 \0 u		; u circumflex
 \0 u		; u grave
 y e		; y dieresis
@@ -64,9 +63,9 @@ U e		; U dieresis
 P t		; Pt
 \0 f		; florin
 \0 a		; a acute
-\0 i		; i grave
-\0 o		; o grave
-\0 u		; u grave
+\0 i		; i acute
+\0 o		; o acute
+\0 u		; u acute
 \0 n		; n tilde
 \0 N		; N tilde
 \0 a		; ord feminine
@@ -128,13 +127,13 @@ P t		; Pt
 \0 |		;
 \0 ~		;
 \0 a		; alpha
-s s      ; german double s (misused as Beta)
+s s             ; german double s (misused as Beta)
 \x1 ?		; Gamma
 p i		; pi
 \x1 ?		; Sigma (summation)
 \x1 ?		; sigma
 m u		; mu
-\x1 ?		; gamma
+\x1 ?		; tau
 \x1 ?		; Phi
 \x1 ?		; Theta
 \0 O		; Omega
