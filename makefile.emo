@@ -26,8 +26,10 @@ objs=	addr.obj     \
 	dlist.obj    \
 	echotoss.obj \
 	environ.obj  \
+	fecfg145.obj \
 	fido.obj     \
 	freq.obj     \
+	gestr120.obj \
 	getopts.obj  \
 	help.obj     \
 	helpcmp.obj  \

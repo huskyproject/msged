@@ -6,7 +6,7 @@ CC=      BCC32
 CFLAGS= -WC
 CDEFS=  -D__NT__ -DWINNT  -DUSE_MSGAPI
 LFLAGS= -WC
-COPT=   
+COPT=
 MSGDIR= ..\smapi
 
 
@@ -31,7 +31,9 @@ OBJS=   addr.obj     \
 	echotoss.obj \
 	environ.obj  \
 	fido.obj     \
+	fecfg145.obj \
 	freq.obj     \
+	gestr120.obj \
 	getopts.obj  \
 	help.obj     \
 	helpcmp.obj  \

@@ -12,7 +12,7 @@ CC=     gcc
 CFLAGS= -Wall -pedantic -Zwin32
 CDEFS=  -D__NT__ -DWINNT  -DUSE_MSGAPI
 LFLAGS= -Zwin32 -Zsys -s
-COPT=   
+COPT=
 MSGDIR= ../smapi
 
 
@@ -34,8 +34,10 @@ objs=   addr.o     \
 	dlist.o    \
 	echotoss.o \
 	environ.o  \
+	fecfg145.o \
 	fido.o     \
 	freq.o     \
+	gestr120.o \
 	getopts.o  \
 	help.o     \
 	helpcmp.o  \

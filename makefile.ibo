@@ -21,10 +21,12 @@ objs1=	addr.obj     \
 	dirute.obj   \
 	dlgbox.obj   \
 	dlist.obj    \
-	echotoss.obj 
+	echotoss.obj
 objs2=	environ.obj  \
 	fido.obj     \
+	fecfg145.obj \
 	freq.obj     \
+	gestr120.obj \
 	getopts.obj  \
 	help.obj     \
 	helpcmp.obj  \
@@ -37,7 +39,7 @@ objs2=	environ.obj  \
 	malloc16.obj \
 	memextra.obj \
 	menu.obj     \
-	misc.obj     
+	misc.obj
 objs3=	mnu.obj      \
 	msg.obj      \
 	msged.obj    \
@@ -49,7 +51,7 @@ objs3=	mnu.obj      \
 	quote.obj    \
 	readmail.obj \
 	screen.obj   \
-	strextra.obj 
+	strextra.obj
 objs4=	system.obj   \
 	template.obj \
 	textfile.obj \

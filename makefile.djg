@@ -23,8 +23,10 @@ objs=	addr.o     \
 	dosmisc.o  \
 	echotoss.o \
 	environ.o  \
+	fecfg145.o \
 	fido.o     \
 	freq.o     \
+	gestr120.o \
 	getopts.o  \
 	help.o	   \
 	helpcmp.o  \
