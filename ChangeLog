@@ -1,3 +1,8 @@
+2002-02-25 Monday 22:02  pas
+
+	* readmail.c (1.45): Extra closing parenthesis removed, caused
+	compile error.
+
 2002-02-12 Tuesday 00:38  tobi
 
 	* readmail.c (1.44): Next attempt at fixing CHARSET kludge
