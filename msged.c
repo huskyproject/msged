@@ -269,9 +269,12 @@ void cleanup(char *msg,...)
 {
     AREA *a;
 
-    highest();
-    AreaSetLast(&CurArea);
-    MsgAreaClose();
+    if (CurArea.status)
+    {
+        highest();
+        AreaSetLast(&CurArea);
+        MsgAreaClose();
+    }
     setcwd(ST->home);
     WndClose(hMnScr);
     TTgotoxy(term.NRow - 1, 0);

@@ -136,6 +136,10 @@ Features:
 
 Fixes:
 
+- Fixed a bug that caused Msged to sometimes trash lastread pointers in
+  exactly one (mostly, but not necessarily the first *.MSG area) message area
+  when exiting.
+
 - If you used "scan" to do an area scan on startup, the scan could
   not be interrupted if you also used the autostart macro.
 
