@@ -1,11 +1,19 @@
 MSGED TE (TOBI'S EDITION) 06 - DOCUMENTATION OF NEW FEATURES AND CHANGES
 ========================================================================
 
-
 Features, Changes and Fixes in the current development version of MsgEd
 -----------------------------------------------------------------------
 
 Features:
+
+- If you want to insert a Reply-To: line into gated e-mail messages,
+  you can now put
+    UUCPReplyTo your@e.mail
+  into msged.cfg. Msged will then insert the line
+    Reply-To: your@e.mail
+  into every mail that also has a "To:" line, i.E. in every mail that
+  is being sent through your UUCP gate. Note that some gateway software
+  supports the Reply-To: string (like Fidogate), while others doesn't.
 
 - Msged now support the Husky project "fidoconfig" style configuration
   file. If Msged has been compiled with -DUSE_FIDOCONFIG, you can use
@@ -72,7 +80,13 @@ Features:
 
 Fixes:
 
-- If you quota a mail from a person like Bill 'billy' Gates, the quote initals
+- If you used "scan" to do an area scan on startup, the scan could
+  not be interrupted if you also used the autostart macro.
+
+- The autostart macro (and probably also other macro functions) did not 
+  work properly.
+
+- If you quote a mail from a person like Bill 'billy' Gates, the quote initals
   will be BbG now (instead of B'G). mtt
 
 - Fixed bugs in the routine that allowed for redefinition of areas

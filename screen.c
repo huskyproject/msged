@@ -21,9 +21,9 @@ static unsigned int *macro;
 
 unsigned int KeyHit(void)
 {
-    if (macro)
+    if (macro && (*macro))
     {
-        return 0;
+        return 1;
     }
 
     if (TTPeekQue())
@@ -51,10 +51,9 @@ unsigned int GetKey(void)
 
     if (macro != NULL)
     {
-        macro++;
         if (*macro)
         {
-            return *macro;
+            return *(macro++);
         }
         macro = NULL;
     }
@@ -77,7 +76,7 @@ unsigned int GetKey(void)
     {
         if (*macro)
         {
-            return *macro;
+            return *(macro++);
         }
 
         macro = NULL;

@@ -184,6 +184,7 @@ int InitVars(void)
     ST->sort_criteria = NULL;
     ST->freqarea = NULL;
     ST->special_characters = NULL;
+    ST->uucpreplyto = NULL;
 
     uucp_gate.notfound = 1;
 

@@ -1451,7 +1451,8 @@ char *space_after_period(LINE *ln)
 
 int writemsg(msg * m)
 {
-    LINE *curr, *l, *ufrom, *uto, *xblank, *xtear, *xorigin, *ublank;
+    LINE *curr, *l, *ufrom, *uto, *ureplyto, *xblank,
+         *xtear, *xorigin, *ublank;
     ADDRESS to;
     ADDRESS from;
     unsigned long n;            /* UMSGID msgnum */
@@ -1475,6 +1476,7 @@ int writemsg(msg * m)
     n = m->msgnum;
     curr = NULL;
     uto = NULL;
+    ureplyto = NULL;
     ufrom = NULL;
     uucp_from = NULL;
     uucp_to = NULL;
@@ -1767,11 +1769,18 @@ int writemsg(msg * m)
 		curr = InsertAfter(curr, text);
 		uto = curr;
 		cr = 1;
+
+                if (ST->uucpreplyto != NULL)
+                {
+                    sprintf(text, "Reply-To: %s\r", ST->uucpreplyto);
+                    curr = InsertAfter(curr, text);
+                    ureplyto = curr;
+                }
 	    }
 
 	    if (cr == 1)
 	    {
-		strcpy(text, "\n");
+		strcpy(text, "\r");
 		curr = InsertAfter(curr, text);
 		ublank = curr;
 	    }
@@ -2072,6 +2081,10 @@ int writemsg(msg * m)
     {
 	release(uucp_to);
 	deleteCrapLine(uto);
+        if (ureplyto != NULL)
+        {
+            deleteCrapLine(ureplyto);
+        }
     }
 
     deleteCrapLine(xblank);

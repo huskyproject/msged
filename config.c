@@ -113,13 +113,14 @@ static char *cfgverbs[] =
     "SortAreas",
     "EnableSC",
     "AreaFileFlags",
-    "FreqArea",  /* now 51, should be 51 if possible */
+    "FreqArea",
     "AssumeCharset",
     "If",
     "Else",
     "Elif",
     "Elseif",
     "Endif",
+    "UucpReplyTo",
     NULL
 };
 
@@ -181,6 +182,7 @@ static char *cfgverbs[] =
 #define CFG_ELIF           55
 #define CFG_ELSEIF         56
 #define CFG_ENDIF          57
+#define CFG_UUCPREPLYTO    58
 
 static struct colorverb colortable[] =
 {
@@ -3260,6 +3262,11 @@ static void parseconfig(FILE * fp)
             {
                 ST->input_charset = xstrdup(value);
             }
+            break;
+
+        case CFG_UUCPREPLYTO:
+            release(ST->uucpreplyto);
+            ST->uucpreplyto = xstrdup(value);
             break;
 
         case -2:   /* skip */

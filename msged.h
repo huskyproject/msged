@@ -310,6 +310,7 @@ struct _sv
     char *freqarea;             /* area tag for area to make f.req.in */
     char *input_charset;        /* charset  assumed when reading mail
                                    without CHRS kludge. */
+    char *uucpreplyto;          /* a replyto: string for e-mail */        
 };
 
 /* These are the system switches, for access across the system */

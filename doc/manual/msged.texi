@@ -144,7 +144,7 @@ files and a manual in HTML format.
 
 @item MSGTE5_L.ZIP
 This archive contains a statically linked, pre-compiled Linux executable,
-sample configuration files and a manual in HTML format.
+sample configuration files and a manual in GNU info format.
 
 @item MSGTE5_M.ZIP
 This archive contains the manual for @value{MSGED} in Postscript and in HTML
@@ -2557,7 +2557,9 @@ an index number of 0, the second will have 1, and so one. @xref{Name,,The
 The @code{template-index} number defines which message template file should
 be used for areas belonging to this group. The first message template file
 that you have specified with the @code{Template} keyword has number 0, the
-second has number 1, and so on.
+second has number 1, and so on. Note that if you want to specify multiple
+template files, you have to repeat the @code{Template} keyword for each
+file. The @code{Template} keyword itself can only take one argument.
 
 @emph{Attention:} The @code{group} keyword must be specified @emph{after} any
 @code{name} or @code{template} keywords, but @emph{before} any area
@@ -3196,6 +3198,11 @@ The template file is used to define standard "hello strings", signoff
 messages, and much more. See the provided sample template file for
 information on how to do this. Specify the filename of your template file as
 the  @var{file-name} parameter to the @code{Template} keyword.
+
+You can specify multiple template files by repeating the @code{Template}
+keyword on a new line for each filename, but the @code{Template} keyword
+itself can only take one argument. @xref{Group,,The @code{Group} Keyword},
+for applications of this.
 
 @node TossLog, UserList, Template, Keywords
 @subsection TossLog
