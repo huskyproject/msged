@@ -475,7 +475,7 @@ void do_list(void)
         if (long_subj)
         {
             char tmp[8];
-            memset(&tmp, SC8, 7);
+            memset(tmp, SC8, 7);
             *(tmp + 7) = '\0';
             WndWriteStr(25, 0, cm[LS_TTXT], "Subject");
             WndWriteStr(41, 0, cm[LS_BTXT], tmp);
@@ -483,7 +483,7 @@ void do_list(void)
         else
         {
             char tmp[8];
-            memset(&tmp, SC8, 7);
+            memset(tmp, SC8, 7);
             *(tmp + 7) = '\0';
             WndWriteStr(25, 0, cm[LS_BTXT], tmp);
             WndWriteStr(25, 0, cm[LS_TTXT], "To");
