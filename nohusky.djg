@@ -5,7 +5,7 @@ LIBDIR=c:\lib
 BINDIR=c:\bin
 
 # look for includes here
-INCDIR=c:\include
+INCDIR=..\smapi
 
 # options for installing programs
 IBOPT=-s
