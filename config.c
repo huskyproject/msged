@@ -357,6 +357,7 @@ static char *cfgswitches[] =
     "UseTosserGroups",
     "DomainMsgid",
     "TZUTC",
+    "xxltearline",
     NULL
 };
 
@@ -413,6 +414,7 @@ static char *cfgswitches[] =
 #define CFG_SW_USETOSSERGROUPS      50
 #define CFG_SW_DOMAINMSGID          51
 #define CFG_SW_TZUTC                52
+#define CFG_SW_XXLTEARLINE          53
 
 #ifdef UNIX
 #include <sys/types.h>
@@ -1006,6 +1008,10 @@ void AssignSwitch(char *swtch, int OnOff)
     case CFG_SW_TZUTC:
 	SW->tzutc = OnOff;
 	break;
+
+    case CFG_SW_XXLTEARLINE:
+        SW->xxltearline = OnOff;
+        break;
 
     default:
         printf("\r\aUnknown switch: '%s'\n", swtch);

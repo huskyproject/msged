@@ -20,6 +20,12 @@
 #include "template.h"
 #include "version.h"
 
+#if defined(UNIX)
+#include <sys/utsname.h>
+#define HAVE_UNAME
+#endif
+
+
 #define TEXTLEN 250
 
 static LINE* addline(LINE* ln,  char *l);
@@ -47,6 +53,32 @@ static char **parse_words_to_array(char *string, int nmembers)
     }
     return whereto;
 }
+
+void make_tearline(char *buf)
+{
+    /* add the tearline */
+    
+    if (SW->usepid)
+    {
+        sprintf(buf, "---\n");
+    }
+    else
+#ifdef HAVE_UNAME
+    if (SW->xxltearline)
+    {
+        struct utsname uts;
+        uname(&uts);
+        
+        sprintf(buf, "--- %s %s (%s/%s (%s))\n", PROG, VERNUM VERPATCH,
+                uts.sysname, uts.release, uts.machine);
+    }
+    else
+#endif        
+    {
+        sprintf(buf, "--- %s %s\n", PROG, VERNUM VERPATCH);
+    }
+}
+
 
 int MakeTemplateMsg(msg * m, msg * oldmsg, int olda, int type)
 {
@@ -226,16 +258,7 @@ int MakeTemplateMsg(msg * m, msg * oldmsg, int olda, int type)
             
             if (SW->usetearlines && SW->edittearlines)
             {
-                /* add the tearline */
-                
-                if (SW->usepid)
-                {
-                    sprintf(buf, "---\n");
-                }
-                else
-                {
-                    sprintf(buf, "--- %s %s\n", PROG, VERNUM VERPATCH);
-                }
+                make_tearline(buf);
                 ln = addline(ln, xstrdup(buf));
             }
             

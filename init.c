@@ -202,6 +202,7 @@ int InitVars(void)
     SW->areafilegroups = 1;
     SW->domainmsgid = 1;
     SW->tzutc = 1;
+    SW->xxltearline = 0;
 
 #ifndef UNIX
     ST->comspec = getenv("COMSPEC");

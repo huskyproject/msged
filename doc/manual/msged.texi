@@ -4540,6 +4540,13 @@ this group will also be members of this group in
 @value{MSGED}. @xref{Grouping,,Configuring and Using Message Area
 Groups}. Default: On.
 
+@item XXLTearline
+@findex XXLTearline
+If you set this, you can have a tearline of up to 79 characters (instead of
+35), and the Unix version of @value{MSGED} will print system information in
+the tearline. But be aware that this violates FTSC rules, so using this is
+discouraged. Default: Off.
+
 @end table
 
 @node Conditionals, Area Definitions, Switches, Configuration Reference

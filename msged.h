@@ -438,6 +438,7 @@ struct _swv
     int areafilegroups;         /* want to read group info from areafile? */
     int domainmsgid;		/* show msgid's with domain string? */
     int tzutc;                  /* generate TZUTC kludge line? */
+    int xxltearline;            /* allow tearline > 35 characters? */
 };
 
 

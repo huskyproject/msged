@@ -75,6 +75,7 @@ int bdos(int func, unsigned reg_dx, unsigned char reg_al);
 #include "echotoss.h"
 #include "mctype.h"
 #include "help.h"
+#include "template.h"
 
 #define rand_number(num) ((int) (((long) rand()) % (num)))
 
@@ -1479,8 +1480,8 @@ static void StripKludges(msg * m, int *got_originline, char *origin,
 		    /* preserve an user-edited tearline */
 		    if (tearline != NULL)
 		    {
-			strncpy (tearline, p+4, 31);
-			tearline[31] = 0;
+			strncpy (tearline, p+4, SW->xxltearline ? 75 : 31);
+			tearline[SW->xxltearline ? 75 : 31] = 0;
 			striptwhite (tearline);
 		    }
 		    *p = '\0';
@@ -1595,7 +1596,7 @@ int writemsg(msg * m)
     unsigned long length;       /* length in bytes of the message */
     char text[255];             /* buffer useage */
     char origin[255];           /* out origin line */
-    char tearline[32];          /* user-defined output tearline */
+    char tearline[76];          /* user-defined output tearline */
     char *uucp_from;            /* saved UUCP from address */
     char *uucp_to;              /* saved UUCP to address */
     int domain_gated, uucp_gated;
@@ -1605,6 +1606,7 @@ int writemsg(msg * m)
     static unsigned long now = 0L;
     LOOKUPTABLE *ltable = NULL;
     int write_chrs_kludge;
+    const int tear_max = SW->xxltearline ? 79 : 35;
 
     char *temptext;
 
@@ -2057,20 +2059,16 @@ int writemsg(msg * m)
 		{
 		    sprintf(text, "--- %s\r", tearline);
 		}
-		else if (SW->usepid)
-		{
-		    sprintf(text, "---\r");
-		}
-		else
-		{
-		    sprintf(text, "--- %s %s\r", PROG, VERNUM VERPATCH);
+                else
+                {
+                    make_tearline(text);
 		}
 
 		/* make sure it is not longer than 35 characters + \r*/
-		if (strlen(text) > 36)
+		if (strlen(text) > tear_max + 1) /* +1 for \r */
 		{
-		    text[36] = '\0';
-		    text[35] = '\r';
+		    text[tear_max + 1] = '\0';
+		    text[tear_max] = '\r';
 		}
 
 		curr = InsertAfter(curr, text);
