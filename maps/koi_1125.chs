@@ -65,7 +65,6 @@ CP1125          ; to set
 \0 \x20         ; non-breaking space
 \x1 ?
 \x1 ?
-\x1 ?
 \0 \xf1	; yo small
 \x1 ?
 \x1 ?
@@ -124,7 +123,7 @@ CP1125          ; to set
 \0 \xA7
 \0 \xE8
 \0 \xED
-\0 \XE9
+\0 \xE9
 \0 \xE7
 \0 \xEA
 \0 \x9E
@@ -156,7 +155,7 @@ CP1125          ; to set
 \0 \x87
 \0 \x98
 \0 \x9D
-\0 \X99
+\0 \x99
 \0 \x97
 \0 \x9A
 END
