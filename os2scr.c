@@ -18,7 +18,6 @@
  */
 
 #include "winsys.h"
-#include "unused.h"
 #include "memextra.h"
 
 #define TERMDEF 1
