@@ -332,7 +332,9 @@ int SelBox(char **Itms, int y1, int y2, int len, int def, WND * hPrev, WND * hWn
             case Key_Ent:
                 {
                     size_t i;
-                    i = (size_t) (strchr(Itms[currItem] + 1, ' ') - 1 - Itms[currItem]);
+                    i = (size_t) strchr(Itms[currItem] + 1, ' ') - 1 -
+                        (size_t) Itms[currItem];
+                     
                     if (i > 28)
                     {
                         i = 28;
