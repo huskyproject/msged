@@ -1,3 +1,116 @@
+2001-11-26 Monday 14:34  tobi
+
+	* doc/: README (1.1.1.1.2.1), todo.txt (1.29.2.1): small manual
+	changes
+
+2001-11-26 Monday 14:22  tobi
+
+	* doc/manual/msged.texi (1.54.2.3): small manual update (wrt.
+	charset list)
+
+2001-11-26 Monday 14:18  tobi
+
+	* doc/manual/msged.texi (1.54.2.2): no fidoconfig for stable msged
+
+2001-11-26 Monday 14:13  tobi
+
+	* Makefile (1.14.2.1): Removed Fidoconfig Dependencies for stable
+	Msged, as there is no stable Fidoconfig currently. :-|
+
+2001-11-26 Monday 13:55  tobi
+
+	* bin/writmaps.ukr (1.1): file writmaps.ukr was initially added on
+	branch msged-6_0-stable.
+
+2001-11-26 Monday 13:55  tobi
+
+	* bin/writmaps.koi (1.1): file writmaps.koi was initially added on
+	branch msged-6_0-stable.
+
+2001-11-26 Monday 13:55  tobi
+
+	* bin/writmaps.is1 (1.1): file writmaps.is1 was initially added on
+	branch msged-6_0-stable.
+
+2001-11-26 Monday 13:55  tobi
+
+	* bin/writmaps.is5 (1.1): file writmaps.is5 was initially added on
+	branch msged-6_0-stable.
+
+2001-11-26 Monday 13:55  tobi
+
+	* bin/writmaps.865 (1.1): file writmaps.865 was initially added on
+	branch msged-6_0-stable.
+
+2001-11-26 Monday 13:55  tobi
+
+	* bin/writmaps.850 (1.1): file writmaps.850 was initially added on
+	branch msged-6_0-stable.
+
+2001-11-26 Monday 13:55  tobi
+
+	* bin/writmaps.866 (1.1): file writmaps.866 was initially added on
+	branch msged-6_0-stable.
+
+2001-11-26 Monday 13:55  tobi
+
+	* bin/writmaps.437 (1.1): file writmaps.437 was initially added on
+	branch msged-6_0-stable.
+
+2001-11-26 Monday 13:55  tobi
+
+	* bin/readmaps.ukr (1.1): file readmaps.ukr was initially added on
+	branch msged-6_0-stable.
+
+2001-11-26 Monday 13:55  tobi
+
+	* bin/readmaps.koi (1.1): file readmaps.koi was initially added on
+	branch msged-6_0-stable.
+
+2001-11-26 Monday 13:55  tobi
+
+	* bin/readmaps.is1 (1.1): file readmaps.is1 was initially added on
+	branch msged-6_0-stable.
+
+2001-11-26 Monday 13:55  tobi
+
+	* bin/readmaps.is5 (1.1): file readmaps.is5 was initially added on
+	branch msged-6_0-stable.
+
+2001-11-26 Monday 13:55  tobi
+
+	* bin/readmaps.865 (1.1): file readmaps.865 was initially added on
+	branch msged-6_0-stable.
+
+2001-11-26 Monday 13:55  tobi
+
+	* bin/readmaps.866 (1.1): file readmaps.866 was initially added on
+	branch msged-6_0-stable.
+
+2001-11-26 Monday 13:55  tobi
+
+	* bin/: readmaps.437 (1.1.2.1), readmaps.850 (1.1.2.1),
+	readmaps.865 (1.1.2.1), readmaps.866 (1.1.2.1), readmaps.is1
+	(1.1.2.1), readmaps.is5 (1.1.2.1), readmaps.koi (1.1.2.1),
+	readmaps.ukr (1.1.2.1), writmaps.437 (1.1.2.1), writmaps.850
+	(1.1.2.1), writmaps.865 (1.1.2.1), writmaps.866 (1.1.2.1),
+	writmaps.is1 (1.1.2.1), writmaps.is5 (1.1.2.1), writmaps.koi
+	(1.1.2.1), writmaps.ukr (1.1.2.1): added new binary maps
+
+2001-11-26 Monday 13:55  tobi
+
+	* bin/readmaps.850 (1.1): file readmaps.850 was initially added on
+	branch msged-6_0-stable.
+
+2001-11-26 Monday 13:55  tobi
+
+	* bin/readmaps.437 (1.1): file readmaps.437 was initially added on
+	branch msged-6_0-stable.
+
+2001-11-26 Monday 13:52  tobi
+
+	* bin/README (1.1.2.1): removed outdated maps
+
 2001-11-25 Sunday 15:38  tobi
 
 	* readmail.c (1.39.2.1): Fixed multiple TZUTC kludge lines when
@@ -1699,14 +1812,6 @@
 	mac_iso.chs (1.1): Added character set translation tables for
 	Codepage 850
 
-1998-09-20 Sunday 23:37  tobi
-
-	* bin/: cp850/readmaps.dat (1.1), cp850/writmaps.dat (1.1),
-	ibmpc/readmaps.dat (1.4), ibmpc/writmaps.dat (1.4),
-	latin/readmaps.dat (1.4), latin/writmaps.dat (1.4) (utags:
-	msged-te-05-second-try, msged-te-05): Added character translation
-	tables for Codepage 850
-
 1998-09-20 Sunday 23:33  tobi
 
 	* textfile.c (1.6, msged-te-05-second-try, msged-te-05): Fixed the
@@ -2170,22 +2275,6 @@
 	operating system prefix on tearline compile-time definable with the
 	UNAME macro.
 
-1998-07-01 Wednesday 00:12  tobi
-
-	* bin/: ibmpc/readmaps.dat (1.3), ibmpc/writmaps.dat (1.3),
-	latin/readmaps.dat (1.3), latin/writmaps.dat (1.3): cleaned up a
-	bit
-
-1998-07-01 Wednesday 00:06  tobi
-
-	* bin/latin/: readmaps.dat (1.2), writmaps.dat (1.2): Removed
-	readmaps.dat and writmaps.dat. They were ASCII by accident.
-
-1998-07-01 Wednesday 00:04  tobi
-
-	* bin/ibmpc/: readmaps.dat (1.2), writmaps.dat (1.2): Removed
-	readmaps.dat and writmaps.dat (they were ASCII by accident)
-
 1998-06-30 Tuesday 23:46  tobi
 
 	* addr.c (1.1), addr.h (1.1), ansi.c (1.1), areas.c (1.1), bmg.c
@@ -2214,8 +2303,6 @@
 	wrap.c (1.1), wrap.h (1.1), doc/scheme.001 (1.1), doc/scheme.002
 	(1.1), doc/scheme.003 (1.1), doc/scheme.004 (1.1), doc/whatsnew.txt
 	(1.1), doc/manual/makefile (1.1), doc/manual/msged.texi (1.1),
-	bin/ibmpc/readmaps.dat (1.1), bin/ibmpc/writmaps.dat (1.1),
-	bin/latin/readmaps.dat (1.1), bin/latin/writmaps.dat (1.1),
 	maps/README (1.1), maps/can_ibm.chs (1.1), maps/dut_ibm.chs (1.1),
 	maps/fin_ibm.chs (1.1), maps/frn_ibm.chs (1.1), maps/grm_ibm.chs
 	(1.1), maps/ibm_asc.chs (1.1), maps/ibm_iso.chs (1.1),
