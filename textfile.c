@@ -108,12 +108,15 @@ void filter_buffer(char *buf, int size)
 void import(LINE * l)
 {
     char *fn;
-    static char fname[PATHLEN];
-    static char line[TEXTLEN];
+    static char *fname = NULL;
+    static char *line = NULL;
     char *temp;
     FILE *fp;
     LINE *n;
     int ret;
+
+    if (fname == NULL) fname = xmalloc(PATHLEN);
+    if (line  == NULL) line  = xmalloc(TEXTLEN);
 
     fn  = xmalloc(PATHLEN + 1);
 
@@ -159,10 +162,10 @@ void import(LINE * l)
             l->text = strdup(line);
         }
 
-        while (fgets(line, sizeof line, fp) != NULL)
+        while (fgets(line, TEXTLEN, fp) != NULL)
         {
-            filter_buffer(line, sizeof line);
-            
+            filter_buffer(line, TEXTLEN);
+
             if (l->text != NULL)
             {
                 n = xcalloc(1, sizeof *n);
@@ -304,7 +307,7 @@ void export_text(msg *mesg, LINE *line)
     }
 
     /* Select the export destination */
-    
+
     x1 = maxx/2 - 19; if (x1 < 0) x1 = 0;
     x2 = x1 + 38;
     destination = DoMenu(x1, 10, x2, 13, destinations, 0,
@@ -366,7 +369,7 @@ void export_text(msg *mesg, LINE *line)
                   "This version of Msged does not support piping.",
                   "OK", NULL, NULL);
         return;
-#endif        
+#endif
         break;
 
     default:                     /* cancel */
@@ -402,7 +405,7 @@ void export_text(msg *mesg, LINE *line)
         {
             ret = ChoiceBox("Attention", "File already exists!",
                             "Append", "Overwrite", "Cancel");
-                
+
             switch(ret)
             {
             case ID_ONE:             /* append */
@@ -414,7 +417,7 @@ void export_text(msg *mesg, LINE *line)
                 fclose(f);
                 f = fopen(fn, "w");
                 break;
-                
+
             case Key_Esc:
             case ID_THREE:
                 fclose(f);
@@ -438,7 +441,7 @@ void export_text(msg *mesg, LINE *line)
         break;
 
     case 2:
-#ifdef HAVE_POPEN        
+#ifdef HAVE_POPEN
         closefunc = pclose;
         f = popen(fn, "w");
         if (f == NULL)
@@ -491,7 +494,7 @@ void export_text(msg *mesg, LINE *line)
     }
 
     /* if output is to printer output a formfeed */
-    if (isatty(fileno(f)) 
+    if (isatty(fileno(f))
 #ifdef __DJGPP__  /* see above */
         || destination == 1
 #endif

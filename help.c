@@ -18,7 +18,7 @@
 static FILE *help;
 static HFileHdr Fheader;
 static HTopicHdr *topics;
-static char line[255];
+static char *line;
 static int setup;
 static int CurrTopic;
 static int numTopics;
@@ -47,7 +47,7 @@ void HelpInit(char *fileName)
     help = fdopen(handle, "rb");
 #else
     help = fopen(fileName, "rb");
-#endif    
+#endif
     if (help == NULL)
     {
         return;
@@ -76,6 +76,8 @@ void DisplayPage(long offset, int max)
     line_num = 0;
 
     fseek(help, offset, SEEK_SET);
+
+    if (line == NULL) line = xmalloc(255);
 
     WndClear(0, 0, 54, 14, cm[HP_NTXT]);
 
@@ -133,6 +135,8 @@ void DoHelp(int topic)
     {
         return;
     }
+
+    if (line == NULL) line = xmalloc(255);
 
     fseek(help, topics[topic].offset, SEEK_SET);
 

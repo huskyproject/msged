@@ -48,7 +48,7 @@
 #include "msg.h"
 #include "charset.h"
 
-static char cinfbuf[BUFLEN];    /* control info buffer */
+static char *cinfbuf = NULL;    /* control info buffer, size BUFLEN */
 
 static unsigned long num_msgs;  /* number of messages in msgbase */
 static unsigned long new = 0;   /* if msg being written is new */
@@ -221,6 +221,8 @@ msg *SquishMsgReadHeader(unsigned long n, int type)
     msg *m;
     int i = 0;
 
+    if (cinfbuf == NULL) cinfbuf = xmalloc(BUFLEN);
+
     if (Ahandle == NULL)
     {
         return NULL;
@@ -365,6 +367,8 @@ char *SquishMsgReadText(unsigned long n)
     {
         return NULL;
     }
+
+    if (cinfbuf == NULL) cinfbuf = xmalloc(BUFLEN);
 
     if (next == NULL && s != 0)
     {
@@ -721,6 +725,8 @@ static dword strip_whitel(void)
 {
     char *s, *c, *cptr;
 
+    if (cinfbuf == NULL) cinfbuf = xmalloc(BUFLEN);
+
     /* we put it in the cinfbuf, killing any \r & \n's in the process */
     cptr = cinfbuf;
     s = msgbuf;
@@ -806,6 +812,8 @@ int SquishMsgWriteText(char *text, unsigned long msgn, unsigned long mlen)
     {
         return FALSE;
     }
+
+    if (cinfbuf == NULL) cinfbuf = xmalloc(BUFLEN);
 
     if (ready == FALSE)
     {

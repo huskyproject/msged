@@ -200,14 +200,18 @@ int FidoMsgWriteText(char *text, unsigned long n, unsigned long mlen)
     return TRUE;
 }
 
+static char *path = NULL;
+
+
 int FidoMsgWriteHeader(msg * m, int type)
 {
     MFIDO msghead;
-    static char path[PATHLEN];
     time_t now = time(NULL);
     unsigned long n = m->msgnum;
     int done = 0;
     unsigned long x;
+
+    if (path == NULL) path = xmalloc(PATHLEN);
 
     if (fd != -1)
     {
@@ -366,9 +370,11 @@ int FidoMsgWriteHeader(msg * m, int type)
 msg *FidoMsgReadHeader(unsigned long n, int type)
 {
     MFIDO msghead;
-    static char path[PATHLEN];
     unsigned long msgn;
     msg *m;
+
+    if (path == NULL) path = xmalloc(PATHLEN);
+
 
     if (n > 0 && n <= msgarrsz)
     {
@@ -627,10 +633,11 @@ void ScanArea(char *path)
 
 long FidoMsgAreaOpen(AREA * a)
 {
-    static char path[PATHLEN];
     short int c = 10, l;
     unsigned long msgnum;
     unsigned char shortbuf[2];
+
+    if (path == NULL) path = xmalloc(PATHLEN);
 
     sprintf(path, "%s/*.msg", a->path);
     a->last = a->first = 1;
@@ -689,9 +696,10 @@ long FidoMsgAreaOpen(AREA * a)
 int FidoAreaSetLast(AREA * a)
 {
     int fd;
-    static char path[PATHLEN];
     short i = 0;
     unsigned char shortbuf[2];
+
+    if (path == NULL) path = xmalloc(PATHLEN);
 
     sprintf(path, "%s/%s", a->path, ST->lastread);
     fd = sopen(path, OPENRW, SH_DENYNO, S_IMODE);
@@ -735,7 +743,7 @@ int FidoAreaSetLast(AREA * a)
 
 int FidoMsgDelete(unsigned long n)
 {
-    static char path[TEXTLEN];
+    if (path == NULL) path = xmalloc(PATHLEN);
 
     /* delete the message */
 

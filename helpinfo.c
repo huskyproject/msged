@@ -14,7 +14,7 @@
 #include <errno.h>
 #include "help.h"
 
-static char line[255];
+static char *line = NULL;
 static FILE *fp;
 static HFileHdr Fheader;
 static HTopicHdr *topics;
@@ -54,6 +54,8 @@ static void helpinfoDisplayPage(long offset)
 
     fseek(fp, offset, SEEK_SET);
 
+    if (line == NULL) line = xmalloc(255);
+
     while (fgets(line, 254, fp) != NULL)
     {
         if (!strncmp(line, "*Page", 5) || !strncmp(line, "*End", 4))
@@ -78,6 +80,8 @@ static void helpinfoDoHelp(int topic)
 {
     long offset[20];
     int page, pages;
+
+    if (line == NULL) line = xmalloc(255);
 
     if (topic < 0 || topic > numTopics)
     {

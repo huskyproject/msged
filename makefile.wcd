@@ -4,7 +4,7 @@
 CC=	wcl
 
 CSWITCH= -zq -wx -I.. -bt=dos -ml -k8192
-COPT=
+COPT=-oneas
 #COPT=-oneatx does not work, it just crashes :-(((
 MSGAPI= ..\smapi\smapiwcd.lib
 CDEFS=  -DMSDOS -DUSE_MSGAPI -DUSE_CRITICAL -DNOSEMAPHORES
