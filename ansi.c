@@ -26,10 +26,17 @@
 
 static struct termios oldtios;
 
+FILE *fDebug = stderr;
+
 void block_console(int min, int time)
 {
     struct termios tios;
 
+/*  if (min == 0 && time == 0)
+    {
+        time = 1;
+    } */
+    
     tcgetattr(0, &tios);
     tios.c_cc[VMIN] = min;   
     tios.c_cc[VTIME] = time;
@@ -423,17 +430,24 @@ unsigned int TTGetKey(void)
 
         if (assume_meta_key)
         {
-            if (isalpha(ch - 128))
+            if (ch == 127)
+            {
+                if (wnd_bs_127)
+                {
+                    ch = Key_BS;
+                }
+                else
+                {
+                    ch = Key_Del;
+                }
+            }
+            else if (isalpha(ch - 128))
             {
                 ch = meta_alphas[tolower(ch - 128) - 'a'];
             }
             else if (isdigit(ch - 128))
             {
                 ch = meta_digits[ch - 128];
-            }
-            else if (ch == 127)
-            {
-                ch = Key_Del;
             }
         }
     }
@@ -457,6 +471,36 @@ unsigned int TTGetKey(void)
             {
             case 0x1B:  /* double escape */
                 ch = Key_Esc;
+                break;
+            case ':':
+                ch = Key_F1;
+                break;
+            case ';':
+                ch = Key_F2;
+                break;
+            case '<':
+                ch = Key_F3;
+                break;
+            case '=':
+                ch = Key_F4;
+                break;
+            case '>':
+                ch = Key_F5;
+                break;
+            case '?':
+                ch = Key_F6;
+                break;
+            case '@':
+                ch = Key_F7;
+                break;
+            case 'A':
+                ch = Key_F8;
+                break;
+            case 'B':
+                ch = Key_F9;
+                break;
+            case 'C':
+                ch = Key_F10;
                 break;
             case 'a':
                 ch = Key_A_A;
@@ -1059,9 +1103,8 @@ int TTkopen(void)
     oldtios = tios;
     tios.c_lflag &= ~(ICANON | ISIG);
     tios.c_lflag &= ~ECHO;
-    tios.c_cc[VMIN] = 0;     /* block_console(0); */
-    tios.c_cc[VTIME] = 0;
     tcsetattr(0, 0, &tios);
+    block_console(0,0);
     setbuf(stdin, NULL);
 #endif
 
@@ -1178,16 +1221,21 @@ void TTEnableSCInput(char *special_characters)
 static int mykbhit(void)
 {
     int ret;
+
     if (FullBuffer())
     {
         return 0;
     }
+
 #ifdef SASC
     ret = akbhit();
 #elif defined UNIX
+
+
     if (waiting == -1)
     {
         waiting = getchar();
+
         if (waiting == EOF)
         {
             waiting = -1;
