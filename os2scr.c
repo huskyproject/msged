@@ -39,9 +39,7 @@
 #define INCL_DOSINFOSEG
 #include <os2.h>
 
-#ifndef min
-#define min(a,b) (((a) < (b)) ? (a) : (b))
-#endif
+#include "mcompile.h"
 
 #ifndef KBDTRF_FINAL_CHAR_IN
 #define KBDTRF_FINAL_CHAR_IN FINAL_CHAR_IN
