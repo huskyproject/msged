@@ -231,6 +231,9 @@ Features:
 
 Fixes:
 
+- When Msged asked if you want to send a mail via the Zone Gate, Msged
+  then always used the Zone Gate, no matter if you answered "Yes" or "No".
+
 - Fixed crashes when replying to a message with long subject (buffer was
   three bytes too short).
 

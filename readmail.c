@@ -1542,7 +1542,7 @@ static int askgate(char *which)
         case ID_ONE:
             return 1;
         case ID_TWO:
-            return 2;
+            return 0;
         case ID_THREE:
             if (!strcmp(which, "zone"))
             {
