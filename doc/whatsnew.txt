@@ -217,6 +217,10 @@ Features:
 
 Fixes:
 
+- The codepage 850 recoding tables now properly recognise the Euro currency
+  sign (it will now be displayed as EU if the local terminal cannot display
+  the Euro currency sign).
+
 - Fixed the manual WRT lastread pointer handling. It contained some
   blatantly wrong information about this topic.
 
