@@ -16,6 +16,7 @@ objs=	addr.o     \
 	charset.o  \
 	config.o   \
 	control.o  \
+	curses.o   \
 	date.o     \
 	dialogs.o  \
 	dirute.o   \
