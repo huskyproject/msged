@@ -1,3 +1,15 @@
+2001-11-26 Monday 21:45  tobi
+
+	* fconf.c (1.17.2.2): Fixed core dump.
+
+2001-11-26 Monday 21:27  tobi
+
+	* helpinfo.c (1.2.2.2): added missing header
+
+2001-11-26 Monday 21:26  tobi
+
+	* makefile.djg (1.16.2.1): fixed djgpp makefile
+
 2001-11-26 Monday 20:13  tobi
 
 	* msg.c (1.21.2.1), msged.c (1.19.2.1), msged.h (1.32.2.1),
