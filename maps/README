@@ -1,9 +1,14 @@
 MAKEMAPS
 --------
 
-This directory  contains  all  you  need  to  create  FSC  0054 - compliant
-readmaps.dat and writmaps.dat  files.   Please  read  FSC 0054 before doing
-anything here.
+NOTE: Normally, you do not need to use any files from this directory. If you
+are looking for ready make character set maps for various charset, you will
+find them in the bin\ subdirectory of the MsgEd TE source archive.
+
+This directory contains all you need to create FSC 0054 - compliant
+readmaps.dat and writmaps.dat files from scratch, probably because
+you want to add some character set or fix bugs.  Please read FSC
+0054 before doing anything here.
 
 The .CHS files are human-readable files that describe a charset  conversion
 table.  If you want to write your own conversion tables, simply look at the
@@ -18,7 +23,7 @@ makemaps as follows:
   makemaps <charset-name> <table1.chs> <table2.chs> ...
 
 Where <charset-name> is the name of  the  charset your maps files are being
-built for (usually IBMPC if you are running a OS/2,  DOS  or  Windows,  and
+built for (usually IBMPC if you are running OS/2,  DOS  or  Windows,  and
 LATIN-1 if you are running Unix or AmigaOS).
 
 You  have  to  specify  all  files  to be included on the command line, and
