@@ -187,7 +187,7 @@ int TTScolor(unsigned int Attr)
     {
         printf ("%c%c0m",0x1b,0x5b);  /* reset attributes */
 
-        fputs ("\x1b\x5b", stdout);
+        fputs ("\033[", stdout);
         if (Attr & 0x08)
         {
             fputs ("1;", stdout);  /* intensified foreground */
@@ -221,7 +221,7 @@ static int TTgotoxy_noflush(int row, int col)
     }
     vrow = row;
     vcol = col;
-    printf("\x1b[%d;%dH", row + 1 , col + 1);
+    printf("\033[%d;%dH", row + 1 , col + 1);
     return 1;
 }
 
@@ -237,7 +237,7 @@ int TTgotoxy(int row, int col)
     }
     vrow = row;
     vcol = col;
-    printf("\x1b[%d;%dH", row + 1, col + 1);
+    printf("\033[%d;%dH", row + 1, col + 1);
     fflush(stdout);
     return 1;
 }
@@ -453,7 +453,7 @@ int TTClear(int x1, int y1, int x2, int y2)
 
 int TTEeol(void)
 {
-    fputs("\x1b[K", stdout); 
+    fputs("\033[K", stdout); 
     fflush(stdout);
     return 1;
 }
@@ -1358,7 +1358,7 @@ static void TTRepaint(void)
 
     xp = vcol; yp = vrow; oldcol = col = color;
     TTgotoxy_noflush(0,0);
-    fputs("\x1b[J", stdout);
+    fputs("\033[2J", stdout);
     
     for (y = 0; y < term.NRow; y++)
     {
@@ -1375,7 +1375,7 @@ static void TTRepaint(void)
             }
             else
             {
-                fputs("\x1b[K", stdout);
+                fputs("\033[K", stdout);
             }
         }
     }
@@ -1389,9 +1389,9 @@ int TTkclose(void)
 {
 #ifdef SASC
     confin();
-    fputs("\x1b[31m", stdout);
+    fputs("\033[31m", stdout);
 #else
-    fputs("\x1b[0m\x1b[1;1H\x1b[J", stdout); 
+    fputs("\033[0m\033[1;1H\033[J", stdout); 
 #endif
 #ifdef UNIX
     signal (SIGWINCH, SIG_DFL);
