@@ -1333,6 +1333,7 @@ keyword. @xref{GroupSettings,,The @code{GroupSettings} Keyword}.
 @node Special Characters, Internet Gateways, Grouping, Advanced Concepts
 @section Using Special Characters like Umlauts or Cyrillics - The Charset Kludge
 @cindex FSC 0054
+@cindex FSP 1013
 @cindex special characters
 @cindex charset kludge
 @cindex character set conversion
@@ -1349,7 +1350,7 @@ via Fidonet.
 @menu
 * Problems with Special Characters::  Description of the general problem.
 * Special Characters in Fidonet::  FSC/FTS proposal to solve the problem.
-* MsgEd TE and Special Characters::  How @value{MSGED} implements FSC 0054.
+* MsgEd TE and Special Characters::  How @value{MSGED} implements FSP 1013.
 @end menu
 
 @node Problems with Special Characters, Special Characters in Fidonet, Special Characters, Special Characters

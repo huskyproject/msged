@@ -3863,7 +3863,7 @@ void opening(char *cfgfile, char *areafile)
     parseconfig(fp);
     fclose(fp);
 
-                                /* initialise the FTSC0054 charset engine */
+                                /* initialise the FSP 1013  charset engine */
     read_charset_maps(ST->readmap, ST->writemap);
     recode_area_descriptions();
     if (!have_readtable ("IBMPC", 2))
