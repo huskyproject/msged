@@ -68,7 +68,7 @@ void helpcmp(int argc, char *argv[])
 
     if (topics >= 1)
     {
-        printf("HELPCMP: Compiling, pass two (writing)...");
+        printf("HELPCMP: Compiling %d topics, pass two (writing)...", topics);
 
         topichdrs = calloc(topics, sizeof(HTopicHdr));
         if (topichdrs == NULL)
