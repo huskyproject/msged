@@ -96,6 +96,8 @@ objs=   addr$(OBJ)     \
 	wrap$(OBJ)
 
 all: $(TARGET) msghelp.dat
+	(cd maps && $(MAKE) -f makefile.husky)
+	(cd doc && cd manual && $(MAKE) -f makefile.husky)
 
 %$(OBJ): %.c
 	$(CC) $(CFLAGS) $(CDEFS) -c $*.c
