@@ -1089,8 +1089,11 @@ int TTkopen(void)
 #ifdef HAVE_CURSES
     WINDOW *scr = initscr();
 
-    term.NRow = scr->_maxy;
-    term.NCol = scr->_maxx;
+    if (scr != NULL)
+    {
+        term.NRow = scr->_maxy;
+        term.NCol = scr->_maxx;
+    }
     endwin();  /* close curses, we do not need them any more */
 #endif    
 
