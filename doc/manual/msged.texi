@@ -23,6 +23,8 @@
 @title @value{MSGED} @value{VERSION} Manual
 @subtitle A Public Domain Fidonet Message Reader/Editor
 @author Tobias Ernst @@ 2:2476/418.0
+@page
+@c{empty page to get the page numbering right}
 @end titlepage
 
 @ifinfo
@@ -53,7 +55,7 @@ bases. This program is released to the public domain.  There are absolutely
 no usage or distribution restrictions. This is truely free software.
 
 @value{MSGED} emerged from MsgEd, a public domain fidonet message reader
-initially written by Jim Nutt, and thereafter maintained by numerous people
+initially written by Jim Nutt and thereafter maintained by numerous people
 (among them Paul Edwards, Andrew Clarke, and Kim Lykkegaard, who is currently
 maintaing MsgEd). @value{MSGED} is being developed by Tobias Ernst. You can
 reach me at 2:2476/418 or via e-mail at tobi@@bland.fido.de.
@@ -77,7 +79,7 @@ possibly also be migrated to the mains team MsgEd over time. There is no
 goals in mind and therefore decided to maintain separate streams of MsgEd.
 
 If you like @value{MSGED} and start to use it as your everyday Fidonet
-editor, please drop me a note that you do so at @samp{Tobias Ernst @
+editor, please drop me a note saying that you do so at @samp{Tobias Ernst @
 2:2476/418} or at @samp{tobi@@bland.fido.de}. I originally started to work on
 @value{MSGED} to create a Fidonet editor that fulfilled some special personal
 needs of mine. Since then, things evolved and I saw myself doing a lot of
@@ -86,6 +88,12 @@ documentation is one such example, porting to Windows NT another. If I
 continue to do this work in the future and add new features to @value{MSGED}
 will strongly depend on how much feedback I receive from users that like and
 use @value{MSGED}. Therefore: Don't be shy - drop me a mail. :-)
+
+At this place, I also would like to express my thankfulness to all people
+that helped making @value{MSGED} what it is now, that being all the
+developers that haved worked on the sources in the past, the team that makes
+MsgEd 4.30, and all the beta testers that used the Pre-Release of
+@value{MSGED} @value{VERSION}.
 
 @node Installation, Introduction, Overview, Top
 @chapter Installation Procedures and Release Notes
@@ -112,8 +120,9 @@ UNIX environments.
 @section Which Distribution Archives do I need?
 @value{MSGED} @value{VERSION} is shipped in various distribution
 archives. This section describes the contents of each. You normally do only
-need one file containing the executable and documentation for your platform,
-and maybe the file that contains the printable version of the documentation.
+need one of these files containing the executable and documentation for your
+platform, and maybe the file that contains the printable version of the
+documentation.
 
 @table @file
 @item MSGTE5_O.ZIP
@@ -130,8 +139,8 @@ files and a manual in plain text format.
 
 @item MSGTE5_W.ZIP
 This archive contains a Windows 32 bit executable that has been tested on
-Windows NT, but should also work wiht Windows 95, sample configuration files
-and a manual in HTML format.
+Windows NT, but should also work with Windows 95 and 98, sample configuration
+files and a manual in HTML format.
 
 @item MSGTE5_L.ZIP
 This archive contains a statically linked, pre-compiled Linux executable,
@@ -139,7 +148,7 @@ sample configuration files and a manual in HTML format.
 
 @item MSGTE5_M.ZIP
 This archive contains the manual for @value{MSGED} in Adobe Acrobat (PDF) and
-in HTML format. If you intend to print the documentation of @value{MSGED}
+in HTML format. If you intend to print the documentation of @value{MSGED},
 then you should get this file and use the PDF version, because printing the
 PDF version of the manual using Adobe Acrobat Reader (which is available on
 www.adobe.com at no charge) will result in the best possible output that
@@ -156,7 +165,7 @@ info or DVI format. You will also need @file{SMAPISS.ZIP} if you intend to
 compile @value{MSGED} yourself.
 
 @item SMAPISS.ZIP
-This archive contains a snapshort of the source code level of the SMAPI
+This archive contains a snapshot of the source code level of the SMAPI
 (alternative Squish Message API) that has been used to compile the binary
 versions of @value{MSGED} @value{VERSION}. Note that bug reports for
 @value{MSGED} are only considered if you used exactly this version of the
@@ -200,10 +209,11 @@ subdirectories. (You might already have done this).
 @item
 Find out which codepage you are using by issueing the @code{CHCP} command. If
 it is 437, you do not have to take any action. If it is 850, you have to
-renamde @file{????maps.dat} to @file{????.437} (for backup purposes) and then
-you must rename @file{????maps.850} to @file{????maps.dat}. Alternatively,
-you could consider writing a batch file that first calls @code{CHCP 437} and
-then calls the @value{MSGED} executable.
+rename @file{????maps.dat} to @file{????maps.437} (for backup purposes), and
+then you must rename @file{????maps.850} to
+@file{????maps.dat}. (Alternatively, you could consider writing a batch file
+that first calls @code{CHCP 437} and then calls the @value{MSGED}
+executable.)
 
 @item
 Rename the file @file{sample.cfg} to @file{msged.cfg} and modify it according
@@ -211,8 +221,7 @@ to your needs with your favoruite text editor. @xref{Configuration Reference}
 for detailed descriptions of each keyword that can be used in this file.
 
 @item
-You should now refer to the platform specific release notes found later in
-this chapter before trying to start @value{MSGED}. They can save you from a lot
+You should now refer to the platform specific release notes found below before trying to start @value{MSGED}. They can save you from a lot
 of headaches ;-).
 @c FIXME add xrefs
 
@@ -232,7 +241,7 @@ Start @value{MSGED}.
 @itemize @bullet
 @item
 The 16 bit DOS version cannot handle squish message areas where the
-@file{.SQI} file is larger thank 64k. This limits the size of a message area
+@file{.SQI} file is larger than 64k. This limits the size of a message area
 to about 5000 messages. If this is a problem to you, you should use the 32
 bit DOS DPMI version instead.
 
@@ -249,6 +258,14 @@ The 32 bit DOS version should be used when the 16 bit DOS version runs out of
 conventional memory (which is very unlikely to happen) or if you want to use
 message areas with more than 5000 messages in them. In all other cases, the
 16 bit version is the better choice because it uses less memory
+
+@item
+If you have Windows 95 or Windows NT, you should use the Windows NT
+executable rather than the 32 Bit DOS executable. On Windows 95, the reason
+is that the Windows 95 DPMI server is a little buggy, and on Windows NT, the
+native NT version is much faster than the DOS version. - The 32 Bit DOS
+Version is primarily targeted on environments like DESQview, plain DOS or
+Windows 3.1.
 
 @item
 The 32 bit DOS version requries a functional DPMI server to run. Valid DPMI
@@ -290,7 +307,7 @@ The Windows version presently does not support mouse control (even though the
 mouse cursor is visible).
 
 @item
-The Windows version hsa been compiled with the RSXNT GNU compiler. It is a
+The Windows version has been compiled with the RSXNT GNU compiler. It is a
 standalone executable that does not require any runtime DLLs.
 
 @end itemize
@@ -302,11 +319,11 @@ This section provides information on installing @value{MSGED} on Linux,
 FreeBSD or any other Unix-like system.
 
 @menu
-* UNIX Installation Procedure::   How to install @value{MSGED}.
-* Notes on UNIX terminal I/O::    How @value{MSGED} handles the terminal.
+* UNIX Installation Procedure::  How to install @value{MSGED}.
+* Notes on UNIX terminal I/O::  How @value{MSGED} handles the terminal.
 * Notes on UNIX keyboard input::  Escape Meta Alt Control Shift ;-)
 * Notes on Big Endian Hardware::  Running @value{MSGED} on RISC processors.
-* Colors in the Unix version::    How to enable colors.
+* Colors in the Unix version::  How to enable colors.
 @end menu
 
 @node UNIX Installation Procedure, Notes on UNIX terminal I/O, UNIX installation, UNIX installation
@@ -318,11 +335,12 @@ Linux binaries properly) you have to compile the source code on your own
 (which usually is not much of a problem).
 @xref{Compiling,, Compiling the Soruce Code}, for more information on this.
 
-The following describes the installation of the file from the Linux
+The following describes the installation of the files from the Linux
 distribution archive. If you have compiled @value{MSGED} yourself, you will
 find the files that are mentioned below in slightly different locations (much
 in the doc/ subdirectory), but they are all present somewhere in the source
-code archive as well.
+code archive as well, after you have done all build actions as described in
+the appendix.
 
 @enumerate
 @item
@@ -362,15 +380,14 @@ Password:
 @item
 At this time, for security reasons, each user that wants to use @value{MSGED}
 needs to have his individual configuration files in his home
-directory. Rename the file @file{sample.cfg} to @file{.msged} and copy it to
-your home directory:
+directory. Copy the file @file{sample.cfg} to @file{~/.msged}:
 
 @example
 ~/msged-work $ cp sample.cfg ~/.msged
 @end example
 
 @item
-You have to rename and move some other files as well:
+You have to copy some other files as well:
 
 @example
 ~/msged-work $ cp msghelp.dat ~/.msged.hlp
@@ -380,7 +397,7 @@ You have to rename and move some other files as well:
 ~/msged-work $ cp writmaps.dat ~/.msged.writmaps
 @end example
 
-Note that if you have the source code distributions, you must take
+Note that if you have the source code distribution, you must take
 @file{readmaps.dat} and @file{writmaps.dat} from the @file{bin/latin}
 subdirectory (assuming that your Unix machine uses the ISO 8859-1 character
 set).
@@ -446,8 +463,8 @@ used in @value{MSGED}.
 
 Some other key combinations, like @key{Ctrl}-@key{Left} and so on, are not
 reproducable in an xterm or on a Unix console at all. Therefore, the sample
-configuration file @file{sample.cfg} contains a bunch of settings that puts
-the functions that are by default bound to key combinations that cannot be
+configuration file @file{sample.cfg} contains a bunch of settings that bind
+those functions that are by default bound to key combinations that cannot be
 keyed on Unix to other key combinations.
 
 A nasty little problem might occur with the backspace key. If, on your
@@ -496,7 +513,7 @@ the routines for reading a @file{fastecho.cfg} configuration file.
 
 This means that you presently must restrict yourself to a Squish message base
 and a @file{squish.cfg} configuration file if you want to run @value{MSGED}
-on big endian hardware.
+on big endian hardware. This will be definietly fixed in a future release.
 
 @node Colors in the Unix version,  , Notes on Big Endian Hardware, UNIX installation
 @subsection Colors in the Unix version
@@ -533,10 +550,10 @@ codes.
 
 @node Network Notes, Known Bugs, UNIX installation, Installation
 @section Using @value{MSGED} and other Fido software in networked environments
-@cindex Samba
-@cindex Peer Network
+@cindex samba
+@cindex peer network
 @cindex NFS
-@cindex Lan Manager
+@cindex lan manager
 @cindex access synchronization
 @cindex synchronizing message base access
 @cindex record locks
@@ -608,7 +625,7 @@ will not grant a program running on computer A access to a message base file
 while a program running on computer B has placed a record lock on this
 file. However, it will frankly grant a second program running on computer B
 access to this file even while the first program running on computer B still
-has a lock on this file. This is frankly a bug in the Samba server. It hope
+has a lock on this file. This is a bug in the Samba server. It hope
 it will get fixed in further releases. - A further shortcoming of the samba
 server is that it does not convert voluntary locks placed on the Unix side
 into record locks visible on the OS2/DOS/Windows side. This means that any
@@ -722,6 +739,10 @@ code using the @key{Alt}-@var{numeric keypad} - Method. Also, under Windows
 95, you must use @key{AltGr} to create special characters. 
 @key{Ctrl}+@key{Alt} will not work.
 
+@item
+On non Intel hardware, the routines for Fido and Hudson message bases as well
+as the routines for importing @file{fastecho.cfg} will not work properly.
+
 @end itemize
 
 @node Contact,  , Known Bugs, Installation
@@ -775,10 +796,10 @@ able to crash @value{MSGED}.
 If you are running the precompiled Linux binary, reporting a fatal bug is
 exceptionally easy. If you experience a crash, simply send me the @file{core}
 file that has been generated. You do not need to try to reproduce it or write
-estensive descriptions. Simply send the @file{core} file, and in most
+extensive descriptions. Simply send the @file{core} file, and in most
 circumstances I will be able to fix the problem.
 
-If you are running any other binary version (like OS/2, DOS, Winodws), you
+If you are running any other binary version (like OS/2, DOS, Windows), you
 will not get a core file on a crash. (On OS/2, you can write me a mail and
 ask me for sending you a debugging executable. This will require the EMX
 runtime, but generate @file{core} files just like the Unix version
@@ -791,7 +812,9 @@ me at the addresses below.
 If you are a programmer and have fixed a problem in @value{MSGED} on your
 own, please submit your changes to me. The preferred way for doing so is to
 send me a difference file in GNU diff format. Your work will be highly
-appreceated and honored in an appropriate place.
+appreceated and honored in an appropriate place. If you want to regularly
+work on @value{MSGED}, we also have a CVS server online that you can have
+access to if you like.
 
 If you want to write a new feature for @value{MSGED}, please contact me
 beforehand to avoid that we do duplicate work. Again, I will appreciate and
@@ -845,13 +868,13 @@ Fidonet-Internet gateway, how to use eight bit character sets, and similar.
 @end menu
 
 @node Exporting and Printing, Special Characters, Advanced Concepts, Advanced Concepts
-@section Exporting Mails to Text Files or Printer
+@section Exporting Mails to Text Files or to the Printer
 @cindex exporting a mail
 This section tells you how to export mails to text files that you can than
 use for various purposes like importing into a text processor, as well as how
 to print mails. While this as it self is not a very advanced feature, the
 file export menu in @value{MSGED} has some hidden features to control the
-format of the exported mail that might not be aware to you. Also, most users
+format of the exported mail that might not be aware to you. Also, some users
 might not know that they can use the file export menu to print mails.
 
 @menu
@@ -894,7 +917,7 @@ By default, @value{MSGED} exports a message in @dfn{raw message format}, also
 called @dfn{MsgEd format}. This format saves the mail raw as it is stored in
 the message base, which means that line feeds will only be placed after each
 @emph{paragraph}. This format is well suited if you later want to import the
-mail into the internal message editor, because it well exactly keep the
+mail into the internal message editor, because it will exactly keep the
 paragraph format of the message. However, it is not suitable for printing or
 editing the file with a normal text editor, because there, you will only see
 one very long line per paragraph, which is mostly not what you wanted to
@@ -935,7 +958,7 @@ Quoted mode. This is like text mode, but each line will be prefixed with the
 quote string.
 @end table
 
-If you cannot remember this format characters, you can also ask @value{MSGED}
+If you cannot remember these format characters, you can also ask @value{MSGED}
 to present you a menu with all possible export formats by putting a
 questionmark @emph{in front of} the file name like in this example:
 
@@ -992,7 +1015,7 @@ programs than lpr. For example, you could pipe cooking recipes from an
 echomail area devoted to cooking through a perl or rexx script that archives
 them in a database.
 
-As a side note, piping does also work in the OS/2 and Windows versios of
+As a side note, piping does also work in the OS/2 and Windows versions of
 @value{MSGED} if they have been compiled with a GNU compiler supporting the
 @code{popen} command. (The binary versions that I have released are).
 
@@ -1011,32 +1034,12 @@ will describe what measures have to be taken in order to be able to transmit
 special characters via Fidonet.
 
 @menu
-* Charset Kludges for the Impatient::  Read this to get it to work quickly.
 * Problems with Special Characters::  Description of the general problem.
 * Special Characters in Fidonet::  FSC/FTS proposal to solve the problem.
 * MsgEd TE and Special Characters::  How @value{MSGED} implements FSC 0054.
 @end menu
 
-@node Charset Kludges for the Impatient, Problems with Special Characters, Special Characters, Special Characters
-@subsection Charset Kludges for the Impatient
-
-The transmission of special characters is handled by FSC 0054 charset
-kludges. If you do not want to work into the technical details and just want
-to assure that your system complies to the standards, simply copy
-@file{READMAPS.DAT} and @file{WRITMAPS.DAT} into the directory you are
-starting @value{MSGED} from (on Unix, move and rename them to
-@file{~/msged.readmaps} and @file{~/msged.writmaps}) and put the following to
-the beginning of your config file:
-
-@example
-OutputCharset IBMPC
-AreaFileFlags 8
-@end example
-
-and stop reading :-). The following sections only explain the same matter in
-more detail for the interested reader.
-
-@node Problems with Special Characters, Special Characters in Fidonet, Charset Kludges for the Impatient, Special Characters
+@node Problems with Special Characters, Special Characters in Fidonet, Special Characters, Special Characters
 @subsection What is so special about special characters?
 
 In order to be able to exchange text between computers, it was necessary to
@@ -1122,7 +1125,7 @@ find out if you are using codepage 437, you can use the @file{CHCP} command
 with no arguments. If you are not using codepage 437, you should write a
 batch file that first calls @file{CHCP 437} before calling @value{MSGED}. If
 you are using codepage 850, you might alternatively also delete
-@file{READMAPS.DAT} and @file{WRITMAPS.DAT} and then copy renamd the files
+@file{READMAPS.DAT} and @file{WRITMAPS.DAT} and then rename the files
 @file{READMAPS.850} and @file{WRITMAPS.850} to @file{READMAPS.DAT} and
 @file{WRITMAPS.DAT}. These files are tailored for codepage 850.
 
@@ -1175,7 +1178,7 @@ following line to your configuration file:
 OutputCharset IBMPC
 @end example
 
-This will even work when you have a Linux box. Then, you have to tell
+This will even work if you have a Linux box. Then, you have to tell
 @value{MSGED} in which areas it is allowable to send mails with special
 characters and charset kludges. @value{MSGED} will only write special
 characters into areas that have the @samp{8} flag set. If you are importing
@@ -1225,9 +1228,9 @@ implemented in the excellent gateway software Fidogate by Martin Junius. You
 can find more information about Fidogate at @url{http://www.fido.de}. Various
 other gateway programs more or less conform to this standard as well.
 
-Addressing a Gatebau compatible gateway works like this: The gateway has it's
+Addressing a Gatebau compatible gateway works like this: The gateway has its
 own node- or point number. When you wish to write an e-mail using a standard
-Fidonet editor, you have to adress your netmail to this gateway node
+Fidonet editor, you have to address your netmail to this gateway node
 number. As receiver's name, you can use the real name of the receiver, or you
 can use @samp{UUCP}, if the real name of the receiver is unknown. Some
 not-so-smart gateway software requires that you always use @samp{UUCP} as
@@ -1306,10 +1309,10 @@ gateway support and how to use these features.
 @subsection How to configure @value{MSGED} to use an Internet Gateway
 In order to do the gateway addressing stuff for you, @value{MSGED} needs to
 know which gateway you wish to use for sending e-mail. @value{MSGED} will
-recognise gated e-mail no matter which gate it comes from, but it knows which
-gateway can be used to send replies and new e-mail, because most gateways
-require that you pay some sort of registration fee before you can use them
-for sending mail.
+recognise gated e-mail no matter which gate it comes from, but it must be
+told which gateway can be used to send replies and new e-mail, because most
+gateways require that you pay some sort of registration fee before you can
+use them for sending mail.
 
 The @code{UUCP} keyword is used to tell @value{MSGED} the node number of your
 internet gateway (@pxref{UUCP,,The @code{UUCP} Keyword}). It simply takes
@@ -1352,7 +1355,7 @@ that you have manually defined in the @value{MSGED} configuration file, and
 by specifying @code{AreaFileFlags u} at the beginning of the configuration
 file in order to set the @samp{u} flag for all area definitions that are
 imported from your tosser configuration file. @xref{Area
-Definitions,,Defining Message Areas}, for more information of message area
+Definitions,,Defining Message Areas}, for more information on message area
 flags.
 
 @node Gateway Usage,  , Gateway Configuration, Internet Gateways
@@ -1368,7 +1371,7 @@ gateway nodenumber and generate the necessary @samp{To:}-line. The
 @code{ShowNotes} switch on (@pxref{List of Switches,,List of available
 switches}).
 
-Reading e-mail that comes from any intrenet gateway is equally simple. If the
+Reading e-mail that comes from any internet gateway is equally simple. If the
 @samp{u} flag is set for an area, @value{MSGED} will automatically recognise
 @code{From:} and @code{Reply-To:} lines and hide them from you. Instead of
 displaying the gateway pseudo user name and node numer, it will display 
@@ -1571,10 +1574,10 @@ one.
 
 @item Function: @code{followup}, bound to: @key{Alt}-@key{U}
 @krindex followup
-Reply to this message, but adress the reply to the recipient of the message
+Reply to this message, but address the reply to the recipient of the message
 you are replying to instead of the sender.
 
-@c    {"repext", replyextra},
+@c{FIXME "repext", replyextra},
 
 @item Function: @code{change}, bound to: @key{Alt}-@key{C}
 @krindex change
@@ -1609,7 +1612,7 @@ Scan all message areas for new messages.
 @item Function: @code{scan_unscanned}, bound to: @key{#}
 @krindex scan_unscanned
 Scan message areas for new messages, but only scan areas that have not been
-scanned perviously.
+scanned previously.
 
 @item Function: @code{pmail}, bound to: @key{Alt}-@key{P}
 @cindex personal mail cscan
@@ -1625,7 +1628,7 @@ This scans for messages addressed to you in the current area only.
 @cindex searching
 Allows you to search a message area for a specific keyword. The search
 direction will be the direction that you previously moved into. For example,
-in order to searcha complete message area backwards for a certain area, you
+in order to search a complete message area backwards for a certain mail, you
 must press @key{End} to go to the end of the area, then press
 @key{Left} in order to set the search direction to ``backwards'', and
 then press @key{Alt}-@key{F} to start the search.
@@ -1642,7 +1645,7 @@ This works like @code{search}, but only scans message headers.
 @item Function: @code{view}, bound to: @key{Alt}-@key{V}
 @krindex view
 @cindex kludge lines, showing or hiding
-Toogle display of message control lines, kludge lines, etc.
+Toggle display of message control lines, kludge lines, etc.
 
 @item Function: @code{config}, bound to: @key{Alt}-@key{S}
 @krindex config
@@ -1652,7 +1655,7 @@ switches. @xref{Switches,,Switches}, for more information.
 @item Function: @code{chngaddr}, bound to: @key{Ctrl}-@key{W}
 @krindex chngaddr
 Change the origination address used for writing mail. You will not need this
-key in normal operation, as @value{MSGED} employs and intelligent mechanism
+key in normal operation, as @value{MSGED} employs an intelligent mechanism
 for AKA matching.
 
 @item Function: @code{chnodel}, bound to: @key{Ctrl}-@key{N}
@@ -1675,9 +1678,10 @@ when writing messages.
 @cindex printing messages
 @cindex exporting message text
 Export the text of the current message to a file or printer port. You will be
-shown a dialog box where you can enter a filename. @xref{Outfile,,The Outfile
-confgiruation keyword}, for an explanation of the modifiers for the filename
-you can use to control how the output file is written.
+shown a dialog box where you can enter a filename. @xref{Exporting and
+Printing,,section Exporting Mails to Text Files or to the Printer}, for an
+explanation of the modifiers for the filename you can use to control how the
+output file is written.
 
 @item Function: @code{shell}, bound to: @key{Alt}-@key{O}
 @krindex shell
@@ -1692,8 +1696,7 @@ Directly execute an operating system command.
 @krindex null
 Simply does nothing.
 
-@item Function: @code{exit}, bound to: @key{Alt}-@key{X},@key{Alt}-@key{A}
-and @key{Esc}
+@item Function: @code{exit}, bound to: @key{Alt}-@key{X}, @key{Alt}-@key{A} and @key{Esc}
 @krindex exit
 Leave the message reading mode. Returns to the arealist screen.
 @end table
@@ -1758,19 +1761,19 @@ the cursor to the beginning or end of the current line.
 @keindex top
 @keindex bottom
 These functions are pre-bound to the @key{Ctrl}-@key{PgUp} and
-@key{Ctrl}-@code{PgDn} keys and move the cursor to the top or bottom
+@key{Ctrl}-@key{PgDn} keys and move the cursor to the top or bottom
 line of the current screen.
 
 @item Functions: @code{first}, @code{last}
 @keindex first
 @keindex last
 These functions are pre-bound to the @key{Ctrl}-@key{Home} and
-@key{Ctrl}-@code{End} keys and move the cursor to the very first or
+@key{Ctrl}-@key{End} keys and move the cursor to the very first or
 very last line of the mail that is currently being edited.
 
 @item Function: @code{tab}, pre-bound to: @key{Tab}
 @keindex tab
-This function move the cursor to the next tabulator position by inserting
+This function moves the cursor to the next tabulator position by inserting
 whitespace characters (@emph{not} tabulator characters!) into the mail. The distance
 between tabulator postitions can be adjusted with the @code{TabSize} keyword
 in the configuration file (@pxref{Tabsize,,The @code{TabSize} Keyword}).
@@ -1807,26 +1810,26 @@ line. This function has no effect if issued in an empty line.
 
 @item Function: @code{delline}, pre-bound to: @key{Alt}-@key{D}, @key{Ctrl}-@key{Y}
 @keindex delline
-Deletes all character in the current line and removes this line.
+Deletes all characters in the current line and removes this line.
 
 @item Function: @code{emacskill}, pre-bound to: @key{Ctrl}-@key{K}
 @keindex emacskill
 This function works like @code{deleol}, i.E. it kills all characters from the
 current cursor position to the end of the line, but if issued in an empty
 line, it removes that line. This is just what pressing
-@key{Ctrl}-@key{K} does in the emacs editor.
+@key{Ctrl}-@key{K} does in the GNU Emacs editor.
 
 @item Function: @code{killword}, pre-bound to: @key{Ctrl}-@key{T}
 @keindex killword
-Deletes all characters from the current cursor postition to the end of the
+Deletes all characters from the current cursor position to the end of the
 current word.
 
 @item Function: @code{undel}, pre-bound to: @key{Ctrl}-@key{U}
 @keindex undel
 This is a rather limited undelete function. It will restore lines that have
-previously been killed with the @code{delline} function. It will neither
-will it restore single charactres that have been killed with @code{del},
-@code{deleol}, @code{killword} or similar functions.
+previously been killed with the @code{delline} function. It will not
+restore single charactres that have been killed with @code{del},
+@code{deleol}, @code{killword}, @code{emacskill} or similar functions.
 
 @item Function: @code{zap}, pre-bound to: @key{Alt}-@key{L}
 @keindex zap
@@ -1853,7 +1856,8 @@ highlighted and treated as a selected text block.
 @item Function: @code{cut}, pre-bound to: @key{Alt}-@key{C}
 This will cut the currently selected text block (use @code{anchor} to select
 a text block), i.E., it will delete all selected characters and store them in
-an internal clipboard.
+an internal clipboard. Text that previously was stored in the clipboard will
+of course be discarded.
 
 @item Function: @code{paste}, pre-bound to: @key{Alt}-@key{P}
 This will paste (insert) the text block from the clipboard (i.E. the last text
@@ -1881,14 +1885,14 @@ Displays the number of bytes and the quote ratio in the current message.
 
 @item Function: @code{edithdr}, pre-bound to: @key{Alt}-@key{E}
 @keindex edithdr
-Lets you edit the header of the message (receipient, sender and subject
+Lets you edit the header of the message (recipient, sender and subject
 information) in case you made an error when first entering the header.
 
 @item Function: @code{export}, pre-bound to: @key{Alt}-@key{W}
 @keindex export
 Export the text of the current message to a file or printer port. You will be
 shown a dialog box where you can enter a filename. @xref{Outfile,,The Outfile
-confgiruation keyword}, for an explanation of the modifiers for the filename
+configuration keyword}, for an explanation of the modifiers for the filename
 you can use to control how the output file is written.
 
 @item Function: @code{insert}, pre-bound to: @key{Ins}
@@ -1921,9 +1925,9 @@ switches. @xref{Switches,,Switches}, for more information.
 Call an operating system shell (prompt). Under DOS, @value{MSGED} is swapped
 out of memory for this.
 
-@item Function: @code{toogleq}, bound to: @key{Alt}-@key{Q}
-@keindex toogleq
-This function toogles the quote state of the current line (whatever that
+@item Function: @code{toggleq}, bound to: @key{Alt}-@key{Q}
+@keindex toggleq
+This function toggles the quote state of the current line (whatever that
 means ...).
 
 @item Function: @code{quit}, bound to: @key{Alt}-@key{S}
@@ -1971,7 +1975,9 @@ I pressed @key{Alt}-@key{F} and @kbd{q} to reproduce this
 output. From the output, we can see that @key{Alt}-@key{F} has the
 keycode @samp{0x2100}, and @kbd{q} has the keycode
 @samp{0x0071}. Keycodes might vary depending on your hardware and operating
-system.
+system. Also, on UNIX consoles sometimes keys are not mapped correctly at
+all, in which case different key combinations might have the same key
+code. If you find one where this is problematic, contact me for a bug report.
 
 Now that you know the proper keycode, you can assign it to any reader or
 editor function. @xref{Reader Keystrokes,, Keyboard Commands and Functions in
@@ -1997,7 +2003,8 @@ next word.
 plain text ASCII file containing a list of keywords, settings and switches
 that define the behaviour of @value{MSGED}. The configuration file is named
 @file{msged.cfg} and should normally be placed in the current working
-directory of @value{MSGED}.
+directory of @value{MSGED}. (On Linux/Unix, it is named @file{.msged} instead
+and placed in your home directory).
 
 This chapter describes the syntax of the configuration file and lists all
 avilable keywords and switches in alphabetical order.
@@ -2022,13 +2029,13 @@ A special case of a keyword is the @samp{switch} keyword. Using the
 off. @pxref{Switches}, for more information.
 
 When parsing the config file, lines that start with a semicolon or with a
-semicolon preceeded only by whitespace are treated as comments .
+semicolon preceeded only by whitespace are treated as comments.
 
 Within the configuration file, you may use environment
 variables. Enclose the name of the environment variable within percent
 signs. For example, if you give a command like @samp{"Areafile
 %MAILBOX%\squish\squish.cfg"}, the string @samp{%MAILBOX%} would be
-replaced with the value of the environment varaible @samp{MAILBOX}.
+replaced with the value of the environment variable @samp{MAILBOX}.
 
 You can also disable or enable certain parts of the configuration file based
 on the value of environment variables or on the operating system by
@@ -2126,7 +2133,7 @@ multiple addresses.
 Aliases are used to simplify the entry of new messages. When you enter a new
 message and type in the previously defined @var{alias} into the name field,
 all the other fields will be filled in with the values that you have provided
-in the alias definition. You must at least specify the sysos`s @var{name} in
+in the alias definition. You must at least specify the sysop's @var{name} in
 quotation marks and the corresponding FTN @var{address} in up to five
 dimensions.
 
@@ -2290,7 +2297,7 @@ display adapters.
 
 Messages sent with the destination domain equal to the domain of one of the
 configured domain gates will always be sent to the domain gate with a @@DOMAIN
-kludge inserted into the message.  To enable domain gateing, you must
+kludge inserted into the message.  To enable domain gating, you must
 configure all domain gates you are using in your config file by using a
 @code{Domain} keyword with the full 5D address of the domain gateway
 (including the domain that this gate is gating for) as @var{5d-address}
@@ -2298,11 +2305,12 @@ parameter for each domain gate. You also must have the @code{Gate} config
 verb set to either @samp{both} or @samp{domains}. @xref{Gate,, The
 @code{GAte} Keyword}, for more information.
 
-With this done, Msged will gate any messages being written to disk with a
+With this done, @value{MSGED} will gate any messages being saved with a
 destination domain listed as one of the gates.  Note that for this to occur,
 the destination domain must be different than your own.
 
-Luckily enough, most users don't have to deal with domain gating @dots{}
+Confused? Luckily enough, most users don't have to deal with domain gating
+@dots{}
 
 @node EditKey, Editor, Domain, Keywords
 @subsection EditKey
@@ -2346,12 +2354,17 @@ internal editor as compared to the external one.
 @item Syntax:
 @code{EnableSC @var{string}}
 @item Example:
+@iftex
+@code{EnableSC} "a@"o@"u@"A@"O@"U
+@end iftex
+@ifinfo
 @code{EnableSC} @var{type-national-characters-here}
-@c "a@"o@"u@"A@"O@"U
+@end ifinfo
+
 @end table
 
 (The example from above will only look correct in the TeX (@file{.DVI} or
-@file{.PS}) edition of this document. It should be an a dieresis, o dieresis,
+@file{.PS} or @file{.PDF}) edition of this document. It should be an a dieresis, o dieresis,
 u dieresis, A dieresis, O dieresis, U dieresis, and a sharp s in true 8 bit
 special characters.)
 
@@ -2378,8 +2391,8 @@ isn't a problem.
 Note that you will have to use an editor that allows the input of national
 charcters in order to generate the necessary configuration file
 entry. @code{vi} should be able to do this, as well as @code{joe}. If you are
-not able to type those characters in VI, you should not even try to type them
-in @value{MGSED} @dots{} ...
+not able to type those characters in vi, you should not even try to type them
+in @value{MSGED} @dots{}
 
 If you need information on how to set up a FreeBSD system to correctly
 process special national characters, you can f`req @file{syscons.tgz} at
@@ -2421,7 +2434,7 @@ may be defined.
 
 A function key macro is a predefined keystroke sequence that is assigned on a
 function key. If you press this function key, @value{MSGED} will do exactly what it
-would have done if you have typed in alle the keystrokes of this macro
+would have done if you have typed in all the keystrokes of this macro
 manually.
 
 The following function key numbers (to be used as the @var{number} parameter)
@@ -2436,14 +2449,16 @@ Execute this macro at program startup.
 @key{Shift}-@key{F1} .. @key{Shift}-@key{F10}
 @item 21 .. 30
 @key{Ctrl}-@key{F1} .. @key{Ctrl}-@key{F10}
-@item 1 .. 10
+@item 31 .. 40
 @key{Alt}-@key{F1} .. @key{Alt}-@key{F10}
 @end table
 
+Note that function key numbers 11 through 40 might not work on Unix.
+
 When using key scancodes in a macro, you must escape them with a backslash
-character (@samp{\}).  If you wish to have this character appear in the text
-of a message (or if it's needed as part of a path to a file), use two
-backslash characters, like in the example above.
+character (@samp{\}).  If you wish to have a literal backspace character
+appear in the macro string (e.g. if it's needed as part of a path to a
+file), use two backslash characters, like in the example above.
 
 The example from above will assign @key{Shift}-@key{F1} to display a
 pick list of the files in the @file{D:\TEXT} directory.  After the list is
@@ -2476,7 +2491,7 @@ keyword (@pxref{Domain,,The @code{Domain} Keyword}).
 
 Zone gating works like this: If you write a mail to a different zone and zone
 gating is enabled, the mail will not be addressed to the receiver in the
-other zone, but it will be adressed to that zone's zone gate (which also has an
+other zone, but it will be addressed to that zone's zone gate (which also has an
 address inside your own zone). The address of the true receiver will be
 encoded in an @@INTL kludge line.
 
@@ -2506,11 +2521,11 @@ The @var{substring} parameter to the @code{Group} command specifies a
 substring that must be present in the area tag in order to make the area a
 member of this group.
 
-The @code{name-index} parameter than specifies the index number of the user
+The @code{name-index} parameter then specifies the index number of the user
 name that should be used for all areas in this group. User names are counted
-from zero upwards, so if you have to @code{Name} keywords in your config
-file, the name specified with the first @code{Name} keyword will have an
-index number of 0, the second will have 1, and so one. @xref{Name,,The
+from zero upwards, so if you have two or more @code{Name} keywords in your
+config file, the name specified with the first @code{Name} keyword will have
+an index number of 0, the second will have 1, and so one. @xref{Name,,The
 @code{Name} Keyword}, for more information.
 
 The @code{template-index} number defines which message template file should
@@ -2604,15 +2619,15 @@ parameters.
 @code{MountDir /mnt/c c:\}
 @end table
 
-This keyword is used to tell @value{MSGED} running on a UNIX platform how it
-can translate DOSish pathnames found in squish.cfg, fastecho.cfg or even
-msged.cfg files that are mounted via NFS, rumba or smbfs from a DOS, OS/2 or
-Windows machine.
+This keyword is used to tell the Unix version of @value{MSGED} how it can
+translate DOSish pathnames found in @file{squish.cfg}, @file{fastecho.cfg} or
+even @file{msged.cfg} files that are mounted via NFS, rumba or smbfs from a
+DOS, OS/2 or Windows machine.
 
 Suppose you are having a message base that is stored in @samp{c:\msgbase} on
 your OS/2 or Windows machine. Also suppose that your complete C: drive on the
 OS/2 or Windows machine is mounted as /mnt/c on the UNIX machine. (The
-Winodws machine and UNIX machine can be two distinct machines connected via
+Windows machine and UNIX machine can be two distinct machines connected via
 network, or a single machine with multi boot, where UNIX can mount the OS/2
 or DOS partitions).
 
@@ -2623,6 +2638,9 @@ file. When @value{MSGED} is running on OS/2 or Windows, it will ignore the
 keyword, but when it is running on Unix, it will know how to translate the
 DOS-like filenames found in the corresponding configuration files into file
 names that are correct for the UNIX system.
+
+Please note that you can have only one @code{MountDir} statement in the
+configuration file.
 
 @node Name, NodePath, MountDir, Keywords
 @subsection Name
@@ -2697,14 +2715,14 @@ information.
 lookups. With the @code{Nodelist} keyword, you specify the v7 nodelists that
 @value{MSGED} should use. All three parameters are mandatory.
 
-The @var{domain-name} parameter specifies the name of the domain, that is
+The @var{domain-name} parameter specifies the name of the domain that is
 used when picking which nodelist to use for address lookup if the zone number
 is not unambiguous. The @var{base-name} parameter specifies the base name of
 the index file minus the extension (e.g. @samp{nodex} for @samp{nodex.idx}),
 and @var{sysop-file} is the name of the sysop lookup file. You must not
 specify any path names for the latter two parameters - these files must
 always reside in the directory pointed specified as argument to
-@var{NodePath}. @xref{NodePath,,The @code{NodePath} keyword}, for more
+@var{NodePath}. @xref{NodePath,,The @code{NodePath} Keyword}, for more
 information.
 
 Normally, you will compile all raw nodelists that you have into a single
@@ -2823,9 +2841,12 @@ Putting a @samp{|} in front of the filename will cause the filename to be
 interpreted as an operating system command and the text will be piped to this
 command. This only works on Unix and EMX-compiled OS/2.
 
-Putting a @samp{?"} in front of the filename indicates you want to be asked
+Putting a @samp{?} in front of the filename indicates you want to be asked
 whether to append or not, and how to write out the file.  Some menus will
 appear and you choose the action you want.
+
+@xref{Exporting and Printing,,Exporting Mails to Text Files or to a Printer},
+for more information.
 
 @node OutputCharset, PrivateNet, Outfile, Keywords
 @subsection OutputCharset
@@ -2849,8 +2870,8 @@ The charset that you specify as @var{charset} argument must be a level 2
 charset, and a matching translation table must be contained in the
 @file{writmaps.dat} file. If there isn't such a table, you will only see this
 from the fact that the written message will contain 8-bit characters, but no
-charset kludge(!). So be careful to not misspell the option.  If you use the
-@file{wrimaps.dat} that shipped with @value{MSGED}, you have the following
+charset kludge(!). So be careful not to misspell the option.  If you use the
+@file{writmaps.dat} that shipped with @value{MSGED}, you have the following
 options:
 
 @table @code
@@ -2864,8 +2885,12 @@ Specify this if you want to be compatible with old Macintosh softare that
 does not know about charset kludges.
 
 @item LATIN-1
-This is the ISO 8859 standard character set and should be the primary choice
-if you do not have reasons to use the other one's.
+This is the ISO 8859 standard character set. It is always a good choice as
+long as you do not want to use IBM graphics characters.
+
+@item CP850
+@value{MSGED} supports the @code{CP850} charset kludge, but you should use it
+as output charset, because quite a few other editors do not support it.
 @end table
 
 The character does not need to match the charset that your computer is using
@@ -2892,7 +2917,7 @@ processing programs are fully 4D address aware and do not require the
 whose boss node uses a "fakenet" to service points, this keyword should be
 used.
 
-The @var{fakenet-number} parameterspecifies the private net number number to
+The @var{fakenet-number} parameter specifies the private net number number to
 use for non-4D points. The fakenet point scheme was designed to work with
 systems which were unable to support true points, such as BinkleyTerm 2.40
 and lower.  The actual "fakenet" number and address must be assigned to you
@@ -3103,7 +3128,7 @@ This keyword is described in the section about manual message area definition
 @end table
 
 Use the filename and path to your swapfile as value vor the @var{file-name}
-parameter. This is only for DOS users but it should @emph{definitely} b e
+parameter. This is only for DOS users but it should @emph{definitely} be
 used.  If you don't use it, you must return to the Msged directory before
 returning to the editor.
 
@@ -3208,7 +3233,7 @@ the @var{user-offset} parameter and lastread pointer principles. In contrast
 to the @var{user-offset} parameter to the @code{Name} keyword, the
 @code{UserOffset} keyword specifies a single user offset numbers for all
 names configured in your configuration file. This can be useful if you are
-the only person using @var{MSGED}, but want to write under different names
+the only person using @value{MSGED}, but want to write under different names
 without having different lastread pointer offsets.
 
 @node UUCP, UucpName, UserOffset, Keywords
@@ -3259,22 +3284,21 @@ for more information.
 
 @node Switches, Conditionals, Keywords, Configuration Reference
 @section Switches
-@cindex Switch
-@findex switches
+@findex Switch
+@cindex switches
 
 Switches are used to configure the behaviour of @value{MSGED}. In contrast to
 a full configuration keyword, which is used to pass detailed parameters to
-@value{MSGED}, a switch toogles a simple state that can be turned on or
+@value{MSGED}, a switch toggles a simple state that can be turned on or
 off. Switches are usually used to switch certain features on or off.
 
 @menu
-* How to use Switches::         How to toogle switches on or off.
+* How to use Switches::         How to toggle switches on or off.
 * List of Switches::            A complete list of available switches.
 @end menu
 
 @node How to use Switches, List of Switches, Switches, Switches
 @subsection How to turn switches on and off
-@findex Switch
 
 To turn a switch on or off, you can use the @code{Switch} keyword, which has
 the following syntax:
@@ -3285,8 +3309,8 @@ Switch @var{switch-name} Off
 @end example
 
 The @var{switch-name} parameter must be the name of a valid switch (a
-complete list of switches follows below. The first line from above turns the
-selected switch on, the second turns it off. (You knew it before, did you?
+complete list of switches follows below). The first line from above turns the
+selected switch on, the second turns it off. (You knew it before, did'nt you?
 <g>).
 
 For example, in order to turn the @code{SEEN-BYs} switch on, you would add
@@ -3304,9 +3328,9 @@ The following switches are available:
 @table @code
 @item ArealistExactMatch
 @findex ArealistExactMatch
-When the area list is displayed, you can search a message are by entering the
+When the area list is displayed, you can search a message area by entering the
 first few characters of this name. This is the default. If you turn off the
-@code{ArealistEactMatch} switch, @emph{any} substring is matched in an area
+@code{ArealistExactMatch} switch, @emph{any} substring is matched in an area
 search; you don't have to type an area name from the beginning. Default: On.
 
 @item ChopQuote
@@ -3342,7 +3366,7 @@ disabled, @value{MSGED} will not send any ANSI color codes to the terminal,
 but will restrict itself to the most basic monochrome text styles ``normal'',
 ``bright'' and ``inverted''. This allows you to use @value{MSGED} on
 terminals like the standard xterm, hardware VT100 terminals, and others that
-do not understand color codes. Note that you should not use the @code{Color}
+do not understand color codes. Note that you'd better not use the @code{Color}
 configuration keyword, nor include any color scheme file, as long as this
 switch is disabled. @xref{Colors in the Unix version}, for more
 information. Default: Off for Unix, On for all other versions.
@@ -3410,7 +3434,7 @@ editor. Default: On.
 @item HardQuote
 @findex HardQuote
 When switched on, this option causes the column formatting to be preserved
-when quoting, ie it doesn't reformat quotes. Default: On.
+when quoting, i.e. it doesn't reformat quotes. Default: On.
 
 @item ImportFN
 @findex ImportFN
@@ -3427,7 +3451,8 @@ lines by turning the @code{ImportFN} switch off. Default: On.
 If you turn the @code{LowerCase} switch on, @value{MSGED} will convert all
 file names that it reads from the configuration file or from any areafile to
 lower case before it attempts to read to, write from, or create any
-file. This might be helpful if you are using case-sensitive file systems. 
+file. This might be helpful if you are using case-sensitive file systems like
+Linux ext2fs or BSD ufs.
 
 @item MSGIDs
 @findex MSGIDs
@@ -3443,7 +3468,7 @@ reply linking. Default: On.
 
 @item NetmailVia
 @findex NetmailVia
-@cindex Via lines
+@cindex via lines
 If this switch is turned on, @value{MSGED} will append a Via control line to
 each netmail entered. You should turn this switch on, if your tosser does not
 append Via lines to netmail that originates from your system (like Squish
@@ -3479,7 +3504,7 @@ much like Maximus 2.0 or TimEd do. Default: On.
 @findex RawCC
 @cindex carbon copies, saving the raw original message
 This switch is only of relevance if the @code{SaveCC} switch is turned on.
-Then, if @code{RawCC} is ON, the raw cc:  msg is saved (along with the cc:
+Then, if @code{RawCC} is on, the raw cc:  msg is saved (along with the cc:
 header that you typed in, so that if you re-edit the message, also all carbon
 copies will be re-generated). Otherwise, the first formatted cc:  will NOT be
 marked kill/sent and will therefore remain as a future reference, but the
@@ -3540,7 +3565,7 @@ is also turned on. Default: Off.
 @cindex kludge lines, displaying
 @cindex notes, displaying
 If turned on, @value{MSGED} will display kludge line information in message
-reading mode. You can also toogle this switch during program execution by
+reading mode. You can also toggle this switch during program execution by
 pressing @key{Alt}-@key{V}. Unlike in older MsgEd versions, this switch
 does not pertain to origin and/or tear lines. Default: Off.
 
@@ -3572,7 +3597,7 @@ debugging purposes. Default: Off.
 @findex ShowTime
 Shows the current time.  This isn't a real time clock; it simply shows what
 the current date and time were when the screen was last refreshed with a new
-message, or when other keyboard presses were detected.  Default: Off.
+message, or when other keyboard hits were detected.  Default: Off.
 
 @item SOTEOT
 @findex SOTEOT
@@ -3581,8 +3606,8 @@ If this is set to on, @value{MSGED} will add SOT and EOT (Start Of Text/End
 Of Text) kludge lines to bracket the text in the message body. Please note
 that Paul Edwards' SOT/EOT specification does not permit domains in echomail
 origin lines.  If both the @code{DomainOrigin} and @code{SOTEOT}
-configuration switches are enabled, Msged will exit and suggest to disable
-one or the other. Default: Off.
+configuration switches are enabled, @value{MSGED} will exit and suggest to
+disable one or the other. Default: Off.
 
 
 @item SquishLock
@@ -3594,9 +3619,10 @@ message area that is entered (and of course unlock it when it is left), thus
 effectively denying access to this area to any other program. This will
 result in a considerable speed increase when browsing message areas, but it
 has the drawback that the tosser will not be able to toss to an message area
-as long as it is open in @value{MSGED}. So if you are accustomed to leaving
-@value{MSGED} open even when going away, you should better leave this switch
-off.
+as long as it is open in @value{MSGED}. Also, some other problems have been
+observed with this switch in network environments. So you'd best leave this
+switch off unless you are running your Fido system on a non-networked, single
+tasking DOS machine.
 
 Note that this switch has nothing to do with data integrity concerns. MsgEd
 will of course lock the Squish Message Base when writing a message in order
@@ -3643,14 +3669,14 @@ information in the tera line. Default: Off.
 
 @node Conditionals, Area Definitions, Switches, Configuration Reference
 @section Conditional Statements in the Configuration File
-@cindex Conditionals
+@cindex conditionals
 @cindex environment variables, testing
 If you use @value{MSGED} with the same configuration file on different
 operating systems, you will probably want to make some settings in the
 configuration file dependent on the environment you are currently running
 in. This is where @dfn{Conditionals} come into place. A Conditional can be
 used to include a certain part of the configuration file only if a certain
-version (OS/2, DOS, ...) of MsgEd is running, or only if an environment
+version (OS/2, DOS, ...) of @value{MSGED} is running, or only if an environment
 variable has a certain value.
 
 @menu
@@ -3875,7 +3901,7 @@ area definition keywords.
 @findex Fido
 
 You can manually define a message area by putting a line of the following
-format into your confgiuration file:
+format into your configuration file:
 
 @example
 @var{format} @var{flags} "@var{description}" @var{path} @var{areatag} [@var{address}]
@@ -3894,7 +3920,7 @@ in the Squish format.
 
 @item flags
 The @var{flags} parameter is a sequence of characters where each character is
-a flag that toogles a certain option. The following flags can be used:
+a flag that toggles a certain option. The following flags can be used:
 
 @enumerate
 @item
@@ -3908,7 +3934,7 @@ those:
 @end format
 
 @item
-Flags that toogle certain special features of @value{MSGED}. All of these
+Flags that toggle certain special features of @value{MSGED}. All of these
 flags are optional. @xref{Advanced Concepts}, for more information on the
 meaning of these flags.
 
@@ -3991,12 +4017,12 @@ configuration file references another @file{areas.bbs} file, you have to
 define it separately for @value{MSGED} using a second @code{Areafile}
 statement).
 
-There is one problem with reading in echo definitions from tosser
-configuration files: Those files do not contain all information that can be
-specified in a manual area configuration, Certain features of MsgEd TE need a
-flag that has to be set for each area in order to enable that feature.  For
-example, in order to be able to write mails with umlauts, you must set the 8
-flag for each area that should have umlauts.
+There is one problem with reading echo definitions from tosser configuration
+files: Those files do not contain all information that can be specified in a
+manual area configuration. Certain features of @value{MSGED} need a flag that
+has to be set for each area in order to enable that feature.  For example, in
+order to be able to write mails with umlauts, you must set the 8 flag for
+each area that should have umlauts.
 
 @findex AreaFileFlags
 Therefore, the @code{AreaFileFlags} keyword has been introduced. It's syntax
@@ -4031,15 +4057,14 @@ the moderators of the echo areas that you are posting in do not forbid
 @appendix Compiling the Source Code
 @cindex source code
 @cindex compiling the source code
-This chapter provides information on how to compile the source code of
+This appendix provides information on how to compile the source code of
 @value{MSGED}. You will have to do this if either you are using a platform
 for which no binary distribution is provided (like FreeBSD, AIX, Rhapsody,
 and other Unix systems), or if you want to do modifications on the source
 code, or if you are just curious :-).
 
 Most of the information of this chapter applies to all supported platfroms
-(including Unix, OS/2, Windows and DOS). Sections that only apply to a
-particular system will be clearly marked.
+(including Unix, OS/2, Windows and DOS). 
 
 @menu
 * Preparations::                Obtaining and unpacking the files.
@@ -4057,7 +4082,7 @@ Squish Message API, from here on called @dfn{Smapi}, that is required to build
 @value{MSGED}.
 
 Unfortunately, there are a lot of different versions of the Smapi floating
-around.The best choice would be if you would use the snapshot of exactly that
+around. The best choice would be if you would use the snapshot of exactly that
 release level of the Smapi that I used to compile the binary releases. It can
 be found as @file{SMAPISS.ZIP} on all sites that carry the @value{MSGED}
 source code. Alternatively, you can use any @emph{newer} Smapi from the same
@@ -4094,7 +4119,7 @@ while on Unix, it would look like this:
 ~ $ cd msged
 ~/msged $ unzip ~/downloads/msgte5_s.zip
 ~/msged $ cd ../smapi
-~/smapi $ unzip ~/downlaods/smapiss.zip
+~/smapi $ unzip ~/downloads/smapiss.zip
 @end example
 
 @node Configuring, Building the Executables, Preparations, Compiling
@@ -4113,8 +4138,8 @@ OS/2 with IBM C, you would use:
 while on Unix, you would use:
 
 @example
-~/smapi $ cp makefile.ibo makefile
-~/smpai $ cp ../msged/makefile.ibo ../msged/makefile
+~/smapi $ cp makefile.unx makefile
+~/smpai $ cp ../msged/makefile.unx ../msged/makefile
 @end example
 
 The following compilers and target operating systems are supported:
@@ -4127,9 +4152,9 @@ makefile.bco | OS/2 with Borland C 2.0
 makefile.bcw | Windows 95/NT with Borland C++ 4.0
 makefile.djg | DOS/386 with DJGPP GCC 2.7.2
 makefile.emo | OS/2 with EMX 0.9c GCC 2.7.2
-makefile.ibo | OS/2 with IBM CSET/2 and maybe also VAC++
-makefile.rxw | NT with RSXNT + EMX GCC 2.7.2 
-makefile.unx | Any UNIX or Linux with any compiler
+makefile.ibo | OS/2 with IBM CSET/2 or Visual Age C++
+makefile.rxw | 95/NT with RSXNT + EMX GCC 2.7.2 
+makefile.unx | Any UNIX, BSD or Linux with any compiler
 @end example
 
 The following makefiles are also provided, but they are not supported, either
@@ -4157,7 +4182,7 @@ links the Smapi, and it works on any Unix-like system that has any half Posix
 compliant "cc" available.
 
 The files @file{makefile.lnx} and @file{makefile.bsd} should @emph{only} be
-used if you want to linke the Smapi dynamically, and if you know what that
+used if you want to link the Smapi dynamically, and if you know what that
 means and what you are doing
 
 If you are annoyed by the executable generated with @file{makefile.unx}
@@ -4176,6 +4201,11 @@ generate a library, whose name depends on the makefile you used. For instance
 @item Change into the @file{msged} directory and type @code{make}. This will
 gnereate the executable, whose name depends on the makefile you used. For
 instance @file{msgedp.exe} or @file{msged} or @file{msged.exe}.
+
+@item If, on Unix, you get errors about unresolved symbols when linking the
+@value{MSGED} executable, change into the Smapi directory and run
+@code{ranlib smapiunx.a}. Then change back to the Msged directory and try
+again.
 @end enumerate
 
 @node Building the other Files, Installing, Building the Executables, Compiling
@@ -4222,10 +4252,10 @@ specify all character map files that are to be included into
 
 @example
 [C:\COMPILE\MSGED] cd c:\compile\msged\maps
-[C:\COMPILE\MSGED\MAPS] icc -o makemaps.exe makemaps.c
+[C:\COMPILE\MSGED\MAPS] icc makemaps.c
  (...)
 [C:\COMPILE\MSGED\MAPS] makemaps IBMPC IBM_ISO.CHS ISO_IBM.CHS 
-IBM_ASC.CHS IBM_MAC.CHS MAC_IBM.CHS
+IBM_ASC.CHS IBM_MAC.CHS MAC_IBM.CHS IBM_850.CHS 850_IBM.CHS
 @end example
 
 Finally, you may want to create the documentation in your favourite output
