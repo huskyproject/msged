@@ -27,6 +27,7 @@
 #endif
 
 #include "addr.h"
+#include "config.h"
 #include "nedit.h"
 #include "msged.h"
 #include "winsys.h"
@@ -44,7 +45,7 @@
 
 void import(LINE * l)
 {
-    static char fn[PATHLEN];
+    char *fn = xmalloc(PATHLEN + 1);
     static char fname[PATHLEN];
     static char line[TEXTLEN];
     char *temp;
@@ -58,8 +59,11 @@ void import(LINE * l)
 
     if (!ret)
     {
+        xfree(fn);
         return;
     }
+
+    fn = shell_expand(fn);
 
     fp = fopen(fn, "r");
     if (fp != NULL)
@@ -154,6 +158,7 @@ void import(LINE * l)
         }
         fclose(fp);
     }
+    xfree(fn);
 }
 
 /*
@@ -196,7 +201,7 @@ char *getfilename(char *buf)
 void export(LINE * f)
 {
     FILE *fp;
-    char fn[PATHLEN + 1];
+    char *fn = xmalloc(PATHLEN + 1);
     int ret;
     int use_pclose = 0;
 
@@ -213,11 +218,14 @@ void export(LINE * f)
 
     if (!ret)
     {
+        xfree(fn);
         return;
     }
 
     release(ST->outfile);
     ST->outfile = strdup(fn);
+
+    fn = shell_expand(fn);
 
     if (*fn == '+')
     {
@@ -237,7 +245,8 @@ void export(LINE * f)
 
     if (fp == NULL)
     {
-        ChoiceBox("", "WARNING: Error opening file", "  Ok  ", NULL, NULL);
+        ChoiceBox("", "WARNING: Error opening file", "  Ok  ", NULL,  NULL);
+        xfree(fn);
         return;
     }
 
@@ -271,6 +280,7 @@ void export(LINE * f)
         fclose(fp);
     }
 
+    xfree(fn);
     TTCurSet(1);
 }
 
@@ -279,7 +289,7 @@ void writetxt(void)
     static char *modes[] = {"Text", "Quote", "Msged", NULL};
     static char *ovr[] = {"Append", "Replace", NULL};
     LINE *f = message->text;
-    char fn[PATHLEN];
+    char *fn = xmalloc(PATHLEN + 1);
     static int mode = 0;
     int ret;
     FILE *fp;
@@ -299,11 +309,14 @@ void writetxt(void)
 
     if (!ret)
     {
+        xfree(fn);
         return;
     }
 
     release(ST->outfile);
     ST->outfile = strdup(fn);
+
+    fn = shell_expand(fn);
 
     s = strchr(fn, ',');
     if (s != NULL)
@@ -330,6 +343,7 @@ void writetxt(void)
         if (mode == -1)
         {
             mode = 0;
+            xfree(fn);
             return;
         }
     }
@@ -363,6 +377,7 @@ void writetxt(void)
             ret = DoMenu(61, 2, 69, 3, ovr, 0, SELBOX_WRTOVER, "");
             if (ret == -1)
             {
+                xfree(fn);
                 return;
             }
 
@@ -384,7 +399,8 @@ void writetxt(void)
 
     if (fp == NULL)
     {
-        ChoiceBox("", "WARNING: Error opening file", "  Ok  ", NULL, NULL);
+        ChoiceBox("", "WARNING: Error opening file", "  Ok  ", NULL,  NULL);
+        xfree(fn);
         return;
     }
 
@@ -449,4 +465,11 @@ void writetxt(void)
         /* reread the old message text */
         set_area(SW->area);
     }
+    xfree(fn);
 }
+
+
+
+
+
+
