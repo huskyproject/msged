@@ -77,7 +77,7 @@ CP1125          ; to set
 \x1 ?
 \x1 ?
 \0 \xf3     ; 0xad cyrillic small letter ghe with upturn
-\7e \xe3    ; 0xae cyrillic small letter byelorussian short y
+\x7e \xe3    ; 0xae cyrillic small letter byelorussian short y
 \x1 ?
 \x1 ?
 \x1 ?
@@ -93,7 +93,7 @@ CP1125          ; to set
 \x1 ?
 \x1 ?
 \0 \xf2     ; 0xbd cyrillic capital letter ghe with upturn
-\7e \x93    ; 0xbe cyrillic capital letter byelorussian short y
+\x7e \x93    ; 0xbe cyrillic capital letter byelorussian short y
 \x1 ?
 \0 \xEE
 \0 \xA0

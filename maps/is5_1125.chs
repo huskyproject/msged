@@ -7,54 +7,54 @@
 ISO-5		; from set
 CP1125		; to set
 
-\1 \x3f		; 128
-\1 \x3f		; 129
-\1 \x3f		; 130
-\1 \x3f		; 131
-\1 \x3f		; 132
-\1 \x3f		; 133
-\1 \x3f		; 134
-\1 \x3f		; 135
-\1 \x3f		; 136
-\1 \x3f		; 137
-\1 \x3f		; 138
-\1 \x3f		; 139
-\1 \x3f		; 140
-\1 \x3f		; 141
-\1 \x3f		; 142
-\1 \x3f		; 143
-\1 \x3f		; 144
-\1 \x3f		; 145
-\1 \x3f		; 146
-\1 \x3f		; 147
-\1 \x3f		; 148
-\1 \x3f		; 149
-\1 \x3f		; 150
-\1 \x3f		; 151
-\1 \x3f		; 152
-\1 \x3f		; 153
-\1 \x3f		; 154
-\1 \x3f		; 155
-\1 \x3f		; 156
-\1 \x3f		; 157
-\1 \x3f		; 158
-\1 \x3f		; 159
+\x1 \x3f		; 128
+\x1 \x3f		; 129
+\x1 \x3f		; 130
+\x1 \x3f		; 131
+\x1 \x3f		; 132
+\x1 \x3f		; 133
+\x1 \x3f		; 134
+\x1 \x3f		; 135
+\x1 \x3f		; 136
+\x1 \x3f		; 137
+\x1 \x3f		; 138
+\x1 \x3f		; 139
+\x1 \x3f		; 140
+\x1 \x3f		; 141
+\x1 \x3f		; 142
+\x1 \x3f		; 143
+\x1 \x3f		; 144
+\x1 \x3f		; 145
+\x1 \x3f		; 146
+\x1 \x3f		; 147
+\x1 \x3f		; 148
+\x1 \x3f		; 149
+\x1 \x3f		; 150
+\x1 \x3f		; 151
+\x1 \x3f		; 152
+\x1 \x3f		; 153
+\x1 \x3f		; 154
+\x1 \x3f		; 155
+\x1 \x3f		; 156
+\x1 \x3f		; 157
+\x1 \x3f		; 158
+\x1 \x3f		; 159
 \0 \xff		; 160 nbsp
 \0 \xf0		; 161 capital yo
-\1 \x3f		; 162
+\x1 \x3f		; 162
 \0 \xf2		; 163 capital ghe with upturn
 \0 \xf4 	; 164 capital ukrainian ie
-\1 \x3f		; 165
+\x1 \x3f		; 165
 \0 \xf6		; 166 capital byelorussian-ukrainian i
 \0 \xf8		; 167 capital ukrainian yi
-\1 \x3f		; 168
-\1 \x3f		; 169
-\1 \x3f		; 170
-\1 \x3f		; 171
-\1 \x3f		; 172
-\1 \x3f		; 173
+\x1 \x3f		; 168
+\x1 \x3f		; 169
+\x1 \x3f		; 170
+\x1 \x3f		; 171
+\x1 \x3f		; 172
+\x1 \x3f		; 173
 \x7e \x93	; 174 capital byelorussian short y
-\1 \x3f		; 175
+\x1 \x3f		; 175
 \0 \x80		; 176
 \0 \x81		; 177
 \0 \x82		; 178
@@ -121,19 +121,19 @@ CP1125		; to set
 \0 \xef		; 239
 \0 \xfc		; 240 number sign
 \0 \xf1		; 241 small yo
-\1 \x3f		; 242
+\x1 \x3f		; 242
 \0 \xf3		; 243 small ghe with upturn
 \0 \xf5		; 244 small ukrainian ie
-\1 \x3f		; 245
+\x1 \x3f		; 245
 \0 \xf7		; 246 small byelorussian-ukrainian i
 \0 \xf9		; 247 small ukrainian yi
-\1 \x3f		; 248
-\1 \x3f		; 249
-\1 \x3f		; 250
-\1 \x3f		; 251
-\1 \x3f		; 252
-\1 \x3f		; 253
+\x1 \x3f		; 248
+\x1 \x3f		; 249
+\x1 \x3f		; 250
+\x1 \x3f		; 251
+\x1 \x3f		; 252
+\x1 \x3f		; 253
 \x7e \xe3	; 254 small byelorussian short y
-\1 \x3f		; 255
+\x1 \x3f		; 255
 END
 
