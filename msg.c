@@ -760,7 +760,7 @@ int JamMsgWriteText(char *text, unsigned long msgn, unsigned long mlen)
         l = 0;
 
     assert(global_len == mlen);
-    assert(global_pos + l <= mlen);
+    assert(global_pos + l <= mlen);  /* fails with JAM !? */
 
     if (l)
     {
