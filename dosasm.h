@@ -11,8 +11,9 @@
 
 void dospause(void);
 void dvpause(void);
-void winpause(void);
-int dvcheck(void);
+int  dvcheck(void);
+void dpmipause(void);
+int  dpmicheck(void);
 int kbdhit(void);
 unsigned int obtkey(void);
 unsigned int dosavmem(void);
