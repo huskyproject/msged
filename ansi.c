@@ -4,6 +4,8 @@
  *  Written by Paul Edwards et al and released to the public
  *  domain.
  *
+ *  Adapted to the peculiarities of UNIX consoles by Tobias Ernst.
+ *
  *  Screen definitions & routines using ANSI codes.
  */
 
@@ -12,17 +14,37 @@
 #include <stdlib.h>
 #include <ctype.h>
 
+/* The following variables define the minimum terminal
+   size. Theoretically, the minimum terminal size should be
+   1x1. However, large parts of Msged cannot cope with small terminal
+   sizes (they will create bus errors and all such things), therefore,
+   the routines in this module always report a minimum terminal
+   size. Of course, if the terminal is smaller than this minimum size,
+   the output will be garbage, but at least the program will not crash
+   ... */
+
+#define MINTERMX 10  /* 10 x 8 is the absolute minimum */
+#define MINTERMY 8
+
+
 #if defined(MSDOS) || defined(OS2) || defined(WINNT)
 #include <conio.h>
 #endif
 
-#ifdef HAVE_CURSES              /* curses are presently only used for */
-#include <curses.h>             /* terminal size (cols, rows) detection */
-#endif
-
 #ifdef UNIX
 
-#include <termios.h>
+#include <termios.h>            /* struct winsize */
+#include <sys/ioctl.h>          /* ioctl.h        */
+#include <stdio.h>              /* fileno         */
+#include <unistd.h>             /* sleep          */
+#include <signal.h>             /* signal ...     */
+#include <setjmp.h>             /* longjmp        */
+
+static int resize_pending = 0;
+
+#if (defined(__unix__) || defined(unix)) && !defined(USG)
+#include <sys/param.h>          /* used to differentiate BSD from SYSV  */
+#endif                                
 
 static struct termios oldtios;
 
@@ -187,6 +209,14 @@ int TTCurSet(int st)
 
 static int TTgotoxy_noflush(int row, int col)
 {
+    if (row >= term.NRow)
+    {
+        row = term.NRow - 1;
+    }
+    if (col >= term.NCol)
+    {
+        col = term.NCol - 1;
+    }
     vrow = row;
     vcol = col;
     printf("\x1b[%d;%dH", row + 1 , col + 1);
@@ -195,6 +225,14 @@ static int TTgotoxy_noflush(int row, int col)
 
 int TTgotoxy(int row, int col)
 {    
+    if (row >= term.NRow)
+    {
+        row = term.NRow - 1;
+    }
+    if (col >= term.NCol)
+    {
+        col = term.NCol - 1;
+    }
     vrow = row;
     vcol = col;
     printf("\x1b[%d;%dH", row + 1, col + 1);
@@ -235,6 +273,10 @@ int TTWriteStr(unsigned short *b, int len, int row, int col)
     TTgotoxy_noflush(row, col);
     for (x = 0; x < len; x++)
     {
+        if (vrow >= term.NRow || vcol + x >= term.NCol)
+        {
+            break;  /* don't write out of area */
+        }
         scrnbuf[vrow * term.NCol + vcol + x] = (*b & 0xff);
         thiscol = (*b & 0xff00U) >> 8;
         colbuf[vrow * term.NCol + vcol + x] = thiscol;
@@ -250,7 +292,7 @@ int TTWriteStr(unsigned short *b, int len, int row, int col)
     {
         TTScolor(oldcol);
     }
-    TTgotoxy(row, col + len);
+    TTgotoxy(row, col + x);
     return 1;
 }
 
@@ -258,6 +300,19 @@ int TTStrWr(unsigned char *s, int row, int col)
 {
     size_t len;
     len = strlen((char *)s);
+
+    if (row >= term.NRow || col >= term.NCol)
+    {
+        return 0;
+    }
+    if (col + len > term.NCol)
+    {
+        if ((len = term.NCol - col)<1)
+        {
+                return 0;
+        }
+    }
+    
     TTgotoxy_noflush(row, col);
     memcpy(&scrnbuf[vrow * term.NCol + vcol], s, len);
     memset(&colbuf[vrow * term.NCol + vcol], color % 256, len);
@@ -269,6 +324,17 @@ int TTStrWr(unsigned char *s, int row, int col)
 int TTReadStr(unsigned short *b, int len, int row, int col)
 {
     int x;
+    if (row >= term.NRow || col >= term.NCol)
+    {
+        return 0;
+    }
+    if (col + len > term.NCol)
+    {
+        if ((len = term.NCol - col) < 1)
+        {
+            return 0;
+        }
+    }
     for (x = 0; x < len; x++)
     {
         b[x] = scrnbuf[row * term.NCol + col + x];
@@ -281,6 +347,13 @@ int TTScroll(int x1, int y1, int x2, int y2, int lines, int Dir)
 {
     int y, x, x3, orgcolor;
     int diff = x2 - x1 + 1;
+
+
+    if (x1 < 0 || y1 <0 || x2 >= term.NCol || y2 >= term.NRow || lines<1)
+    {
+            abort();
+        return 0;
+    }
 
     if (Dir)
     {
@@ -365,8 +438,11 @@ int TTClear(int x1, int y1, int x2, int y2)
         }
         for (x = x1; x <= x2; x++)
         {
-            scrnbuf[y * term.NCol + x] = ' ';
-             colbuf[y * term.NCol + x] = color;
+            if (y < term.NRow && x < term.NCol)
+            {
+                scrnbuf[y * term.NCol + x] = ' ';
+                 colbuf[y * term.NCol + x] = color;
+            }
         }
     }
     TTgotoxy(y1, x1);
@@ -1104,35 +1180,139 @@ void TTSendMsg(unsigned int msg, int x, int y, unsigned int msgtype)
 }
 
 
-int collect_events(int block)
+static int jump_on_resize = 0;
+static jmp_buf jmpbuf;
+
+static void collect_events(int block)
 {
     int msg;
 
-    if (mykbhit() || block)
+#ifdef UNIX
+    while (block)
+    {
+        if (setjmp(jmpbuf))
+        {
+                block_console(0, 0);
+                while (mykbhit()) waiting = -1;
+        }
+        if (waiting != -1) break;
+        if (resize_pending != 0) break;
+
+        block_console (1, 0);
+        jump_on_resize = 1;
+        waiting = getchar();
+        jump_on_resize = 0;
+        if (waiting == EOF)
+        {
+            waiting = -1;
+            clearerr(stdin);
+        }
+    }
+    block_console (0, 0);
+
+    if (resize_pending != 0)
+    {
+        TTSendMsg(resize_pending, 0, 0, WND_WM_RESIZE);
+        resize_pending = 0;
+    }
+#endif
+    if (mykbhit()
+#ifndef UNIX
+        || block
+#endif        
+        )
     {
         msg = TTGetKey();
         TTSendMsg(msg, 0, 0, WND_WM_CHAR);
     }
-
-    return 0;
+        
 }
+
+#ifdef UNIX
+void sigwinch_handler(int sig)
+{
+    int newcol, newrow, i, x, y;
+    struct winsize w;
+    unsigned char *newbuf, *oldbuf;
+
+    ioctl(fileno(stderr), TIOCGWINSZ, &w);
+    newcol = w.ws_col; newrow = w.ws_row;
+    if (newcol < MINTERMX) newcol = MINTERMX;
+    if (newrow < MINTERMY) newrow = MINTERMY;
+
+        for (i = 0; i <= 1; i++)
+        {
+               /* +3 to provide buffer for incorrect calls to the 
+                  Win... routines if the window is very small */
+            newbuf = malloc((newcol + 3) * (newrow + 3));
+            oldbuf = i ? scrnbuf : colbuf;
+            
+            if (newbuf == NULL)
+            {
+                TTkclose();
+                abort();
+            }
+
+            for (y = 0; y < newrow; y++)
+            {
+                for (x = 0; x < newcol; x++)
+                {
+                    if (x >= term.NCol || y >= term.NRow)
+                    {
+                        newbuf[y * newcol + x] = i ? ' ' : 0;
+                    }
+                    else
+                    {
+                        newbuf[y * newcol + x] = oldbuf[y * term.NCol + x];
+                    }
+                }
+            }
+            if (i)
+            {
+                free(scrnbuf);
+                scrnbuf = newbuf;
+            }
+            else
+            {
+                free(colbuf);
+                colbuf = newbuf;
+            }
+
+        }
+        term.NCol = newcol;
+        term.NRow = newrow;
+        TTRepaint();
+
+    resize_pending = 1;
+
+#ifndef BSD                     /* need to reinstall the handler */
+    signal (sig, sigwinch_handler);
+#endif
+
+    if (jump_on_resize)
+    {
+            jump_on_resize = 0;
+            longjmp(jmpbuf, 1);
+    }
+}
+#endif
 
 int TTkopen(void)
 {
 #ifdef UNIX
     struct termios tios;
+    struct winsize w;
+
+#if 1
+    ioctl(fileno(stderr), TIOCGWINSZ, &w);
+
+    term.NRow = w.ws_row;
+    term.NCol = w.ws_col;
 #endif
-
-#ifdef HAVE_CURSES
-    WINDOW *scr = initscr();
-
-    if (scr != NULL)
-    {
-        term.NRow = scr->_maxy;
-        term.NCol = scr->_maxx;
-    }
-    endwin();  /* close curses, we do not need them any more */
 #endif    
+
+    if (w.ws_row < MINTERMY) term.NRow = MINTERMY;
+    if (w.ws_col < MINTERMX) term.NCol = MINTERMX;
 
 #ifdef SASC
     coninit();
@@ -1147,11 +1327,26 @@ int TTkopen(void)
     block_console(0,0);
     setbuf(stdin, NULL);
 #endif
-
-    scrnbuf = malloc(term.NRow * term.NCol);
-    colbuf = malloc(term.NRow * term.NCol);
+               /* +3 to provide buffer for incorrect calls to the 
+                  Win... routines if the window is very small */
+    scrnbuf = malloc((term.NRow + 3) * (term.NCol + 3));
+    colbuf = malloc((term.NRow + 3) * (term.NCol + 3));
+    if (scrnbuf == NULL || colbuf == NULL)
+    {
+        TTkclose();
+        fprintf (stderr, "Out of memory!\n");
+        abort();
+    }
+        
     memset(scrnbuf, ' ', term.NRow * term.NCol);
     memset(colbuf, 11, term.NRow * term.NCol);
+
+#if 1
+#ifdef UNIX
+    signal (SIGWINCH, sigwinch_handler);    
+#endif
+#endif
+
     return 0;
 }
 
@@ -1197,15 +1392,27 @@ int TTkclose(void)
     fputs("\x1b[0m\x1b[1;1H\x1b[J", stdout); 
 #endif
 #ifdef UNIX
+    signal (SIGWINCH, SIG_DFL);
     tcsetattr(0, 0, &oldtios);
 #endif
     fflush(stdout);
-    free(scrnbuf);
-    free(colbuf);
-    if (allowed_special_characters != NULL)
+    if (scrnbuf != NULL)
+    {
+        free(scrnbuf); scrnbuf = NULL;
+    }
+    if (colbuf  != NULL)
+    {
+        free(colbuf); colbuf = NULL;
+    }
+/*  if (allowed_special_characters != NULL)
     {
         free(allowed_special_characters);
-    }
+        allowed_special_characters = NULL;
+    } 
+    we don't free this list, so that it is available in case the
+    calling program should call TTclose and then TTopen in sequence
+    (e.g. when it does a DOS shell)
+*/
     return 0;
 }
 

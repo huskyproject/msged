@@ -10,8 +10,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 #include <time.h>
+#include <ctype.h>
 
 #if defined(__MSC__) || defined(OS216)
 #include <sys/types.h>
@@ -67,6 +67,7 @@ int bdos(int func, unsigned reg_dx, unsigned char reg_al);
 #include "charset.h"
 #include "date.h"
 #include "echotoss.h"
+#include "mctype.h"
 
 #define rand_number(num) ((int) (((long) rand()) % (num)))
 
@@ -206,7 +207,7 @@ msg *readmsg(unsigned long n)
 		}
 		s = text + 6;
 
-		while (isspace(*s))
+		while (m_isspace(*s))
 		{
 		    s++;
 		}
@@ -226,7 +227,6 @@ msg *readmsg(unsigned long n)
 		strcpy(tmp, s + 1);
 		memset(tokens, 0, sizeof(tokens));
 		parse_tokens(tmp, tokens, 2);
-
 		if (!tokens[1])
 		{
 		    break;
@@ -235,8 +235,8 @@ msg *readmsg(unsigned long n)
 		release(m->charset_name);
 		m->charset_name = xstrdup(tokens[0]);
 		m->charset_level = atoi(tokens[1]);
-
-		ltable = get_readtable(m->charset_name, m->charset_level);
+		ltable = get_readtable(m->charset_name,
+                                       m->charset_level);
 		break;
 
 	    case 'M':
@@ -246,7 +246,7 @@ msg *readmsg(unsigned long n)
 		}
 		s = text + 7;
 
-		while (isspace(*s))
+		while (m_isspace(*s))
 		{
 		    s++;
 		}
@@ -263,7 +263,7 @@ msg *readmsg(unsigned long n)
 		}
 		s = text + 7;
 
-		while (isspace(*s))
+		while (m_isspace(*s))
 		{
 		    s++;
 		}
@@ -452,12 +452,12 @@ msg *readmsg(unsigned long n)
 		    s = strrchr(text, '(');
 		    if (s != NULL)
 		    {
-			while (*s && !isdigit(*s) && *s != ')')
+			while (*s && !m_isdigit(*s) && *s != ')')
 			{
 			    s++;
 			}
 
-			if (isdigit(*s))
+			if (m_isdigit(*s))
 			{
 			    m->from = parsenode(s);
 			}
@@ -641,7 +641,6 @@ msg *readmsg(unsigned long n)
     {
 	checkrcvd(m, n);
     }
-
     read_verbatim = 0;
     return m;
 }
@@ -1837,7 +1836,7 @@ int writemsg(msg * m)
 		    {
 			strcat(text, "\r");
 		    }
-		    else if (!isspace(*(text + strlen(text) - 1)))
+		    else if (!m_isspace(*(text + strlen(text) - 1)))
 		    {
 			if (*(text + strlen(text) - 1) == '.')
 			{

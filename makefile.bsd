@@ -1,6 +1,6 @@
 CC=	gcc
 CFLAGS=	-Wall
-CDEFS=	-DUNIX -DUSE_MSGAPI -DHAVE_CURSES -DUNAME=\"BSD\"
+CDEFS=	-DUNIX -DUSE_MSGAPI -DUNAME=\"BSD\"
 COPT=	-s -O2
 MSGDIR=	../smapi
 
@@ -63,4 +63,4 @@ objs=	addr.o     \
 	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -I$(MSGDIR) -c $<
 
 $(TARGET): $(objs)
-	$(CC) $(COPT) -o $(TARGET) $(objs) -L$(MSGDIR) -l$(MSGAPI) -lcurses
+	$(CC) $(COPT) -o $(TARGET) $(objs) -L$(MSGDIR) -l$(MSGAPI)

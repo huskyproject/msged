@@ -111,8 +111,8 @@ int InitVars(void)
 
     /* Initialize all the variables to default values. */
 
-    SW->rm = 0xFFFF; /* this will be adjusted to maxx-1 later on */
-    SW->qm = 75;
+    SW->orgrm = 0xFFFF; /* allow any margin */
+    SW->orgqm = 75;     /* don't make quote lines too large */
     SW->tabsize = 4;
     SW->use_lastr = YES;
     SW->qquote = YES;

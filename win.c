@@ -92,6 +92,12 @@ WND *WndOpen(int x1, int y1, int x2, int y2, int Bdr, int BAttr, int Attr)
         Bdr = Bdr & (~SHADOW);
     }
 
+    /* sanity checks*/
+    if (x1 < 0)  x1 = 0;
+    if (y1 < 0)  y1 = 0;
+    if (x2 < x1) x2 = x1;
+    if (y2 < y1) y2 = y1;
+
     w->wid = ++wndid;
     w->x1 = (unsigned char)x1;
     w->x2 = (unsigned char)x2;
@@ -101,6 +107,8 @@ WND *WndOpen(int x1, int y1, int x2, int y2, int Bdr, int BAttr, int Attr)
     w->battr = (unsigned char)BAttr;
     w->flags = (unsigned char)Bdr;
     w->title = NULL;
+
+
 
     if (Bdr & SHADOW)
     {
@@ -463,6 +471,7 @@ void WndWriteStr(int x, int y, int Attr, char *Str)
     int row, col, len;
     int m = 0;
     char *trunc, ch = 0;
+    char *PrintStr = Str;
 
     if (Str == NULL)
     {
@@ -480,6 +489,11 @@ void WndWriteStr(int x, int y, int Attr, char *Str)
     /* row and col must be zero-based */
     row = CW->y1 + y;
     col = CW->x1 + x;
+
+    if (x < 0 || y < 0)
+    {
+        return;
+    }
 
     if (!(CW->flags & NBDR))
     {
@@ -508,22 +522,23 @@ void WndWriteStr(int x, int y, int Attr, char *Str)
     trunc = NULL;
     if ((col + len - 1) > CW->x2 - XMOD(CW))
     {
-        trunc = Str + ((CW->x2 - XMOD(CW)) - col + 1);
+        PrintStr = xstrdup(Str);
+        trunc = PrintStr + ((CW->x2 - XMOD(CW)) - col + 1);
         ch = *trunc;
         *trunc = '\0';
     }
 
     TTScolor(Attr);
-    TTStrWr((unsigned char *)Str, row, col);
+    TTStrWr((unsigned char *)PrintStr, row, col);
+
+    if (PrintStr != Str)
+    {
+        xfree(PrintStr);
+    }
 
     if (m)
     {
         MouseON();
-    }
-
-    if (trunc)
-    {
-        *trunc = ch;
     }
 }
 
@@ -544,6 +559,11 @@ void WndPutsCen(int y, int attr, char *str)
     }
 
     if (str == NULL)
+    {
+        return;
+    }
+
+    if (y < 0)
     {
         return;
     }
@@ -588,6 +608,10 @@ void WndPutsn(int x, int y, int len, int attr, char *str)
     char *s = str, *c = line;
     int i = 0;
 
+    if (x < 0 || y < 0 || len < 1)
+    {
+        return;
+    }
     if (len > 254)
     {
         len = 254;
@@ -613,7 +637,6 @@ void WndPutsn(int x, int y, int len, int attr, char *str)
  *  WndScroll; Scrolls a window at the specified cooridiates using a
  *  zero-based origin.
  *
- *  Caveats: Doesn't check for valid coordinates.
  */
 
 void WndScroll(int x1, int y1, int x2, int y2, int dir)
@@ -625,6 +648,10 @@ void WndScroll(int x1, int y1, int x2, int y2, int dir)
     {
         return;
     }
+
+    if (x1 < 0) x1 = 0;
+    if (y1 < 0) y1 = 0;
+    if (x2 < x1 || y2 < y1) return;
 
     xmod = XMOD(CW);
     ymod = YMOD(CW);
@@ -795,6 +822,9 @@ int WndGetLine(int x, int y, int len, char *buf, int Attr, int *pos, int nokeys,
     {
         return 0;
     }
+
+    if (x < 0) x = 0;
+    if (y < 0) y = 0;
 
     if (disp)
     {

@@ -320,8 +320,10 @@ struct _swv
     int otheraliases;           /* how many "other" aliases? */
     int numtemplates;           /* how many templates in use? */
     int domains;                /* how many domains listed */
-    int rm;                     /* the right margin */
-    int qm;                     /* the quote margin */
+    int rm;                     /* the current right margin */
+    int qm;                     /* the current quote margin */
+    int orgrm;                  /* the right margin as desired by the user */
+    int orgqm;                  /* the quote margin as desired by the user */
     int pointnet;               /* private net number of point */
     int tabsize;                /* how many spaces for a tab */
     int nodelists;              /* number of nodelists */

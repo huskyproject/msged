@@ -43,6 +43,7 @@
 #include "nshow.h"
 #include "readmail.h"
 #include "screen.h"
+#include "wrap.h"
 #include "config.h"
 #include "environ.h"
 #include "charset.h"
@@ -2949,11 +2950,11 @@ static void parseconfig(FILE * fp)
             break;
 
         case CFG_RIGHT:
-            SW->rm = (int)strtol(value, NULL, 0);
+            SW->orgrm = (int)strtol(value, NULL, 0);
             break;
 
         case CFG_QUOTERIGHT:
-            SW->qm = (int)strtol(value, NULL, 0);
+            SW->orgqm = (int)strtol(value, NULL, 0);
             break;
 
         case CFG_TABSIZE:
@@ -3407,9 +3408,7 @@ void opening(char *cfgfile, char *areafile)
 
     cursor(0);
 
-    SW->rm = SW->rm > maxx ? maxx-1 : SW->rm;
-    SW->qm = SW->qm > SW->rm - strlen(ST->quotestr) ?
-                             SW->rm - strlen(ST->quotestr) : SW->qm;
+    adapt_margins();
 
     hCurr = WndTop();
     hWnd = WndPopUp(42, 6, SBDR | SHADOW, cm[IN_BTXT], cm[IN_NTXT]);

@@ -480,18 +480,6 @@ void ShowMsgHeader(msg * m)
         return;
     }
 
-    /* show the date of creation and the date of arrival */
-
-    WndPrintf(maxx - 20, 1, cm[CM_HTXT], "%s", mtime(m->timestamp));
-
-    if (SW->datearrived && m->time_arvd != 0 && m->time_arvd != m->timestamp)
-    {
-        WndPrintf(maxx - 20, 4, cm[CM_HTXT], "%s", mtime(m->time_arvd));
-    }
-    else
-    {
-        WndPutsn(maxx - 20, 4, 19, cm[CM_HTXT], " ");
-    }
 
     /* show the message links, up and down */
 
@@ -539,6 +527,20 @@ void ShowMsgHeader(msg * m)
     ShowNameAddress(m->isto, &m->to, 2, m->newrcvd, 0);
     ShowSubject(m->subj);
     ShowAttrib(m);
+
+    /* show the date of creation and the date of arrival */
+
+    WndPrintf(maxx - 20, 1, cm[CM_HTXT], "%s", mtime(m->timestamp));
+
+    if (SW->datearrived && m->time_arvd != 0 && m->time_arvd != m->timestamp)
+    {
+        WndPrintf(maxx - 20, 4, cm[CM_HTXT], "%s", mtime(m->time_arvd));
+    }
+    else
+    {
+        WndPutsn(maxx - 20, 4, 19, cm[CM_HTXT], " ");
+    }
+
 }
 
 void PutLine(LINE * l, int y)

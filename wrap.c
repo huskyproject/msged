@@ -11,7 +11,6 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 #include <time.h>
 #include "addr.h"
 #include "nedit.h"
@@ -35,6 +34,7 @@
 #include "help.h"
 #include "dosmisc.h"
 #include "wrap.h"
+#include "mctype.h"
 
 static LINE *current;           /* current line */
 static LINE *pagetop;           /* top line of page */
@@ -47,13 +47,40 @@ static int y = 1;               /* y coordinate, 1 based */
 static int currline = 1;        /* current line of msg, 1 based */
 static int ed_miny = 1;         /* logical min y value */
 static int ed_maxy = 1;         /* logical max y value */
-static int edmaxy;              /* real min x value */
-static int edminy;              /* real max y value */
+static int edmaxy;              /* real max y value */
+static int edminy;              /* real min y value */
 static int quote_len = 14;      /* length to look for quote */
 static int done;                /* finished editing? */
 static int insert = 1;          /* insert = on ? */
 static int blocking;            /* block on? */
 static msg *messg;              /* message being edited */
+
+/* This function sets the current right and quote margins, taking
+   into account both the actual window size and the settings that the
+   user has desired. */
+
+void adapt_margins(void)
+{
+    SW->rm = maxx - 1;
+    if (SW->rm > SW->orgrm)
+    {
+        SW->rm = SW->orgrm;
+    }
+    
+    SW->qm = SW->rm - strlen(ST->quotestr);
+    if (SW->qm > SW->orgqm)
+    {
+        SW->qm = SW->orgqm;
+    }
+    if (SW->rm < 1)
+    {
+        SW->rm = 1;
+    }
+    if (SW->qm < 1)
+    {
+        SW->qm = 1;
+    }
+}        
 
 static void zap_quotes(void)
 {
@@ -470,7 +497,7 @@ char *GetWrapPoint(char *text, int rm)
 
         while (*s && !iswhspace(*s))
         {
-            if (s - text < rm / 2)
+            if (s - text < 2)
             {
                 /* Can't wrap any further, so split at EOL. */
 
@@ -540,7 +567,8 @@ int wrap(LINE * cl, int x, int y, int rm)
 
         if (l->text == NULL || strlen(l->text) < rm)
         {
-            /* we may want to copy stuff from the next line to this one */
+            /* we may want to copy stuff from the next line to this
+               one */
 
             if (nl == NULL || nl->text == NULL)
             {
@@ -601,6 +629,23 @@ int wrap(LINE * cl, int x, int y, int rm)
                     if (*s != '\0' && *s != '\n')
                     {
                         strcat(tl, " ");
+                    }
+                }
+
+                /* If the line that will be deleted had the cursor,
+                   mark the line that it has been merged with as
+                   having the cursor. */
+
+                if (nl->cursor_position)
+                {
+                    if (nl->cursor_position > (s - nl->text))
+                    {
+                        l->cursor_position = strlen(tl) +
+                            nl->cursor_position - (s - nl->text);
+                    }
+                    else
+                    {
+                        l->cursor_position = strlen(tl) + 1;
                     }
                 }
 
@@ -695,6 +740,31 @@ int wrap(LINE * cl, int x, int y, int rm)
                     strcat(tl, " ");
                 }
 
+                /* Adapt the cursor position */
+
+                if (nl->cursor_position)
+                {
+                    if (nl->cursor_position > (s - nl->text))
+                    {
+                        if (nl->cursor_position - (s - nl->text) <=
+                            strlen(s))
+                        {
+                            l->cursor_position = strlen(tl) +
+                                nl->cursor_position - (s - nl->text);
+                            nl->cursor_position = 0;
+                        }
+                        else
+                        {
+                            nl->cursor_position -= strlen(s);
+                        }
+                    }
+                    else
+                    {
+                        l->cursor_position = strlen(tl) + 1;
+                        nl->cursor_position = 0;
+                    }
+                }
+                
                 strcat(tl, s);
 
                 /*
@@ -740,6 +810,24 @@ int wrap(LINE * cl, int x, int y, int rm)
                 strcpy(s, nl->text);
                 strcat(s, t);
 
+                /* adapt the cursor position */
+                if (l->cursor_position)
+                {
+                    if (l->cursor_position > (t - l->text))
+                    {
+                        nl->cursor_position = l->cursor_position -
+                            (t-l->text) + strlen(nl->text);
+                        l->cursor_position = 0;
+                    }
+                }
+                else if (nl->cursor_position)
+                {
+                    if (nl->cursor_position > strlen(nl->text))
+                    {
+                        nl->cursor_position += strlen(t);
+                    }
+                }
+
                 if (trailspace(s) == 0)
                 {
                     strcat(s, " ");
@@ -751,6 +839,7 @@ int wrap(LINE * cl, int x, int y, int rm)
                 nl->text = s;
                 *t = '\0';
                 wrapped_line = 1;
+
             }
             else
             {
@@ -772,13 +861,26 @@ int wrap(LINE * cl, int x, int y, int rm)
                 else
                 {
                     nl->text = xstrdup(t);
+                    s = l->text;
                 }
+
+                /* adapt the cursor position */
+                if (l->cursor_position)
+                {
+                    if (l->cursor_position > (t - l->text))
+                    {
+                        nl->cursor_position = l->cursor_position -
+                            (t-l->text) + (s - l->text);
+                        l->cursor_position = 0;
+                    }
+                }
+
 
                 *t = '\0';
                 wrapped_line = 1;
             }
+            l = l->next;
         }
-        l = l->next;
     }
     return wrapped_line;
 }
@@ -1023,12 +1125,12 @@ static void delword(void)
 
     s = line_buf + x - 1;
 
-    while (*s && !isspace(*s))
+    while (*s && !m_isspace(*s))
     {
         s++;
     }
 
-    while (*s && isspace(*s))
+    while (*s && m_isspace(*s))
     {
         s++;
     }
@@ -1155,7 +1257,7 @@ static void go_word_right(void)
 
     while (fsm < 3)
     {
-        c = isspace(*(line_buf + x - 1));
+        c = m_isspace(*(line_buf + x - 1));
         switch (fsm)
         {
         case 0:
@@ -1228,7 +1330,7 @@ static void go_word_left(void)
 
     while (fsm < 4)
     {
-        c = isspace(*(line_buf + x - 1));
+        c = m_isspace(*(line_buf + x - 1));
         switch (fsm)
         {
         case 0:
@@ -2190,23 +2292,20 @@ static void toggle_ins(void)
     }
 }
 
-static void shellos(void)
+static void close_screen(void) /* used by shellos, and on WND_WM_RESIZE) */
 {
-    LINE *curr;
-    int y2;
-    static char tmp[PATHLEN];
-
-    mygetcwd(tmp, PATHLEN);
-    setcwd(ST->home);
-
     WndClose(hMnScr);
     KillHotSpots();
     TTgotoxy(term.NRow - 1, 0);
     TTclose();
     cursor(1);
+}
 
-    fputs("\nEnter the command \"EXIT\" to return to " PROG ".\n", stderr);
-    shell_to_dos();
+static void reopen_screen(void) /* used by shellos, and on WND_WM_RESIZE */
+{
+    LINE *curr;
+    int y2;
+    int oldmaxx = maxx;
 
     /* Redraw the screen. */
 
@@ -2217,18 +2316,89 @@ static void shellos(void)
     ShowNewArea();
     ShowMsgHeader(messg);
 
-    /* Redraw the text. */
+    edminy = 5;
+    edmaxy = maxy - 1;
+    ed_miny = 1;
+    ed_maxy = edmaxy - edminy - 1;
 
+    if (oldmaxx != maxx) /* terminal size has changed - rewrap! */
+    {
+        adapt_margins();
+
+                                /* mark the cursor position */
+        for (curr = msgtop; curr != NULL; curr = curr->next)
+        {
+            if (curr == current)
+            {
+                curr->cursor_position = x;
+            }
+            else
+            {
+                curr->cursor_position = 0;
+            }
+        }
+
+                                /* rewrap the message */
+        for (curr = msgtop; curr != NULL; curr = curr->next)
+        {
+            wrap (curr, 0, 0, SW->rm);
+        }
+
+                                /* search the cursor position */
+        current = NULL;
+        for (curr = msgtop, currline = 1; curr != NULL; curr =
+                 curr->next, currline++)
+        {
+            if (curr->cursor_position)
+            {
+                current = curr;
+                x = curr->cursor_position;
+                break;
+            }
+        }
+        if (current == NULL)
+        {
+            ed_error("reopen_screen", "lost track of cursor!");
+        }
+            
+        SetLineBuf();
+    }
+
+    /* redraw the screen */
+
+    if (y > ed_maxy)
+    {
+        y = ed_maxy;
+    }
     y2 = y;
     curr = current;
     while (y2 > ed_miny && curr->prev)
     {
         curr = curr->prev;
-        y2--;
+            y2--;
     }
-    RedrawPage(curr, y2);
-    setcwd(tmp);
+    y -= (y2 - ed_miny);
+    RedrawPage(curr, ed_miny);
+
     cursor(1);
+    GotoXY(x,y);
+}
+
+static void shellos(void)
+{
+    static char tmp[PATHLEN];
+
+    mygetcwd(tmp, PATHLEN);
+    setcwd(ST->home);
+
+    close_screen();
+
+    fputs("\nEnter the command \"EXIT\" to return to " PROG ".\n", stderr);
+    shell_to_dos();
+
+    reopen_screen();
+
+    setcwd(tmp);
 }
 
 static void doscmd(void)
@@ -2436,6 +2606,12 @@ int editmsg(msg * m, int quote)
 
     while (!done)
     {
+        if (window_resized)
+        {
+            close_screen();
+            reopen_screen();
+            window_resized = 0; /* ack! */
+        }
         UpdateMem();
         UpdateXY();
         GotoXY(x, y);

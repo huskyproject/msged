@@ -90,6 +90,7 @@
 #define MAX_HOT_GROUP     40       /* max # of HotGroups */
 #define WND_WM_MOUSE      0x01     /* we got a Mouse Message */
 #define WND_WM_CHAR       0x02     /* we got a keyboard message */
+#define WND_WM_RESIZE     0x03     /* the window has been resized */
 #define WND_WM_COMMAND    0x0020   /* we got a recognized id (was 0x04) */
 
 /* these are wid's reserved for useage - wids start at 20 */
@@ -244,5 +245,7 @@ unsigned int MnuGetMsg(EVT * event, unsigned long wid);
 extern int wnd_suppress_shadows;
 extern int wnd_force_monochrome;
 extern int wnd_bs_127;
+
+extern int window_resized;
 
 #endif

@@ -7,6 +7,10 @@ Features, Changes and Fixes in the current development version of MsgEd
 
 Features:
 
+- Unix: MsgEd TE is now able to correctly recognize the terminal size. It is
+  also able to recoginze when the size of the xterm it is running in is 
+  changed and adapts itself accordingly.
+
 - MsgEd is now able to read the mail area configuration from GEcho 1.20.
   Use it like "AreaFile GEcho c:\mailbox\gecho". The parameter to "AreaFile
   GEcho" designates the *directory name* where GEcho is installed. Inside
@@ -27,6 +31,12 @@ Features:
   "Switch ReceiveAllAddresses Off" to the configuration file.
 
 Fixes:
+
+- Segmenatation faults and even worse errors fixed when Msged was started in
+  a very small terminal (e.g. 8x8).
+
+- Typing umlauts did not work any more  after an OS shell (Alt+J) has been
+  performed. 
 
 - If a mail in an area with the "u" flag contained multiple "from:"-lines
   (which happens if an internet user forwards mail from another internet

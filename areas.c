@@ -127,6 +127,8 @@ static void CalcDef(int max, int cur, int *top, int miny, int maxy, int *y)
     }
 }
 
+static int AreaBoxCurItem;
+
 static int AreaBox(char **Itms, int y1, int y2, int len, int def, WND * hPrev, WND * hWnd, int Sel, int Norm, int indent)
 {
     EVT e;
@@ -194,6 +196,13 @@ static int AreaBox(char **Itms, int y1, int y2, int len, int def, WND * hPrev, W
 
         switch (e.msgtype)
         {
+        case WND_WM_RESIZE:
+            maxx = term.NCol;
+            maxy = term.NRow;
+            AreaBoxCurItem = currItem;
+            return -2;  /* leave the list so it can be rebuilt with
+                           the proper window dimensions */
+
         case WND_WM_MOUSE:
             switch (Msg)
             {
@@ -556,42 +565,55 @@ static int AreaBox(char **Itms, int y1, int y2, int len, int def, WND * hPrev, W
 int mainArea(void)
 {
     WND *hCurr, *hWnd;
-    int ret, wid, dep, i;
+    int ret = -1, wid, dep, i;
 
-    msgederr = 0;
-    wid = maxx - 1;
-    dep = maxy - 2;
-
-    WndClearLine(0, cm[MN_NTXT]);
-    WndClearLine(maxy - 1, cm[MN_NTXT]);
-    hCurr = WndTop();
-    hWnd = WndOpen(0, 1, wid, dep, NBDR, 0, cm[MN_BTXT]);
-    WndBox(0, 0, maxx - 1, maxy - 3, cm[MN_BTXT], SBDR);
-
-    WndWriteStr(3, 0, cm[LS_TTXT], "EchoID");
-    WndWriteStr(maxx - 19, 0, cm[LS_TTXT], "Msgs");
-    WndWriteStr(maxx - 12, 0, cm[LS_TTXT], "New");
-    WndWriteStr(maxx - 7, 0, cm[LS_TTXT], "Last");
-
-    BuildList(&alist);
-
-    ret = AreaBox(alist, 1, min(dep - 2, SW->areas), wid - 1, SW->area,
-      hCurr, hWnd, cm[MN_STXT], cm[MN_NTXT], 1);
-
-    for (i = 0; i < SW->areas; i++)
+    do
     {
-        xfree(alist[i]);
-    }
+        msgederr = 0;
+        wid = maxx - 1;
+        dep = maxy - 2;
 
-    xfree(alist);
+        WndClearLine(0, cm[MN_NTXT]);
+        WndClearLine(maxy - 1, cm[MN_NTXT]);
+        hCurr = WndTop();
+        hWnd = WndOpen(0, 1, wid, dep, NBDR, 0, cm[MN_BTXT]);
+        WndBox(0, 0, maxx - 1, maxy - 3, cm[MN_BTXT], SBDR);
 
-    if (ret < 0)
-    {
-        msgederr = 1;
-    }
+        WndWriteStr(3, 0, cm[LS_TTXT], "EchoID");
+        WndWriteStr(maxx - 19, 0, cm[LS_TTXT], "Msgs");
+        WndWriteStr(maxx - 12, 0, cm[LS_TTXT], "New");
+        WndWriteStr(maxx - 7, 0, cm[LS_TTXT], "Last");
 
-    WndClose(hWnd);
-    WndCurr(hCurr);
+        BuildList(&alist);
+
+        ret = AreaBox(alist, 1, min(dep - 2, SW->areas), wid - 1, 
+                      (ret == -2) ? AreaBoxCurItem : SW->area,
+                      hCurr, hWnd, cm[MN_STXT], cm[MN_NTXT], 1);
+
+        for (i = 0; i < SW->areas; i++)
+        {
+                xfree(alist[i]);
+        }
+        
+        xfree(alist);
+        
+        if (ret == -1)
+        {
+                msgederr = 1;
+        }
+        if (ret == -2)
+        {
+            /*  returncode -2 means that the list should be restarted;
+                it did only exit because it had to be rebuild because
+                of a terminal window resize operation */
+            window_resized = 1;
+        }
+        
+        WndClose(hWnd);
+        WndCurr(hCurr);
+
+    } while (ret == -2);
+
     return ret;
 }
 

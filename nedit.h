@@ -21,7 +21,7 @@ typedef struct _line
     unsigned int hide   : 1;    /* this is a hidden line */
     unsigned int quote  : 1;    /* this is a quoted line */
     unsigned int templt : 1;    /* was this a template line? */
-    int column;                 /* if a block, starting column */
+    int cursor_position;        /* != 0 if line has the cursor */
     struct _line *prev;         /* previous line in BUFFER */
     struct _line *next;         /* next line in BUFFER */
 }

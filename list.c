@@ -515,6 +515,8 @@ void do_list(void)
     unsigned long i, a, j;
     int y;
 
+begin:
+
     if (in_list || !CurArea.status)  /* stop recursion */
     {
         return;
@@ -536,7 +538,18 @@ void do_list(void)
     WndBox(0, 0, maxx - 1, maxy - 3, cm[LS_BTXT], SBDR);
 
     message = KillMsg(message);
-    a = CurArea.current;
+
+    if (done == 2)
+    {
+         done = 0;  /* this an subsequent entry into the list which
+                       results from a window resize operation. */
+    }
+    else
+    {
+         a = CurArea.current;
+                    /* this is the first entry - set the pointer to
+                       the current message in this area */
+    }
     y = 1;
     update(headers, a, y);
 
@@ -604,6 +617,14 @@ void do_list(void)
 
         switch (event.msgtype)
         {
+        case WND_WM_RESIZE:  
+                /* the window has been resized. we have to exit and
+                   rebuild the list. */
+                maxx = term.NCol;
+                maxy = term.NRow;
+                done = 2;
+                break;
+                
         case WND_WM_MOUSE:
             switch (Msg)
             {
@@ -878,4 +899,9 @@ void do_list(void)
     xfree(headers);
     WndClose(hWnd);
     WndCurr(hCurr);
+
+    if (done == 2) /* resize occured, continue with rebuilding the list */
+    {
+         goto begin;
+    }
 }

@@ -15,6 +15,8 @@ int (*KeyPreProc) (int ch) = NULL;
 int NumHots = 0;
 EVT e;
 
+int window_resized = 0;        /* signals a resize ... */
+                                   
 void PushHotGroup(HotGroup * New)
 {
     if (NumHots == MAX_HOT_GROUP)
@@ -103,6 +105,10 @@ unsigned int MnuGetMsg(EVT * event, unsigned long wid)
                 event->msg = KeyPreProc(ch);
             }
         }
+        break;
+
+    case WND_WM_RESIZE:
+        window_resized = 1;
         break;
 
     default:

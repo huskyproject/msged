@@ -50,6 +50,7 @@
 #include "makemsgn.h"
 #include "nshow.h"
 #include "charset.h"
+#include "wrap.h"
 
 #ifdef MSDOS
 #ifdef USE_CRITICAL
@@ -1480,7 +1481,7 @@ static void gotomsg(unsigned long i)
 
 /* newarea - gets a new area from the user and goes to it */
 
-int newarea(void)
+static int newarea(void)
 {
     int new;
 
@@ -1984,8 +1985,20 @@ int main(int argc, char *argv[])
     DrawHeader();
     RegisterKeyProc(CKey);      /* to allow for macros in the system */
 
-    while (newarea() >= 0)
+    while (endMain == 2 || newarea() >= 0)
     {
+        if (window_resized)
+        {
+            window_resized = 0;  /* ack! */
+            WndClose(hMnScr);
+            KillHotSpots();
+            TTclose();
+            InitScreen();
+            DrawHeader();
+            ShowNewArea();
+            adapt_margins();
+        }
+
         endMain = 0;
         message = KillMsg(message);
         message = readmsg(CurArea.current);
@@ -2001,6 +2014,7 @@ int main(int argc, char *argv[])
 
         while (!endMain)
         {
+
             if (!CurArea.messages || newmsg || !CurArea.status || message == NULL)
             {
                 if (!CurArea.status || message == NULL || !CurArea.messages)
@@ -2020,9 +2034,13 @@ int main(int argc, char *argv[])
 
             oldmsg = CurArea.current;
             command = MnuGetMsg(&event, hMnScr->wid);
-
             switch (event.msgtype)
             {
+            case WND_WM_RESIZE:
+                    window_resized = 1;  /* we'll exit to redraw the
+                                            screen */
+                    break;
+
             case WND_WM_COMMAND:
                 switch (command)
                 {
@@ -2139,16 +2157,16 @@ int main(int argc, char *argv[])
                 break;
             }
 
+            if (window_resized && endMain == 0) endMain = 2;
+
             if (CurArea.messages > 0 &&
               (!message || oldmsg != CurArea.current || CurArea.current == 0))
             {
                 message = KillMsg(message);
-
                 if (CurArea.current == 0)
                 {
                     CurArea.current = 1;
                 }
-
                 if (CurArea.status)
                 {
                     message = readmsg(CurArea.current);
@@ -2157,7 +2175,7 @@ int main(int argc, char *argv[])
             }
         }
 
-        if (CurArea.status)
+        if (CurArea.status && endMain != 2)
         {
             highest();
             AreaSetLast(&CurArea);

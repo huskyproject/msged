@@ -30,5 +30,5 @@ int WordStart(void);
 int editmsg(msg * m, int quote);
 int ed_error(char *fc, char *fmt,...);
 void count_bytes(LINE *l, long *bytes, long *quotes);
-
+void adapt_margins(void);
 #endif

@@ -8,12 +8,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include <ctype.h>
 #include "addr.h"
 #include "config.h"
 #include "nedit.h"
 #include "memextra.h"
 #include "msged.h"
+#include "mctype.h"
 
 char *show_address(ADDRESS * a)
 {
@@ -182,12 +182,12 @@ ADDRESS parsenode(char *t)
         return tmp;
     }
 
-    while (isspace(*t))
+    while (m_isspace(*t))
     {
         t++;
     }
 
-    if (!isdigit(*t) && (*t != '.'))
+    if (!m_isdigit(*t) && (*t != '.'))
     {
         tmp.notfound = 1;
         tmp.fidonet = 0;
@@ -269,7 +269,7 @@ ADDRESS parsenode(char *t)
             release(tmp.domain);
 
             s = t + 1;
-            while (*s && !isspace(*s) && *s != ')')
+            while (*s && !m_isspace(*s) && *s != ')')
             {
                 s++;
             }
@@ -365,7 +365,7 @@ void parse_internet_address (const char *string, char **cpdomain, char **cpname)
             bracestring = xstrdup(s + 1);
         }
         s = worktext;
-        while (isspace(*s))
+        while (m_isspace(*s))
         {
             s++;
         }

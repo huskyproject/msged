@@ -63,4 +63,4 @@ objs=   addr.o     \
 	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -I$(MSGDIR) -c $<
 
 $(TARGET): $(objs)
-	$(CC) $(COPT) -o $(TARGET) $(objs) $(MSGAPI) -lncurses
+	$(CC) $(COPT) -o $(TARGET) $(objs) $(MSGAPI)
