@@ -48,7 +48,7 @@ start:
     else
       if (isVar)
       { *(cpvar++)=*cpsrc;
-        if ((cpvar-var>=80)||(!isalnum(*cpsrc)))
+        if ((cpvar-var>=80)||((!isalnum(*cpsrc)) && (*cpsrc != '_')))
         { isVar=0; *cpvar=0;
           *(cpdest++)='%';
           if ((++l)>=maxlen) goto error;
