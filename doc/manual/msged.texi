@@ -2882,17 +2882,18 @@ configuration files.
 @item Syntax:
 @code{Lastread @var{lastread-file}}
 @item Example:
-@code{Lastread LASTREAD}
+@code{Lastread lastread}
 @end table
 
 The @var{lastread-file} parameter of this keyword specifies the name of the
-``lastread file''  that is used to store lastread pointers for Fido *.MSG
-areas. It should always be @file{LASTREAD}.
+default ``lastread file'' that is used to store lastread pointers for Fido
+*.MSG areas. This keyword gives the default filename for those username
+entries without individual lastread files configured via the @code{Name}
+keyword. @xref{Name,,The @code{Name} Keyword}, for more information.
 
-In contrast to the @var{lastread-file} parameter of the @code{Name} keyword,
-the @var{lastread-file} parameter globally changes the name of the lastread
-file for all users instead of only for a specific user name. @xref{Name,,The
-@code{Name} Keyword}, for more information.
+If you do not specify this keyword, a default value of @samp{lastread} is
+assumed, which is a very resaonble default. Hence, you normally do not need
+this keyword.
 
 @node MaxX and MaxY, MountDir, Lastread, Keywords
 @subsection MaxX, MaxY
@@ -2963,9 +2964,9 @@ configuration file.
 @item Examples:
 @code{Name "Tobias Ernst"}
 @item
-@code{Name "Joe Sysop"  LASTREAD 0}
+@code{Name "Joe Sysop"  lastread 0}
 @item
-@code{Name "Jane Sysop" LASTREAD 1}
+@code{Name "Jane Sysop" lastread 1}
 @end table
 
 You can specify your user name as the @var{name} parameter inside quotation
@@ -2975,14 +2976,16 @@ execution by pressing @key{CTRL}-@key{U}.
 
 Optionally, you can use the @var{lastread-file} parameter to specify the name
 of the file that stores the lastread pointers in Fido *.MSG areas. This one
-should always be named @samp{LASTREAD}.
+should be named @samp{lastread} for the sysop. If you configure other users
+with the same config file, e.g. your wife, son etc., you should give them
+separate lastread file names, so that each person can have individual last
+read pointers.
 
 As a third parameter, you can specify a @var{user-offset} for each individual
-name. The logic behind the user offset is as follows: Each distinct user of
-your message base should have his own lastread pointer. All lastread pointers
-are stored in a lastread file (@file{LASTREAD} for Fido *.MSG, @file{*.SQL}
-for squish). Each user who wants to have a separate lastread pointer must have
-a unique @dfn{user offset} into the lastread pointer file.
+name. This is used for all message base formats excpet *.MSG. Here, all users
+share the same lastread pointer file (with a fixed name that cannot be
+configured), but each user has a different offset into this file where he can
+store his personal lastread pointer.
 
 Normally, the sysop has a user offset of zero (which is the default for the
 @var{user-offset} parameter), and each BBS user has his user number as user
@@ -3608,12 +3611,10 @@ function would do it.
 @end table
 
 @xref{Name,,The @code{Name} Keyword}, for information about the meaning of
-the @var{user-offset} parameter and lastread pointer principles. In contrast
-to the @var{user-offset} parameter to the @code{Name} keyword, the
-@code{UserOffset} keyword specifies a single user offset numbers for all
-names configured in your configuration file. This can be useful if you are
-the only person using @value{MSGED}, but want to write under different names
-without having different lastread pointer offsets.
+the @var{user-offset} parameter and lastread pointer principles. The
+@code{UserOffset} keyword specifies a default user offset number valid for
+those users that do not have their individual user offset number configured
+in their @code{Name} statement.
 
 @node UUCP, UucpName, UserOffset, Keywords
 @subsection UUCP
@@ -4774,7 +4775,7 @@ compliant "cc" available.
 
 The files @file{makefile.lnx} and @file{makefile.bsd} should @emph{only} be
 used if you want to link the Smapi dynamically, and if you know what that
-means and what you are doing
+means and what you are doing.
 
 If you are annoyed by the executable generated with @file{makefile.unx}
 annouces itself as @samp{MsgEd/UNX} rather than @samp{MsgEd/LNX}, you can

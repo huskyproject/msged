@@ -209,7 +209,11 @@ Features:
 
 Fixes:
 
-- The lastread and useroffset handling is even more idiot-proof now.
+- Fixed the manual WRT lastread pointer handling. It contained some
+  blatantly wrong information about this topic.
+
+- Bugfixes for lastread pointer handling. The code should be really
+  idiot-proof now.
 
 - "xc:" crossposting now also works when editing a message, not only when
   creating a new message.
