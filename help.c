@@ -23,12 +23,20 @@ static int setup;
 static int CurrTopic;
 static int numTopics;
 
+#ifdef __TURBOC__
+#include <share.h>
+#endif
+
 void HelpInit(char *fileName)
 {
     int i;
 
     setup = 0;
+#ifdef __TURBOC__
+    help = _fsopen(fileName, "rb", SH_DENYNONE);
+#else    
     help = fopen(fileName, "rb");
+#endif    
     if (help == NULL)
     {
         return;
