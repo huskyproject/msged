@@ -188,7 +188,7 @@ int forward_msg(int to_area)
     }
     else
     {
-        MakeTemplateMsg(m, oldm, fr_area, MT_FOR);
+        MakeTemplateMsg(m, oldm, group_getareano(fr_area), MT_FOR);
         save(m);
         set_area(fr_area);
     }
@@ -269,7 +269,7 @@ int redirect_msg(int to_area)
     }
     else
     {
-        MakeTemplateMsg(m, oldm, fr_area, MT_RED);
+        MakeTemplateMsg(m, oldm, group_getareano(fr_area), MT_RED);
         save(m);
         set_area(fr_area);
     }
