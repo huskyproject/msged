@@ -3928,7 +3928,7 @@ Flags that specify the message area type. You have to use exactly one of
 those:
 
 @format
-@code{n} - netmail area,
+@code{m} - netmail area,
 @code{e} - echomail area,
 @code{l} - local mail area.
 @end format
@@ -3984,7 +3984,7 @@ different to your main AKA.
 Here are some examples:
 
 @example
-Fido   nup "Fidonet Netmail" e:\fido\netmail   2:2476/418.0
+Fido   mup "Fidonet Netmail" e:\fido\netmail   2:2476/418.0
 Squish eu  "MsgEd Support"   e:\fido\sq\msged  MSGED_ECHO 
 Squish eu8 "OS/2 Debate"     e:\fido\sq\os2deb OS2.DEBATE.GER
 Squish eu  "c't conference"  e:\fido\sq\ctger  CT.GER  21:492/2851.0
