@@ -84,22 +84,23 @@ document.
 @chapter Advanced Concepts in @value{MSGED}
 After you have managed to perform basic functions with @value{MSGED}, like
 reading messages, entering new messages, and replying to messages, this
-chapter will introduce you into some selected advanced concepts in
+chapter will introduce you into some advanced concepts in
 @value{MSGED} that deserve special attention, like how to use a
 Fidonet-Internet gateway, how to use eight bit character sets, and similar.
 
 @menu
 * Special Characters::          Special Characters and FSC 0054 Charset Kludges
+* Internet Gateways::           Using @value{MSGED} for e-mail correspondance.
 @end menu
 
-@node Special Characters,  , Advanced Concepts, Advanced Concepts
+@node Special Characters, Internet Gateways, Advanced Concepts, Advanced Concepts
 @section Using Special Characters - The FSC 0054 Charset Kludge
 @cindex FSC 0054
 @cindex special characters
 @cindex charset kludge
 @cindex character set conversion
 
-Languages other than English often use special characters beside the normal
+Languages other than English often use special characters besides the normal
 alphabet. Examples are the accented letters in French or the umlauts in
 German. IBM block graphics are also called special characters. This section
 will describe what measures have to be taken in order to be able to transmit
@@ -123,7 +124,7 @@ starting @value{MSGED} from, put the following to the beginning of your
 config file:
 
 @example
-OutputCharSet IBMPC
+OutputCharset IBMPC
 AreaFileFlags 8
 @end example
 
@@ -141,12 +142,12 @@ the ASCII character set is only 7 bit wide and does not leave room for
 national special characters. 
 
 In order to be able to transfer special characters like accents and umlauts,
-it was therefore necessary to use the eigtht bit in a byte and create an
-extended character set that defines how speical characters are encoded.
+it was therefore necessary to use eight bit wide extended character sets
+that defines how special characters are encoded.
 
 In contrast to the standard 7 bit ASCII character set, which is a single
-character set used by all computer systems, there exist several
-pseudo-standard character sets thant are 8 bits wide. All of them contain
+character set used by nearly all computer systems, there exist several
+pseudo-standard character sets that are 8 bits wide. All of them contain
 ASCII as an subset, but they all differ in how they encode special
 characters. DOS and OS/2 computers typically use the IBM PC character
 set. Unix computers and the Amiga typically use the ISO8859 character set,
@@ -160,13 +161,14 @@ computer, and vice versa, unless special measures are taken.
 @node Special Characters in Fidonet, @value{MSGED} and Special Characters, Problems with Special Characters, Special Characters
 @subsection How has this problem been solved in Fidonet?
 This issue of special characters has been a problem for Fidonet in the past,
-but it has been solved through the advent FSC 0054, so that you can now
+but it has been solved by the Fidonet standard FSC 0054, so that you can now
 safely use special characters in Fidonet mail @emph{if} your message editor
-supports FSC 0054. FSC0054 basically works like this:
+supports FSC 0054. FSC 0054 basically works like this:
 
 Every Fidonet editor that wants to be compatible with FSC 0054 must be
 delivered along with built-in or external character translation tables that
-tell the editor how it can convert text that contains special characters.
+tell the editor how it can convert text that contains special characters from
+one character set to another.
 
 When composing a message using a FSC 0054 compliant editor, you have two
 choices: By default, the editor allows you to enter the full range of special
@@ -174,31 +176,29 @@ characters that your computer supports, but when saving the message, the
 editor will use its character translation tables and convert your text into a
 7 bit clean representation that can be displayed on @emph{all} computers even
 if they don't support FSC 0054. For example, a German sharp s would be
-converted into double s (@samp{ss}), an e with accent would be converted into
-an e without accent, and so on. This is the maximum compatibility mode, and
-you should always use it if your editor offers it. It offers you the comfort
-of being able to write text just as you would in a letter (without having to
-translate special characters manually), but your mails will still be properly
-displayed on all computers.
+converted into double s, an e with accent would be converted into an e
+without accent, and so on. This is the maximum compatibility mode: It offers
+you the comfort of being able to write text just as you would in a letter,
+using all special characters that your language requries, but your mails
+will still be properly displayed on all computers.
 
-The other possibility is that your editor leaves the special characters that
-you typed in as is, but inserts a hidden kludge line, from here on referred
-to as the @dfn{charset kludge} into the message, that designates which
-character set you have used for composing the message. When your message is
-read on another computer by a Fidonet message reader that also supports FSC
-0054, the message reader will see the charset kludge in your mail and then
-use its internal translation tables to convert your message into the
-character set that this computer uses. The consequence is that even if your
-computer and the computer of the receiver use different character sets,
-everything that you typed in will look just the same on the receiver's screen
-than on yours. The only drawback is that this way of doing it requires that
-the receiver's system also supports FSC 0054, but nearly all message editors
-do it nowadays.
+The other (better) possibility is that your editor leaves the special
+characters that you typed in as is, but inserts a hidden kludge line, from
+here on referred to as the @dfn{charset kludge}, into the message, that
+designates which character set you have used for composing the message. When
+your message is read on another computer by a Fidonet message reader that
+also supports FSC 0054, the message reader will see the charset kludge in
+your mail and then use its charset translation tables to convert your
+message into the character set that this computer uses. The consequence is
+that even if your computer and the computer of the receiver use different
+character sets, everything that you typed in will look just the same on the
+receiver's screen than on yours, including all special characters that have
+been typed.
 
 @node @value{MSGED} and Special Characters,  , Special Characters in Fidonet, Special Characters
 @subsection How do I configure @value{MSGED} to support FSC 0054?
 @value{MSGED} fully supports FSC 0054. The character set translation files
-are named @file{READMAPS.DAT} and @file{WRITMAPS.DAT}. You enable character
+are named @file{READMAPS.DAT} and @file{WRITMAPS.DAT}. You can enable character
 set translation support in @value{MSGED} by simply copying these files into
 the directory from which @value{MSGED} is started. If the files can be found
 and are valid, you will be notified that the FSC 0054 character set
@@ -264,7 +264,8 @@ AreaFileFlags 8
 @end example
 
 (If you already have an @code{AreaFileFlags} statement, just add the @samp{8}
-character to its parameters).
+character to its parameters). @xref{Areafile and AreaFileFlags, The @code{AreaFileFlags}
+Keyword}, for more information.
 
 This will allow @value{MSGED} to use special characters in conjunction with a
 charset kludge in all message areas imported from a tosser configuration
@@ -276,6 +277,187 @@ individually. The same applies if you have to define your areas manually for
 other reaseons. @xref{Manual Area Definition,,Manual Area Definition}, for
 more information on this.
 
+@node Internet Gateways,  , Special Characters, Advanced Concepts
+@section Internet Gateways - Using @value{MSGED} for e-mail and newsgroups
+
+@value{MSGED} has built-in support for Fidonet to Internet Gateways, allowing
+for seemless coexistence of Fidonet mail and Internet mail. When you use
+@value{MSGED} to talk to your Internet gateway, you do not even have to know
+about all the nasty details of gateway addressing - @value{MSGED} does the
+job for you. This makes @value{MSGED} the ideal choice as an editor to give
+to new users that want instant e-mail access without having to care for
+klumsy gateway addressing rules.
+
+@menu
+* Gateway Principles::          
+* Gateway Configuration::       
+* Gateway Usage::               
+@end menu
+
+@node Gateway Principles, Gateway Configuration, Internet Gateways, Internet Gateways
+@subsection How to properly address an Internet Gateway
+There are various ways of designing Fidonet to Internet gateways. The most
+common is the @dfn{Gatebau} standard, which among others is
+implemented in the excellent gateway software Fidogate by Martin Junius. You
+can find more information about Fidogate at @url{http://www.fido.de}. Various
+other gateway programs more or less conform to this standard as well.
+
+Addressing a Gatebau compatible gateway works like this: The gateway has it's
+own node- or point number. When you wish to write an e-mail using a standard
+Fidonet editor, you have to adress your netmail to this gateway node
+number. As receiver's name, you can use the real name of the receiver, or you
+can use @samp{UUCP}, if the real name of the receiver is unknown. Some
+not-so-smart gateway software requires that you always use @samp{UUCP} as
+receiver's name. - In order to tell the gateway the e-mail address that the
+mail should be delivered to, the very first line of your message must contain
+the e-mail address of the receiver, preceded by @samp{To:}. The e-mail
+address can be specified in three different forms. Here are three possible
+first lines of gateway-addressed netmails:
+
+@example
+To: juser@@somedomain.com
+To: juser@@somedomain.com (Joe User)
+To: Joe User <juser@@somedomain.com>
+@end example
+
+The last of these forms is not supported by some older gateway
+software. - The @samp{To:}-line must be followed by an empty line, and then you
+can begin with your message text. A complete e-mail addressed to an internet
+gateway at @samp{2:99/999.0} could look this:
+
+@example
+==========Message Header==================
+From:    Bill Sysop, 2:99/123.0
+To:      UUCP, 2:99/999.0
+Subject: This is a test e-mail
+==========Message Body====================
+To: juser@@somedomain.com (Joe User)
+
+Hello Joe!
+
+This is a test.
+
+Regards, 
+Bill.
+@end example
+
+Receiving e-mail from the gateway is similar: You receive an e-mail from the
+gateway node or point, and in the mail boday, the first line will contain a
+@samp{From:}-line which designates the e-mail address the mail was
+from. Sometins, the @samp{From:}-line is followed by a @samp{Reply-to:} line,
+which indicates that the sender wishes to receive any answers at the e-mail
+address shown in the @samp{Reply-to:}-line rather than at the e-mail address
+shown in the @samp{From:}-line. Here is an example:
+
+@example
+==========Message Header========================
+From:    Joe User, 2:99/999.0
+To:      Bill Sysop, 2:99/123.0
+Subject: Re: This is a test e-mail
+==========Message Body==========================
+From: Joe User <joe@@some-machine.somedomain.com>
+Reply-To: Joe User <juser@@somedomain.com>
+
+Hello Bill!
+
+I received your test e-mail without problems.
+
+Regards, 
+Joe.
+@end example
+
+This interface works with every stone-age Fidonet editor, but it is
+clumsy. When replying to an e-mail that came through a gateway, for example,
+you would have to remember the sender's e-mail address, and when writing the
+reply, you would have to manually insert a correct @samp{To:}-line, just to
+name one problem.
+
+Therefore, @value{MSGED} can do the work for you. If properly configured,
+@value{MSGED} will to the job of interpreting and inserting @samp{From:},
+@samp{Reply-To:} and @samp{To:} lines. With gateway support turned on,
+writing an e-mail with @value{MSGED} is just as easy as writing a fidonet
+netmail. In the following, we will see how to configure @value{MSGED} for
+gateway support and how to use these features.
+
+@node Gateway Configuration, Gateway Usage, Gateway Principles, Internet Gateways
+@subsection How to configure @value{MSGED} to use an Internet Gateway
+In order to do the gateway addressing stuff for you, @value{MSGED} needs to
+know which gateway you wish to use for sending e-mail. @value{MSGED} will
+recognise gated e-mail no matter which gate it comes from, but it knows which
+gateway can be used to send replies and new e-mail, because most gateways
+require that you pay some sort of registration fee before you can use them
+for sending mail.
+
+The @code{UUCP} keyword is used to tell @value{MSGED} the node number of your
+internet gateway (@pxref{UUCP,,The @code{UUCP} Keyword}). It simply takes
+this node numer as argument. Example:
+
+@example
+UUCP 242:4900/99.0
+@end example
+
+The @code{UucpName} keyword is used to tell @value{MSGED} the name that must
+be in the receiver's name field in a netmail sent to the gateway. For older
+gateways, you should use
+
+@example
+UucpName UUCP
+@end example
+
+If your gateway is running Fidogate or another more advanced gateway program,
+you should use
+
+@example
+UucpName *
+@end example
+
+This enables real name mode, i.E., mail addressed to the gateway will have
+the real name of the receiver in the receiver's name field instead of the
+pseudo name @samp{UUCP}. The advantage of this is that your message templates
+will generate strings like @samp{Hello Joe!} instead of @samp{Hello UUCP!}
+@dots{}
+
+There is yet another task to be done before you can use the gateway
+addressing features of @value{MSGED}. For historical reasons, the gateway
+addressing features are disabled by default, and you have to enable them on a
+per-area basis.
+
+Unless you have special needs, it is best to enable the gateway addressing
+features for @emph{all} areas, because a lot of fidonet areas are gated to
+internet somewhere. You do this by adding the @samp{u} flag to every area
+that you have manually defined in the @value{MSGED} configuration file, and
+by specifying @code{AreaFileFlags u} at the beginning of the configuration
+file in order to set the @samp{u} flag for all area definitions that are
+imported from your tosser configuration file. @xref{Area
+Definitions,,Defining Message Areas}, for more information of message area
+flags.
+
+@node Gateway Usage,  , Gateway Configuration, Internet Gateways
+@subsection Using Internet Gateays with @value{MSGED}
+Once you have configured @value{MSGED} with the data of the gateways that you
+wish to use and turned on the @samp{u} flag for all areas, writing e-mail is
+very simple. When entereing a message, you just have to enter a valid e-mail
+address instead of a user name. If @value{MSGED} recognises a valid e-mail
+address, it will not look up this name in the nodelist or prompt you for a
+node number, but it will automatically address the mail to the configured
+gateway nodenumber and generate the necessary @samp{To:}-line. The
+@samp{To:}-line will not even be shown to you, unless you have the
+@code{ShowNotes} switch on (@pxref{List of Switches,,List of available
+switches}).
+
+Reading e-mail that comes from any intrenet gateway is equally simple. If the
+@samp{u} flag is set for an area, @value{MSGED} will automatically recognise
+@code{From:} and @code{Reply-To:} lines and hide them from you. Instead of
+displaying the gateway pseudo user name and node numer, it will display 
+the e-mail address that the mail is coming from in the message header field.
+
+@value{MSGED} also supports newsgroups, i.E. echomail areas that are being
+received from an internet gateway, as long as the @samp{u} flag ist turned on
+for these areas.. In newsgroups, @value{MSGED} will handle mails (postings)
+just as in netmail areas, i.E. it will display the sender's e-mail address in
+the message header. If you do a private reply (i.E. a reply to a netmail area
+using @key{Alt}-@key{N}), the e-mail reply will correctly be addressed to
+your favorite internet gateway.
 
 @node Keyboard Reference, Configuration Reference, Advanced Concepts, Top
 @chapter @value{MSGED} Keyboard Reference
@@ -284,7 +466,7 @@ This chapter gives a complete listing of available keystroke combinations in
 the keyboard to suit your preferences.
 @c @value{MSGED} traditionally uses a DOS-ish PC keyboard with @key{Alt} key
 @c and function keys. Unix users should refer to the Unix installation notes
-@c for information before reading on in this chapter.
+@c for information before reading on in this chapter. FIXME
 
 @menu
 * Arealist Keystrokes::         Keystroke combinations in the Arealist Screen
@@ -534,6 +716,7 @@ This works like @code{search}, but only scans message headers.
 @table @asis
 @item Function: @code{view}, bound to: @key{Alt}-@key{V}
 @krindex view
+@cindex kludge lines, showing or hiding
 Toogle display of message control lines, kludge lines, etc.
 
 @item Function: @code{config}, bound to: @key{Alt}-@key{S}
@@ -932,6 +1115,7 @@ are generally case-insensitive.
 * Alterfunc::                   
 * AreaExcl::                    
 * Areafile and AreaFileFlags::  
+* AssumeCharset::               
 * Color::                       
 * Colour::                      
 * CurStart/CurEnd::             
@@ -1068,13 +1252,43 @@ You must specify the @code{AreaExcl} keyword in the configuration file
 @emph{before} the @code{Squish}, @code{Fido}, @code{Quick} and
 @code{Areafile} keywords.
 
-@node Areafile and AreaFileFlags, Color, AreaExcl, Keywords
+@node Areafile and AreaFileFlags, AssumeCharset, AreaExcl, Keywords
 @subsection Areafile and AreaFileFlags
 
 These keywords are documented in the section about area configuration
 (@pxref{Areafile Parsing,,Reading a Tosser Configuration File (Areafile)}).
 
-@node Color, Colour, Areafile and AreaFileFlags, Keywords
+@node AssumeCharset, Color, Areafile and AreaFileFlags, Keywords
+@subsection AssumeCharset
+@cindex default character set
+@cindex character set, default for reading
+@findex AssumeCharset
+
+@table @asis
+@item Syntax:
+@code{AssumeCharset @var{charset}}
+@item Example:
+@code{AssumeCharset IBMPC}
+@end table
+
+In Fidonet mail, mails that contain special characters must carray a charset
+kludge line (@pxref{Special Characters,,Using Special Characters -
+The FSC 0054 Charset Kludge}). However, still a good percentage of
+fidonetmail contains special characters, but no charset kludge line.
+
+By default, @value{MSGED} will replace all special characters with question
+marks in mails without charset kludge, because @value{MSGED} does not know
+how to properly translate such special characters. If you do not like this,
+you can use the @code{AssumeCharset} keyword to specify that @value{MSGED}
+should assume that all special characters in mails that do not contain a
+charset kludge have been composed using the character set @var{charset}, and
+translate the special characters accordingly.
+
+In Germany, for example, nearly all mail that contains special characters but
+does not contain a charset kludge has been composed using the IBMPC character
+set, so it makes sense to specify @samp{AssumeCharset IBMPC} here.
+
+@node Color, Colour, AssumeCharset, Keywords
 @subsection Color
 @cindex color settings
 @cindex colour settings
@@ -1198,7 +1412,8 @@ internal editor as compared to the external one.
 @item Syntax:
 @code{EnableSC @var{string}}
 @item Example:
-@code{EnableSC} @"a@"o@"u@"A@"O@"U
+@code{EnableSC} @var{type-national-characters-here}
+@c "a@"o@"u@"A@"O@"U
 @end table
 
 (The example from above will only look correct in the TeX (@file{.DVI} or
@@ -2259,12 +2474,32 @@ reading mode. You can also toogle this switch during program execution by
 pressing @key{Alt}-@key{V}. Unlike in older MsgEd versions, this switch
 does not pertain to origin and/or tear lines. Default: Off.
 
+@item SquishLock
+@findex SquishLock
+@cindex locking the message base, for performance reasons
+@cindex message base locking, for performance reasons
+If the @code{SquishLock} switch is turned on, @value{MSGED} will lock every
+message area that is entered (and of course unlock it when it is left), thus
+effectively denying access to this area to any other program. This will
+result in a considerable speed increase when browsing message areas, but it
+has the drawback that the tosser will not be able to toss to an message area
+as long as it is open in @value{MSGED}. So if you are accustomed to leaving
+@value{MSGED} open even when going away, you should better leave this switch
+off.
+
+Note that this switch has nothing to do with data integrity concerns. MsgEd
+will of course lock the Squish Message Base when writing a message in order
+to insure data integrity even if the SquishLock switch is turned off.
+
+The default value of the SquishLock switch is Off (in contrast to the
+mainstream MsgEd 4.30, where it is turned on by default).
+
 @item UseLastr
 @findex UseLastr
-You should leave this switch turned on. It instructs @value{MsgEd} to use the
+You should leave this switch turned on. It instructs @value{MSGED} to use the
 lastread pointer for Fido *.MSG style areas. On the other hand, turning this
 switch off probably does not disable @emph{all} lastread pointer handling
-code in @value{MsgEd} @dots{} Older @value{MsgEd} versions had this switch
+code in @value{MSGED} @dots{} Older @value{MSGED} versions had this switch
 turned off by default and it was undocumented. Hence a lot of problems with
 lastread pointers in those versions @dots{} Default: On.
 

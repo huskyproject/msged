@@ -7,6 +7,7 @@ Features, Changes and Fixes in MsgEd TE 05
 
 Changes:
 
+
 - ATTENTION!!!  If you want to use the gateway addressing feature
   (automatic recognition of fidogate-style to:- and from:-lines), that had
   been enabled by default in previous versions of MsgEd TE, you now must
@@ -18,7 +19,38 @@ Changes:
   introduced with MsgEd TE have been removed.  You can now control these
   features with the Areafileflags keyword (see below).
 
+- The UNIX version now uses ~/.msged as default configiuration file.
+
+
 Features:
+
+- New switch: SquishLock. If you add "Switch SquishLock On" to your
+  configuration file, MsgEd TE will lock every message area that is entered
+  (and of course unlock it when it is left). This will result in a
+  considerable speed increase when browsing message areas, but it has the
+  drawback, that the tosser will not be able to toss to an message area
+  as long as it is open in MsgEd TE. So if you are accustomed to leaving
+  MsgEd TE open even when going away, you should better leave this switch
+  off. - Note that this switch has nothing to do with data integrity
+  concerns. MsgEd will of course lock the Squish Message Base when writing 
+  a message in order to insure data integrity even if the SquishLock switch
+  is turned off. - The default value of the SquishLock switch is Off (in
+  contrast to the mainstream MsgEd 4.30, where it is on by default).
+
+- New keyword: AssumeCharset. You can specify a character set that should
+  be assumed if a mail with special characters in it is read that does not
+  have a CHRS kludge. The most reasonable use of this keyword is to specify 
+  "AssumeCharset IBMPC", because 98% of the mails with special characters
+  but without charset kludge are written in the IBMPC charset ...
+  If you do not use this keyword to assume a default character set, all
+  special characters in mails without charset kludge will be replaced by
+  question marks.
+
+- Home directories: You can now use the ~/ in filenames in the config file
+  or interactivley; it will be replaced by your home directory. (Under non-
+  UNIX systems, this will be taken from the HOME environment variable).
+  Unter UNIX, you can also use ~username/ which will be replaced by the
+  home directory of the user named "username".
 
 - Piping mail text: When exporting a file (Alt+W), you can prefix the file
   name with a pipe sign (|). The file name will then be treated as a program
@@ -136,6 +168,8 @@ Features:
   Note that enabling national special characters will probably disable some
   Alt-Keycombinations.  See the notes on Unix in the documentation for
   further information.
+
+- Ported MsgEd to Unix.
 
 Fixes:
 
