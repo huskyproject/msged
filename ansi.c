@@ -45,7 +45,6 @@
 #endif
 
 static volatile int resize_pending = 0;
-
 #if (defined(__unix__) || defined(unix)) && !defined(USG)
 #include <sys/param.h>          /* used to differentiate BSD from SYSV  */
 #endif                                
@@ -1026,12 +1025,12 @@ unsigned int TTGetKey(void)
                         }
                         break;
                     case 55:
-                        block_console(0,2);
-                        ch = getkey();
+                        blocE  (ÁN@ 3ÿÃ&‚aEÀ¢	a
+EóšVËs_        ch = getkey();
                         block_console(0,0);
                         switch (ch)
-                        {
-                        case '~':
+  E  (¾Æ@ 3šÃ&‚aEÀ¢	a
+BÀÔÙÉûÖ                case '~':
                             ch = Key_F6; /* xterm / ANSI F6 */
                             break;
                         default:
@@ -1348,13 +1347,15 @@ int TTkopen(void)
 #if 1
     ioctl(fileno(stderr), TIOCGWINSZ, &w);
 
-    term.NRow = w.ws_row;
-    term.NCol = w.ws_col;
+    if (w.ws_row > MINTERMY)
+        term.NRow = w.ws_row;
+    if (w.ws_col > MINTERMY)
+	term.NCol = w.ws_col;
 #endif
 #endif    
 
-    if (w.ws_row < MINTERMY) term.NRow = MINTERMY;
-    if (w.ws_col < MINTERMX) term.NCol = MINTERMX;
+    if (term.NRow < MINTERMY) term.NRow = MINTERMY;
+    if (term.NCol < MINTERMX) term.NCol = MINTERMX;
 
 #ifdef SASC
     coninit();
