@@ -24,6 +24,9 @@ endif
 ifeq ("$(OBJ)", "")
   OBJ=$(_OBJ)
 endif
+ifeq ("$(EXE)", "")
+  EXE=$(_EXE)
+endif
 
 CDEFS=-D$(OSTYPE) -DUSE_MSGAPI -DUSE_FIDOCONFIG -DUNAME=\"$(UNAME)\" \
       $(ADDCDEFS) -DREADMAPSDAT=\"$(CFGDIR)/msged/readmaps.dat\" \
