@@ -4,7 +4,7 @@
 ;
 2               ; level number
 ;
-LATIN-5		; from set
+ISO-5		; from set
 CP866		; to set
 
 \0 \x3f		; 128

@@ -369,15 +369,17 @@ int process(char *filename)
                 }
                 strcpy(ltable.to_charset, word1);
                 upcase(ltable.to_charset);
-                if (!strcmp(ltable.to_charset, readmaps.charset_name))
-                {
-                    maps = &readmaps; /* read */
-                    printf ("%s: Using for READMAPS.DAT.\n", filename);
-                }
-                else if (!strcmp(ltable.from_charset, writmaps.charset_name))
+                if (!strcmp(ltable.from_charset, writmaps.charset_name))
                 {
                     maps = &writmaps;
                     printf ("%s: Using for WRITMAPS.DAT.\n", filename);
+                }
+		else
+                if ((!strcmp(ltable.to_charset, readmaps.charset_name)) ||
+                   (!strcmp(ltable.to_charset, "ASCII")))
+                {
+                    maps = &readmaps; /* read */
+                    printf ("%s: Using for READMAPS.DAT.\n", filename);
                 }
                 else
                 {

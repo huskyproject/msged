@@ -5,7 +5,7 @@
 2               ; level number
 ;
 CP866		; from set
-LATIN-5		; to set
+ISO-5		; to set
 ;
 \0 \xb0		; 128
 \0 \xb1		; 129
