@@ -1,0 +1,2055 @@
+\input texinfo   @c -*-texinfo-*-
+
+@c %**start of header
+@setfilename msged.info
+@settitle MsgEd TE 05 - A Public Domain Fidonet Message Editor
+@setchapternewpage odd
+@set MSGED MsgEd TE
+@set VERSION 05
+@set EDITION 01
+@defindex kr
+@defindex ke
+@c %**end of header
+
+@iftex
+@parindent=0pt
+@end iftex
+@iftex
+@afourpaper
+@end iftex
+
+
+@titlepage
+@title @value{MSGED} @value{VERSION} Manual
+@subtitle A Public Domain Fidonet Message Reader/Editor
+@author Tobias Ernst @@ 2:2476/418.0
+@end titlepage
+
+@ifinfo
+@node Top, Overview, (dir), (dir)
+@top @value{MSGED}
+This document describes @value{MSGED} @value{VERSION}, a Public Domain
+Fidonet Message Reader and Editor Software for OS/2, DOS and Unix.
+
+@menu
+* Overview::                    What is @value{MSGED}?
+* Introduction::                @value{MSGED} for beginners. 
+* Keyboard Reference::          How to use and change the key combinations.
+* Configuration Reference::     Explanation of the configuration file.
+* Keyword Index::               
+* KeyFuncs Index::              
+@end menu
+@end ifinfo
+
+@node Overview, Introduction, Top, Top
+@chapter An Overview on @value{MSGED} @value{VERSION}.
+
+@value{MSGED} is a message reader and editor software for Fidonet (and
+compatible) network(s), supporting Squish, Hudson and Fido *.MSG message
+bases. This program is released to the public domain.  There are absolutely
+no usage or distribution restrictions. This is truely free software.
+
+@value{MSGED} emerged from MsgEd, a public domain fidonet message reader
+initially written by Jim Nutt, and thereafter maintained by numerous people
+(among them Paul Edwards, Andrew Clarke, and Kim Lykkegaard, who is currently
+maintaing MsgEd). @value{MSGED} is being developed by Tobias Ernst. You can
+reach me at 2:2476/418 or via e-mail at tobi@@bland.fido.de.
+
+@value{MSGED} differs from the mainstream MsgEd in that it tries to support a
+vast number of platforms by employing portable software design
+techniques. It is my policy to release executables and source code at the
+same time for all supported platforms, among them OS/2, Unix (Linux and
+FreeBSD as well as commercial Unix systems), Windows NT and 16-bit DOS.
+
+@value{MSGED} is developed with the GNU C compiler and GNU boundary checking,
+which assures high program stability. @value{MSGED} also has some features
+that the mainstream MsgEd currently has not, like full "seamless" internet
+gateway support for Fidogate and simliar gateway programs.
+
+In developing @value{MSGED}, I am in contact with the mainstream MsgEd
+developer team, so most features they introduce will be migrated to
+@value{MSGED}, and most features that I introduce in @value{MSGED} will
+possibly also be migrated to the mains team MsgEd over time. There is no
+"rivalry" between Kim and me, it is just that we have a little different
+goals in mind and therefore decided to maintain separate streams of MsgEd.
+
+@node Introduction, Keyboard Reference, Overview, Top
+@chapter A quick tour through @value{MSGED}
+This chapter will be supplied in a future revision of this
+document.
+
+@node Keyboard Reference, Configuration Reference, Introduction, Top
+@chapter @value{MSGED} Keystroke Reference
+This chapter gives a complete listing of available keystroke combinations in
+@value{MSGED}. After that, you will find instructions on how you can redefine
+the keyboard to suit your preferences.
+@c @value{MSGED} traditionally uses a DOS-ish PC keyboard with @key{Alt} key
+@c and function keys. Unix users should refer to the Unix installation notes
+@c for information before reading on in this chapter.
+
+@menu
+* Arealist Keystrokes::         Keystroke combinations in the Arealist Screen
+* Reader Keystrokes::           Keystroke combinations in message reading mode
+* Editor Keystrokes::           
+* Redefining the Keyboard::     
+@end menu
+
+@node Arealist Keystrokes, Reader Keystrokes, Keyboard Reference, Keyboard Reference
+@section Keystroke Combinations in the Arealist Screen
+
+The arealist screen is the screen that normally shows up right after you
+start @value{MSGED}. It lists all areas that you have defined in the
+configuration file (@pxref{Area Definitions,,Defining Message Areas}).
+
+The arealist screen can be navigated with the cursor keys, or you can also
+navigate through the area list by simply typing in the first few letters of
+the area name that you are looking for.
+
+In addition, the following commands are available in the arealist screen:
+
+@table @kbd
+@item @key{Right}
+@itemx @key{Enter}
+Enter the selected area
+
+@item @key{Alt}-@key{X}
+Quit @value{MSGED}
+
+@item @key{*}
+@itemx @key{Alt}-@key{T}
+Scan all message areas for new messages. Depending on your setup, you will
+have to do this on program startup. The scan process can be interrupted by
+pressing @key{ESC}.
+
+@item @key{#}
+@itemx @key{Alt}-@key{S}
+Scan message areas for new messages, but only scan areas that have not been
+scanned perviously. Areas that have not yet been scanned for messages are
+listed with dashes instead of message numbers in the area list.
+
+@end table
+
+The keyboard setup of the Arealist Screen cannot be modified by the user.
+
+
+@node Reader Keystrokes, Editor Keystrokes, Arealist Keystrokes, Keyboard Reference
+@section Keyboard Commands and Functions in Message Reading mode
+When you press @key{Enter} or @key{Right} in the arealist screen, you will
+enter message reading mode. In this mode, one message is displayed at a
+time. You can scroll through the message, write new messages, jump to other
+messages of the same message area, jump to other message areas, and invoke
+numerous special functions.
+
+All functions that are accessible from this mode have a unique name. Most
+functions are prebound to a reasonable keycode combination, but you can
+redefine the keyboard mapping by assigning other keycode combinations to
+these function names (@pxref{Redefining the Keyboard,,Redefining the
+Keyboard}).
+
+@menu
+* Navigation Functions::        Keystrokes for navigating through messages.
+* Message Functions::           Keystrokes for entering or changing messages.
+* Scanning and Searching::      Keystrokes for scanning or searching mails.
+* Options Functions::           Keystrokes for changing program behaviour.
+* Misc Reader Functions::       Miscellaneous other functions.
+@end menu
+
+@node Navigation Functions, Message Functions, Reader Keystrokes, Reader Keystrokes
+@subsection Reader Functions for Navigation
+
+@table @asis
+@item Function: @code{down}, bound to: @kbd{@key{Down}}
+@krindex down
+Scrolls the text of the current message down.
+
+@item Function: @code{up}, bound to: @kbd{@key{Up}}
+@krindex up
+Scrolls the text of the current message up.
+
+@item Function: @code{help}, bound to: @kbd{@key{Alt}-@key{H}}
+@krindex help
+Displays online help on available keyboard commands.
+
+@item Function: @code{next}, bound to: @kbd{@key{Right}}
+@krindex next
+Go to the next message in this area.
+
+@item Function: @code{previous}, bound to: @kbd{@key{Left}}
+@krindex previous
+Go to the previous message in this area.
+
+@item Function: @code{first}, bound to: @kbd{@key{Home}}
+@krindex first
+Go to the very first message in this area.
+
+@item Function: @code{slast}, bound to: @kbd{@key{End}}
+@krindex slast
+Go to the very last message in this area.
+
+@item Function: @code{link_to}, bound to: @kbd{@key{Ctrl}-@key{Right}}
+@krindex link_to
+Go to the message that is a reply to this message. If there is more than one
+reply to this message, you will be presented a select box.
+
+@item Function: @code{u-next}, bound to: @kbd{@key{Ctrl}-@key{I}}
+@krindex u-next
+Go to the message that is a reply to this message. If there is more than one
+reply to this message, this function does not present a select box, but
+simply jumps to the first of all replies.
+
+@item Function: @code{link_from}, bound to: @kbd{@key{Ctrl}-@key{Left}}
+@krindex link_from
+Go to the message that this message is in reply to (if any).
+
+@item Function: @code{next_area}, bound to: @kbd{@key{+}}
+@krindex next_area
+Go to the next message area.
+
+@item Function: @code{prev_area}, bound to: @kbd{@key{-}}
+@krindex prev_area
+Go the the previous message area.
+
+@item Function: @code{list}, bound to: @kbd{@key{Alt}-@key{L}}
+@krindex list
+This will display a list of all messages in this area. You can navigate
+through this list with the cursor keys, tag entries by pressing space, and
+apply a subset of the functions of the message reading mode (like delete,
+move, etc.) to the tagged messages. You can leave the list by pressing either
+@kbd{@key{Enter}}, which will position you to the message that was selected
+in the list when pressing @kbd{@key{Enter}}, or by pressing @kbd{@key{Esc}},
+which will position you to the message that was active before entering the
+message list mode.
+
+@item Function: @code{last}, not pre-bound to any key
+@krindex last
+Go to the last read message in this area (the message right before the first
+unread message).
+
+@item Function: @code{astart}, no pre-bound to any key
+@krindex astart
+Go to the message that was active when you entered this message area.
+
+@item Function: @code{home}, not pre-bound to any key
+@krindex home
+Go to the first message in the current reply-chain.
+
+@item Function: @code{back}, not pre-bound to any key.
+@krindex back
+Goes back to where you were in the reply chain before using the
+@code{link_to} or @code{link_from} functions. Untested.
+@end table
+
+
+
+@node Message Functions, Scanning and Searching, Navigation Functions, Reader Keystrokes
+@subsection Reader Functions for Entering, Modifying and Deleting Messages
+
+@table @asis
+@item Function: @code{newmsg}, bound to: @kbd{@key{Alt}-@key{E}} or @kbd{@key{Ins}}
+@krindex newmsg
+Enter a new message.
+
+@item Function: @code{reply}, bound to: @kbd{@key{Alt}-@key{R}}
+@krindex reply
+Reply to the message currently displayed without quoting it.
+
+@item Function: @code{quote}, bound to: @kbd{@key{Alt}-@key{Q}}
+@krindex quote
+Write a quoted reply to the message currently displayed.
+
+@item Function: @code{repoth}, bound to: @kbd{@key{Alt}-@key{N}}
+@krindex repoth
+Reply to this message in a different message area. You can use this for
+netmail replies as well as for moving a thread from one area to a different
+one.
+
+@item Function: @code{followup}, bound to: @kbd{@key{Alt}-@key{U}}
+@krindex followup
+Reply to this message, but adress the reply to the recipient of the message
+you are replying to instead of the sender.
+
+@c    {"repext", replyextra},
+
+@item Function: @code{change}, bound to: @kbd{@key{Alt}-@key{C}}
+@krindex change
+This allows you to edit an existing message.
+
+@item Function: @code{edithdr}, bound to: @kbd{@key{Ctrl}-@key{H}}
+@krindex edithdr
+Edit the header of the current message (but not the text).
+
+@item Function: @code{move}, bound to: @kbd{@key{Alt}-@key{M}}
+@krindex move
+Move the message currently displayed to another area.
+
+@item Function: @code{delete}, bound to: @kbd{@key{Alt}-@key{D}} or @kbd{@key{Del}}
+@krindex delete
+Delete the message currently being displayed.
+@end table
+
+
+@node Scanning and Searching, Options Functions, Message Functions, Reader Keystrokes
+@subsection Reader Functions for Scanning and Searching for Messages
+@cindex personal mail scan
+@cindex new mail scan
+@cindex mail scan
+@cindex searching mails
+
+@table @asis
+@item Function: @code{scan}, bound to: @kbd{@key{*}}
+@krindex scan
+Scan all message areas for new messages.
+
+@item Function: @code{scan_unscanned}, bound to: @kbd{@key{#}}
+@krindex scan_unscanned
+Scan message areas for new messages, but only scan areas that have not been
+scanned perviously.
+
+@item Function: @code{pmail}, bound to: @kbd{@key{Alt}-@key{P}}
+@cindex personal mail cscan
+@krindex pmail
+Personal mail scan: this scans all message areas for messages addressed to you.
+
+@item Function: @code{spmail}, not pre-bound to any key
+@krindex spmail
+This scans for messages addressed to you in the current area only.
+ 
+@item Function: @code{search}, bound to: @kbd{@key{Alt}-@key{F}}
+@krindex search
+@cindex searching
+Allows you to search a message area for a specific keyword. The search
+direction will be the direction that you previously moved into. For example,
+in order to searcha complete message area backwards for a certain area, you
+must press @kbd{@key{End}} to go to the end of the area, then press
+@kbd{@key{Left}} in order to set the search direction to ``backwards'', and
+then press @kbd{@key{Alt}-@key{F}} to start the search.
+
+@item Function: @code{hdrsearch}, bound to: @kbd{@key{Alt}-@key{Z}}
+@krindex hdrsearch
+This works like @code{search}, but only scans message headers.
+@end table
+
+@node Options Functions, Misc Reader Functions, Scanning and Searching, Reader Keystrokes
+@subsection Reader Functions for modifying @value{MSGED} Options
+
+@table @asis
+@item Function: @code{view}, bound to: @kbd{@key{Alt}-@key{V}}
+@krindex view
+Toogle display of message control lines, kludge lines, etc.
+
+@item Function: @code{config}, bound to: @kbd{@key{Alt}-@key{S}}
+@krindex config
+This function allows you to set some (but not all) of the system
+switches. @xref{Switches,,Switches}, for more information.
+
+@item Function: @code{chngaddr}, bound to: @kbd{@key{Ctrl}-@key{W}}
+@krindex chngaddr
+Change the origination address used for writing mail. You will not need this
+key in normal operation, as @value{MSGED} employs and intelligent mechanism
+for AKA matching.
+
+@item Function: @code{chnodel}, bound to: @kbd{@key{Ctrl}-@key{N}}
+@krindex chnodel
+Change the currently active nodelist.
+
+@item Function: @code{name}, bound to: @kbd{@key{Ctrl}-@key{U}}
+@krindex name
+If you have defined more than one user name with the @code{Name}
+configuration keyword, you can use this function to select the name to use
+when writing messages.
+@end table
+
+@node Misc Reader Functions,  , Options Functions, Reader Keystrokes
+@subsection Miscellaneous other Reader Functions
+
+@table @asis
+@item Function: @code{export}, bound to: @kbd{@key{Alt}-@key{W}}
+@krindex export
+Export the text of the current message to a file or printer port. You will be
+shown a dialog box where you can enter a filename. @xref{Outfile,,The Outfile
+confgiruation keyword}, for an explanation of the modifiers for the filename
+you can use to control how the output file is written.
+
+@item Function: @code{shell}, bound to: @kbd{@key{Alt}-@key{O}}
+@krindex shell
+Call an operating system shell (prompt). Under DOS, @value{MSGED} is swapped
+out of memory for this.
+
+@item Function: @code{dos}, bound to: @kbd{@key{!}}
+@krindex dos
+Directly execute an operating system command.
+
+@item Function: @code{null}, not pre-bound to any key.
+@krindex null
+Simply does nothing.
+
+@item Function: @code{exit}, bound to: @kbd{@key{Alt}-@key{X}},@kbd{@key{Alt}-@key{A}} and @kbd{@key{Esc}}
+@krindex exit
+Leave the message reading mode. Returns to the arealist screen.
+@end table
+
+@node Editor Keystrokes, Redefining the Keyboard, Reader Keystrokes, Keyboard Reference
+@section Keyboard Commands and in the internal Message Editor
+@value{MSGED} has a bulit in message editor. It is suggested that before you
+start using an external editor for writing messages, you should at first try
+the internal message editor, because it is best suited to compose FTN-style
+messages. The internal message is highly configurable, so you should be able
+to use the internal message editor with the same keyboard setup like your
+preferred external text editor.
+
+In the following, you will be shown a complete list of available message
+editor functions. These functions are pre-bound to senseful keystrokes, which
+are also listed in the following table. Each message editor function has a
+unique name, and using this name, you can bind this function to any keystroke
+that you might estimate to be adequate. Instructions on how to do this will
+be given in the following section (@pxref{Redefining the Keyboard,,Redefining
+the Keyboard bindings}).
+
+THE LIST WITH EDITOR KEYSTROKES IS STILL MISSING. FIXME!
+
+@node Redefining the Keyboard,  , Editor Keystrokes, Keyboard Reference
+@section Redefining the Keyboard Bindings
+@cindex keyboard bindings, redifining
+@cindex redef
+
+If you are dissatisfied with the default keyboard bindings, you can easily
+change the keyboard layout. Each reading mode or editing mode keyboard
+function that has an explicit name can be assigned an arbitrary keystroke
+using the @code{ReadKey} and @code{EditKey} configuration keywords. The 
+syntax of these commands is as follows:
+
+@example
+EditKey @var{keycode} @var{function-name}
+ReadKey @var{keycode} @var{function-name}
+@end example
+
+The @var{keycode} parameter designates wich keystroke you want to
+redefine. In order to find out the key code matching a certain keystroke,
+invoke the executable of @value{MSGED} with the @samp{-k} option. You can
+then press the desired keystroke, and @value{MSGED} will print out the key
+code that you have to use as @var{keycode} parameter in the configuration
+file. Here is an example session:
+
+@example
+[R:\mailer\msged]msgedp -k
+Displaying keyboard scan codes in hexadecimal form.
+
+Press any key or key combination, or 'q' (lowercase 'Q') to exit.
+Key: 0x2100
+Key: 0x0071 (q)
+@end example
+
+I pressed @kbd{@key{Alt}-@key{F}} and @kbd{@key{q}} to reproduce this
+output. From the output, we can see that @kbd{@key{Alt}-@key{F}} has the
+keycode @samp{0x2100}, and @kbd{@key{q}} has the keycode
+@samp{0x0071}. Keycodes might vary depending on your hardware and operating
+system.
+
+Now that you know the proper keycode, you can assign it to any reader or
+editor function. @xref{Reader Keystrokes,, Keyboard Commands and Functions in
+Message Reading mode}, for a complete list of available keyboard functions
+for message reading mode. @xref{Editor Keystrokes,, Keyboard Commands and
+Functions in the internal Message Editor}, for a complete list of available
+keyboard functions in the built-in message editor.
+
+As an example, let us assign the keystroke
+@kbd{@key{Alt}-@key{F}} to the @samp{wordright} editor function:
+
+@example
+EditKey 0x2100 wordright
+@end example
+
+With this line in your configuration file, you will be able to press
+@kbd{@key{Alt}-@key{F}} in order to move the cursor to the beginning of the
+next word.
+
+@node Configuration Reference, Keyword Index, Keyboard Reference, Top
+@chapter @value{MSGED} Configuration Reference
+@value{MSGED} has to be configured using a configuration file. This is a
+plain text ASCII file containing a list of keywords, settings and switches
+that define the behaviour of @value{MSGED}. The configuration file is named
+@file{msged.cfg} and should normally be placed in the current working
+directory of @value{MSGED}.
+
+This chapter describes the syntax of the configuration file and lists all
+avilable keywords and switches in alphabetical order.
+
+@menu
+* Syntax::                      Configuration file syntax
+* Keywords::                    Keywords for use in the configuration file.
+* Switches::                    Switches for use in the configuration file.
+* Area Definitions::            How to define message areas
+@end menu
+
+@node Syntax, Keywords, Configuration Reference, Configuration Reference
+@section Configuration File Syntax
+Each line in the configuration file should start with a keyword. Each
+keyword can be followed by one or more parameters.
+
+Switches have a very easy semantics: A switch can be turned either on or
+off. You can modify the state of a switch with the @code{switch}
+keyword.
+@c (@pxref{switch,,The @code{switch} Keyword}) FIXME
+Switches really are just parameters to a special keyword.
+
+When parsing the config file, everything that follows a semicolon until
+the end of the current line is treated as a comment.
+
+Within the configuration file, you may use environment
+variables. Enclose the name of the environment variable within percent
+signs. For example, if you give a command like @samp{"Areafile
+%MAILBOX%\squish\squish.cfg"}, the string @samp{%MAILBOX%} would be
+replaced with the value of the environment varaible @samp{MAILBOX}.
+
+@node Keywords, Switches, Syntax, Configuration Reference
+@section Configuration File Keywords
+The following keywords can be used in the configuration file. Keywords
+are generally case-insensitive.
+
+@menu
+* Address::                     
+* Alias::                       
+* Alterfunc::                   
+* AreaExcl::                    
+* Areafile and AreaFileFlags::  
+* Color::                       
+* Colour::                      
+* CurStart/CurEnd::             
+* Domain::                      
+* EditKey::                     
+* Editor::                      
+* EnableSC::                    
+* Fido::                        
+* FreqArea::                    
+* Function::                    
+* Gate::                        
+* Group::                       
+* HelpFile::                    
+* Include::                     
+* Lastread::                    
+* MaxX and MaxY::               
+* MountDir::                    
+* Name::                        
+* NodePath::                    
+* Nodelist::                    
+* Origin::                      
+* Outfile::                     
+* OutputCharset::               
+* PrivateNet::                  
+* Quick::                       
+* QuickBBS::                    
+* Quote::                       
+* QuoteRight::                  
+* ReadKey::                     
+* Right::                       
+* RobotName::                   
+* Scan::                        
+* SoftCrXlat::                  
+* SortAreas::                   
+* Squish::                      
+* SwapPath::                    
+* Switch::                      
+* Tabsize::                     
+* Template::                    
+* TossLog::                     
+* UserList::                    
+* UserOffset::                  
+* UUCP::                        
+* UucpName::                    
+@end menu
+
+
+@node Address, Alias, Keywords, Keywords
+@subsection Address
+@findex Address
+@table @asis
+@item Syntax:
+@code{Address @var{AKA}}
+@item Example:
+@code{Address 2:2476/418.0}
+@end table
+
+The @code{Address} command specifies your FTN network address.
+@var{AKA} is a FTN network address with up to five dimensions. The
+@code{Address} keyword can be repeated as often as is desired to specify
+multiple addresses.
+
+@node Alias, Alterfunc, Address, Keywords
+@subsection Alias
+@findex Alias
+@table @asis
+@item Syntax:
+@code{Alias @var{alias} "@var{name}" @var{address} [@var{attribute} ["@var{subject}"]]}
+@item Examples:
+@code{Alias tobias "Tobias Ernst" 2:2476/418.0}
+@item
+@code{Alias tobi "tobi@@bland.fido.de" UUCP}
+@item
+@code{Alias af "Areafix" 2:2476/418.0 p "PASSWORT"}
+@end table
+
+Aliases are used to simplify the entry of new messages. When you enter a new
+message and type in the previously defined @var{alias} into the name field,
+all the other fields will be filled in with the values that you have provided
+in the alias definition. You must at least specify the sysos`s @var{name} in
+quotation marks and the corresponding FTN @var{address} in up to five
+dimensions.
+
+Alternatively, you may specify @samp{UUCP} as @var{address}. In this case,
+the @var{name} field is interpreted as an internet e-mail address and the
+mail is addressed to the corresponding gateway.
+
+Optionally, you may also specify one or more message attributes and a message
+@var{subject}. The @var{attribute} field is a combination of one or more of the
+following letters:
+
+@table @code
+@item p
+private
+@item h
+hold
+@item c
+crash
+@item k
+kill/sent
+@item n
+normal (no attributes)
+@end table
+
+Note that you must always specify at least one message attribute
+(at least @samp{n}) if you want to specify a subject.
+
+
+@node Alterfunc, AreaExcl, Alias, Keywords
+@subsection Alterfunc
+@findex Alterfunc
+This keyword is presently undocumented.
+
+@node AreaExcl, Areafile and AreaFileFlags, Alterfunc, Keywords
+@subsection AreaExcl
+@cindex excluding certain areas
+@cindex areas, excluding from display
+@findex AreaExcl
+
+@table @asis
+@item Syntax:
+@code{AreaExcl @var{pattern}}
+@item Example:
+@code{AreaExcl ALT.BINARIES.*}
+@end table
+
+This keyword is used to exclude certain areas from the area selection
+menu. All area names that match @var{pattern} will not be displayed in the
+area selection menu and thus will not be accessible. The @var{pattern}
+parameter may be a simple area name or a wildcard pattern containing the
+joker characters @samp{*} and @samp{?}.
+
+You must specify the @code{AreaExcl} keyword in the configuration file
+@emph{before} the @code{Squish}, @code{Fido}, @code{Quick} and
+@code{Areafile} keywords.
+
+@node Areafile and AreaFileFlags, Color, AreaExcl, Keywords
+@subsection Areafile and AreaFileFlags
+
+These keywords are documented in the section about area configuration
+(@pxref{Areafile Parsing,,Reading a Tosser Configuration File (Areafile)}).
+
+@node Color, Colour, Areafile and AreaFileFlags, Keywords
+@subsection Color
+@cindex color settings
+@cindex colour settings
+@findex Color
+
+@table @asis
+@item Syntax:
+@code{Color @var{item} @var{foreground} _@var{background}}
+@item Example:
+@code{Color MainNorm White _Black}
+@end table
+
+Use this to customize the colors that @value{MSGED} uses. For a list of
+available color values and items, refer to the sample color scheme files.
+@c FIXME better documentaiton of color shemes
+
+@node Colour, CurStart/CurEnd, Color, Keywords
+@subsection Colour
+@findex Colour
+
+@code{Colour} is an alternative name for the keyword @code{Color}
+(@pxref{Color, The @code{Color} Keyword}.
+
+@node CurStart/CurEnd, Domain, Colour, Keywords
+@subsection CurStart, CurEnd
+@findex CurStart
+@findex CurEnd
+@cindex cursor shape
+@table @asis
+@item Syntax:
+@code{CurStart @var{row}}
+@item
+@code{CurEnd @var{row}}
+@item Example:
+@code{CurStart 5}
+@item
+@code{CurEnd 7}
+@end table
+
+This keyword is used to control the shape of the cursor (only on terminals
+and operating systems that support it). On typical DOS-like consoles, the
+cursor constis of 8 rows, labelled top-down from zero to seven. You can
+specify a cursor start @var{row} and a cursor end @var{row}. The
+@value{MSGED} default values of 6 (start) and 7 (end) result in a standard
+"underline" cursor.
+
+If you are using @value{MSGED} with a monochrome display adapter like MDA,
+MGA or HGC, the cursor consists of 14 rows instead of 8. There, you will have
+to use the @code{CurStart} and @code{CurEnd} keywords to produce a sensible
+cursor shape. Values of 11 for start and 12 for end are suggested for mono
+display adapters.
+
+@node Domain, EditKey, CurStart/CurEnd, Keywords
+@subsection Domain
+@findex Domain
+@cindex domain gateway
+@table @asis
+@item Syntax:
+@code{Domain @var{5d-address}}
+@item Example:
+@code{Domain 8:123/45@@rbbs}
+@end table
+
+Messages sent with the destination domain equal to the domain of one of the
+configured domain gates will always be sent to the domain gate with a @@DOMAIN
+kludge inserted into the message.  To enable domain gateing, you must
+configure all domain gates you are using in your config file by using a
+@code{Domain} keyword with the full 5D address of the domain gateway
+(including the domain that this gate is gating for) as @var{5d-address}
+parameter for each domain gate. You also must have the @code{Gate} config
+verb set to either @samp{both} or @samp{domains}. @xref{Gate,, The
+@code{GAte} Keyword}, for more information.
+
+With this done, Msged will gate any messages being written to disk with a
+destination domain listed as one of the gates.  Note that for this to occur,
+the destination domain must be different than your own.
+
+Luckily enough, most users don't have to deal with domain gating @dots{}
+
+@node EditKey, Editor, Domain, Keywords
+@subsection EditKey
+@findex EditKey
+@table @asis
+@item Syntax:
+@code{EditKey @var{key} @var{function}}
+@end table
+
+This keyword is used to redefine the keyboard layout in the internal message
+editor. It is not yet documented.
+
+@c FIXME add xref to section about keyboard redefinition.
+
+@node Editor, EnableSC, EditKey, Keywords
+@subsection Editor
+@findex Editor
+@cindex external editor
+@table @asis
+@item Syntax:
+@code{Editor @var{program-name}}
+@item Example:
+@code{Editor c:\boxer\b2.exe}
+@end table
+
+This command allows you to specify an external editor to use when writing
+messages.  The editor program (specified as executable filename with full
+path as the @var{program-name} parameter) must accept a filename as the first
+and only parameter.
+
+Before you decide to use an external editor, you might first want to look at
+the built-in editor of @value{MSGED}. Using the @code{EditKey} keyword, the
+built-in editor is highly configurable to emulate the keystroke combination
+that you are used to use from your preferred external editor, and you can
+safe a lot of unnecessary overhead and gain a lot of comfort when using the
+internal editor as compared to the external one.
+
+@node EnableSC, Fido, Editor, Keywords
+@subsection EnableSC
+@findex EnableSC
+@cindex special characters, on UNIX
+@table @asis
+@item Syntax:
+@code{EnableSC @var{string}}
+@item Example:
+@code{EnableSC} @"a@"o@"u@"A@"O@"U
+@end table
+
+(The example from above will only look correct in the TeX (@file{.DVI} or
+@file{.PS}) edition of this document. It should be an a dieresis, o dieresis,
+u dieresis, A dieresis, O dieresis, U dieresis, and a sharp s in true 8 bit
+special characters.)
+
+This keyword is only relevant on UNIX. On UNIX, when using a VT100, xterm, or
+similar terminal, @key{Alt} or @key{Meta} key combinations generate the same
+key codes like national characters with ASCII values greater than 127. This
+is a problem, because on the one hand, @value{MSGED} relies on combinations
+of normal keys with Alt, but on the other hand, you probably want to use
+national special characters in your mail.
+
+By default, the UNIX version of @value{MSGED} enables all @key{Alt} key
+combinations and disables all national special characters. You can then use
+the @code{EnableSC} keyword to selectively enable national special
+charcters. All special characters that occur in the @var{string} given as
+argument will be interpreted as charcters rather then @key{Alt} key
+combinations.
+
+The example from above enables all German national charcters. The only
+relevant @key{Alt} key combination that you will loose by enabling those
+characters is @kbd{@key{Alt}-@key{V}} (``show notes''). This function is also
+available by pressing @kbd{@key{Alt}-@key{K}} (``show kludges''), so that
+isn't a problem.
+
+Note that you will have to use an editor that allows the input of national
+charcters in order to generate the necessary configuration file
+entry. @code{vi} should be able to do this, as well as @code{joe}. If you are
+not able to type those characters in VI, you should not even try to type them
+in @value{MGSED} @dots{} ...
+
+If you need information on how to set up a FreeBSD system to correctly
+process special national characters, you can f`req @file{syscons.tgz} at
+2:2476/418.
+
+@node Fido, FreqArea, EnableSC, Keywords
+@subsection Fido
+
+This keyword is described in the section about manual message area definition
+(@pxref{Manual Area Definition,, Manual Area Definition}).
+
+@node FreqArea, Function, Fido, Keywords
+@subsection FreqArea
+@findex FreqArea
+@table @asis
+@item Syntax:
+@code{FreqArea @var{area-tag}}
+@item Example:
+@code{FreqArea NETMAIL}
+@end table
+
+This keyword defines the message area where file request messages will be
+written when the @kbd{@key{Ctrl}-@key{F}} function is invoked.  If not
+defined, @samp{NETMAIL} is the default areatag.  Only one file request area
+may be defined.
+
+@node Function, Gate, FreqArea, Keywords
+@subsection Function
+@findex Function
+@cindex function key macros
+@table @asis
+@item Syntax:
+@code{Function @var{number} @var{keystrokes}}
+@item Example:
+@code{Function 11 \0x17D:\\text\\*.*^M}
+@end table
+
+A function key macro is a predefined keystroke sequence that is assigned on a
+function key. If you press this function key, MsgEd will do exactly what it
+would have done if you have typed in alle the keystrokes of this macro
+manually.
+
+The following function key numbers (to be used as the @var{number} parameter)
+are available:
+
+@table @code
+@item 0
+Execute this macro at program startup.
+@item 1 .. 10
+@kbd{@key{F1}} .. @kbd{@key{F10}}
+@item 11 .. 20
+@kbd{@key{Shift}-@key{F1}} .. @kbd{@key{Shift}-@key{F10}}
+@item 21 .. 30
+@kbd{@key{Ctrl}-@key{F1}} .. @kbd{@key{Ctrl}-@key{F10}}
+@item 1 .. 10
+@kbd{@key{Alt}-@key{F1}} .. @kbd{@key{Alt}-@key{F10}}
+@end table
+
+When using key scancodes in a macro, you must escape them with a backslash
+character (@samp{\}).  If you wish to have this character appear in the text
+of a message (or if it's needed as part of a path to a file), use two
+backslash characters, like in the example above.
+
+The example from above will assign @kbd{@key{Shift}-@key{F1}} to display a
+pick list of the files in the @file{D:\TEXT} directory.  After the list is
+displayed, you may select a file to import into a message while in Msged's
+internal editor.  Note that control characters in a macro such as ^M
+(Enter) must be written in UPPER case.
+
+@node Gate, Group, Function, Keywords
+@subsection Gate
+@findex Gate
+@cindex zone gating
+@table @asis
+@item Syntax:
+@code{Gate @var{what}}
+@item Examples:
+@code{Gate Zones}
+@item
+@code{Gate Domains}
+@item
+@code{Gate Both}
+@end table
+
+The @var{what} parameter to the @code{Gate} keyword specifies if
+@value{MSGED} should do zone gating (@code{Gate Zones}), domain gating
+(@code{Gate Domains}), or both (@code{Gate Both}). This has nothing to do
+with internet gateways.
+
+Domain gating is explained in detail in the section about the @code{Domain}
+keyword (@pxref{Domain,,The @code{Domain} Keyword}).
+
+Zone gating works like this: If you write a mail to a different zone and zone
+gating is enabled, the mail will not be addressed to the receiver in the
+other zone, but it will be adressed to that zone's zone gate (which also has an
+address inside your own zone). The address of the true receiver will be
+encoded in an @@INTL kludge line.
+
+I strongly recommend to at least enable zone gating, because I found that it
+is the only way to really reliable route inter-zone netmail. (In that point,
+I object the original MsgEd documentation's author's opionion).
+
+@node Group, HelpFile, Gate, Keywords
+@subsection Group
+@findex Group
+@cindex groups of areas
+@table @asis
+@item Syntax:
+@code{Group "@var{substring}" @var{name-index} @var{template-index}}
+@item Example:
+@code{Group "OS2" 0 1}
+@end table
+
+This command allows you to form groups of areas for which different
+templates and user names are used. For example, you might wish to use a
+different signoff in OS/2-related areas (probably stating your TeamOS/2
+number) than in other areas. Or, if you are moderator in a certain area, you
+might want to use the user name "Moderator" instead of the user name that you
+are using in normal areas.
+
+The @var{substring} parameter to the @code{Group} command specifies a
+substring that must be present in the area tag in order to make the area a
+member of this group.
+
+The @code{name-index} parameter than specifies the index number of the user
+name that should be used for all areas in this group. User names are counted
+from zero upwards, so if you have to @code{Name} keywords in your config
+file, the name specified with the first @code{Name} keyword will have an
+index number of 0, the second will have 1, and so one. @xref{Name,,The
+@code{Name} Keyword}, for more information.
+
+The @code{template-index} number defines which message template file should
+be used for areas belonging to this group. The first message template file
+that you have specified with the @code{Template} keyword has number 0, the
+second has number 1, and so on.
+
+@c FIXME @xref{Template,,The @code{Template} Keyword}, for more information.
+
+@node HelpFile, Include, Group, Keywords
+@subsection HelpFile
+@findex HelpFile
+@table @asis
+@item Syntax:
+@code{HelpFile @var{file-name}}
+@item Example:
+@code{HelpFile e:\fido\msged\msghelp.dat}
+@end table
+
+Specify the complete path and file name of the compiled @value{MSGED} help
+file here.
+@c FIXME: Add chapter about help file creating
+
+@node Include, Lastread, HelpFile, Keywords
+@subsection Include
+@findex Include
+@table @asis
+@item Syntax:
+@code{Include @var{file-name}}
+@item Example:
+@code{Include scheme.001}
+@end table
+
+The file specified with the @var{file-name} parameter will be read in and
+parsed as a normal config file. This is often used for including color scheme
+configuration files.
+
+@node Lastread, MaxX and MaxY, Include, Keywords
+@subsection Lastread
+@findex Lastread
+@table @asis
+@item Syntax:
+@code{Lastread @var{lastread-file}}
+@item Example:
+@code{Lastread LASTREAD}
+@end table
+
+The @var{lastread-file} parameter of this keyword specifies the name of the
+``lastread file''  that is used to store lastread pointers for Fido *.MSG
+areas. It should always be @file{LASTREAD}.
+
+In contrast to the @var{lastread-file} parameter of the @code{Name} keyword,
+the @var{lastread-file} parameter globally changes the name of the lastread
+file for all users instead of only for a specific user name. @xref{Name,,The
+@code{Name} Keyword}, for more information.
+
+@node MaxX and MaxY, MountDir, Lastread, Keywords
+@subsection MaxX, MaxY
+@findex MaxX
+@findex MaxY
+@cindex screen size
+@table @asis
+@item Syntax:
+@code{MaxX @var{columns}}
+@item
+@code{MaxY @var{rows}}
+@item Example:
+@code{MaxX 80}
+@item
+@code{MaxY 25}
+@end table
+
+The @code{MaxX} and @code{MaxY} keywords are used to define the screen or
+text window size @value{MSGED} is running in. Normally this will be
+autodetected and @value{MSGED} will automatically use the full window
+size. For example, on OS/2, you could execute @samp{MODE CO100,40} and then
+start @value{MSGED}, and it will automatically use 100 columns and 40 rows.
+
+In some cases, however, the autodetection fails, or you might not want
+@value{MSGED} to use the full screen size. In this case, you have to define
+the screen or window size manually with the @code{MaxX} and @code{MaxY}
+parameters.
+
+@node MountDir, Name, MaxX and MaxY, Keywords
+@subsection MountDir
+@findex MountDir
+@table @asis
+@item Syntax:
+@code{MountDir @var{unix-path} @var{dos-path}}
+@item Example:
+@code{MountDir /mnt/c c:\}
+@end table
+
+This keyword is used to tell @value{MSGED} running on a UNIX platform how it
+can translate DOSish pathnames found in squish.cfg, fastecho.cfg or even
+msged.cfg files that are mounted via NFS, rumba or smbfs from a DOS, OS/2 or
+Windows machine.
+
+Suppose you are having a message base that is stored in @samp{c:\msgbase} on
+your OS/2 or Windows machine. Also suppose that your complete C: drive on the
+OS/2 or Windows machine is mounted as /mnt/c on the UNIX machine. (The
+Winodws machine and UNIX machine can be two distinct machines connected via
+network, or a single machine with multi boot, where UNIX can mount the OS/2
+or DOS partitions).
+
+You can then install @value{MSGED} on the Unix machine and let it read in the
+same configuration files that are also used on the OS/2 or Windows
+machine. Simply put @code{MountDir /mnt/c c:\} into your configuration
+file. When @value{MSGED} is running on OS/2 or Windows, it will ignore the
+keyword, but when it is running on Unix, it will know how to translate the
+DOS-like filenames found in the corresponding configuration files into file
+names that are correct for the UNIX system.
+
+@node Name, NodePath, MountDir, Keywords
+@subsection Name
+@findex Name
+@table @asis
+@item Syntax:
+@code{Name "@var{name}" [@var{lastread-file} [@var{user-offset}]]}
+@item Examples:
+@code{Name "Tobias Ernst"}
+@item
+@code{Name "Joe Sysop"  LASTREAD 0}
+@item
+@code{Name "Jane Sysop" LASTREAD 1}
+@end table
+
+You can specify your user name as the @var{name} parameter inside quotation
+marks here. You can specify more than one user name by repeating the
+@code{Name} keyword. Then, you can select which name to use during program
+execution by pressing @kbd{@key{CTRL}-U}.
+
+Optionally, you can use the @var{lastread-file} parameter to specify the name
+of the file that stores the lastread pointers in Fido *.MSG areas. This one
+should always be named @samp{LASTREAD}.
+
+As a third parameter, you can specify a @var{user-offset} for each individual
+name. The logic behind the user offset is as follows: Each distinct user of
+your message base should have his own lastread pointer. All lastread pointers
+are stored in a lastread file (@file{LASTREAD} for Fido *.MSG, @file{*.SQL}
+for squish). Each user who wants to have a separate lastread pointer must have
+a unique @dfn{user offset} into the lastread pointer file.
+
+Normally, the sysop has a user offset of zero (which is the default for the
+@var{user-offset} parameter), and each BBS user has his user number as user
+offset. However, if you have two or more sysops (in this context, this simply
+means persons accessing your message base directly with @value{MSGED} instead
+of using the BBS), you must manually assign unique user offset numbers for
+each person.
+
+@node NodePath, Nodelist, Name, Keywords
+@subsection NodePath
+@findex NodePath
+@cindex nodelist path
+@table @asis
+@item Syntax:
+@code{NodePath @var{path-name}}
+@item Example:
+@code{NodePath e:\fido\nodelist}
+@end table
+
+@value{MSGED} can use compiled version 7 nodelists to perform nodelist
+lookups. All files pertaining to all version 7 nodelists, i.E. the compiled
+index files and the raw nodelist files, must be stored in the V7 nodelist
+directory. The @code{NodePath} keyword is used to tell @value{MSGED} that all
+v7 nodelist files reside in the directory named
+@var{path-name}. @xref{Nodelist,,The @code{Nodelist} Keyword}, for more
+information.
+
+@node Nodelist, Origin, NodePath, Keywords
+@subsection Nodelist
+@findex Nodelist
+@cindex V7 nodelist
+@cindex version 7 nodelist
+@cindex compiled v7 nodelist
+@table @asis
+@item Syntax:
+@code{Nodelist @var{domain-name} @var{base-name} @var{sysop-file}}
+@item Example:
+@code{Nodelist fidonet nodex sysop.ndx}
+@end table
+
+@value{MSGED} can use compiled version 7 nodelists to perform nodelist
+lookups. With the @code{Nodelist} keyword, you specify the v7 nodelists that
+@value{MSGED} should use. All three parameters are mandatory.
+
+The @var{domain-name} parameter specifies the name of the domain, that is
+used when picking which nodelist to use for address lookup if the zone number
+is not unambiguous. The @var{base-name} parameter specifies the base name of
+the index file minus the extension (e.g. @samp{nodex} for @samp{nodex.idx}),
+and @var{sysop-file} is the name of the sysop lookup file. You must not
+specify any path names for the latter two parameters - these files must
+always reside in the directory pointed specified as argument to
+@var{NodePath}. @xref{NodePath,,The @code{NodePath} keyword}, for more
+information.
+
+Normally, you will compile all raw nodelists that you have into a single
+v7 index. In this case, simply use the example from above. You will only have
+to bother about separate indices, domain names and the like if you have two
+distinct othernets with identical zone numbers.
+
+@node Origin, Outfile, Nodelist, Keywords
+@subsection Origin
+@findex Origin
+@cindex origin line
+@cindex origin shuffling
+@table @asis
+@item Syntax:
+@code{Origin @var{string}}
+@item Example:
+@code{Origin We love @value{MSGED}!}
+@end table
+
+The origin line terminates an echomail and tells the sender`s FTN
+address. Thus it has an important technical function. On the other hand, the
+origin line also leaves space for about 55 bytes of free-form text. They can
+be used to place your BBS system's name there, but you can also place other
+meaningful or meaningless messages there. The text that you specify as the
+@var{string} parameter may include whitespace characters. It will simply be
+copied into the origin line, but be aware of the fact that @value{MSGED}
+might have to truncate the text in order to prevent the origin line from
+getting longer than 79 characters.
+
+You can use macro tokens in the origin line to provide some sort of dynamic
+information. The macros will be expanded to their value when the message is
+saved. The following macros can be used:
+
+@table @code
+@item @@N
+full name of message receiver
+@item @@F
+first name of message receiver
+@item @@L
+last name of message receiver
+@item @@Y
+full name of message author
+@item @@D
+complete message date (as for example: @samp{24 Dec 97})
+@item @@DD
+message date, day number (as for example: @samp{24})
+@item @@DW
+message date, week day (as for example: @samp{Mon})
+@item @@DM
+message date, month (as for example: @samp{Dec})
+@item @@DY
+message date, 2 digit year (as for example: @samp{97})
+@item @@D4
+message date, 4 digit year (as for example: @samp{1997})
+@item @@DC
+message date, century (as for example: @samp{20})
+@item @@T
+complete message time (as for example: @samp{12:30:24})
+@item @@S
+message subject
+@item @@A
+area tag
+@item @@I
+message size
+@item @@Q
+quote ratio
+@item @@@@
+a single @@ character
+@end table
+
+In @value{MSGED}, you can also specify more than one @code{Origin} keyword in
+the configuration file. @value{MSGED} will then automatically select a random
+line out of those that you have specified each time that it has to generate
+an origin line. This feature is called @dfn{origin shuffling}.
+
+@node Outfile, OutputCharset, Origin, Keywords
+@subsection Outfile
+@findex Outfile
+@cindex exporting mails as text
+@cindex printing
+@table @asis
+@item Syntax:
+@code{Outfile @var{file-name}}
+@item Example:
+@code{Outfile export.txt,t}
+@end table
+
+This keyword is used to configure the default @var{file-name} that should be
+used for exporting mails as text by pressing @kbd{@key{Alt}-@key{W}}. You can
+change this value at runtime; here, you just configure the default that the
+dialog box will be filled in with. You can specify a normal file name, or you
+can specify a special file name designating a device like for example
+@samp{LPT1:}. On Unix, you can also a program that the text should be piped to.
+
+The default format for exporting text is to write it in raw format, that is,
+carriage returns will only be placed at the end of each paragraph, and no
+message header will be added. This format is useful if you later wish to
+re-import the text into @value{MSGED}, but it is not suitable for printing or
+editing with "standard" text editors.
+
+The default format can be changed by appending a suffix to the filename. If
+you append the filename with @samp{,t}, like in the example above, a carriage
+return will be placed after each line of text, and a message header will be
+put in front of the text. This format is well suited for printing (use
+@samp{lpt1:,t} to print the mail), or for using the mail in standard text
+editors.
+
+If you append @samp{,q} to the filename, the text will be exported in quote
+format.  This means that an attribution line will be added to the beginning
+of the message and each line will be preceded by the quote string.
+
+Putting a @samp{+} in front of the filename will cause the text to be
+appended to the file.  Otherwise the file will be overwritten.
+
+Putting a @samp{|} in front of the filename will cause the filename to be
+interpreted as an operating system command and the text will be piped to this
+command. This only works on Unix and EMX-compiled OS/2.
+
+Putting a @samp{?"} in front of the filename indicates you want to be asked
+whether to append or not, and how to write out the file.  Some menus will
+appear and you choose the action you want.
+
+@node OutputCharset, PrivateNet, Outfile, Keywords
+@subsection OutputCharset
+@findex OutputCharset
+@cindex character set, for writing messages
+@table @asis
+@item Syntax:
+@code{OutputCharset @var{charset}}
+@item Example:
+@code{OutputCharset LATIN-1}
+@end table
+
+This specifies which character set should be used for writing messages with
+special characters (like umlauts, accents, IBM graphics). The mail will be
+converted into the given charset, and the proper charset kludge will be
+appended. This does only apply to areas which have the @samp{8} flag set,
+because in all other areas, the messages will always be converted into a
+7-bit ASCII representation.
+
+The charset that you specify as @var{charset} argument must be a level 2
+charset, and a matching translation table must be contained in the
+@file{writmaps.dat} file. If there isn't such a table, you will only see this
+from the fact that the written message will contain 8-bit characters, but no
+charset kludge(!). So be careful to not misspell the option.  If you use the
+@file{wrimaps.dat} that shipped with @value{MSGED}, you have the following
+options:
+
+@table @code
+@item IBMPC
+Specify this if you want to export IBM graphics characters, or if you want to
+be compatible with old DOS software that does not know about character set
+translation with charset kludges.
+
+@item MAC
+Specify this if you want to be compatible with old Macintosh softare that
+does not know about charset kludges.
+
+@item LATIN-1
+This is the ISO 8859 standard character set and should be the primary choice
+if you do not have reasons to use the other one's.
+@end table
+
+The character does not need to match the charset that your computer is using
+internally; @value{MSGED} will do all necessary conversion.
+
+@c FIXME add xref to chapter about charset translation.
+
+@node PrivateNet, Quick, OutputCharset, Keywords
+@subsection PrivateNet
+@findex PrivateNet
+@cindex privatenets
+@cindex pointnets
+@cindex fakenets
+@table @asis
+@item Syntax:
+@code{PrivateNet @var{fakenet-number}}
+@item Example:
+@code{PrivateNet 12345}
+@end table
+Modern mailers, message reader/editors (including @value{MSGED}), and mail
+processing programs are fully 4D address aware and do not require the
+@code{PrivateNet} keyword.  However, if you are operating a point system
+whose boss node uses a "fakenet" to service points, this keyword should be
+used.
+
+The @var{fakenet-number} parameterspecifies the private net number number to
+use for non-4D points. The fakenet point scheme was designed to work with
+systems which were unable to support true points, such as BinkleyTerm 2.40
+and lower.  The actual "fakenet" number and address must be assigned to you
+by your boss node.
+
+@node Quick, QuickBBS, PrivateNet, Keywords
+@subsection Quick
+
+This keyword is described in the section about manual message area definition
+(@pxref{Manual Area Definition,, Manual Area Definition}).
+
+@node QuickBBS, Quote, Quick, Keywords
+@subsection QuickBBS
+@findex QuickBBS
+@cindex hudson message base path
+@cindex HMB file path
+@table @asis
+@item Syntax:
+@code{QuickBBS @var{path-name}}
+@item Example:
+@code{QuickBBS e:\fido\hmb}
+@end table
+
+In order to use a hudson message base (also known as Quick BBS message base),
+you have to specify the path where the HMB files are stored using the
+@var{path-name} parameter of the @code{QuickBBS} keyword. You must specify
+the @code{QuickBBS} keyword in the configuration file before any @code{Quick}
+or @code{AreaFile} keyword.
+
+@node Quote, QuoteRight, QuickBBS, Keywords
+@subsection Quote
+@findex Quote
+@cindex quote string
+@table @asis
+@item Syntax:
+@code{Quote @var{quote-string}}
+@item Example:
+@code{Quote _&>_}
+@end table
+
+When quoting a mail, every line of quoted text will be prefixed with
+@var{quote-string}. The following tokens inside the quote string have special
+meanings:
+
+@table @code
+@item &
+will be replaced with all initials of the writer of the quoted message
+@item _
+will be replaced with a whitespace
+@item ^
+will be replaced with the first initial of the writer of the quoted message
+@item *
+will be replaced with the second initial of the writer of the quoted message
+@end table
+
+Following common fidonet practice, you should use @samp{_&>_} as quote string.
+
+@node QuoteRight, ReadKey, Quote, Keywords
+@subsection QuoteRight
+@findex QuoteRight
+@cindex right margin, for quoted text
+@table @asis
+@item Syntax:
+@code{QuoteRight @var{column}}
+@item Example:
+@code{Quoteright 75}
+@end table
+
+The @var{column} argument specifies the right margin to use when quoting
+text. Because quoted text - in contrast to normal text - is stored with a
+carriage return after each line, you should not specify a value greater than
+75 in order to assure that the text can be displayed on standard 80 columns
+displays without problems.
+
+@node ReadKey, Right, QuoteRight, Keywords
+@subsection ReadKey
+@findex ReadKey
+@table @asis
+@item Syntax:
+@code{ReadKey @var{key} @var{function}}
+@end table
+
+This keyword is used to redefine the keyboard layout in message reading
+mode. It is not yet documented.
+
+@c FIXME add xref to section about keyboard redefinition.
+
+@node Right, RobotName, ReadKey, Keywords
+@subsection Right
+@findex Right
+@cindex right margin, for normal text
+@table @asis
+@item Syntax:
+@code{Right @var{column}}
+@item Example:
+@code{Right 79}
+@end table
+
+The @var{column} argument specifies the right margin to use when writing
+normal text. Normally, there is no reason to use this parameter, as
+@value{MSGED} will always simply use the width of the window or console it is
+running in. Please note that because of the way text is stored in Fidonet
+messages (carriage returns are only placed at the end of a paragraph), it is
+no problem to use right margins higher than 80. Even then, users with only 80
+columns will still be able to read your message nicely formatted.
+
+@node RobotName, Scan, Right, Keywords
+@subsection RobotName
+@findex RobotName
+@table @asis
+@item Syntax:
+@code{RobotName @var{name}}
+@item Example:
+@code{RobotName Areafix}
+@end table
+
+Using the @var{name} parameter of the @code{RobotName} keyword, you can
+specify names of robot machines like Areafix, Allfix, VoteMgr and so on. Each
+@code{RobotName} keyword only accepts a single @var{name} parameter, but you
+may repat the @code{RobotName} keyword as often as necessary.
+
+The reason for defining the names of common fidonet robots is the following:
+When writing a mail that is addressed to a user name that matches one of the
+defined robot names, @value{MSGED} will not insert the usual message
+template. (VoteMgr will be confused if the first line in your Message is
+"Hello VoteMgr" instead of the expected meta command @dots{}).
+
+@node Scan, SoftCrXlat, RobotName, Keywords
+@subsection Scan
+@findex Scan
+@table @asis
+@item Syntax:
+@code{Scan}
+@end table
+
+If this keyword is specified, @value{MSGED} will automatically scan all
+message areas on startup.
+
+@node SoftCrXlat, SortAreas, Scan, Keywords
+@subsection SoftCrXlat
+@findex SoftCrXlat
+@table @asis
+@item Syntax:
+@code{SoftCrXlat @var{character}}
+@item Example:
+@code{SoftCrXlat 0x48}
+@end table
+
+This configures @value{MSGED} to replace the "soft carriage return" character
+(0x8d) with the @var{character} specified as argument to the
+@code{SoftCrXlat} keyword when you compose a message or import a file into
+the internal editor.  @var{character} specifies the ASCII character with
+which to replace, and should be a numeric value between 1 and 255
+(decimal). For example, CodePage 866 (Russian) uses SoftCR as letter "H", so
+Russian users should define: @samp{SoftCrXlat 0x48}.
+
+@node SortAreas, Squish, SoftCrXlat, Keywords
+@subsection SortAreas
+@findex SortAreas
+@table @asis
+@item Syntax:
+@code{SortAreas @var{criteria}}
+@item Example:
+@code{SortAreas NGD}
+@end table
+
+Normally, @value{MSGED} displays all message areas in the order in that they
+have been defined in the configuration file and/or in the area
+files.
+
+With the @code{SortAreas} keyword, you can instruct @value{MSGED} to sort the
+areas by certain criteria. The @var{criteria} parameter is a string that
+consists of letters each specifying a sort criterium. The leftmost letter is
+the most significant. The following letters can be used to define sorting
+criteria:
+
+@table @code
+@item N
+Sort netmail areas on top, then local areas, then echomail areas.
+@item T
+Sort by area tag.
+@item D
+Sort by area description.
+@item G
+Sort by Fastecho group number.
+@end table
+
+The meanings of @samp{D} and @samp{T} may vary depending on which area file
+you imported the area from.  T is the true area tag, while D is what you
+actually see on screen.  You will usually wish to use D, because ordering by
+what you see seems to be more logical than ordering by what you don't see.
+
+The @samp{G} criterium does only work with areas imported from a
+@file{Fastecho.cfg} files. All other areas have a group value of 0.
+
+@node Squish, SwapPath, SortAreas, Keywords
+@subsection Squish
+
+This keyword is described in the section about manual message area definition
+(@pxref{Manual Area Definition,, Manual Area Definition}).
+
+@node SwapPath, Switch, Squish, Keywords
+@subsection SwapPath
+@findex SwapPath
+@table @asis
+@item Syntax:
+@code{SwapPath @var{file-name}}
+@item Example:
+@code{SwapPath c:\temp\msged.swp}
+@end table
+
+Use the filename and path to your swapfile as value vor the @var{file-name}
+parameter. This is only for DOS users but it should @emph{definitely} b e
+used.  If you don't use it, you must return to the Msged directory before
+returning to the editor.
+
+@node Switch, Tabsize, SwapPath, Keywords
+@subsection Switch
+
+This keyword is explained in the section about configuration switches (@pxref{Switches,,Switches}).
+
+@node Tabsize, Template, Switch, Keywords
+@subsection Tabsize
+@findex Tabsize
+@table @asis
+@item Syntax:
+@code{Tabsize @var{size}}
+@item Example:
+@code{Tabsize 8}
+@end table
+
+When you enter a message and press the @key{TAB} key, it will be expanded
+into the number of white space characters that you have specified as
+@var{size} argument to the @code{Tabsize} keyword. @key{TAB} characters in
+other messages will not be expanded.
+
+@node Template, TossLog, Tabsize, Keywords
+@subsection Template
+@findex Template
+@table @asis
+@item Syntax:
+@code{Template @var{file-name}}
+@item Example:
+@code{Template msged.tpl}
+@end table
+
+The template file is used to define standard "hello strings", signoff
+messages, and much more. See the provided sample template file for
+information on how to do this. Specify the filename of your template file as
+the  @var{file-name} parameter to the @code{Template} keyword.
+
+@node TossLog, UserList, Template, Keywords
+@subsection TossLog
+@findex TossLog
+@cindex echotoss log file
+@cindex confmail out file
+@table @asis
+@item Syntax:
+@code{TossLog @var{file-name}}
+@item Example:
+@code{TossLog echotoss.log}
+@end table
+
+The log file named @var{file-name} will contain a list of area tags of all
+areas into which you have entered messages. Such files are usually named
+@var{echotoss.log} or @var{confmail.out} and are used by tossers to
+accelerate the scanning process. In @value{MSGED}, the echotoss log file is
+updated immediately as soon as you have entered a new message.
+
+@node UserList, UserOffset, TossLog, Keywords
+@subsection UserList
+@findex UserList
+@cindex user list
+@cindex fidouser lst file
+@cindex lookup, by sysop name
+@cindex nodelist lookup, by sysop name
+@table @asis
+@item Syntax:
+@code{UserList @var{filename}}
+@item Example:
+@code{UserList e:\nodelist\fidouser.lst}
+@end table
+
+The fido user list file is a text file that contains all fidonet sysop names
+and the corresponding node numbers. It is used for looking up node numbers by
+sysop name. A fido user list file is typically named @file{fidouser.lst}. You
+can specify up to two fido user list files by repeating the @code{UserList}
+keyword.
+
+Note that even when you are using a version 7 lookup, it is still preferable
+to also have a @file{fidouser.lst} file and to use the @code{UserList}
+keyword, because only the fidouser list file lookup routines of @value{MSGED}
+can deal with multiple matching node numbers for one sysop name (they will
+present you a list to select from), while the V7 lookup routines currently
+cannot do this.
+
+The exact format of a fido user list file is as follows: Each line in this
+file must have eactly the same length. Sysop names are left justified and
+node numbers are right justified. Node Numbers must come after column 40. The
+file must be sorted alphabetically in a way like the C @code{strcmp()}
+function would do it.
+
+@node UserOffset, UUCP, UserList, Keywords
+@subsection UserOffset
+@findex UserOffset
+@table @asis
+@item Syntax:
+@code{UserOffset @var{user-offset}}
+@item Example:
+@code{UserOffset 0}
+@end table
+
+@xref{Name,,The @code{Name} Keyword}, for information about the meaning of
+the @var{user-offset} parameter and lastread pointer principles. In contrast
+to the @var{user-offset} parameter to the @code{Name} keyword, the
+@code{UserOffset} keyword specifies a single user offset numbers for all
+names configured in your configuration file. This can be useful if you are
+the only person using @var{MSGED}, but want to write under different names
+without having different lastread pointer offsets.
+
+@node UUCP, UucpName, UserOffset, Keywords
+@subsection UUCP
+@findex UUCP
+@cindex UUCP gateway address
+@cindex e-mail gateway address
+@cindex internet gateway address
+@table @asis
+@item Syntax:
+@code{UUCP @var{address}}
+@item Example:
+@code{UUCP 242:4900/99.0}
+@end table
+
+The @var{address} parameter designates the FTN address of the gateway that
+your are using to send Internet/Usenet e-mail.
+@c FIXME Add xref to section about gateway usage
+
+@node UucpName,  , UUCP, Keywords
+@subsection UucpName
+@findex UucpName
+@cindex UUCP gateway name
+@cindex e-mail gateway name
+@cindex internet gateway name
+@table @asis
+@item Syntax:
+@code{UucpName @var{name}}
+@item Example:
+@code{UucpName UUCP}
+@end table
+
+Some Internet gateway software requires that mail addressed to the gateway
+must be addressed to a specific user name in order to be gated into the
+Internet. This specific user name is usually @samp{UUCP}, and you can specify
+it as the @var{name} parameter to the @code{UUCP} keyword.
+
+If your gateway is using a better gateway software, like Fidogate, it will
+not have this restriction. Instead, such gateway software uses the name
+fields in the FTN header to exchange real name information. In this case, you
+should specify @samp{UucpName *}, which tells @value{MSGED} that the gateway
+software allows any name to be put into the FTN header field.
+
+
+@node Switches, Area Definitions, Keywords, Configuration Reference
+@section Switches
+@cindex Switch
+@findex switches
+
+Switches are used to configure the behaviour of @value{MSGED}. In contrast to
+a full configuration keyword, which is used to pass detailed parameters to
+@value{MSGED}, a switch toogles a simple state that can be turned on or
+off. Switches are usually used to switch certain features on or off.
+
+@menu
+* How to use Switches::         How to toogle switches on or off.
+* List of Switches::            A complete list of available switches.
+@end menu
+
+@node How to use Switches, List of Switches, Switches, Switches
+@subsection How to turn switches on and off
+@findex Switch
+
+To turn a switch on or off, you can use the @code{Switch} keyword, which has
+the following syntax:
+
+@example
+Switch @var{switch-name} On
+Switch @var{switch-name} Off
+@end example
+
+The @var{switch-name} parameter must be the name of a valid switch (a
+complete list of switches follows below. The first line from above turns the
+selected switch on, the second turns it off. (You knew it before, did you?
+<g>).
+
+For example, in order to turn the @code{SEEN-BYs} switch on, you would add
+the following line to your configuration file:
+
+@example
+Switch SEEN-BYs On
+@end example
+
+@node List of Switches,  , How to use Switches, Switches
+@subsection List of Available Switches
+
+The following switches are available:
+
+@table @code
+@item ChopQuote
+@findex ChopQuote
+When set to on, and you are quoting a message for reply, this switch will
+cause all quoted lines at the end of the message to be removed (chopped) when
+the message is saved.  This works only when using the internal editor. If you
+are using an external editor, ChopQuote has no effect.  When set to off, all
+quoted lines are saved, regardless of their location in the message.  Note
+that you can also manually chop quotes by pressing
+@key{@kbd{Alt}-@kbd{L}}. Default: Off.
+
+@item Confirm
+@findex Confirm
+@cindex confirmations
+By disabling this switch, you will put @value{MSGED} into the ``You asked for
+it, you got it!''-mode, that is, you will disable any kind of confirmation
+dialog boxes on critical actions like deleting messages, aborting message
+entry, and the like. Default: On. (That is, by default, @value{MSGED}
+@emph{will} display confirmation requests).
+
+@item DateArvd
+@findex DateArvd
+If this switch is set to on, the date/time when a message
+arrived on your system will be displayed on the right side of the
+header information block below the date written information. You might want
+to turn this off if your tosser should not fill in this date field
+correctly. Default: On.
+
+@item HardQuote
+@findex HardQuote
+When switched on, this option causes the column formatting to be preserved
+when quoting, ie it doesn't reformat quotes. Default: On.
+
+@item MSGIDs
+@findex MSGIDs
+MSGIDs are used to uniquely identify a message coming from your system.
+Unfortunately no two message editors use the same MSGID-generating algorithm,
+so you cannot guarantee that you conform to the MSGID specs unless you have
+used a specific message editor (only) for a particular address in a 3-year
+period.  Most people just ignore this potential problem and use them anyway.
+Leaving MSGIDs ON will help mail tossers in duplicate message checking and/or
+reply linking. Default: On.
+
+@item OpusDate
+@findex OpusDate
+The old MsgEd documentation states differently, but judging from the source
+code, turning this flag @emph{on} would @emph{stop} @value{MSGED} from
+@emph{reading} the Opus date_written and date_arrived date fields of Fido
+*.MSG messages. @value{MSGED} will, however, always fill in those fields (in
+the worst case with the current timestamp). Probably you should leave this
+flag as is. Default: Off.
+
+@item QQuotes
+@findex QQuotes
+This switch controls how @value{MSGED} will modify the quote string when
+quoting text that already is quoted. When turned on, @value{MSGED} will try
+to add another @samp{>} character to the existing quote strings. If turned
+off, @value{MSGED} will not modify existing quote strings and thus behave
+much like Maximus 2.0 or TimEd do. Default: On.
+
+@item RawCC
+@findex RawCC
+@cindex carbon copies, saving the raw original message
+This switch is only of relevance if the @code{SaveCC} switch is turned on.
+Then, if @code{RawCC} is ON, the raw cc:  msg is saved (along with the cc:
+header that you typed in, so that if you re-edit the message, also all carbon
+copies will be re-generated). Otherwise, the first formatted cc:  will NOT be
+marked kill/sent and will therefore remain as a future reference, but the
+original raw message will not be saved. Default: On.
+
+@item SaveCC
+@cindex SaveCC
+@cindex carbon copies, saving the original message
+When generating carbon copies, and if this switch is turned on, a duplicate
+of the original message is saved with no kill/sent flag set for future
+reference, and possible re-editing and/or resending (along with the normal
+copied messages that are sent out and flagged kill/sent). Default: On.
+
+@item Seen-Bys
+@cindex Seen-Bysb
+@findex SEEN-BY lines, showing
+If this switch is turned on, @value{MSGED} will display SEEN-BY lines in
+message reading mode. This is probably only useful for echomail routing
+debugging purposes. Default: Off.
+
+@item ShowAddr
+@cindex ShowAddr
+If this switch is enabled, the FTN address that you are currently using for
+the current area will be displayed on the left-hand side of the line that
+separates the message header from the message text. Default: On.
+
+@item ShowCR
+@cindex ShowCR
+If turned on, @value{MSGED} will mark the location of hard carriage
+returns with ASCII code 20, as known from common word processors. This might
+not work on a VT100 terminal. Default: Off.
+
+@item ShowEOL
+@cindex ShowEOL
+If turned on, @value{MSGED} will mark the location of each end-of-line
+character with ASCII code 29. This will only work if the @code{ShowCR} switch
+is also turned on. Default: Off.
+
+@item ShowNotes
+@findex ShowNotes
+@cindex kludge lines, displaying
+@cindex notes, displaying
+If turned on, @value{MSGED} will display kludge line information in message
+reading mode. You can also toogle this switch during program execution by
+pressing @kbd{@key{Alt}-@key{V}}. Unlike in older MsgEd versions, this switch
+does not pertain to origin and/or tear lines. Default: Off.
+
+@item UseLastr
+@findex UseLastr
+You should leave this switch turned on. It instructs @value{MsgEd} to use the
+lastread pointer for Fido *.MSG style areas. On the other hand, turning this
+switch off probably does not disable @emph{all} lastread pointer handling
+code in @value{MsgEd} @dots{} Older @value{MsgEd} versions had this switch
+turned off by default and it was undocumented. Hence a lot of problems with
+lastread pointers in those versions @dots{} Default: On.
+
+@end table
+
+@node Area Definitions,  , Switches, Configuration Reference
+@section Defining Message Areas
+@cindex definining message areas
+@cindex message area definition
+@cindex area definition
+
+One of the most important tasks in configuring @value{MSGED} is to tell it
+where it can find the message areas that you wish to read and to write
+to. There are basically two ways to do this: You can either manually define
+each area in the configuration file using the @code{Quick}, @code{Fido} and
+@code{Squish} keyword, or you can tell @value{MSGED} to read in the
+configuration file of your tosser. The latter method saves you much work, but
+sometimes you will ned to use the manual method to do some fine-tuning.
+
+It is advisable to put all keywords that have to do with area configuration
+at the end of your configuration file, because other keywords (like
+@code{QuickBbsPath}, @code{MountDir}, et. al.) that change the behaviour of
+the area definition keywords will only work if they are read in before the
+area definition keywords.
+
+@menu
+* Manual Area Definition::      
+* Areafile Parsing::            
+@end menu
+
+@node Manual Area Definition, Areafile Parsing, Area Definitions, Area Definitions
+@subsection Manual Area Definition
+@findex Squish
+@findex Quick
+@findex Fido
+
+You can manually define a message area by putting a line of the following
+format into your confgiuration file. 
+
+@example
+@var{format} @var{flags} "@var{description}" @var{path} @var{areatag} [@var{address}]
+@end example
+
+Except for the @var{address} parameter, all parameters are mandatory. The
+meaning of these parameters is as follows:
+
+@table @var
+@item format
+The @var{format} parameter tells the message base format this message area is
+held in. It can be either @samp{Fido}, designating a message area in Fido
+*.MSG file format, @samp{Quick}, desingating a message area held in a
+QuickBBS or Hudson Message Base, or @samp{Squish}, designating a message area
+in the Squish format.
+
+@item flags
+The @var{flags} parameter is a sequence of characters where each character is
+a flag that toogles a certain option. The following flags can be used:
+
+@enumerate
+@item
+Flags that specify the message area type. You have to use exactly one of
+those:
+
+@format
+@code{n} - netmail area,
+@code{e} - echomail area,
+@code{l} - local mail area.
+@end format
+
+@item
+Flags that toogle certain special features of @value{MSGED}. All of these
+flags are optional.
+@c FIXME add xref to documentation of these features
+
+@format
+@code{8} - allow 8 bit characters with the proper @code{@@CHRS} kludge,
+@code{u} - enable internet gateway support for this area,
+@code{n} - this flag is obsolete.
+@end format
+
+@item
+Default message attributes for messages written in this area. You should
+specify @samp{p} for netmail areas. The @samp{loc} flag will always be set,
+so you can't specify it here.
+
+@format
+@code{p} - private,
+@code{h} - hold,
+@code{k} - kill/sent,
+@code{d} - direct.
+@end format
+
+@end enumerate
+
+@item description
+The @var{description} parameter specifies the name under which the area will
+appear in the area selection screen. It may contain white spaces if you place
+it between quotation marks.
+
+@item path
+The @var{path} parameter gives the location of the message area. For Fido *.MSG
+areas, this is the path name of the corresponding directory. For QuickBBS
+areas, it is the area number. For Squish areas, it is the base name of the
+area files without extension.
+
+@item areatag
+The @var{areatag} parameter gives the official area tag of this area. You
+@emph{must} specify this parameter for echomail areas, and you @emph{must
+not} specify this for netmail areas!
+
+@item address
+Finally, the @var{address} parameter specifies the FTN address to use for
+this area. You must use this for othernet areas where you must use an AKA
+different to your main AKA.
+
+@end table
+
+Here are some examples:
+
+@example
+Fido   nup "Fidonet Netmail" e:\fido\netmail   2:2476/418.0
+Squish eu  "MsgEd Support"   e:\fido\sq\msged  MSGED_ECHO 
+Squish eu8 "OS/2 Debate"     e:\fido\sq\os2deb OS2.DEBATE.GER
+Squish eu  "c't conference"  e:\fido\sq\ctger  CT.GER  21:492/2851.0
+Quick  lp  "To Sysop Area"   1
+@end example
+
+@node Areafile Parsing,  , Manual Area Definition, Area Definitions
+@subsection Reading a Tosser Configuration File (Areafile)
+@findex Areafile
+@cindex tosser configuration, parsing
+@cindex area file, of tosser
+
+This keyword is used to tell @value{MSGED} to read information about netmail
+and echomail areas from a tosser configuration file. This saves you from
+double work: You only have to declare an area once in the tosser
+configuration file, and MsgEd will automatically always display all areas
+that are configured in your tosser configuration file. The syntax is as
+follows:
+
+@example
+@code{Areafile @var{type} @var{filename}}
+@end example
+
+The @var{type} parameter designates the type of tosser configuration file to
+use. It can be @samp{Squish}, @samp{Fastecho} or @samp{AreasBBS}. The
+@var{filename} parameter specifies the path and file name of the tosser
+configuration file that should be read. (Plase note that only the area
+definitions from a Squish configuration file will be read. If the Squish
+configuration file references another @file{areas.bbs} file, you have to
+define it separately for @value{MSGED} using a second @code{Areafile}
+statement).
+
+There is one problem with reading in echo definitions from tosser
+configuration files: Those files do not contain all information that can be
+specified in a manual area configuration, Certain features of MsgEd TE need a
+flag that has to be set for each area in order to enable that feature.  For
+example, in order to be able to write mails with umlauts, you must set the 8
+flag for each area that should have umlauts.
+
+@findex AreaFileFlags
+Therefore, the @code{AreaFileFlags} keyword has been introduced. It's syntax
+is as follows:
+
+@example
+AreaFileFlags @var{flags}
+@end example
+
+The @var{flags} parameter has the same syntax as the @var{flags} parameter of
+the @code{Fido}, @code{Quick} and @code{Squish} keywords (@pxref{Manual Area
+Definition,,Manual Area Definition}). You must specify the
+@code{AreaFileFlags} keyword before the @code{AreaFile} keywords. Then, all
+areas imported from the area files will have the specified @var{flags}.
+
+If you want only a few, but not all areas form an areafile to have some
+flags, you can manually redefine areas with the syntax described in the
+preceding section. For this to work, the manual redefinition must come
+@emph{after} the @code{AreaFile} keyword. Vice versa, if you want almost all
+areas from an areafile to have a certain flag, but want a few exemptions, you
+should use the @code{AreaFileFlags} and @code{AreaFile} keywords to import
+all areas from the areafile with the specific flag set. After that, you can
+redefine some areas manually without this flag.
+
+Note: Using @code{AreaFileFlags} to globally turn on the @samp{u} flag
+probably won't hurt you. On the other hand, you should only use
+@code{AreaFileFlags} to globally turn on the @samp{8} flag if you know that
+the moderators of the echo areas that you are posting in do not forbid
+8-bit-codes.
+
+@node Keyword Index, KeyFuncs Index, Configuration Reference, Top
+@unnumbered Configuration File Keyword Index
+
+@printindex fn
+
+@node KeyFuncs Index,  , Keyword Index, Top
+@unnumbered Keyboard Functions Indices
+
+@section Reader Keyboard Functions Index
+@printindex kr
+
+@section Editor Keyboard Functions Index
+@printindex ke
+
+@contents
+@bye
+
+
+

@@ -1,0 +1,41 @@
+MAKEMAPS
+--------
+
+This directory  contains  all  you  need  to  create  FSC  0054 - compliant
+readmaps.dat and writmaps.dat  files.   Please  read  FSC 0054 before doing
+anything here.
+
+The .CHS files are human-readable files that describe a charset  conversion
+table.  If you want to write your own conversion tables, simply look at the
+existing ones to find out what syntax is used in these files.
+
+Then you have to compile the makemaps utility.  Usually, something like
+"cc -o makemaps.exe makemaps.c" will be sufficient to create the program.
+
+In  order  to  create  a set of readmaps.dat and writmaps.dat files, invoke
+makemaps as follows:
+
+  makemaps <charset-name> <table1.chs> <table2.chs> ...
+
+Where <charset-name> is the name of  the  charset your maps files are being
+built for (usually IBMPC if you are running a OS/2,  DOS  or  Windows,  and
+LATIN-1 if you are running Unix or AmigaOS).
+
+You  have  to  specify  all  files  to be included on the command line, and
+makemaps does (for  portability  reasons)  not  support wildcard expansion.
+Therefore, you'd best invoke makemaps with bash or another unix-like  shell
+that does wildcard expansion on its own:
+
+  ./makemaps LATIN-1 *.chs
+
+Makemaps  will  only  include  those files that actually are useful for the
+specified charset.  Therefore it is  no  problem  that for the command line
+example above, also ibm_mac.chs would match.  Makemaps  would  simply  skip
+this  file,  because it is not helpful for character translation from or to
+the Latin-1 charset.
+
+Note that the .CHS files are textfiles (if you transfer them with ftp, use
+"asc"), while the readmaps.dat and writmaps.dat are binary files that must
+be transferred with "bin".
+
+[EOF]

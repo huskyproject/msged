@@ -1,0 +1,156 @@
+*Begin 1
+
+*High                      Reader Help
+
+ Enter a New Message in the Current Area ...... Alt-E
+ Reply to Sender in Current Area .............. Alt-R
+ Reply Quote to Sender in Current Area ........ Alt-Q
+ Reply Quote to Addressee in Current Area ..... Alt-U
+ Reply Quote to Sender in Other Area .......... Alt-N
+ Reply Quote to Addressee in Other Area ....... Alt-Y
+ Delete Current Message ....................... Alt-D
+ Edit/Change Current Message .................. Alt-C
+ Search Messages For Text ..................... Alt-F
+ Search Message Header For Text ............... Alt-Z
+*High                                                 PgDn
+
+*Page
+
+ Export Msg To Text File ...................... Alt-W
+ Go to a Specific Message .................. [number]
+ Toggle Hidden Information .................... Alt-V
+ Move/Copy/Forward Message Window ............. Alt-M
+  - Move A Message to Another Area ............... M
+  - Copy A Message to Another Area ............... C
+  - Forward A Message to Another Person .......... F
+  - Ditto, but make it from User ................. R
+ Go to Previous Message in Thread .......... Ctl-Left
+ Go to Next Message in Thread ............. Ctl-Right
+ Go to First Message in Thread ................. Home
+
+*High                                            PgDn/PgUp
+
+*Page
+
+ Change Current Address ....................... Ctl-W
+ Change Current Nodelist ...................... Ctl-N
+ Change Current Username ...................... Ctl-U
+ Force Move to Next Message in Thread ........... Tab
+ Go to Highest Numbered Message Read ............ End
+ Return to Area List ............................ Esc
+ Do a hex dump ................................ Alt-B
+ Do a uudecode dump ........................... Ctl-D
+
+
+
+
+*High                                            PgDn/PgUp
+
+*Page
+
+ List of Messages in Current Area ............. Alt-L
+  - Move Up one Message ................... Up Arrow
+  - Move Down one Message ............... Down Arrow
+  - Move Up one Page .......................... PgUp
+  - Move Down one Page ........................ PgDn
+  - Abort List Function ........................ Esc
+ Scan All Areas For New Messages .................. *
+ Move to Next Area with Unread Messages ........... +
+ Move to Previous Area with Unread Messages ....... -
+ Displays or Alters Switches .................. Alt-S
+ Choose Attribution Line ...................... Ctl-A
+*High                                            PgDn/PgUp
+*Page
+
+*High       Area List Help
+
+  Go to First Area in list ..................... Home
+  Go to Last Area in List ....................... End
+  Go to Next Area ........................ Down Arrow
+  Go to Previous Area ...................... Up Arrow
+  Go to Next Page .............................. PgDn
+  Go to Previous Page .......................... PgUp
+  Select Highlighted Area ..................... Enter
+  Scan All Areas For New Messages ................. *
+  Personal Mail Scan .......................... Alt-P
+  Personal Mail Scan in current area .............. P
+*High                                            PgDn/PgUp
+*Page
+
+*High     User-Programmable Function-Keys (msged.cfg)
+
+ F1 ....
+ F2 ....
+ F3 ....
+ F4 ....
+ F5 ....
+ F6 ....
+ F7 ....
+ F8 ....
+ F9 ....
+ F10 ...
+*High                                                 PgUp
+*End
+*Begin 2
+
+*High                      Editor Help
+
+ Lay Down Block Anchor ........................ Alt-A
+ Cut to Internal Clipboard .................... Alt-C
+ Paste From Internal Clipboard ................ Alt-P
+ Import A Textfile ............................ Alt-I
+ Export Message To File ....................... Alt-W
+ Insert CR/LF at Cursor ....................... Enter
+ Backspace and Delete ........................ BckSpc
+ Delete Word Following Cursor ................. Ctl-T
+ Delete to End of Line ........................ Alt-K
+ Delete Current Line .......................... Alt-D
+*High                                                 PgDn
+*Page
+
+ Toggle Insert/Overtype Mode .................... Ins
+ Insert Spaces To Next Tab ...................... Tab
+ Exit Without Saving ............................ Esc
+ Exit & Save Message .......................... Alt-S
+ Execute an Operating System Command .......... Alt-1
+ Shell To Operating System .................... Alt-O
+ Move Cursor One Left .................... Left Arrow
+ Move Cursor One Right .................. Right Arrow
+ Move Up One Line .......................... Up Arrow
+ Move Down One Line ...................... Down Arrow
+ Move To Top Of Screen ..................... Ctl-PgUp
+ Move To Bottom Of Screen ...................Ctl-PgDn
+*High                                            PgDn/PgUp
+*Page
+
+ Move Up One Page .............................. PgUp
+ Move Down One Page ............................ PgDn
+ Move Left One Word ........................ Ctl-Left
+ Move Right One Word ...................... Ctl-Right
+ Move To First Line Of Msg ................. Ctl-Home
+ Move To Last Line Of Msg ................... Ctl-End
+ Go To Beginning Of Line ....................... Home
+ Go To End Of Line .............................. End
+ Undelete Line ................................ Ctl-U
+ Count bytes in message ....................... Alt-B
+ Toggle Quote Status of Line .................. Alt-Q
+
+*High                                                 PgUp
+*End
+*Begin
+
+*High                     Listing Help
+
+ Go up one message ......................... Up arrow
+ Go down one message ..................... Down arrow
+ Go up one page ................................ PgUp
+ Go down one page .............................. PgDn
+ Go to the first message ....................... Home
+ Go to the last message ......................... End
+ Toggle selection of a message ................ Space
+ Delete selected messages ....................... Del
+
+
+*High                                          End of Help
+*End
+*EF

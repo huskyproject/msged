@@ -1,0 +1,68 @@
+CC=	gcc
+CFLAGS= -Wall -s
+CDEFS=	-D__FLAT__ -DUSE_MSGAPI
+#COPT=	-O3 -fomit-frame-pointer -fstrength-reduce -m486
+MSGDIR= ../smapi
+
+TARGET= msged32.exe
+MSGAPI= $(MSGDIR)/smapidjg.a
+
+objs=	addr.o     \
+	areas.o    \
+	bmg.o	   \
+	charset.o  \
+	config.o   \
+	control.o  \
+	date.o	   \
+	dialogs.o  \
+	dirute.o   \
+	dlgbox.o   \
+	dlist.o    \
+	dosasm.o   \
+	dosmisc.o  \
+	echotoss.o \
+	environ.o  \
+	fido.o     \
+	freq.obj   \
+	getopts.o  \
+	help.o	   \
+	helpcmp.o  \
+	helpinfo.o \
+	ibmscrn.o  \
+	init.o	   \
+	keycode.o  \
+	list.o	   \
+	maintmsg.o \
+	makemsgn.o \
+	memextra.o \
+	menu.o	   \
+	misc.o	   \
+	mnu.o	   \
+	mouse4.o   \
+	msg.o	   \
+	msged.o    \
+	mxbt.o	   \
+	normalc.o  \
+	nshow.o    \
+	quick.o    \
+	quote.o    \
+	readmail.o \
+	screen.o   \
+	strextra.o \
+	system.o   \
+	template.o \
+	textfile.o \
+	userlist.o \
+	vio.o	   \
+	vsev.o	   \
+	vsevops.o  \
+	win.o	   \
+	wrap.o
+
+# Thunderbirds are go!
+
+.c.o:
+	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -I$(MSGDIR) -c $<
+
+$(TARGET): $(objs)
+	$(CC) $(COPT) -o $(TARGET) *.o $(MSGAPI)

@@ -1,0 +1,81 @@
+;-----------------------------------------------------------------------------
+; Sample Msged color scheme
+;-----------------------------------------------------------------------------
+
+;-----------------------------------------------------------------------------
+; The main window (edit and reader mode).
+;
+; MainNorm       - Normal message text.
+; MainQuote      - Quoted message text.
+; MainKludge     - Control (kludge) line information message text.
+; MainTempl      - Template message text.
+; MainInfo       - Status bar.
+; MainDivide     - Divider line between header and message text.
+; MainHeader     - The header titles (From: etc).
+; MainHdrTxt     - The header text.
+; MainBlock      - A selected block.
+; MainEdit       - Fields being edited in the header.
+; MainWarn       - Warnings.
+; MainNetInf     - Network information (area/address).
+;-----------------------------------------------------------------------------
+Color MainNorm     White    _Black
+Color MainQuote    LCyan    _Black
+Color MainKludge   LBlue    _Black
+Color MainInfo     White    _Blue
+Color MainDivide   LBlue    _Black
+Color MainHeader   LGrey    _Black
+Color MainHdrTxt   LGrey    _Black
+Color MainEdit     White    _Black
+Color MainNetInf   Yellow   _Black
+Color MainWarn     Yellow   _Red
+
+;-----------------------------------------------------------------------------
+; The AreaSelect menu and the mouse menu.
+;
+; MenuBorder     - The border color.
+; MenuNorm       - Unselected text.
+; MenuSelect     - Selected text.
+;-----------------------------------------------------------------------------
+Color MenuBorder   LBlue    _Black
+Color MenuNorm     LGrey    _Black
+Color MenuSelect   White    _Blue
+
+;-----------------------------------------------------------------------------
+; Startup screen information box.
+;
+; InfoBorder     - Border color.
+; InfoNorm       - Normal text color.
+;-----------------------------------------------------------------------------
+Color InfoBorder   LCyan    _Blue
+Color InfoNorm     White    _Blue
+
+;-----------------------------------------------------------------------------
+; Dialog boxes.
+;
+; DlgBorder      - Dialog box borders
+; DlgNorm        - Dialog box window text
+; DlgChNorm      - Dialog checkbox normal color
+; DlgChSel       - Dialog checkbox selected color
+; DlgEnNorm      - Dialog entry field normal color
+; DlgEnSel       - Dialog entry field selected color
+; DlgButSel      - Dialog pushbutton selected color
+; DlgButNorm     - Dialog pushbutton normal color
+; DlgButShadow   - Dialog pushbutton shadow color
+;-----------------------------------------------------------------------------
+
+;-----------------------------------------------------------------------------
+; List boxes.
+;
+; ListBdr        - List box border
+; ListTitle      - List box title
+; ListNorm       - List box normal text
+; ListInfo       - List box information text at bottom
+; ListSelect     - List box selected text
+;-----------------------------------------------------------------------------
+Color ListBdr      LRed     _Black
+Color ListTitle    Yellow   _Black
+Color ListNorm     LGrey    _Black
+Color ListInfo     White    _Black
+Color ListSelect   White    _Blue
+
+;-----------------------------------------------------------------------------

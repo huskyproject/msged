@@ -1,0 +1,502 @@
+MSGED TE (TOBI'S EDITION) 05 - DOCUMENTATION OF NEW FEATURES
+============================================================
+
+
+Features, Changes and Fixes in MsgEd TE 05
+------------------------------------------
+
+Changes:
+
+- ATTENTION!!!  If you want to use the gateway addressing feature
+  (automatic recognition of fidogate-style to:- and from:-lines), that had
+  been enabled by default in previous versions of MsgEd TE, you now must
+  put the following line into your confiuration file:
+
+  Areafileflags u
+
+- The "defaultnewsflag" and "defaultuucpflag" switches that had been
+  introduced with MsgEd TE have been removed.  You can now control these
+  features with the Areafileflags keyword (see below).
+
+Features:
+
+- Piping mail text: When exporting a file (Alt+W), you can prefix the file
+  name with a pipe sign (|). The file name will then be treated as a program
+  (optionally with parameters). This program will be started and its standard
+  input will be the text of the mail. For example, in order to print a mail
+  under Unix, press Alt+W and then type
+
+    |lpr,t
+
+  The ",t" tells MsgEd to line-wrap the message. Note that you can't use
+  commands that need a komma as argument because of that. I wanted to
+  keep kompatible with the old Alt+W feature.
+
+  Piping does only work in the Unix version and in the EMX-compiled OS/2
+  version of MsgEd. 
+
+- Origin shuffling:  You can now repeat the Origin keyword as often as
+  desired.  MsgEd will select a random origin line each time when you write a
+  message.
+
+- The echotoss.log file is now updated immediately after you have written a
+  message.  (Previously, it was only update when MsgEd was terminated).
+  This feature is imported from MsgEd 4.20 Beta 3, thanks to Andrew Clarke.
+
+- Certain features of MsgEd TE need a flag that has to be set for each area
+  in order to enable that feature.  For example, in order to be able to
+  write mails with umlauts, you must set the 8 flag for each area that
+  should have umlauts by defining the area manually in msged.cfg.
+
+  Now, you can also set flags globally for all areas that have been
+  imported from an Areafile (tosser configuration) by a command like the
+  following:
+
+  Areafileflags 8u
+
+  This example sets the 8 and u flags for all areas imported from a tosser
+  configuration file.  (Then, of course, if you have an area that should
+  not have these flags, you again have to define it manually in msged.cfg).
+
+- The message size info box (Alt+B while writing a message) does now show the
+  quote ratio in addition to the absolute message size.
+
+- You can now use macro tokens in the origin line. They will be expanded to
+  their value when the message is saved. The following macros work just
+  the same as they do in MsgEd 4.30:
+
+  @N  = full name of message receiver
+  @F  = first name of message receiver
+  @L  = last name of message receiver
+
+  @Y  = full name of message author
+
+  @D  = complete message date      (as for example: 24 Dec 97)
+  @DD = message date, day number   (as for example: 24)
+  @DM = message date, month        (as for example: Dec)
+  @DY = message date, 2 digit year (as for example: 97)
+  @D4 = message date, 4 digit year (as for example: 1997)
+  @DC = message date, century      (as for example: 20)
+  @T  = complete message time      (as for example: 12:30:24)
+
+  @S  = message subject
+  @A  = area tag
+
+  @I  = message size
+  @Q  = quote ratio
+
+  The following macros do only work in MsgEd TE:
+
+  @DW = message date, week day     (as for example: Mon)
+  @@  = a single @
+
+  Note that MsgEd TE will always truncate the origin line to 79
+  characters. Thanks to Kim Lykkegaard for this code.
+
+- When doing a nodelist lookup by sysop name, you will now be presented a
+  selectbox listing all node numbers that match this name.  Previously,
+  MsgEd simply selected an arbitrary node numer in this case.  This feature
+  does only work if you have a FIDOUSER.LST file.  You must configure MsgEd
+  to use the user list file using the UserList keyword (for example:
+  "UserList e:\nodelist\fidouser.lst").  Thanks to Kim Lykkegaard for the
+  code that I partly reused to implement this feature.
+
+- For nodelist lookups by sysop name, you can now either type in the
+  complete name of the sysop you are looking for, or, if your are using a
+  FIDOUSER.LST file (see above), you can also only type in the first few
+  characters of his *last* name.  For instance, if you just type "er", you
+  will be shown a list of all sysops whose last name starts with "er".
+
+- Added a comfortable way to request files directly when reading file
+  announcement mails.  It works as follows:  First, you have to define
+  which area file announcement mails should be created in.  This should be
+  your netmail area.  Use the "FreqArea" keyword, followed by the area tag
+  of the area in question.  For instance, Fastecho users will always want
+  to set "FreqArea NETMAIL".
+
+  Then, when reading a file announcement mail, press Ctrl+F. You will be
+  shown a list of all files that are announced in that mail.  Select the
+  ones that you want to request by pressing space, and then press enter.
+  The file request mail will be created automatically.  -
+
+  Thanks to Kim Lykkegaard for this code.
+
+- New Editor command "emacskill".  This command is pre-bound on the Ctrl+K
+  key and will behave just like the Emacs Ctrl+K:  It will delete all
+  characters in the current line after the current cursor position.  In
+  contrast to deleol, if the line is already empty, it will remove the
+  line (while deleol leaves an empty line as is).
+
+- New Keyword "EnableSC".  This is only of interest for the Unix version.
+  Give this keyword all the national special characters as arguments that
+  you want to be able to type inside MsgEd. (The reason for this is that
+  this is the only way for MsgEd to know if an ASCII code with its eighth
+  bit turned on should be interpreted as Meta-(Alt-)Keystroke-Combination
+  or as national special character.  Usage example:  "EnableSC ÑîÅ·éôö".
+  Note that enabling national special characters will probably disable some
+  Alt-Keycombinations.  See the notes on Unix in the documentation for
+  further information.
+
+Fixes:
+
+- Fixed some bugs in the origin handling code that could lead to messages
+  with invalid origin lines.
+
+- MsgEd TE was generating "To:"-lines in the first line of a message even
+  in echomail areas. This was nonsense (no Gateway is able to understand
+  that, and anyway, what should it be translated to on the RFC side ...).
+  This also fixes the problem that sometimes the sender's AKA was switched
+  to an AKA in his gateway's zone in echomail areas where that zone was
+  unknown.
+
+- When selecting something in a SelBox, like for example selecting which
+  reply to jump to when pressing Ctrl+Left, and some other cases, garbage
+  was printed to the upper left corner of the screen.
+
+- The deleol editor function behaved very strange (if you typed something
+  after issueing deleol, the next line would wrap up to the current one).
+
+- MsgEd crashed when trying to read a mail with more than 80 consecutive
+  whitespace characters in it.  Fixed.
+
+
+
+Features, Changes and Fixes in MsgEd TE 04
+------------------------------------------
+
+New Features:
+
+- "Origin talk".  In some fido areas, it has become usage to do conversion
+  via tearline and origin line texts.  This requires a possibility to enter
+  origin lines while writing a message easily.  MsgEd now has two stages of
+  support for this:
+
+  a) When changing an existing message, any changes you make to the origin
+     and tear line will be kept. (Previously, they would be discarded).
+
+  b) If you wish to be able to write custom texts in the orign line when
+     you enter a new message, you should add the new switches
+        Switch EditTearLines On
+        Switch EditOriginLines On
+     to msged.  This will lead to a default Tearline and a default
+     Originline being appended to the message template whenever you start
+     writing a new message or replying to an existing message.
+
+- Instead of pressing * to rescan all or # to rescan only unscanned areas,
+  you now can also press Alt+T (all) and Alt+S (unscanned) just like it
+  is in TimEd.
+
+- Merged in the changes from MsgEd 4.10 to MsgEd 4.20 Beta 2.  This
+  provides the following new features (at least they are new if you were
+  not already using 4.20 Beta 2 ...).  Most of them are untested by me.  I
+  decided not to merge in 4.20 Beta 3 because it is reported to be buggy,
+  so I'll wait until there is a newer, fixed mainstream version.
+
+  - New switches from 4.20 Beta 2 that are now supported by MsgEd TE as well:
+
+    - "switch showorigins on" will enable display of origin lines even if
+      notes are not displayed.
+    - "switch showtearlines on" will enable display of tearlines even if
+      notes are not displayed.
+
+    In order to get the same behaviour that was hardcoded into MsgEd TE 03,
+    you should switch both of these switches on.
+
+    - "switch tearlines off" will disable the use of tear lines.
+    - "switch originlines off" will disable the use of origin lines (which
+      would violate some FSCs, so don't use it).
+
+  - New keyword "Scan". If it is present in the msged.cfg, MsgEd will
+    automatically scan all areas on startup.
+
+  - New keyword "MountDir".  This is useful if you mount your messagebase,
+    which resides on an OS/2 or Windows machine, into a unix filesystem on
+    Linux or FreeBSD (or any other Unix you get MsgEd to compile on).  If,
+    for example, the e:\mailbox\msgbase directory is mounted on Unix below
+    the /warpserver/msgbase mount point, you would use
+    "MountDir /warpserver/msgbase e:\mailbox\msgbase".
+    MsgEd will then properly translate all path names it needs to use,
+    change all backslashes to forward slashes, etc.  So you can even parse
+    a squish.cfg that resides on the OS/2 drive without reworking it's path
+    values.
+
+  - New keyword "SoftCrXlat".  You can either set "SoftCrXlat 0" odr
+    "SoftCrXlat 1".  I did not yet figure out what this is for.  It has
+    something to do with a character with ASCI-Code 0x8D. If you figure out
+    what it is for, please tell me.
+
+  - New keyword "AreaExcl".  You can specify an area name wildcard patern
+    of areaes that should NOT be shown in MsgEd even though they might be
+    specified in an areafile or squish.cfg.  Example:
+    "AreaExcl ALT.BINARIES.*"
+
+  - Several improvements of the swapping algorithm for DOS.  I did not test
+    them, though.
+
+  - Source code is cleaned up.  All prototypes have been moved to header
+    files.
+
+  - Source code should now compile with djgpp.
+
+  - A method of locking the Squish base whil MsgEd is accessing it has been
+    implemented.  However, on my system this immediately leads to Message
+    Base corruption whenever writing a message.  Therefore, I do compile the
+    executables that I deliver with -DNO_SQUISH_LOCKING, and I suggest you
+    do the same for your system until I have debugged this.
+
+- As the MsgEd TE development and the "mainstream" have diverged quite a
+  bit, I decided to drop the version number from my development stream.
+  This will simply be "MsgEd TE" (Tobi's Edition), and the beta releases
+  will be numbered sequencially.  So this version is "MsgEd TE 04".
+
+Fixes:
+
+- Fixed bounds checking and pointer errors (that could probably lead to
+  stack or heap corruption and other sorts of undefined behaviour) that
+  occured in the  following situations:
+  - viewing a Fido *.MSG folder that was empty
+  - when replying to a message
+  - when using Hudson/QuickBBS style areas
+  - starting to write a message, but then deciding to cancel it while
+    editing the header
+  - editing a message that has zero-length lines in it
+  - quoting a message (don't know the exact condition to reproduce it)
+
+- Fixed ansi.c routines.  (They are currently only relevant for the Unix
+  VT220 version, but could be used to make an OS/2 BBS door out of MsgEd, for
+  example). The color translation was broken, and the performance was very
+  slow.  Also, keyboard input did not work on FreeBSD (and probably not on
+  any other system), because a clearerr(stdin) call after an unsuccessful
+  keyboard call had been forgotten. See unix.txt for further info.
+
+- Fixed broken file permissions in the Unix version. Also a lot of other
+  fixes to make it compile and work on Unix. See unix.txt for further info.
+
+- Fixed some (hopefully all) year 2000 problems. They were many, and I
+  would like to stress the fact that even the "mainstream" MsgEd 4.20
+  Beta 2 also is not Y2K compliant.
+
+- My EMX compiled MsgEd gave a segmentation violation (core dumped, program
+  stop) about twice a week, but ran fine the rest of the time. I finally
+  found and fixed the problem: os2scr.c was passing 32 bit pointers to
+  16 bit OS/2 API functions, which worked most of the time, but not always.
+
+- Reduced the memory requirements of a Borland compiled DOS executable by
+  about 250K (on my system). Seems that Borland's realloc() is not very
+  intelligent ... Should also visibly reduce memory requirements with all
+  other compilers.  Now that I can execute the DOS version on my system
+  again, I will also provide 16 Bit DOS executables in the archive,
+  although I'm not very enthusiastic about DOS-based platforms ...
+
+- Removed the tracing code that was introduced in TE 03
+
+
+
+
+Fixes in MsgEd 4.10 TE 03
+-------------------------
+
+Fixes:
+
+- Fixed segmentation violation when parsing a squish.cfg file. This bug
+  was not present in original MsgEd, but introduced with TE 02.
+
+- Don't do a nodelist lookup when replying to a message, because we assume
+  that the original sender whishes to get answers to the address that he is
+  using as from:-Address.  (Previously, if there were for instance two
+  different persons with the same name in the node-/pointlists, the reply
+  could even have been addressed to the wrong person!!!)
+
+- Fixed display of long area names in message reading mode
+
+- Introduced some temporary tracing facility
+
+
+
+Features, Changes and fixes in MsgEd 4.10 TE 02
+-----------------------------------------------
+
+New Features:
+
+- Changed behaviour of area scan.  If the process of scanning areas (by
+  pressing *) is aborted (by pressing ESC), those areas that have not yet
+  been scanned will (as it should always have been) still be listed with
+  dashes instead of message numbers. (Previously, there was no way to know
+  if an area contained no messages or if it was just unscanned). In order
+  to continue an interrupted scan process, you can press #. This will only
+  scan those areas that are presently marked as unscanned, while pressing
+  * would mark all areas as unscanned and then restart the scan process
+  from beginning. The feature of continuing an interrupted scan is very
+  useful if you have a large messagebase.
+
+- You can now set "UUCPNAME *" in msged.cfg. This means that your
+  Internet Gateway does not require the "UUCP" name in the name field, but
+  allows a real user name there.  This will make even nicer messages with
+  real name information.
+
+- Added real name features for internet addresses ("tobi@bland.fido.de
+  (Tobias Ernst)").  This prevents the stupid "Hello UUCP" when replying to
+  a message that has real name information.
+
+- Support for Charset Kludges according to FSC 0054. Put a READMAPS.DAT
+  and WRITMAPS.DAT tailored to your machine into the startup directory.
+  This will enable reading umlauts and other special characters that are
+  written in charsets different to the one from your machine.  The files
+  that are provided within this archive are tailored for an OS/2 or DOS
+  machine.  For an Amiga or Unix machine you will probably need different
+  ones, because these machines natively use Latin-1 instead of IBMPC.
+  If you want to write special characters, add "OutputCharset IBMPC" or
+  "OutputCharset LATIN-1" or "OutputCharset MAC" to your msged.cfg (this
+  does not have to match your native charset, just select the one you
+  "like" most) and redefine all areas that are allowed to use special
+  characters in msged.cfg, giving them the new '8' flag (for eight bits).
+  If you redefine an area that is also in squish.cfg or fastecho.cfg, do
+  not forget to also add the "u" flag if you want gateway support.
+  Example:
+
+  Squish eu8 "ALLGEMEINES.LOK" r:\msgbase\allglok ALLGEMEINES.LOK 2:2476/418.0
+
+  Read the FSC for further information on the layout of READMAPS.DAT and
+  WRITEMAPS.DAT and the principle of CHRS klduges.
+
+- Origin line and Tearline are always displayed.  This change was
+  incorporated in order to be able to "set seen-bys off" in msged.cfg
+  without loosing the orign and tear lines. If you like the old behaviour
+  better, you have to #define NO_PROTECT_TEARLINE_AND_ORIGIN and recompile
+  readmail.c.
+  (NOTE: This change is historical. I have removed it in TE 04, because
+  I have adapted the way MsgEd 4.20 Beta 2 is doing it).
+
+- Dramatically improved the initial scanning of a fastecho.cfg file. On my
+  system, it reduced msged startup time from 1 minute to 5 seconds.  (OK,
+  not everyone has 500+ area entries in the fastecho.cfg, but the algorithm
+  used previously was a nightmare anyway).
+
+- New keyword:  "SortAreas <criteria>".  You can specify that the areas in
+  the area list shall be sorted. This is very useful when importing a
+  fastecho.cfg, because the fastecho.cfg often has areas in a chaotic
+  sequence.  (This might also be true for a squish.cfg handled by a brain
+  dead areafix, or a squish.cfg maintained by a brain dead user <g>).
+  <criteria> is an arbitrary combination of the following characters.  The
+  character representing the most significant criterium should come
+  leftmost:
+
+     N:  Sort Netmail Areas on top, then Local Areas, then Echo Areas.
+     T:  Sort by Area Tag.
+     D:  Sort by Area Description
+     G:  Sort by Group.
+
+  Example:
+
+     SortAreas NDG
+
+  Notes:
+
+     1) N is always useful and should therefore be always used. ;-)
+     2) The meanings of D and T may vary depending on which area file you
+        imported the area from.  T is the true area tag, while D is what
+        you actually see on screen.  You will usually wish to use D,
+        because ordering by what you see seems to be more logical than
+        ordering by what you don't see ;-)
+     3) G does only work with areas imported from a fastecho.cfg. All other
+        areas have a group value of 0.  Note that redefining an area in
+        msged.cfg that also exists in fastecho.cfg does NOT change the
+        group number.
+
+- Better (dynamic) utilization of display width in the area list.
+
+- Better look of area list entries when using a fastecho.cfg. Areas in
+  a fastecho.cfg often do not have a meaningful description, so the de-
+  scription is now always prefixed with the area tag.
+
+- Added parsing of %ENVIRONMENT%-Variables when parsing msged.cfg,
+  squish.cfg, and the path entries in fastecho.cfg. So if you use
+
+    SET MAILBOXDRIVE=E:
+
+  somewhere in your startup.cmd resp. autoexec.bat and then use something like
+
+    NodePath %MAILBOXDRIVE%\nodelist
+
+  in msged.cfg, this line will expand to
+
+    NodePath E:\nodelist
+
+  before being parsed.  The advantage of this method is if you wish to use
+  MsgEd on different computers in a LAN that access the same messagebase,
+  but have different drive letter mappings, you can use one config file
+  with metavariables, and set the variable on each machine to the correct
+  value for this machine.
+
+
+Fixes:
+
+- Fixed a memory leak (~30 bytes per viewing a message with AREA kludge)
+
+- Fixed UUCP gateway support for carbon copies (all flavours), and lots
+  of other fixes to UUCP gateway support. It should now be possible to
+  really seamlessly use the gateway.  Works even better than TimEd and all
+  other gateway-supporting editor I have seen so far, provided that your
+  gateway is fully Gatebau-compliant (like Fidogate is).
+
+- Fixed a bug in the undelete routine:  Inserting a line as the very first
+  line of the message using undelete did not work as expected (the
+  undeleted line was drawn on-screen while editing, but not saved to disk).
+
+
+
+Features, Changes and fixes in MsgEd 4.10 TE 01
+-----------------------------------------------
+
+New Features:
+
+- AKA Matching. If destination and origin zone of a netmail message do not
+  match, and MsgEd know about a different AKA of the user that matches
+  with the destination zone, this AKA will be used instead. Special thanks
+  to Sascha Hagner (sascha@monkey.sub.org) for this feature.
+
+- Reworked the UUCP gateway interface. MsgEd now recognises all variations
+  of gated messages as they are created by FidoGate 4.2.8, namedly:
+    From: User Name <email@address>
+    From: email@address (User Name)
+    From: email@address
+  MsgEd now also supports the Reply-To: Line. It takes precedence over the
+  From: line. Drawback is that you don't see the original sender address
+  unless you take a look at the kludgelines. Advantage is that an automated
+  reply with Alt+Q will be correctly addressed.
+
+  In order to use a fidonet gateway, simply define "UUCPNAME UUCP" and
+  "UUCP <nodenumber_of_gateway>" in msged.cfg, and then, if you whish to
+  write an email, enter the email address in the user name field.  MsgEd
+  will then NOT prompt you for a node number, but silently addresss it to
+  the UUCP node, and add the "To:"-Line to the message body.  You will only
+  see this "To:"-Line if you have turned the kludges-display on (though it
+  actually isn't a kludge line).
+
+- The MsgEd gateway interface does only work if the uucp flag has been set
+  for a defined area. I found out that you can safely turn on the uccp flag
+  for all areas, netmail or echomail, even if they are FTN-only areas.
+  Problem is that you can't set the uucp flag for areas imported from
+  squish.cfg.  I therefore added the following two switches:
+  "DefaultUUCPFlag" and "DefaultNewsFlag".  They control if the uucp or
+  news flag should be set for areas imported from a squish.cfg or
+  fastecho.cfg file.  By default, "DefaultUUCPFlag" is turned on and
+  "DefaultNewsFlag" is turned off, so that all areas will benefit from the
+  MsgEd gateway interface.  If you want to turn this off, so that MsgEd
+  behaves like it did until 4.10, you have to add
+     switch defaultnewsflag off
+     switch defaultuucpflag off
+  into your config file.
+
+- Please note that for maximum comfort when communicating via a FidoGate
+  internet gateway, your message reader should support the @CHRS kludge,
+  as all messages from the gateway come with a Latin charset which can't be
+  displayed on OS/2 or DOS without translation.  You need at lest MsgEd
+  4.10 TE 02 and valid READMAPS.DAT/WRITMAPS.DAT files for this to work.
+
+- Some minor changes in the look of cc'ed messages. Added "hc:" as a
+  synonym for "bc:".  (Hidden Copy / Bild CC).  Thanks to Sascha Hagner for
+  this.
+
+- Changed the EMX makefile to use emxomfar in order to circumvent a problem
+  with too many command line parameters when binding the executable.

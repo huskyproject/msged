@@ -1,0 +1,70 @@
+CC=	wcl386
+CFLAGS=	-zq -wx
+CDEFS=	-DUSE_MSGAPI
+#COPT=	-oneatx -5
+MSGDIR=	..\smapi
+PMWDIR=	\pmw
+
+TARGET=	msged32.exe
+MSGAPI=	$(MSGDIR)\smapiwcx.lib
+
+objs=	addr.obj     \
+	areas.obj    \
+	bmg.obj      \
+	charset.obj  \
+	config.obj   \
+	control.obj  \
+	date.obj     \
+	dialogs.obj  \
+	dirute.obj   \
+	dlgbox.obj   \
+	dlist.obj    \
+	dosasm.obj   \
+	dosmisc.obj  \
+	echotoss.obj \
+	environ.obj  \
+	fido.obj     \
+	freq.obj     \
+	getopts.obj  \
+	help.obj     \
+	helpcmp.obj  \
+	helpinfo.obj \
+	ibmscrn.obj  \
+	init.obj     \
+	keycode.obj  \
+	list.obj     \
+	maintmsg.obj \
+	makemsgn.obj \
+	memextra.obj \
+	menu.obj     \
+	misc.obj     \
+	mnu.obj      \
+	mouse4.obj   \
+	msg.obj      \
+	msged.obj    \
+	mxbt.obj     \
+	normalc.obj  \
+	nshow.obj    \
+	quick.obj    \
+	quote.obj    \
+	readmail.obj \
+	screen.obj   \
+	strextra.obj \
+	system.obj   \
+	template.obj \
+	textfile.obj \
+	userlist.obj \
+	vio.obj      \
+	vsev.obj     \
+	vsevops.obj  \
+	win.obj      \
+	wrap.obj
+
+# Thunderbirds are go!
+
+.c.obj:
+	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -I$(MSGDIR) -c $<
+
+$(TARGET): $(objs)
+	$(CC) $(COPT) -k8192 -fe=$(TARGET) *.obj $(MSGAPI)
+	$(PMWDIR)\pmwbind -r -s$(PMWDIR)\pmodew.exe $(TARGET)

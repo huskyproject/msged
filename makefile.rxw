@@ -1,0 +1,71 @@
+CC=     gcc
+CFLAGS= -Wall -pedantic -D__RSXNT__ -g
+CDEFS=  -D__NT__ -DWINNT  -DUSE_MSGAPI -DNO_SQUISH_LOCKING
+MSGDIR= ..\smapi
+
+
+TARGET= msgednt.exe
+TMPLIB= msgedrxw.a
+LIB=    ar
+MSGAPI= $(MSGDIR)\smapirxw.a
+
+objs=   addr.o     \
+	areas.o    \
+	bmg.o      \
+	charset.o  \
+	config.o   \
+	control.o  \
+	date.o     \
+	dialogs.o  \
+	dirute.o   \
+	dlgbox.o   \
+	dlist.o    \
+	echotoss.o \
+	environ.o  \
+	fido.o     \
+	freq.o     \
+	getopts.o  \
+	help.o     \
+	helpcmp.o  \
+	helpinfo.o \
+	init.o     \
+	keycode.o  \
+	list.o     \
+	maintmsg.o \
+	makemsgn.o \
+	memextra.o \
+	menu.o     \
+	misc.o     \
+	mnu.o      \
+	msg.o      \
+	msged.o    \
+	mxbt.o     \
+	normalc.o  \
+	nshow.o    \
+	quick.o    \
+	quote.o    \
+	readmail.o \
+	screen.o   \
+	strextra.o \
+	system.o   \
+	template.o \
+	textfile.o \
+	userlist.o \
+	vsev.o     \
+	vsevops.o  \
+	win.o      \
+	winntscr.o \
+	wrap.o
+
+# Thunderbirds are go!
+
+.c.o:
+	$(CC) $(COPT) $(CFLAGS) $(CDEFS) $(DFLAGS) -I$(MSGDIR) -c $<
+	$(LIB) r $(TMPLIB) $@
+
+$(TARGET): $(objs)
+	$(CC) -Zwin32 $(COPT) $(CFLAGS) $(DFLAGS) -o $(TARGET) msged.o $(TMPLIB) $(MSGAPI)
+
+
+
+

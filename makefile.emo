@@ -1,0 +1,68 @@
+CC=	 gcc
+CFLAGS=	-Wall -Zomf -Zcrtdll -s
+CDEFS=	-DOS2 -DUSE_MSGAPI
+#COPT=        -O3 -fomit-frame-pointer -fstrength-reduce -m486
+MSGDIR=	..\smapi
+
+TARGET=	msgedp.exe
+TMPLIB= msgedemo.lib
+LIB=    emxomfar
+MSGAPI=	$(MSGDIR)\smapiemo.lib
+
+objs=	addr.obj     \
+	areas.obj    \
+	bmg.obj      \
+	charset.obj  \
+	config.obj   \
+	control.obj  \
+	date.obj     \
+	dialogs.obj  \
+	dirute.obj   \
+	dlgbox.obj   \
+	dlist.obj    \
+	echotoss.obj \
+	environ.obj  \
+	fido.obj     \
+	freq.obj     \
+	getopts.obj  \
+	help.obj     \
+	helpcmp.obj  \
+	helpinfo.obj \
+	init.obj     \
+	keycode.obj  \
+	list.obj     \
+	maintmsg.obj \
+	makemsgn.obj \
+	malloc16.obj \
+	memextra.obj \
+	menu.obj     \
+	misc.obj     \
+	mnu.obj      \
+	msg.obj      \
+	msged.obj    \
+	mxbt.obj     \
+	normalc.obj  \
+	nshow.obj    \
+	os2scr.obj   \
+	quick.obj    \
+	quote.obj    \
+	readmail.obj \
+	screen.obj   \
+	strextra.obj \
+	system.obj   \
+	template.obj \
+	textfile.obj \
+	userlist.obj \
+	vsev.obj     \
+	vsevops.obj  \
+	win.obj      \
+	wrap.obj
+
+# Thunderbirds are go!
+
+.c.obj:
+	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -I$(MSGDIR) -c $<
+        $(LIB) r $(TMPLIB) $@
+
+$(TARGET): $(objs)
+	$(CC) $(COPT) $(CFLAGS) -Zlinker "/pm:vio" -o $(TARGET) msged.obj $(TMPLIB) $(MSGAPI)
