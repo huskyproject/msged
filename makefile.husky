@@ -118,7 +118,7 @@ distclean: clean
 	(cd doc && cd manual && $(MAKE) -f makefile.husky distclean)
 
 
-install: $(TARGET)
+install: $(TARGET) msghelp.dat
 	-$(MKDIR) $(MKDIROPT) $(CFGDIR)
 	-$(MKDIR) $(MKDIROPT) $(BINDIR)
 	$(INSTALL) $(IBOPT) $(TARGET) $(BINDIR)

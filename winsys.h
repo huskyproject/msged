@@ -83,6 +83,7 @@
 #define _YELLOW           0xE0     /* Blink/light yellow    */
 #define _WHITE            0xF0     /* Blink/light white     */
 #define _BLINK            0x80     /* Blink/intensity bit   */
+#define _TRANSPARENT      0x100    /* transparent background, for Unix */
 
 #define F_NORMAL         0x000     /* Normal Font    */
 #define F_ALTERNATE      0x100     /* Alternate Font */
