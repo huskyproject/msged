@@ -123,7 +123,7 @@ static int mykbhit(int block)
 #ifdef KEYDEBUG
         if (irBuffer.EventType == KEY_EVENT)
         {
-            fprintf(fTrace, "bKD=%d wRC=%hd wVKC=%hd wVSC=%hd c='%c' c=%d dwCKS=%lx\n",
+            fprintf(fTrace, "bKD=%d wRC=%hd wVKC=%hd wVSC=%hd c=%d dwCKS=%lx\n",
                     irBuffer.Event.KeyEvent.bKeyDown,
                     irBuffer.Event.KeyEvent.wRepeatCount,
                     irBuffer.Event.KeyEvent.wVirtualKeyCode,
