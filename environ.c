@@ -38,9 +38,11 @@ start:
         if (!strlen(var))
         { *(cpdest++)='%'; if ((++l)>=maxlen) goto error; }
         else
+            {
           if ((cpvar=getenv(var))!=NULL)
             for (;*cpvar;*(cpdest++)=*(cpvar++))
               if ((++l)>=maxlen) goto error;
+            }
         cpvar=var;
       }
       else
