@@ -1594,7 +1594,7 @@ int writemsg(msg * m)
 	       kludges in echomail areas and the like */
 	if (CurArea.netmail /* || CurArea.uucp */ )
 	{
-	    if (m->from.zone != m->to.zone || m->from.zone != thisnode.zone)
+ 	    if (m->from.zone != m->to.zone || m->from.zone != thisnode.zone)
 	    {
 		sprintf(text, "\01INTL %d:%d/%d %d:%d/%d\r", m->to.zone,
 		  m->to.net, m->to.node, m->from.zone, m->from.net, m->from.node);
@@ -1942,14 +1942,13 @@ int writemsg(msg * m)
 	}
 
 	/* do any required zone gating */
-
-	if (CurArea.addr.zone != m->to.zone && !m->attrib.direct &&
-	  !m->attrib.crash && CurArea.netmail && (SW->gate == GZONES ||
-	  SW->gate == BOTH))
+        if (m->from.zone != m->to.zone && !m->attrib.direct &&
+            !m->attrib.crash && CurArea.netmail &&
+            (SW->gate == GZONES || SW->gate == BOTH))
 	{
 	    m->to.node = m->to.zone;
-	    m->to.zone = CurArea.addr.zone;
-	    m->to.net = CurArea.addr.zone;
+	    m->to.zone = m->from.zone;
+	    m->to.net = m->from.zone;
 	}
     }
 
