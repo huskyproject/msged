@@ -1,3 +1,13 @@
+2003-09-01 Monday 05:10  stas_degteff
+
+	* Makefile (1.19), maps/makefile.husky (1.14): install maps & help
+	into msged subdirectory (husky only!)
+
+2003-09-01 Monday 04:55  stas_degteff
+
+	* doc/sample.cfg (1.8): Adapt sample config for "linux" terminal
+	type
+
 2003-03-12 Wednesday 05:06  stas_degteff
 
 	* VERSION (1.2): Add huskylib into 'require' list
