@@ -405,7 +405,7 @@ char *FindQuoteEnd(char *txt)
         s--;
     }
 
-    if (s == txt)
+    if (s == txt && *s != '>')
     {
         return txt;
     }
