@@ -7,13 +7,17 @@ else
   CFLAGS=	-Wall -I../smapi -I$(INCDIR) -s
 endif
 
-CDEFS=	-D$(OSTYPE) -DUSE_MSGAPI -DUSE_FIDOCONFIG -DUNAME=\"LNX\" $(ADDCDEFS)
+CDEFS=-D$(OSTYPE) -DUSE_MSGAPI -DUSE_FIDOCONFIG -DUNAME=\"$(UNAME)\" \
+      $(ADDCDEFS)
 COPT=	-O3 -fomit-frame-pointer -fstrength-reduce
-LFLAGS= -L$(LIBDIR)
+
+ifeq ($(SHORTNAME), 1)
+  LFLAGS= -L$(LIBDIR) -lfidoconf -lsmapi -lncurses
+else
+  LFLAGS= -L$(LIBDIR) -lfidoconfig -lsmapi -lncurses
+endif
 
 TARGET=	msged$(EXE)
-MSGAPI=-lsmapi
-FC=-lfidoconfig
 
 objs=   addr$(OBJ)     \
 	ansi$(OBJ)     \
@@ -58,7 +62,7 @@ objs=   addr$(OBJ)     \
 	quick$(OBJ)    \
 	quote$(OBJ)    \
 	readmail$(OBJ) \
-        readtc$(OBJ)   \
+	readtc$(OBJ)   \
 	screen$(OBJ)   \
 	strextra$(OBJ) \
 	system$(OBJ)   \
@@ -70,20 +74,25 @@ objs=   addr$(OBJ)     \
 	win$(OBJ)      \
 	wrap$(OBJ)
 
-all: $(TARGET)
+all: $(TARGET) msghelp.dat
 
 .c$(OBJ):
 	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
 
 $(TARGET): $(objs)
-	$(CC) $(COPT) $(LFLAGS) -o $(TARGET) $(objs) $(MSGAPI) $(FC)
+	$(CC) $(COPT) $(LFLAGS) -o $(TARGET) $(objs)
+
+msghelp.dat: msghelp.src
+	$(TARGET) -hc msghelp.src msghelp.dat
 
 clean:
-	-$(RM) *$(OBJ) *~
+	-$(RM) *$(OBJ)
+	-$(RM) *~
 
 distclean: clean
 	-$(RM) $(TARGET)
 
 install: $(TARGET)
-	install $(IBOPT) $(TARGET) $(BINDIR)
+	$(INSTALL) $(IBOPT) $(TARGET) $(BINDIR)
+	$(INSTALL) $(IIOPT) msghelp.dat $(CFGDIR)
 
