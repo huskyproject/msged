@@ -897,6 +897,8 @@ int FileDialog(char *retpath, const char *title)
     }
     else
     {
+                 /* in case retpath does not include a path */
+        strcpy(curdir, homedir); 
         strcpy(curfile.name, retpath);
         process_fileinput(retpath, curdir);
     }
