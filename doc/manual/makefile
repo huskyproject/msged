@@ -18,7 +18,7 @@ msged.dvi: msged.texi
 	texi2dvi msged.texi
 
 msged.info: msged.texi
-	makeinfo msged.texi
+	makeinfo --no-split  msged.texi
 
 msged.doc: msged.texi
 	cp msged.texi tmp.texi
