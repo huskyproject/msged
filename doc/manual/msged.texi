@@ -3067,14 +3067,15 @@ groups. @xref{Manual Groups,,Manually Defining and Assigning Groups}, for a
 full documentation on how to use this keyword. @xref{Grouping,,Configuring and
 Using Message Area Groups}, for an overview on the group concept of
 @value{MSGED}.
+
 @node GroupSettings, HelpFile, Group, Keywords
 @subsection GroupSettings
 @findex GroupSettings
 @table @asis
 @item Syntax:
-@code{Group "@var{groupname}" @var{name-index} @var{template-index}}
+@code{GroupSettings "@var{groupname}" @var{name-index} @var{template-index}}
 @item Example:
-@code{Group "OS/2 Echos" 0 1}
+@code{GroupSettings "OS/2 Echos" 0 1}
 @end table
 
 This command allows you to select different user names and/or template files
