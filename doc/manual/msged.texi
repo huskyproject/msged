@@ -168,11 +168,11 @@ code for the manual that can be used to build the manual in OS/2 INF, HTML,
 GNU info or DVI format.
 @end table
 
-For compiling @value{MSGED}, you also need the @samp{smapi} library, and, if
-you want full support for the @file{fidoconfig} config file standard, then
-you also need the @samp{fidoconfig library}. Both libraries are distributed
-by the husky team. The filenames of the release versions of those libaries
-that can be used to build @value{MSGED} @value{VERSION} are
+For compiling @value{MSGED}, you also need the @samp{smapi} library, and,
+though now optional, you might also want to use the @samp{fidoconfig
+library}. Both libraries are distributed by the Husky team. The filenames of
+the release versions of those libaries that can be used to build
+@value{MSGED} @value{VERSION} are
 
 @table @file
 @item smapi-1.6.4.tar.gz
@@ -4984,8 +4984,8 @@ package.
 In the following we are assuming you don't want to deal with
 @file{huskymak.cfg}, don't want to download @file{fidoconfig} etc., but
 simply build a standard @value{MSGED} executable for your operating
-system. It will still be able to read mail areas from a @file{fidoconfig}
-type areafile, as @value{MSGED} also has it's own fidoconfig access routines.
+system. It will still be able to read  a @file{fidoconfig}
+type configuration file, as @value{MSGED} also has it's own fidoconfig access routines.
 
 @menu
 * Preparations::                Obtaining and unpacking the files.
