@@ -4,7 +4,7 @@ CDEFS=	-DUNIX -DUSE_MSGAPI -DUSE_FIDOCONFIG
 COPT=
 LIBDIR=	-L../fidoconfig -L../smapi
 INCLDIR=	-I../fidoconfig -I../smapi
-LIBRARIES=	-lfidoconfig -lsmapisun
+LIBRARIES=	-lfidoconfig -lsmapisun -lcurses
 
 TARGET=	msged
 MSGAPI=	smapisun

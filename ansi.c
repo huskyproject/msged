@@ -40,6 +40,10 @@
 #include <signal.h>             /* signal ...     */
 #include <setjmp.h>             /* longjmp        */
 
+#ifdef sun
+#include <curses.h>
+#endif
+
 static volatile int resize_pending = 0;
 
 #if (defined(__unix__) || defined(unix)) && !defined(USG)
@@ -466,6 +470,15 @@ int TTdelay(int mil)
 
 static void TTRepaint();
 
+char getkey()
+{
+#ifdef sun
+  return getch();
+#else
+  return getchar();
+#endif
+}
+
 unsigned int TTGetKey(void)
 {
     int ch;
@@ -482,13 +495,13 @@ unsigned int TTGetKey(void)
     else
     {
         block_console(1,0);
-        ch = getchar();
+        ch = getkey();
         block_console(0,0);
     }
 #elif defined(SASC)
     ch = agetchr();
 #else
-    ch = getchar();
+    ch = getkey();
 #endif
 
 #ifdef UNIX
@@ -539,7 +552,7 @@ unsigned int TTGetKey(void)
     else if (ch == 0x1b)   /* interprete VT100 escape sequences */
     {
         block_console(0,2);
-        ch = getchar();
+        ch = getkey();
         block_console(0,0);
             
         if (ch == EOF)
@@ -691,7 +704,7 @@ unsigned int TTGetKey(void)
                 break;
             case 'O':  /* VT100 and ANSI Alt- and Function keys */
                 block_console(0,2);
-                ch = getchar();
+                ch = getkey();
                 block_console(0,0);
                 switch(ch)
                 {
@@ -904,7 +917,7 @@ unsigned int TTGetKey(void)
                 break;
             case '[': /* "ansi" cursor key codes */
                 block_console(0,2);
-                ch = getchar();
+                ch = getkey();
                 block_console(0,0);
                 switch (ch)
                 {
@@ -967,7 +980,7 @@ unsigned int TTGetKey(void)
                     break;
                 case '[':  /* linux console F1 .. F5 */
                     block_console(0,2);
-                    ch = getchar();
+                    ch = getkey();
                     block_console(0,0);
                     switch(ch)
                     {
@@ -992,7 +1005,7 @@ unsigned int TTGetKey(void)
                     break;
                 case '1':
                     block_console(0,2);
-                    ch = getchar();
+                    ch = getkey();
                     block_console(0,0);
                     switch (ch)
                     {
@@ -1001,7 +1014,7 @@ unsigned int TTGetKey(void)
                         break;
                     case 53:
                         block_console(0,2);
-                        ch = getchar();
+                        ch = getkey();
                         block_console(0,0);
                         switch (ch)
                         {
@@ -1014,7 +1027,7 @@ unsigned int TTGetKey(void)
                         break;
                     case 55:
                         block_console(0,2);
-                        ch = getchar();
+                        ch = getkey();
                         block_console(0,0);
                         switch (ch)
                         {
@@ -1027,7 +1040,7 @@ unsigned int TTGetKey(void)
                         break;
                     case 56:
                         block_console(0,2);
-                        ch = getchar();
+                        ch = getkey();
                         block_console(0,0);
                         switch (ch)
                         {
@@ -1040,7 +1053,7 @@ unsigned int TTGetKey(void)
                         break;
                     case 57:
                         block_console(0,2);
-                        ch = getchar();
+                        ch = getkey();
                         block_console(0,0);
                         switch (ch)
                         {
@@ -1057,7 +1070,7 @@ unsigned int TTGetKey(void)
                     break;
                 case '2':
                     block_console(0,2);
-                    ch = getchar();
+                    ch = getkey();
                     block_console(0,0);
                     switch (ch)
                     {
@@ -1066,7 +1079,7 @@ unsigned int TTGetKey(void)
                         break;
                     case 48:
                         block_console(0,2);
-                        ch = getchar();
+                        ch = getkey();
                         block_console(0,0);
                         switch (ch)
                         {
@@ -1079,7 +1092,7 @@ unsigned int TTGetKey(void)
                         break;
                     case 49:
                         block_console(0,2);
-                        ch = getchar();
+                        ch = getkey();
                         block_console(0,0);
                         switch (ch)
                         {
@@ -1096,7 +1109,7 @@ unsigned int TTGetKey(void)
                     break;
                 case '3':
                     block_console(0,2);
-                    ch = getchar();
+                    ch = getkey();
                     block_console(0,0);
                     switch (ch)
                     {
@@ -1109,7 +1122,7 @@ unsigned int TTGetKey(void)
                     break;
                 case '4':
                     block_console(0,2);
-                    ch = getchar();
+                    ch = getkey();
                     block_console(0,0);
                     switch (ch)
                     {
@@ -1122,7 +1135,7 @@ unsigned int TTGetKey(void)
                     break;
                 case '5':
                     block_console(0,2);
-                    ch = getchar();
+                    ch = getkey();
                     block_console(0,0);
                     switch (ch)
                     {
@@ -1135,7 +1148,7 @@ unsigned int TTGetKey(void)
                     break;
                 case '6':
                     block_console(0,5);
-                    ch = getchar();
+                    ch = getkey();
                     block_console(0,0);
                     switch (ch)
                     {
@@ -1203,7 +1216,7 @@ static void collect_events(int block)
 
         block_console (1, 0);
         jump_on_resize = 1;
-        waiting = getchar();
+        waiting = getkey();
         jump_on_resize = 0;
         if (waiting == EOF)
         {
@@ -1329,6 +1342,12 @@ int TTkopen(void)
     tcsetattr(0, 0, &tios);
     block_console(0,0);
     setbuf(stdin, NULL);
+#ifdef sun
+    initscr();  //curses initialization
+    cbreak();
+    noecho();
+#endif
+
 #endif
                /* +3 to provide buffer for incorrect calls to the 
                   Win... routines if the window is very small */
@@ -1517,7 +1536,7 @@ static int mykbhit(void)
 
     if (waiting == -1)
     {
-        waiting = getchar();
+        waiting = getkey();
 
         if (waiting == EOF)
         {
