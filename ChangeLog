@@ -1,3 +1,8 @@
+2003-02-03 Monday 12:25  os2tobi
+
+	* maps/koi_asc.chs (1.2): fixed transliteration from koi to ascii
+	for cyrillic letter "yo"
+
 2003-01-26 Sunday 10:25  os2tobi
 
 	* ansi.c (1.30), doc/whatsnew.txt (1.77): Fix display problems
