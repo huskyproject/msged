@@ -761,11 +761,11 @@ static char *dlgetcwd(char *storehere, int buflen)
                 
 
 /*
- * Split a file name into drive, path, dir, change to the given
- * directory, and return the path name 
+ * Analyse user input if the input was a complete path with filename.
+ * Also used for parsing the default settings.
  */
 
-int process_fileinput(char *retpath, char *curdir)
+static int process_fileinput(char *retpath, char *curdir)
 {
     char *sp;
     int savech;
