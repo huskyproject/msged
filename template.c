@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <time.h>
+#include <string.h>
 #include "addr.h"
 #include "nedit.h"
 #include "msged.h"
