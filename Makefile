@@ -127,14 +127,13 @@ clean:
 	-$(RM) *$(OBJ)
 	-$(RM) *~
 	(cd maps && $(MAKE) -f makefile.husky clean)
-ifdef INFODIR
 	(cd doc && cd manual && $(MAKE) -f makefile.husky clean)
-endif
 
 
 distclean: clean
 	-$(RM) $(TARGET)
 	-$(RM) msghelp.dat
+	-$(RM) testcons$(EXE)
 	(cd maps && $(MAKE) -f makefile.husky distclean)
 	(cd doc && cd manual && $(MAKE) -f makefile.husky distclean)
 
