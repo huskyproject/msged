@@ -24,6 +24,11 @@
 #include <dos.h>
 #endif
 
+#if defined(__WATCOMC__)
+#include <i86.h>
+#include <dos.h>
+#endif
+
 #include <stdlib.h>
 
 #include "winsys.h"
@@ -91,7 +96,7 @@ int TTCurSet(int st)
         regs.h.cl = cur_end;
 #if defined(__DJGPP__)
         __dpmi_int(0x10, &regs);
-#elif defined(MSDOS) && defined(__FLAT__)
+#elif defined(MSDOS) && (defined(__FLAT__)  || defined(__386__))
         int386(0x10, &regs, &regs);
 #else
         int86(0x10, &regs, &regs);
@@ -104,7 +109,7 @@ int TTCurSet(int st)
         regs.h.ch = 0x20;
 #if defined(__DJGPP__)
         __dpmi_int(0x10, &regs);
-#elif defined(MSDOS) && defined(__FLAT__)
+#elif defined(MSDOS) && (defined(__FLAT__) || defined(__386__))
         int386(0x10, &regs, &regs);
 #else
         int86(0x10, &regs, &regs);
@@ -148,10 +153,10 @@ int TTWriteStr(unsigned long *b, int len, int row, int col)
     {
         for (i = 0; i < len; i++)
         {
-            buf[i] = 
+            buf[i] =
                 (unsigned short)((b[i] & 0xFFUL) | ((b[i] >> 8) & 0xFF00UL));
         }
-        
+
         VIOputr(col, row, len, 1, buf);
         free(buf);
     }

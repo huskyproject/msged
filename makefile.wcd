@@ -1,34 +1,22 @@
-# look for libs in c:\lib
-LIBDIR=c:\lib
-
-# install programs in c:\bin
-BINDIR=c:\bin
-
-# look for includes here
-INCDIR=c:\include
-
-# options for installing programs
-IBOPT=-s
-
-# debug?
-DEBUG=0
+# Watcom DOS makefile
+# No Support for Husky build environment
 
 CC=	wcl
 
-ifeq ($(DEBUG), 1)
-  CFLAGS=	-zq -wx -ml -k8192 -I$(INCDIR) -d2
-else
-  CFLAGS=	-zq -wx -ml -k8192 -I$(INCDIR)
-endif
-
-CDEFS=	-DUSE_MSGAPI -DUSE_CRITICAL
-#COPT=	-oneatx
+CSWITCH= -zq -wx -I.. -bt=dos -ml -k8192
+COPT=-oneatx
+MSGAPI= ..\smapi\smapiwcd.lib
+CDEFS=  -DMSDOS -DUSE_MSGAPI -DUSE_CRITICAL
+CFLAGS=$(CDEFS) $(COPT) $(CSWITCH)
+LFLAGS= -l=dos
 ASM=	wasm
-AFLAGS=	-zq
+AFLAGS=	-zq -bt=dos -ml
 ADEFS=	-DWATCOM
 
 TARGET=	msged.exe
-MSGAPI=	$(LIBDIR)\smapiwcd.lib
+
+
+TARGET=	msged.exe
 
 objs=	addr.obj     &
 	areas.obj    &
@@ -96,10 +84,10 @@ all: $(TARGET)
 	$(ASM) $(AFLAGS) $(ADEFS) $<
 
 .c.obj:
-	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
+	$(CC) $(CFLAGS) -c $<
 
 $(TARGET): $(objs)
-	$(CC) $(COPT) -fe=$(TARGET) $(objs) $(MSGAPI)
+	$(CC) $(LFLAGS) -fe=$(TARGET) $(objs) $(MSGAPI)
 
 clean:
 	del *.obj
@@ -108,6 +96,4 @@ clean:
 distclean: clean
 	del $(TARGET)
 
-install: $(TARGET)
-	copy $(TARGET) $(BINDIR)
 

@@ -223,7 +223,7 @@ char *dir_getdrivelist(void)
 
 
 
-#elif defined(__RSXNT__) || defined (__MINGW32__) || defined (__WATCOMC__)
+#elif defined(__RSXNT__) || defined (__MINGW32__) || (defined (__WATCOMC__) && defined(__NT__))
 
 #define NOUSER
 #include <windows.h>
@@ -812,7 +812,7 @@ int dir_getdrive(void)
 #include <windows.h>
 char *dir_getdrivelist(void)
 {
-    unsigned long logmap;
+    ungsigned long logmap;
     char *str = xmalloc(27);
     int i , j;
     unsigned long comp = 1;

@@ -673,8 +673,8 @@ int FidoAreaSetLast(AREA * a)
                 return FALSE;
             }
             lseek(fd, 0L, SEEK_SET);
-            farwrite(fd, &i, sizeof(short));
-            farwrite(fd, &i, sizeof(short));
+            farwrite(fd, (byte far *)&i, sizeof(short));
+            farwrite(fd, (byte far *)&i, sizeof(short));
             close(fd);
             return TRUE;
         }
@@ -692,8 +692,8 @@ int FidoAreaSetLast(AREA * a)
     }
     else
     {
-        farwrite(fd, &i, sizeof(short));
-        farwrite(fd, &i, sizeof(short));
+        farwrite(fd, (byte far *)&i, sizeof(short));
+        farwrite(fd, (byte far *)&i, sizeof(short));
     }
     close(fd);
     return TRUE;

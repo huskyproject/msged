@@ -139,7 +139,7 @@ int InitVars(void)
     /* Initialize all the variables to default values. */
 
     SW->gate = GASK;
-    SW->orgrm = 0xFFFF; /* allow any margin */
+    SW->orgrm = 0x7FFF; /* allow any margin */
     SW->orgqm = 75;     /* don't make quote lines too large */
     SW->tabsize = 4;
     SW->use_lastr = YES;
@@ -203,7 +203,7 @@ int InitVars(void)
     ST->comspec = getenv("COMSPEC");
 #else
     ST->comspec = getenv("SHELL");
-#endif    
+#endif
     ST->outfile = xstrdup("msged.txt");
     ST->infile  = NULL;
     ST->quotestr = xstrdup(" > ");
