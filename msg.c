@@ -76,7 +76,8 @@ long SquishMsgAreaOpen(AREA * a)
     int sql;                    /* file handle */
     unsigned long k = 0;        /* counter */
     struct stat bstat;          /* stats for sql file */
-
+    unsigned char buffer[4];    /* for reading and writing the sql */
+    
     a->scanned = 1;
     a->last = 1;
     a->first = 1;
@@ -131,7 +132,7 @@ long SquishMsgAreaOpen(AREA * a)
         fstat(sql, &bstat);
 #endif
         /* we make it big enough */
-        if (bstat.st_size < SW->useroffset * sizeof(long))
+        if (bstat.st_size < SW->useroffset * 4)
         {
             close(sql);
             sql = sopen(work, O_BINARY | O_RDWR, SH_DENYNO, S_IWRITE | S_IREAD);
@@ -143,11 +144,12 @@ long SquishMsgAreaOpen(AREA * a)
                 fstat(sql, &bstat);
 #endif
                 lastread = 0;
-                k = bstat.st_size / sizeof(long);
+                buffer[0] = buffer[1] = buffer[2] = buffer[3] = '\0';
+                k = bstat.st_size / 4;
                 lseek(sql, 0L, SEEK_END);
                 while (SW->useroffset > k)
                 {
-                    write(sql, (char *) &lastread, sizeof(long));
+                    write(sql, buffer, 4);
                     k++;
                 }
             }
@@ -155,9 +157,13 @@ long SquishMsgAreaOpen(AREA * a)
         else
         {
             /* we read the data in */
-            lseek(sql, SW->useroffset * sizeof(long), SEEK_SET);
-            if (read(sql, (char *) &lastread, sizeof(UMSGID)) == sizeof(long))
+            lseek(sql, SW->useroffset * 4, SEEK_SET);
+            if (read(sql, buffer, 4) == 4)
             {
+                lastread = buffer[0] + (((unsigned long)(buffer[1])) << 8) +
+                    (((unsigned long)(buffer[2])) << 16) +
+                    (((unsigned long)(buffer[3])) << 24);
+
                 if (CurArea.netmail)
                 {
                     a->lastread = MsgUidToMsgn(Ahandle, lastread, UID_PREV);
@@ -939,10 +945,11 @@ unsigned long SquishMsgnToUid(unsigned long n)
 int SquishAreaSetLast(AREA * a)
 {
     char work[255];
-    long i = 1, k = 0;
+    long i = 1;
     int ret = TRUE;
     int fd;
-
+    unsigned char buffer[4];
+    
     if (mh != NULL)
     {
         MsgCloseMsg(mh);
@@ -967,13 +974,20 @@ int SquishAreaSetLast(AREA * a)
                 }
                 else
                 {
+                    buffer[0] = buffer[1] = buffer[2] = buffer[3] = '\0';
                     lseek(fd, 0L, SEEK_SET);
                     for (i = 0; SW->useroffset > (int)i; i++)
                     {
-                        write(fd, (char *) &k, sizeof k);
+                        write(fd, buffer, 4);
                     }
+
                     i = MsgMsgnToUid(Ahandle, CurArea.lastread);
-                    write(fd, (char *) &i, sizeof(long));
+                    buffer[0] = i & 0xFF;
+                    buffer[1] = (i >> 8) & 0xFF;
+                    buffer[2] = (i >> 16) & 0xFF;
+                    buffer[3] = (i >> 24) & 0xFF;
+
+                    write(fd, buffer, 4);
                     close(fd);
                 }
             }
@@ -984,7 +998,7 @@ int SquishAreaSetLast(AREA * a)
         }
         else
         {
-            lseek(fd, SW->useroffset * sizeof(long), SEEK_SET);
+            lseek(fd, SW->useroffset * 4, SEEK_SET);
 
             if (SW->use_lastr)
             {
@@ -995,7 +1009,12 @@ int SquishAreaSetLast(AREA * a)
                 i = MsgMsgnToUid(Ahandle, CurArea.current);
             }
 
-            write(fd, (char *) &i, sizeof i);
+            buffer[0] = i & 0xFF;
+            buffer[1] = (i >> 8) & 0xFF;
+            buffer[2] = (i >> 16) & 0xFF;
+            buffer[3] = (i >> 24) & 0xFF;
+
+            write(fd, buffer, 4);
             close(fd);
         }
     }
