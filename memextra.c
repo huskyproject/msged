@@ -71,6 +71,10 @@ void *xrealloc(void *ptr, size_t size)
 
 char *xstrdup(const char *str)
 {
+    if (str == NULL)
+    {
+        return NULL;
+    }
     return strcpy(xmalloc(strlen(str) + 1), str);
 }
 
