@@ -4,7 +4,13 @@ TODO-List for Msged
 Category 1: Will certainly be implemented until next release
 ============================================================
 
+- Debug "Switch Statbar Off" (MMC)
+
+- Debug Sascha Sible's Lastread problem
+
 - Header recoding for Message List
+
+- Add more cyrillic konversion tables (i.E. transcription to ASCII)
 
 - Give the user the possibilty to only include the Areatag, but not
   the Fastecho echo description into the area list (Ralf Hoerner)
