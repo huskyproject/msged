@@ -1,20 +1,60 @@
 The subdirectories of this directory contain character set translation tables
-that enable FSC 0054 CHRS support for MsgEd TE.
+that enable FSC 0054 /FSP 1013 CHRS support for MsgEd TE.
 
-For the DOS, OS/2 and Windows versions, simply copy the "readmaps.dat" and
-"writmaps.dat" file from the "ibmpc" subdirectory into the path where the
-MsgEd TE executable resides.
+You must select exactly one readmaps.* and one writmaps.* file that
+matches your configuration and then use the "readmap" and "writemap"
+keywords in the Msged configuration to point to the correct file.
+Example:
 
-If your OS/2, DOS or Windows machine is using codepage 850 instead of
-codepage 437, you can use readmaps.dat and writmaps.dat from the "cp850"
-subdirectory instead, but you should really consider switching to codepage 437.
-You can find out the codepage that your are using by issueing the CHCP command.
+ Readmap  c:\msged\readmaps.850
+ Writemap c:\msged\writmaps.850
 
-For a Linux/Unix machine that uses ISO 8859-1 (any Unix machine
-should do so!), the "readmaps.dat" file from the "latin"
-subdirectory must be renamed and moved to "~/.msged.readmaps" and
-the "writmaps.dat" file from the "latin" subdirectory must be
-renamed and moved to "~/.msged.writmaps".  For a Linux machine that
-is misconfigured and uses codepage 437 or 850, use the files from
-the "ibmpc" "or "cp850" subdirectory instead.
+Note:  You must select the map that matches YOUR computer, not the
+map that matches the charset that you want to use for message
+transport.  So if you have a KOI8-R computer, use readmaps
+writmaps.koi even if you want to write mails in CP866 charset.
+
+Please refer to the Msged manual for more information.  (Chapter "Advanced
+Concepts", Section "Using Umlauts ...").
+
+The following character set maps are provided:
+
+Filename     | Type of font / character set / computer
+-------------------------------------------------------------------------
+READMAPS.850 | Any DOS or OS/2 computer, or Windows computer with the OEM
+WRITMAPS.850 | console fonts, that uses Codepage 850. This applies to most
+             | computers in Western Europe. Some badly configured Linux
+             | systems might also use this code page.
+-------------------------------------------------------------------------
+READMAPS.437 | Any DOS or OS/2 computer, or Windows computer with the OEM
+WRITMAPS.437 | fonts, that uses the standard codepage 437. This applies to
+             | most US-American installations, and also to some European
+             | ones that use Codepage 850 because it has some more IBM
+             | graphics characters.
+-------------------------------------------------------------------------
+READMAPS.865 | This is the "nordic" IBM Codepage 865 used in some
+WRITMAPS.865 | Northern European countries.
+-------------------------------------------------------------------------
+READMAPS.866 | This is IBM Codepage 866, used by DOS and OS/2 or Windows
+WRITMAPS.866 | text mode applications in Russia.
+-------------------------------------------------------------------------
+READMAPS.UKR | This is IBM Codepage 1125, used by some DOS and OS/2 or
+WRITMAPS.UKR | Windows installations for text mode applications in
+             | Ukraine and Belorussia.
+-------------------------------------------------------------------------
+READMAPS.IS1 | This is ISO 8859-1. It is the standard encoding for
+WRITMAPS.IS1 | X11 fonts and console fonts on Linux and Unix systems
+             | in Western Europe.
+-------------------------------------------------------------------------
+READMAPS.IS5 | This is ISO 8859-5. It is the encoding used for vendor
+WRITMAPS.IS5 | shipped additional fonts in Russian editions of commercial
+             | Unix systems.
+-------------------------------------------------------------------------
+READMAPS.KOI | This is KOI8-R, used by the cyrillic cronyx font set,
+WRITMAPS.KOI | which is in use in almost any Russian Linux or FreeBSD
+             | installation, and can of course also be installed on
+             | commercial Unix systems.
+-------------------------------------------------------------------------
+
+
 
