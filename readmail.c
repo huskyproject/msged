@@ -2058,6 +2058,8 @@ int writemsg(msg * m)
 	l = l->next;
     }
 
+    length++; /* account for the \0 byte */
+
     if (!m->rawcopy)
     {
 	/* remap point originated crashmail */
