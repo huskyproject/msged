@@ -289,6 +289,8 @@ static char *cfgswitches[] =
     "ShowSeenBys",
     "EditTearLines",
     "EditOriginLines",
+    "Colors",
+    "Shadows",
     "SquishLock",
     NULL
 };
@@ -331,7 +333,9 @@ static char *cfgswitches[] =
 #define CFG_SW_SHOWSEENBYS          35
 #define CFG_SW_EDITTEARLINES        36
 #define CFG_SW_EDITORIGINLINES      37
-#define CFG_SW_SQUISH_LOCK          38 /* should be 45 */
+#define CFG_SW_COLORS               38
+#define CFG_SW_SHADOWS              39
+#define CFG_SW_SQUISH_LOCK          40 /* should be 45 */
 
 #ifdef UNIX
 #include <sys/types.h>
@@ -846,6 +850,14 @@ void AssignSwitch(char *swtch, int OnOff)
 
     case CFG_SW_EDITORIGINLINES:
         SW->editoriginlines = OnOff;
+        break;
+
+    case CFG_SW_COLORS:
+        wnd_force_monochrome = !(OnOff);
+        break;
+
+    case CFG_SW_SHADOWS:
+        wnd_suppress_shadows = !(OnOff);
         break;
 
     case CFG_SW_SQUISH_LOCK:
