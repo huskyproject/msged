@@ -3,7 +3,7 @@
  *
  *  Written 1998 by Tobias Ernst. Released to the Public Domain.
  *
- *  A FSC-0054 compliant character set translation engine for MsgEd.
+ *  A FSC-0054 / FSP-1013 compliant character set translation engine for MsgEd.
  */
 
 #include <time.h>
@@ -224,7 +224,7 @@ void read_charset_maps(char *readmap, char *writemap)
         }
         if (strcmp(readmaps->charset_name, writemaps->charset_name) == 0)
         {
-           printf ("\rIncorporating FSC 0054 charset engine. "
+           printf ("\rIncorporating FSP 1013 charset engine. "
                    "Local charset is: %s\n", readmaps->charset_name);
            xfree(fnr);
            xfree(fnw);
