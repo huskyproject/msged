@@ -29,7 +29,7 @@ MSGAPI= $(LIBDIR)\smapi\smapiwco.lib
 
 !IF $(USE_FIDOCONFIG) == 1
 CDEFS=  -DOS2 -DUSE_MSGAPI -DUSE_FIDOCONFIG
-FIDOCFG= $(LIBDIR)\fidoconfig\fidoconfig.lib
+FIDOCFG= $(LIBDIR)\fidoconf\fconfwcw.lib
 !ELSE
 CDEFS=  -DOS2 -DUSE_MSGAPI
 !ENDIF

@@ -14,7 +14,7 @@ IBOPT=-s
 DEBUG=0
 
 # use fidoconfig?
-USE_FIDOCONFIG=0
+USE_FIDOCONFIG=1
 
 CC=	wcl386
 
@@ -29,7 +29,7 @@ MSGAPI= $(LIBDIR)\smapi\smapiwcw.lib
 
 !IF $(USE_FIDOCONFIG) == 1
 CDEFS=  -DWINNT -DUSE_MSGAPI -DUSE_FIDOCONFIG
-FIDOCFG= $(LIBDIR)\fidoconfig\fidoconfig.lib
+FIDOCFG= $(LIBDIR)\fidoconf\fconfwcw.lib
 !ELSE
 CDEFS=  -DWINNT -DUSE_MSGAPI
 !ENDIF
