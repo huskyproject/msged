@@ -154,7 +154,7 @@ void read_charset_maps(void)
     maskout_table.level = 2;
     for (i = 0; i < 128; i++)
     {
-        maskout_table.lookuptable[i * 2] = '\x1';
+        maskout_table.lookuptable[i * 2] = '\001';
         maskout_table.lookuptable[i * 2 + 1] = '?';
     }
 

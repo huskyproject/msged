@@ -1497,7 +1497,7 @@ void TTEnableSCInput(char *special_characters)
     {
         free(allowed_special_characters);
     }
-    allowed_special_characters = strdup(special_characters);
+    allowed_special_characters = (unsigned char *) strdup(special_characters);
 }
 
 
