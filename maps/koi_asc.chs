@@ -65,7 +65,7 @@ ASCII           ; to set
 \0 \x20         ; non-breaking space
 Y o             ; Cyrillic_JO
 \0 c            ; cent
-Y o		; some koi fonts have jo here ...
+y o		; some koi fonts have jo here ...
 \0 \x0f         ; currency
 \0 Y            ; Yen
 \0 |            ; broken bar
@@ -81,7 +81,7 @@ y o             ; Cyrillic_jo
 \x1 ?           ; ring / degree
 + -             ; plusminus
 ^ 2             ; superscript two (squared)
-y o		; some koi fonts have yo here ...
+Y o		; some koi fonts have yo here ...
 \0 '            ; acute
 m u             ; mu
 \0 \x14         ; paragraph
