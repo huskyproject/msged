@@ -14,7 +14,7 @@ endif
 CDEFS=-D$(OSTYPE) -DUSE_MSGAPI -DUSE_FIDOCONFIG -DUNAME=\"$(UNAME)\" \
       $(ADDCDEFS) -DREADMAPSDAT=\"$(CFGDIR)/readmaps.dat\" \
       -DWRITMAPSDAT=\"$(CFGDIR)/writmaps.dat\" \
-      -DDEFAULT_CONFIG_FILE=\"$(CFGDIR)/msged.cfg\"
+      -DDEFAULT_CONFIG_FILE=$MSGEDCFG
 
 ifeq ($(SHORTNAME), 1)
   LIBS= -L$(LIBDIR) -lfidoconf -lsmapi
