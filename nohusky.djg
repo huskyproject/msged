@@ -94,7 +94,7 @@ $(TARGET): $(objs)
 
 clean:
 	del *.o
-        del *.bak
+	del *.bak
 
 distclean: clean
 	del $(TARGET)
