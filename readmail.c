@@ -297,7 +297,7 @@ msg *readmsg(unsigned long n)
 
 		memset(tokens, 0, sizeof(tokens));
 		parse_tokens(tmp, tokens, 2);
-		if (!tokens[1])
+		if (!tokens[1] || !tokens[1][0])
 		{
                     clevel = 2;
                        /* Assume level 2 as default. The CHARSET kludge has no
