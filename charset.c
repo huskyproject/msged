@@ -121,7 +121,8 @@ READWRITEMAPS *read_map(const char *filename)
     return map;
 
 error:
-    fprintf (stderr, "\nError reading %s: Unrecognized or corrupt file format.",
+    fprintf (stderr,
+             "\r\aError reading %s: Unrecognized or corrupt file format.\n",
              filename);
 cleanup:
     if (fp != NULL)
@@ -163,17 +164,29 @@ void read_charset_maps(void)
     readmaps=read_map(fnr);
     toasc_encountered=0;
     writemaps=read_map(fnw);
+
+    if (readmaps == NULL || writemaps == NULL)
+    {
+        fprintf (stderr,
+                 "\r\aWarning: Could not open %s. You should correct this",
+                 readmaps == NULL ? READMAPSDAT : WRITMAPSDAT);
+        fprintf (stderr,
+                 "\n         before you try to use umlauts, accented "
+                 "characters or IBM graphics.\n");
+    }
+
     if (readmaps != NULL && writemaps != NULL)
     {
         if (!toasc_encountered)
         {
-           fprintf (stderr, "\nWarning: %s does not contain an entry for converting\n"
-                            "           back to ASCII!", fnw);
+           fprintf (stderr,
+                    "\r\aWarning: %s does not contain an entry for converting"
+                    "\n         back to ASCII!", fnw);
         }
         if (strcmp(readmaps->charset_name, writemaps->charset_name) == 0 &&
             toasc_encountered)
         {
-           printf ("\nIncorporating FSC 0054 charset engine. "
+           printf ("\rIncorporating FSC 0054 charset engine. "
                    "Local charset is: %s\n", readmaps->charset_name);
            xfree(fnr);
            xfree(fnw);
@@ -181,7 +194,7 @@ void read_charset_maps(void)
         }
         else
         {
-           fprintf (stderr, "\nError: readmaps.dat and writmaps.dat "
+           fprintf (stderr, "\rError: readmaps.dat and writmaps.dat "
                     "do not correspond in primary charset name.\n");
         }
     }

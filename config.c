@@ -697,7 +697,7 @@ void AssignColor(char *name, int color)
         }
         i++;
     }
-    printf("\nUnknown colour argument: '%s'\n", name);
+    printf("\r\aUnknown colour argument: '%s'\n", name);
 }
 
 
@@ -718,7 +718,7 @@ void AssignSwitch(char *swtch, int OnOff)
 
     if (cfgswitches[i] == NULL)
     {
-        printf("\nUnknown switch: '%s'\n", swtch);
+        printf("\r\aUnknown switch: '%s'\n", swtch);
         return;
     }
 
@@ -893,7 +893,7 @@ void AssignSwitch(char *swtch, int OnOff)
         break;
 
     default:
-        printf("\nUnknown switch: '%s'\n", swtch);
+        printf("\r\aUnknown switch: '%s'\n", swtch);
         break;
     }
 }
@@ -914,7 +914,7 @@ int GetColor(char *color)
             return colortable[i].color;
         i++;
     }
-    printf("\nUnknown color: '%s'\n", color);
+    printf("\r\aUnknown color: '%s'\n", color);
     return -1;
 }
 
@@ -1160,7 +1160,7 @@ static void AddArea(AREA * a)
 
     if (a->msgtype == QUICK && ST->quickbbs == NULL)
     {
-        printf("\nFor QuickBBS areas, set QuickBBS path!\n");
+        printf("\r\aFor QuickBBS areas, set QuickBBS path!\n");
         return;
     }
 
@@ -1393,13 +1393,13 @@ static void check_fastecho(char *areafile)
 
     if (alias == NULL)
     {
-        printf("\nError! Primary address must be defined.\n");
+        printf("\r\aError! Primary address must be defined.\n");
         exit(-1);
     }
 
     if (user_list[0].name == NULL)
     {
-        printf("\nError! Name must be defined.\n");
+        printf("\r\aError! Name must be defined.\n");
         exit(-1);
     }
 
@@ -1633,13 +1633,13 @@ static void check_squish(char *areafile)
 
     if (alias == NULL)
     {
-        printf("\nError! Primary address must be defined.\n");
+        printf("\r\aError! Primary address must be defined.\n");
         exit(-1);
     }
 
     if (user_list[0].name == NULL)
     {
-        printf("\nError! Name must be defined.\n");
+        printf("\r\aError! Name must be defined.\n");
         exit(-1);
     }
 
@@ -1851,13 +1851,13 @@ static void parsemail(char *keyword, char *value)
 
     if (alias == NULL)
     {
-        printf("\nError! Primary address must be defined.\n");
+        printf("\r\aError! Primary address must be defined.\n");
         exit(-1);
     }
 
     if (user_list[0].name == NULL)
     {
-        printf("\nError! Name must be defined.\n");
+        printf("\r\aError! Name must be defined.\n");
         exit(-1);
     }
 
@@ -2223,7 +2223,7 @@ int evaluate_condition(char *condition, int line_no)
     }
 
  syntax_error:
-    printf ("\nLine %d: Syntax error in IF/ELIF condition.\n", line_no);
+    printf ("\r\aLine %d: Syntax error in IF/ELIF condition.\n", line_no);
     return FALSECOND;
 }
 
@@ -2262,7 +2262,7 @@ static void func_else(int line_no)
 {
     if (cur_cond == NULL)
     {
-        printf ("\nLine %d: ELSE without preceding IF keyword found.\n",
+        printf ("\r\aLine %d: ELSE without preceding IF keyword found.\n",
                 line_no);
     }
     else
@@ -2276,7 +2276,7 @@ static void func_elif(int condition, int line_no)
 {
     if (cur_cond == NULL)
     {
-        printf ("\nLine %d: ELSEIF without preceding IF keyword found.\n",
+        printf ("\r\aLine %d: ELSEIF without preceding IF keyword found.\n",
                 line_no);
     }
     else
@@ -2302,7 +2302,7 @@ static void func_endif(int line_no)
 
     if (cur_cond == NULL)
     {
-        printf ("\nLine %d: ENDIF without preceding IF found.\n",
+        printf ("\r\aLine %d: ENDIF without preceding IF found.\n",
                 line_no);
     }
     else
@@ -2963,17 +2963,12 @@ static void parseconfig(FILE * fp)
             
         case -1:
         default:
-            printf("\nLine %d: Unknown configuration keyword: '%s'\n",
+            printf("\r\aLine %d: Unknown configuration keyword: '%s'\n",
                    line_num, keyword);
             break;
         }
         release(buffer);
         memset(raw_buffer, 0, TEXTLEN);
-    }
-    if (cur_cond != NULL)
-    {
-        printf ("\nIF block started on line %d has no matching ENDIF!\n",
-                cur_cond->line_no);
     }
 }
 
@@ -3066,7 +3061,7 @@ void opening(char *cfgfile, char *areafile)
 
     InitVars();
 
-    printf(PROG " " VERSION CLOSED " ... ");
+    printf(PROG " " VERSION CLOSED " ... \n");
     fflush(stdout);
 
     read_charset_maps(); /* initialise the FTSC0054 charset engine */
@@ -3085,15 +3080,21 @@ void opening(char *cfgfile, char *areafile)
     parseconfig(fp);
     fclose(fp);
 
+    if (cur_cond != NULL)
+    {
+        printf ("\r\aLine %d: IF block has no matching ENDIF!\n",
+                cur_cond->line_no);
+    }
+
     if (alias == NULL)
     {
-        printf("\nError! Primary address must be defined.\n");
+        printf("\r\aError! Primary address must be defined.\n");
         exit(-1);
     }
 
     if (user_list[0].name == NULL)
     {
-        printf("\nError! Name must be defined.\n");
+        printf("\r\aError! Name must be defined.\n");
         exit(-1);
     }
 
@@ -3120,15 +3121,17 @@ void opening(char *cfgfile, char *areafile)
 
     if (arealist == NULL)
     {
-        printf("\nError! At least one message area must be defined.\n");
+        printf("\r\aError! At least one message area must be defined.\n");
         exit(-1);
     }
 
     if (SW->soteot && SW->domainorigin)
     {
-        printf("\nError! The SOT/EOT specification does not permit domains in "
-        "echomail origin\nlines. Please set either \"Switch DomainOrigin\" or "
-        "\"Switch SOTEOT\" to \"Off\".\n");
+        printf("\r\aError! "
+               "The SOT/EOT specification does not permit domains in "
+               "echomail origin\nlines. Please set either"
+               "\"Switch DomainOrigin\" or "
+               "\"Switch SOTEOT\" to \"Off\".\n");
         exit(-1);
     }
 
