@@ -7,7 +7,15 @@
  *  Finds & reads configuration files, initializes everything.
  */
 
-#ifdef OS2
+#ifndef DEFAULT_CONFIG_FILE
+#ifdef UNIX
+#define DEFAULT_CONFIG_FILE "~/.msged"
+#else
+#define DEFAULT_CONFIG_FILE "msged.cfg"
+#endif
+#endif
+
+#if defined(OS2) || defined(UNIX)
 #define TEXTLEN    1024
 #else
 #define TEXTLEN    512
@@ -101,6 +109,7 @@ static char *cfgverbs[] =
     "EnableSC",
     "AreaFileFlags",
     "FreqArea",  /* now 51, should be 51 if possible */
+    "AssumeCharset",
     NULL
 };
 
@@ -156,6 +165,7 @@ static char *cfgverbs[] =
 #define CFG_ENABLESC       49
 #define CFG_AREAFILEFLAGS  50
 #define CFG_FREQAREA       51
+#define CFG_ASSUMECHARSET  52
 
 static struct colorverb colortable[] =
 {
@@ -279,6 +289,7 @@ static char *cfgswitches[] =
     "ShowSeenBys",
     "EditTearLines",
     "EditOriginLines",
+    "SquishLock",
     NULL
 };
 
@@ -320,11 +331,106 @@ static char *cfgswitches[] =
 #define CFG_SW_SHOWSEENBYS          35
 #define CFG_SW_EDITTEARLINES        36
 #define CFG_SW_EDITORIGINLINES      37
+#define CFG_SW_SQUISH_LOCK          38 /* should be 45 */
+
+#ifdef UNIX
+#include <sys/types.h>
+#include <pwd.h>
+#include <unistd.h>
+#endif
+
+/*
+ * Function: shell_expand
+ *
+ * This function expands pathnames that begin with ~ according to the
+ * UNIX shell expansion rules: A ~ followed by a slash / is the home
+ * directory (which will be fetched from the HOME environment
+ * variable, which even works on OS/2 or NT), a ~ followed by
+ * something different is the home directory of the user named 
+ * "something different", eg ~tobi/ will expand to the home directory
+ * of the user "tobi". The latter only works on Unix.
+ * 
+ */
+ 
+char *shell_expand(char *str)
+{
+    char *slash = NULL, *ret = NULL, c;
+#ifdef UNIX
+    struct passwd *pw = NULL;
+#endif
+    char *pfix = NULL;
+
+    if (str == NULL)
+    {
+        return str;
+    }
+    if (*str == '\0' || str[0] != '~')
+    {
+        return str;
+    }
+    for (slash = str; *slash != '/' && *slash != '\0'
+#ifndef UNIX
+                     && *slash != '\\'
+#endif
+         ; slash++);
+    c = *slash;
+    *slash = 0;
+
+    if (str[1] == '\0')
+    {
+        pfix = getenv("HOME");
+#ifdef UNIX        
+        if (pfix == NULL)
+        {
+            pw = getpwuid(getuid());
+            if (pw != NULL)
+            {
+                pfix = pw->pw_dir;
+            }
+        }
+#endif
+    }
+#ifdef UNIX
+    else
+    {
+        pw = getpwnam(str + 1);
+        if (pw != NULL)
+        {
+            pfix = pw->pw_dir;
+        }
+    }
+#endif
+    *slash = c;
+
+    if (pfix == NULL)  /* could not find an expansion */
+    {
+        return str;
+    }
+
+    ret = xmalloc(strlen(slash) + strlen(pfix) + 1);
+    strcpy(ret, pfix);
+    strcat(ret, slash);
+    xfree(str);
+    return ret;
+}
+
+/*
+ * Function: pathcvt
+ *
+ * This function should be applied to all filenames that are read from
+ * a configuration file (but not those entered as command line
+ * arguments or interactively). It handles network drive or mount
+ * point filenme translation.
+ *
+ */
 
 char *pathcvt(char *path)
 {
 #ifdef UNIX
     int dospathlen, unixpathlen, i;
+#endif
+    path = shell_expand(path);
+#ifdef UNIX
     if (mntdirdos != NULL)
     {
         dospathlen = strlen(mntdirdos);
@@ -742,6 +848,10 @@ void AssignSwitch(char *swtch, int OnOff)
         SW->editoriginlines = OnOff;
         break;
 
+    case CFG_SW_SQUISH_LOCK:
+        SW->squish_lock = OnOff;
+        break;
+
     default:
         printf("\nUnknown switch: '%s'\n", swtch);
         break;
@@ -848,15 +958,32 @@ void parse_tokens(char *str, char *tokens[], int num)
 static FILE *fileopen(char *env, char *cfn)
 {
     FILE *fp;
+    char *fenv = NULL;
+    char *fcfn = NULL;
+           
+    if (env != NULL)
+    {
+        fenv = shell_expand(xstrdup(env));
+    }
+    
     if (cfn != NULL)
     {
-        fp = fopen(cfn, "r");
+        fcfn = shell_expand(xstrdup(cfn));
+    }
+    
+    if (fcfn != NULL)
+    {
+        fp = fopen(fcfn, "r");
         if (fp != NULL)
         {
+            release(fcfn);
+            release(fenv);
             return fp;
         }
     }
-    fp = fopen(env, "r");
+    fp = fopen(fenv, "r");
+    release(fcfn);
+    release(fenv);
     return fp;
 }
 
@@ -1413,6 +1540,7 @@ static void check_fastecho(char *areafile)
         if (fearea.desc && *fearea.desc)
         {
             tempdsc = translate_text(fearea.desc, ltable);
+            strip_control_chars(tempdsc);
             a.description =
               xmalloc(strlen(fearea.name) + strlen(tempdsc) + 4 );
 
@@ -2564,6 +2692,14 @@ static void parseconfig(FILE * fp)
             ST->freqarea = xstrdup(value);
             break;
 
+        case CFG_ASSUMECHARSET:
+            release(ST->input_charset);
+            if (value != NULL)
+            {
+                ST->input_charset = xstrdup(value);
+            }
+            break;
+
         default:
             printf("\nUnknown configuration keyword: '%s'\n", keyword);
             break;
@@ -2657,7 +2793,7 @@ void opening(char *cfgfile, char *areafile)
     WND *hCurr, *hWnd;
     FILE *fp;
     int count = 0, i;
-    static char cfnname[] = "msged.cfg";
+    static char cfnname[] = DEFAULT_CONFIG_FILE;
     char tmp[PATHLEN];
 
     InitVars();
