@@ -151,6 +151,7 @@ int InitVars(void)
     SW->useoriginlines = YES;
     SW->edittearlines = NO;
     SW->editoriginlines = NO;
+    SW->squish_lock = NO;
 
 #ifndef UNIX
     ST->comspec = getenv("COMSPEC");
@@ -168,6 +169,7 @@ int InitVars(void)
     ST->nodebase = NULL;
     ST->sysop = NULL;
     ST->output_charset = NULL;
+    ST->input_charset = NULL;
     ST->sort_criteria = NULL;
     ST->freqarea = NULL;
     ST->special_characters = NULL;
