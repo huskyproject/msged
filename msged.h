@@ -48,6 +48,7 @@
 #define QUICK     0x01
 #define SQUISH    0x02
 #define FASTECHO  QUICK
+#define GECHO     0x03
 
 #define USENET    0x01
 #define FIDONET   0x02
