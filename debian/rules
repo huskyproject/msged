@@ -24,8 +24,6 @@ build-stamp:
 
 	# Add here commands to compile the package.
 	$(MAKE)
-	#/usr/bin/docbook-to-man debian/msged.sgml > msged.1
-
 	touch build-stamp
 
 clean:
@@ -55,11 +53,6 @@ install: build
 	$(MAKE) install DESTDIR=$(CURDIR)/debian/msged
 	mkdir -p $(CURDIR)/debian/msged/usr/share/doc/msged/examples
 	cp doc/sample.* $(CURDIR)/debian/msged/usr/share/doc/msged/examples/
-	cd $(CURDIR)/debian/msged/etc/fido ;\
-	rm -f readmaps.dat ;\
-	rm -f writmaps.dat ;\
-	ln -s readmaps.is1 readmaps.dat ;\
-	ln -s writmaps.is1 writmaps.dat
 
 
 # Build architecture-independent files here.
