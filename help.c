@@ -23,6 +23,11 @@ static int setup;
 static int CurrTopic;
 static int numTopics;
 
+#ifdef __DJGPP__
+#include <io.h>
+#include <fcntl.h>
+#endif
+
 #ifdef __TURBOC__
 #include <share.h>
 #endif
@@ -31,16 +36,25 @@ void HelpInit(char *fileName)
 {
     int i;
 
-    setup = 0;
 #ifdef __TURBOC__
     help = _fsopen(fileName, "rb", SH_DENYNONE);
-#else    
+#elif defined(__DJGPP__)
+    int handle = sopen(fileName, O_RDONLY|O_BINARY, SH_DENYNO, 0);
+    if (handle == -1)
+    {
+        return;
+    }
+    help = fdopen(handle, "rb");
+#else
     help = fopen(fileName, "rb");
 #endif    
     if (help == NULL)
     {
         return;
     }
+
+    setup = 0;
+
     fread(&Fheader, sizeof(HFileHdr), 1, help);
     numTopics = (Fheader.topics[1] << 8) | Fheader.topics[0];
     topics = xcalloc(numTopics, sizeof *topics);
