@@ -545,7 +545,7 @@ static char wildcmp(char *s1, char *s2)
                 {
                     p++;
                 }
-                while (*s2 != '\0' && strnicmp(s2, s1, (size_t) (p - s1)))
+                while (*s2 != '\0' && strncmpi(s2, s1, (size_t) (p - s1)))
                 {
                     s2++;
                 }

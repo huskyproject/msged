@@ -25,6 +25,7 @@
 #include <string.h>
 #include <time.h>
 #include <errno.h>
+#include <compiler.h>
 #include "addr.h"
 #include "nedit.h"
 #include "msged.h"
@@ -33,6 +34,7 @@
 #include "memextra.h"
 #include "dirute.h"
 #include "fido.h"
+
 
 #ifdef __MSC__
 #include <sys/locking.h>
@@ -172,10 +174,10 @@ int FidoMsgWriteText(char *text, unsigned long n, unsigned long mlen)
 
     if (text == NULL)
     {
-        write(fd, &i, sizeof(char));
+        farwrite(fd, &i, sizeof(char));
         return (TRUE);
     }
-    write(fd, text, strlen(text));
+    farwrite(fd, text, strlen(text));
     return TRUE;
 }
 
@@ -327,7 +329,7 @@ int FidoMsgWriteHeader(msg * m, int type)
         }
     }
 
-    write(fd, (char *)&msghead, sizeof(MFIDO));
+    farwrite(fd, (char *)&msghead, sizeof(MFIDO));
 
     if (type == WR_HEADER)
     {
@@ -369,7 +371,7 @@ msg *FidoMsgReadHeader(unsigned long n, int type)
 
     m = xcalloc(1, sizeof *m);
 
-    read(fd, (char *)&msghead, (int)sizeof(MFIDO));
+    farread(fd, (char *)&msghead, (int)sizeof(MFIDO));
 
     m->msgnum = msgn;
     m->from.net = (msghead.orig_net[1] << 8) | msghead.orig_net[0];
@@ -469,7 +471,7 @@ char *FidoMsgReadText(unsigned long n)
 
     if (next == NULL)
     {
-        i = read(fd, msgbuf, (size_t) (s - 1));
+        i = farread(fd, msgbuf, (size_t) (s - 1));
         if (i < 1)
         {
             next = NULL;
@@ -503,7 +505,7 @@ char *FidoMsgReadText(unsigned long n)
     {
         l = strlen(next);
         memcpy(msgbuf, next, l + 1);
-        i = read(fd, msgbuf + l, (size_t) (s - l - 1));
+        i = farread(fd, msgbuf + l, (size_t) (s - l - 1));
         if (i < 1)
         {
             next = NULL;
@@ -620,8 +622,8 @@ long FidoMsgAreaOpen(AREA * a)
     fd = sopen(path, OPENR, SH_DENYNO, S_IMODE);
     if (fd != -1)
     {
-        read(fd, (char *) &c, sizeof c);
-        if (read(fd, (char *) &l, sizeof l) != sizeof l)
+        farread(fd, (char *) &c, sizeof c);
+        if (farread(fd, (char *) &l, sizeof l) != sizeof l)
         {
             l = c;
         }
@@ -675,8 +677,8 @@ int FidoAreaSetLast(AREA * a)
                 return FALSE;
             }
             lseek(fd, 0L, SEEK_SET);
-            write(fd, &i, sizeof(short));
-            write(fd, &i, sizeof(short));
+            farwrite(fd, &i, sizeof(short));
+            farwrite(fd, &i, sizeof(short));
             close(fd);
             return TRUE;
         }
@@ -688,14 +690,14 @@ int FidoAreaSetLast(AREA * a)
         a->lastread <=msgarrsz && a->current <= msgarrsz)
     {
         i = (short)msgarr[(size_t) (a->current - 1)];
-        write(fd, (char *)&i, sizeof(short));
+        farwrite(fd, (char *)&i, sizeof(short));
         i = (short)msgarr[(size_t) (a->lastread - 1)];
-        write(fd, (char *)&i, sizeof(short));
+        farwrite(fd, (char *)&i, sizeof(short));
     }
     else
     {
-        write(fd, &i, sizeof(short));
-        write(fd, &i, sizeof(short));
+        farwrite(fd, &i, sizeof(short));
+        farwrite(fd, &i, sizeof(short));
     }
     close(fd);
     return TRUE;

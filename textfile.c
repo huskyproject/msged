@@ -28,6 +28,10 @@
 #define HAVE_POPEN
 #endif
 
+#ifdef __MINGW32__
+#define isatty _isatty
+#endif
+
 #include "addr.h"
 #include "config.h"
 #include "nedit.h"

@@ -34,7 +34,7 @@
 int bdos(int func, unsigned reg_dx, unsigned char reg_al);
 #endif
 
-#if defined(MSDOS) || defined(WINNT)
+#if defined(MSDOS) || (defined(WINNT) && !defined(__MINGW32__))
 #include <dos.h>
 #ifdef __TURBOC__
 #include <dir.h>
@@ -48,6 +48,10 @@ int bdos(int func, unsigned reg_dx, unsigned char reg_al);
 
 #if defined(UNIX) || defined(__DJGPP__)
 #include <unistd.h>
+#endif
+
+#ifdef __MINGW32__
+#define chdir _chdir
 #endif
 
 #include "addr.h"

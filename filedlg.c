@@ -36,6 +36,10 @@
 #include <unistd.h>
 #endif
 
+#ifdef __MINGW32__
+#define chdir _chdir
+#endif
+
 #include "addr.h"
 #include "config.h"
 #include "nedit.h"

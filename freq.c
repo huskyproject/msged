@@ -36,7 +36,7 @@
 int bdos(int func, unsigned reg_dx, unsigned char reg_al);
 #endif
 
-#if defined(MSDOS) || defined(__NT__)
+#if defined(MSDOS) || (defined(__NT__) && !defined(__MINGW32__))
 #include <dos.h>
 #endif
 

@@ -128,7 +128,11 @@ static int mykbhit(int block)
                     irBuffer.Event.KeyEvent.wRepeatCount,
                     irBuffer.Event.KeyEvent.wVirtualKeyCode,
                     irBuffer.Event.KeyEvent.wVirtualScanCode,
-                    irBuffer.Event.KeyEvent.uChar.AsciiChar,
+#ifdef __MINGW32__
+                    irBuffer.Event.KeyEvent.AsciiChar;
+#else
+                    irBuffer.Event.KeyEvent.uChar.AsciiChar;
+#endif
                     irBuffer.Event.KeyEvent.dwControlKeyState);
         }
 #endif
@@ -141,8 +145,11 @@ static int mykbhit(int block)
 
             vk = irBuffer.Event.KeyEvent.wVirtualKeyCode;
             vs = irBuffer.Event.KeyEvent.wVirtualScanCode;
+#ifdef __MINGW32__
+            uc = irBuffer.Event.KeyEvent.AsciiChar;
+#else
             uc = irBuffer.Event.KeyEvent.uChar.AsciiChar;
-
+#endif
             fShift = (irBuffer.Event.KeyEvent.dwControlKeyState & (SHIFT_PRESSED));
             fAlt = (irBuffer.Event.KeyEvent.dwControlKeyState & (RIGHT_ALT_PRESSED + LEFT_ALT_PRESSED));
             fCtrl = (irBuffer.Event.KeyEvent.dwControlKeyState & (RIGHT_CTRL_PRESSED + LEFT_CTRL_PRESSED));

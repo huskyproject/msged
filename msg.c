@@ -149,7 +149,7 @@ long SquishMsgAreaOpen(AREA * a)
                 lseek(sql, 0L, SEEK_END);
                 while (SW->useroffset > k)
                 {
-                    write(sql, buffer, 4);
+                    farwrite(sql, buffer, 4);
                     k++;
                 }
             }
@@ -158,7 +158,7 @@ long SquishMsgAreaOpen(AREA * a)
         {
             /* we read the data in */
             lseek(sql, SW->useroffset * 4, SEEK_SET);
-            if (read(sql, buffer, 4) == 4)
+            if (farread(sql, buffer, 4) == 4)
             {
                 lastread = buffer[0] + (((unsigned long)(buffer[1])) << 8) +
                     (((unsigned long)(buffer[2])) << 16) +
@@ -1014,7 +1014,7 @@ int SquishAreaSetLast(AREA * a)
                     lseek(fd, 0L, SEEK_SET);
                     for (i = 0; SW->useroffset > (int)i; i++)
                     {
-                        write(fd, buffer, 4);
+                        farwrite(fd, buffer, 4);
                     }
 
                     i = MsgMsgnToUid(Ahandle, CurArea.lastread);
@@ -1023,7 +1023,7 @@ int SquishAreaSetLast(AREA * a)
                     buffer[2] = (i >> 16) & 0xFF;
                     buffer[3] = (i >> 24) & 0xFF;
 
-                    write(fd, buffer, 4);
+                    farwrite(fd, buffer, 4);
                     close(fd);
                 }
             }
@@ -1050,7 +1050,7 @@ int SquishAreaSetLast(AREA * a)
             buffer[2] = (i >> 16) & 0xFF;
             buffer[3] = (i >> 24) & 0xFF;
 
-            write(fd, buffer, 4);
+            farwrite(fd, buffer, 4);
             close(fd);
         }
     }

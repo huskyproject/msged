@@ -216,7 +216,7 @@ char *dir_getdrivelist(void)
 
 
 
-#elif defined(__RSXNT__)
+#elif defined(__RSXNT__) || defined (__MINGW32__)
 
 #define NOUSER
 #include <windows.h>

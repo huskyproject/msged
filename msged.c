@@ -1940,7 +1940,7 @@ int main(int argc, char *argv[])
     install24h();
 #endif
 
-#ifndef PACIFIC
+#if !defined(PACIFIC) && !defined(__MINGW32__)
     tzset();
 #endif
 
