@@ -677,6 +677,10 @@ char *strip_geese_feet(char *str)
        p++;
     }
     memmove(str, p, strlen(p) + 1);
+    if (*str == 0)
+    {
+        return str;   /* strend is undefined for zero-length string! */
+    }
     p = strend(str);
     while (p > str && *p && (isspace((unsigned char)*p) || *p == '\"'))
     {
@@ -1849,7 +1853,7 @@ static void check_fastecho(char *areafile)
                 fegrouphandles[i] = group_gethandle(fegroups[i].name, 1);
             }
         }
-        
+
         for (i = 0; i < SW->areas; i++)
         {
             if (arealist[i].group < 0)
