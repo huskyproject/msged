@@ -191,11 +191,11 @@ This section provides guidelines and additional notes for installing
 @value{MSGED} on OS/2, DOS or Windows.
 
 @menu
-* Non-Unix Installation Guide::  
-* 16-Bit DOS Release Notes::    
-* 32 Bit DOS Release Notes::    
-* OS/2 Release Notes::          
-* Windows Release Notes::       
+* Non-Unix Installation Guide::
+* 16-Bit DOS Release Notes::
+* 32 Bit DOS Release Notes::
+* OS/2 Release Notes::
+* Windows Release Notes::
 @end menu
 
 @node Non-Unix Installation Guide, 16-Bit DOS Release Notes, Non-Unix Installation, Non-Unix Installation
@@ -439,7 +439,7 @@ in this case the default location is @file{msged.cfg} in the @file{etc}
 subdirectory that you defined in @file{huskymak.cfg}). Or you can simply
 create a script that calls the @value{MSGED} binary with the @code{-c}
 command line option. Specify the desired file name directly behind the
-@code{-c}. 
+@code{-c}.
 
 If you do this, you should, in the global configuration file, use a statement
 like @code{include ~/.msged}, so that each user can indivudally configure his
@@ -524,7 +524,7 @@ commented, and further instructions can be found there.
 @xref{Special Characters,,Using Special Characters like Umlauts or Cyrillics - The Charset Kludge},
 for further information.
 
-@node Notes on UNIX terminal I/O, Notes on UNIX keyboard input, UNIX Installation Procedure, UNIX installation
+@node Notes on UNIX terminal I/O, Notes on UNIX keyboard input, Husky Installation Procedure, UNIX installation
 @subsection How Terminal I/O is handled on Unix
 @cindex TERM variable
 @cindex repainting the screen (UNIX only)
@@ -1149,8 +1149,8 @@ of groups to ease your life with @value{MSGED}.
 * Group Basics::                How @value{MSGED} identifies a group.
 * Tosser Groups::               Reading group information from the areafile.
 * Manual Groups::               Manually assigning areas to groups.
-* Arealist Group Functions::    
-* Group Templates::             
+* Arealist Group Functions::
+* Group Templates::
 @end menu
 
 @node Group Basics, Tosser Groups, Grouping, Grouping
@@ -1253,7 +1253,7 @@ group, and not in the @samp{German Echos} group.
 You can put @code{Group} statements anywhere in your configuration file. Even
 if an area is defined after a @code{Group} statement, it will still be added
 to that group if the wildcard matches. However, the relative ordering of the
-@code{Group} file statements may be important: Msged will display 
+@code{Group} file statements may be important: Msged will display
 groups (when areas are sorted by group, or in the group menu, see
 later) in the order of first mention in the @value{MSGED} configuration
 file. A group is @emph{mentioned} either when it's name first appears in a
@@ -2538,13 +2538,13 @@ are generally case-insensitive.
 @menu
 * Address::                     Specifying your FTN AKAs.
 * Alias::                       Your personal address book.
-* Alterfunc::                   
+* Alterfunc::
 * AreaExcl::                    Excluding areas from the area list.
 * Areafile AreaFileFlags and AreaDesc::  Reading a tosser config file.
 * AssumeCharset::               Workaround for mails without CHRS kludges.
 * CharsetAlias::                About IBMPC 2 and other wrong CHRS kludges.
 * Color::                       Configuring the screen colors.
-* Colour::                      
+* Colour::
 * CurStart/CurEnd::             Configuring the cursor shape.
 * Domain::                      About Domain Gating.
 * EditKey::                     Configurint the editor's keyboard layout.
@@ -2916,7 +2916,7 @@ of normal keys with Alt, but on the other hand, you probably want to use
 national special characters in your mail.
 
 By default, the UNIX version of @value{MSGED} enables all @key{Alt} key
-combinations and disables all national special characters. 
+combinations and disables all national special characters.
 
 You can revert this behaviour by specifying @code{EnableSC} without
 parameters. This will cause @value{MSGED} to interpret all high ASCII
@@ -4273,6 +4273,18 @@ period.  Most people just ignore this potential problem and use them anyway.
 Leaving MSGIDs ON will help mail tossers in duplicate message checking and/or
 reply linking. Default: On.
 
+@item MSGID5D
+@findex MSGID5D
+@cindex MSGID, generation
+@cindex message IDs
+@cindex soupgate compatibility
+Controls if the address in a MSGID control line will be printed with the domain
+identifier (On) or without.  When you are using an internet gateway which runs
+the Soupgate software by Tom Torfs, you should turn this switch to off in order
+to enable reply linking to self-written messages in newsgroups (Soupgate does
+not properly handles MSGID's with domain identifier, unfortunately).
+Default: On.
+
 @item NetmailVia
 @findex NetmailVia
 @cindex via lines
@@ -4528,7 +4540,7 @@ variable has a certain value.
 @menu
 * Statements: cond-statements.  Formulating Conditional Statements.
 * Conditions: cond-conditions.  Conditions that can be tested.
-* cond-examples::               
+* cond-examples::
 @end menu
 
 @node cond-statements, cond-conditions, Conditionals, Conditionals
@@ -4855,12 +4867,12 @@ file. Supported tossers currently include:
 
 This saves you much work: You only have to declare an area once in the tosser
 configuration file, and MsgEd will automatically always display all areas
-that are configured in your tosser configuration file. 
+that are configured in your tosser configuration file.
 
 The following three keywords are used to perform this goal:
 
 @menu
-* Areadesc::                    How to display the area description 
+* Areadesc::                    How to display the area description
 * AreafileFlags::               Enabling charset or uucp features for all areas
 * Areafile::                    Which tosser config file shall be used
 @end menu
@@ -4919,7 +4931,7 @@ high ASCII characters are allowable therin. This is where you use the
 
 The @var{flags} parameter has the same syntax as the @var{flags} parameter of
 the @code{Fido}, @code{Quick} and @code{Squish} keywords (@pxref{Manual Area
-Definition,,Manual Area Definition}). 
+Definition,,Manual Area Definition}).
 
 You must specify the @code{AreaFileFlags} keyword @emph{before} the
 @code{AreaFile} keyword which it should apply to. Then, all areas imported
@@ -5030,7 +5042,7 @@ also decide to build @value{MSGED} in the Husky environment, i.E. link
 compile configuration file. If you want to do this, please refer to the
 compliation and installation instructions which are provided by the Husky
 team. They can be found in the file @file{INSTALL} in the @file{huskybse}
-package. 
+package.
 
 In the following we are assuming you don't want to deal with
 @file{huskymak.cfg}, don't want to download @file{fidoconfig} etc., but
