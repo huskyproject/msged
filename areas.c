@@ -51,7 +51,7 @@ void BuildList(char ***lst)
 
         if (areano>=0)
         {
-            a = arealist + group_getareano(i);
+            a = arealist + areano;
             memset(line, ' ', sizeof line);
 
             if (a->scanned)

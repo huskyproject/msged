@@ -1322,8 +1322,8 @@ static void al_scan_areas(int all)
         for (SW->grouparea = 0; SW->grouparea < SW->groupareas;
              SW->grouparea++)
         {
-            if (group_getareano(SW->area) >= 0)
-                arealist[group_getareano(SW->area)].scanned = 0;
+            if (group_getareano(SW->grouparea) >= 0)
+                arealist[group_getareano(SW->grouparea)].scanned = 0;
         }
     }
 
