@@ -22,7 +22,6 @@
 #include "nedit.h"
 #include "maintmsg.h"
 #include "misc.h"
-#include "textfile.h"
 #include "keys.h"
 #include "winsys.h"
 #include "menu.h"
@@ -51,6 +50,7 @@
 #include "nshow.h"
 #include "charset.h"
 #include "wrap.h"
+#include "textfile.h"
 
 #ifdef MSDOS
 #ifdef USE_CRITICAL
