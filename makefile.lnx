@@ -1,6 +1,6 @@
-# Legacy Makefile for Linux
-# No support for the Husky build environment, but supports fidoconfig
-# Direct Termcap / ANSI terminal I/O
+# Generic Legacy Makefile for UNIX systems
+# No support for the Husky build environment, no support for Fidoconfig
+# Direct Termcap / ANSI terminal I/O (does not work on Solaris)
 
 # install programs in:
 #BINDIR=/usr/local/bin
@@ -16,32 +16,20 @@ WRITMAPS=~/.msged.writmaps
 #DEFAULT_CONFIG_FILE=/usr/local/share/msged/msged.cfg
 DEFAULT_CONFIG_FILE=~/.msged
 
-# where to put the program
-#INSTDIR=/usr/local/bin
-INSTDIR=~/bin
-
-INCDIR=/usr/local/lib
+INCDIR=..
 
 # options for installing programs
-IBOPT=-s
+IBOPT=-s -c
 
-CC=	gcc
-CFLAGS=	-Wall -I$(INCDIR)
-CDEFS=	-DUNIX -DUSE_MSGAPI -DUSE_FIDOCONFIG -DUNAME=\"LNX\" -DREADMAPSDAT='"$(READMAPS)"' -DWRITMAPSDAT='"$(WRITMAPS)"' -DDEFAULT_CONFIG_FILE='"$(DEFAULT_CONFIG_FILE)"'
-COPT=	-O3 -fomit-frame-pointer -fstrength-reduce
+CC=	cc
+CFLAGS=	-I$(INCDIR)
+CDEFS=	-DUNIX -DUSE_MSGAPI -DUNAME=\"LNX\" -DREADMAPSDAT='"$(READMAPS)"' -DWRITMAPSDAT='"$(WRITMAPS)"' -DDEFAULT_CONFIG_FILE='"$(DEFAULT_CONFIG_FILE)"'
+COPT=	-O3
 LFLAGS= -L../smapi -L../fidoconfig -s
 
 TARGET=	msged
 MSGAPI=-lsmapilnx
-# the terminfo database routines are in libncurses.a :-((( */
 TERMCAP=-lncurses
-FC=-lfidoconfig
-
-
-#If you don't have ncurses, try this, but be aware that the Linux termcap
-#database has many bugs. For example, you will lose pseudographics in the
-#xterm this way.
-#TERMCAP=-ltermcap
 
 objs=   addr.o     \
 	ansi.o     \
@@ -99,21 +87,24 @@ objs=   addr.o     \
 	win.o      \
 	wrap.o
 
-all: $(TARGET)
+all: $(TARGET) testcons
 
 .c.o:
 	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
 
 $(TARGET): $(objs)
-	$(CC) $(COPT) $(LFLAGS) -o $(TARGET) $(objs) $(FC) $(MSGAPI) $(TERMCAP)
+	$(CC) $(COPT) $(LFLAGS) -o $(TARGET) $(objs) $(MSGAPI) $(TERMCAP)
+
+testcons:  testcons.o
+	$(CC) $(COPT) $(LFLAGS) -o testcons testcons.o $(TERMCAP)
 
 clean:
 	-rm *.o *~
 
 distclean: clean
-	-rm $(TARGET)
+	-rm $(TARGET) testcons
 
 install: $(TARGET)
-	install $(IBOPT) $(TARGET) $(BINDIR)
-	install bin/latin/readmaps.dat $(READMAPS)
-	install bin/latin/writmaps.dat $(WRITMAPS)
+	install -c $(IBOPT) $(TARGET) $(BINDIR)
+	install -c bin/latin/readmaps.dat $(READMAPS)
+	install -c bin/latin/writmaps.dat $(WRITMAPS)

@@ -260,7 +260,12 @@ static void edithdr(void)
             q = 1;
         }
     }
-    MsgWriteHeader(message, WR_HEADER);
+
+    /*  TE 07/2000: We have to rewrite all the message, not just
+        the header, because of the @FLAGS kludge which is in the body
+        MsgWriteHeader(message, WR_HEADER); */
+    writemsg(message); 
+
     message = KillMsg(message);
 }
 

@@ -1,6 +1,6 @@
-# Legacy Makefile for FreeBSD
-# No support for the Husky build environment, but support for Fidoconfig
-# Direct Termcap / ANSI terminal I/O
+# Generic Legacy Makefile for UNIX systems
+# No support for the Husky build environment, no support for Fidoconfig
+# Direct Termcap / ANSI terminal I/O (does not work on Solaris)
 
 # install programs in:
 #BINDIR=/usr/local/bin
@@ -16,24 +16,19 @@ WRITMAPS=~/.msged.writmaps
 #DEFAULT_CONFIG_FILE=/usr/local/share/msged/msged.cfg
 DEFAULT_CONFIG_FILE=~/.msged
 
-# where to put the program
-#INSTDIR=~/bin
-INSTDIR=~/bin
+INCDIR=..
 
 # options for installing programs
 IBOPT=-s -c
 
-INCDIR=/usr/local/include
-
-CC=	gcc
-CFLAGS=	-Wall -I$(INCDIR)
-CDEFS=	-DUNIX -DUSE_MSGAPI -DUSE_FIDOCONFIG -DUNAME=\"BSD\" -DREADMAPSDAT='"$(READMAPS)"' -DWRITMAPSDAT='"$(WRITMAPS)"' -DDEFAULT_CONFIG_FILE='"$(DEFAULT_CONFIG_FILE)"'
-COPT=	-O3 -fomit-frame-pointer -fstrength-reduce
+CC=	cc
+CFLAGS=	-I$(INCDIR)
+CDEFS=	-DUNIX -DUSE_MSGAPI -DUNAME=\"BSD\" -DREADMAPSDAT='"$(READMAPS)"' -DWRITMAPSDAT='"$(WRITMAPS)"' -DDEFAULT_CONFIG_FILE='"$(DEFAULT_CONFIG_FILE)"'
+COPT=	-O3
 LFLAGS= -L../smapi -L../fidoconfig -s
 
 TARGET=	msged
-MSGAPI=-lsmapibsd
-FC=-lfidoconfig
+MSGAPI=-lsmapiunix
 TERMCAP=-ltermcap
 
 objs=   addr.o     \
@@ -92,21 +87,24 @@ objs=   addr.o     \
 	win.o      \
 	wrap.o
 
-all: $(TARGET)
+all: $(TARGET) testcons
 
 .c.o:
 	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
 
 $(TARGET): $(objs)
-	$(CC) $(COPT) $(LFLAGS) -o $(TARGET) $(objs) $(MSGAPI) $(TERMCAP) $(FC)
+	$(CC) $(COPT) $(LFLAGS) -o $(TARGET) $(objs) $(MSGAPI) $(TERMCAP)
+
+testcons:  testcons.o
+	$(CC) $(COPT) $(LFLAGS) -o testcons testcons.o $(TERMCAP)
 
 clean:
 	-rm *.o *~
 
 distclean: clean
-	-rm $(TARGET)
+	-rm $(TARGET) testcons
 
 install: $(TARGET)
-	install $(IBOPT) $(TARGET) $(BINDIR)
-	install bin/latin/readmaps.dat $(READMAPS)
-	install bin/latin/writmaps.dat $(WRITMAPS)
+	install -c $(IBOPT) $(TARGET) $(BINDIR)
+	install -c bin/latin/readmaps.dat $(READMAPS)
+	install -c bin/latin/writmaps.dat $(WRITMAPS)
