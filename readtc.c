@@ -24,7 +24,15 @@ char *tt_hidecursor = NULL;
 #define LINUX_SPECIALS   "\225\232\226\234\223\231\205\212\206\214\203\211*><!*^V&*"
 /* "\170\161\154\153\155\152\170\161\154\153\155\152\141><\160^^V&*" */
 
-#include <termcap.h>
+
+/* No chance to guess which UNIX uses term.h and which termcap.h, so we
+   just have to use our own prototype. I know this is ugly ...
+   #include <termcap.h>
+   #include <term.h>
+*/
+
+int tgetent(char *, const char *);
+char *tgetstr(char *, char **);   
 
 static char termbuf[4096];
 static char termresult[4096];
@@ -92,6 +100,10 @@ void query_termcap(void)
                     tt_alternate_end = "";
                 }
             }
+            else if (tt_alternate_start != NULL && tt_alternate_end != NULL)
+            {
+                tt_specials = DEC_SPECIALS;
+            } 
             else
             {
                 tt_alternate_start = NULL;
