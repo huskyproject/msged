@@ -38,8 +38,9 @@ Fidonet Message Reader and Editor Software for OS/2, Windows, DOS and Unix.
 * Advanced Concepts::           Advanced features and concepts.
 * Keyboard Reference::          How to use and change the key combinations.
 * Configuration Reference::     Explanation of the configuration file.
-* Keyword Index::               
-* KeyFuncs Index::              
+* Compiling::                   Instructions for recompiling the source code.
+* Keyword Index::               Index of Configuration File keywords
+* KeyFuncs Index::              Index of editor and reader keyboard functions.
 @end menu
 @end ifinfo
 
@@ -263,7 +264,7 @@ it has only been tested on Windows NT, it should also work on Windows 95 and
 Windows 98.
 
 @item
-The Windows version presently does not support mouse control (although the
+The Windows version presently does not support mouse control (even though the
 mouse cursor is visible).
 
 @item
@@ -288,11 +289,13 @@ FreeBSD or any other Unix-like system.
 
 @node UNIX Installation Procedure, Notes on UNIX terminal I/O, UNIX installation, UNIX installation
 @subsection Installation Procedure
-If you are using Linux (or FreeBSD with the Linux compatibility libraries),
-you can get the Linux distribution archive which contains a pre-compiled
-binary. If you are running any other Unix you have to compile the source code
-on your own (which usually is not much of a problem).
-@c FIXME add xref
+If you are using Linux you can get the Linux distribution archive which
+contains a pre-compiled binary. If you are running any other Unix (including
+FreeBSD, which due to a strange problem in the termios code won't run the
+Linux binaries properly) you have to compile the source code on your own
+(which usually is not much of a problem).
+@xref{Compiling,, Compiling the Soruce Code}, for more information on this.
+
 The following describes the installation of the file from the Linux
 distribution archive. If you have compiled @value{MSGED} yourself, you will
 find the files that are mentioned below in slightly different locations (much
@@ -322,7 +325,6 @@ Fix the file permissions of the executable file:
 ~/msged-work $ chmod guo+x msged
 @end example
 
-
 @item
 The executable can be either installed system-globally in
 @file{/usr/local/bin} or some other location, or locally in the @file{~/bin}
@@ -342,18 +344,18 @@ directory. Rename the file @file{sample.cfg} to @file{.msged} and copy it to
 your home directory:
 
 @example
-~/msged-work $ mv sample.cfg ~/.msged
+~/msged-work $ cp sample.cfg ~/.msged
 @end example
 
 @item
 You have to rename and move some other files as well:
 
 @example
-~/msged-work $ mv msghelp.dat ~/.msged.hlp
-~/msged-work $ mv sample.tpl ~/.msged.tpl
-~/msged-work $ mv scheme.004 ~/.msged.colors
-~/msged-work $ mv readmaps.dat ~/.msged.readmaps
-~/msged-work $ mv writmaps.dat ~/.msged.writmaps
+~/msged-work $ cp msghelp.dat ~/.msged.hlp
+~/msged-work $ cp sample.tpl ~/.msged.tpl
+~/msged-work $ cp scheme.004 ~/.msged.colors
+~/msged-work $ cp readmaps.dat ~/.msged.readmaps
+~/msged-work $ cp writmaps.dat ~/.msged.writmaps
 @end example
 
 Note that if you have the source code distributions, you must take
@@ -365,11 +367,6 @@ set).
 Modify the configuration file @file{~/.msged} with your favourite text editor
 according to your needs. @xref{Configuration Reference} for detailed
 descriptions of each keyword that can be used in this file.
-
-@emph{Attention:} The sample configuration file contains a bunch of settings
-that are commented out by default and marked to be Unix specific. You must
-uncomment these settings if you want to use all features of @value{MSGED} on
-Unix!
 
 @item
 You should now refer to the Unix specific release notes found below
@@ -422,9 +419,16 @@ configuration file @file{sample.cfg} contains a bunch of settings that puts
 the functions that are by default bound to key combinations that cannot be
 keyed on Unix to other key combinations.
 
-Finally, entering national special characters like the German a dieresis, or
-the french accented characters, is always a problem on Unix. If you want to
-do that with @value{MSGED}, refer to the sample configuration file and the
+A nasty little problem might occur with the backspace key. If, on your
+system, the backspace key deletes the character @emph{under} the cursor
+rather than the character on the left hand side of the cursor, you might have
+to turn the @code{BS127} switch on by adding @code{Switch BS127 On} to your
+configuration file. The sample configuration file already contains correct
+settings of the @code{BS127} switch for some widespread Unix consoles.
+
+Entering national special characters like the German a dieresis, or the
+french accented characters, is always a problem on Unix. If you want to do
+that with @value{MSGED}, refer to the sample configuration file and the
 documentation on the @code{EnableSC} keyword (@pxref{EnableSC,,The
 @code{EnableSC} keyword}).
 
@@ -1493,7 +1497,7 @@ With this line in your configuration file, you will be able to press
 @key{Alt}-@key{F} in order to move the cursor to the beginning of the
 next word.
 
-@node Configuration Reference, Keyword Index, Keyboard Reference, Top
+@node Configuration Reference, Compiling, Keyboard Reference, Top
 @chapter @value{MSGED} Configuration Reference
 @value{MSGED} has to be configured using a configuration file. This is a
 plain text ASCII file containing a list of keywords, settings and switches
@@ -2921,6 +2925,15 @@ file like this one: @samp{"------ test.txt begins -----"} before and
 @samp{"----- test.txt ends -----"} after the file. You can disable these two
 lines by turning the @code{ImportFN} switch off. Default: On.
 
+@item LowerCase
+@findex LowerCase
+@cindex lowercase filenames
+@cindex case-sensitive file systems
+If you turn the @code{LowerCase} switch on, @value{MSGED} will convert all
+file names that it reads from the configuration file or from any areafile to
+lower case before it attempts to read to, write from, or create any
+file. This might be helpful if you are using case-sensitive file systems. 
+
 @item MSGIDs
 @findex MSGIDs
 @cindex MSGID, generation
@@ -3146,9 +3159,9 @@ version (OS/2, DOS, ...) of MsgEd is running, or only if an environment
 variable has a certain value.
 
 @menu
-* Statements: cond-statements.        Formulating Conditional Statements.
-* Conditions: cond-conditions.        Conditions that can be tested.
-* Examples:   cond-examples.          Usage examples for Conditionals.
+* Statements: cond-statements.  Formulating Conditional Statements.
+* Conditions: cond-conditions.  Conditions that can be tested.
+* cond-examples::               
 @end menu
 
 @node cond-statements, cond-conditions, Conditionals, Conditionals
@@ -3519,7 +3532,257 @@ probably won't hurt you. On the other hand, you should only use
 the moderators of the echo areas that you are posting in do not forbid
 8-bit-codes.
 
-@node Keyword Index, KeyFuncs Index, Configuration Reference, Top
+@node Compiling, Keyword Index, Configuration Reference, Top
+@appendix Compiling the Source Code
+@cindex source code
+@cindex compiling the source code
+This chapter provides information on how to compile the source code of
+@value{MSGED}. You will have to do this if either you are using a platform
+for which no binary distribution is provided (like FreeBSD, AIX, Rhapsody,
+and other Unix systems), or if you want to do modifications on the source
+code, or if you are just curious :-).
+
+Most of the information of this chapter applies to all supported platfroms
+(including Unix, OS/2, Windows and DOS). Sections that only apply to a
+particular system will be clearly marked.
+
+@menu
+* Preparations::                Obtaining and unpacking the files.
+* Configuring::                 Selecting the proper Makefile.
+* Building the Executables::    Invoking the compiler.
+* Building the other Files::    Compiling the manual and help files.
+* Installing::                  Installing the files you have created.
+@end menu 
+
+@node Preparations, Configuring, Compiling, Compiling
+@section Step 1: Preparing the build directories; Obtaining the SMAPI
+Besides the source code of @value{MSGED}, which is supplied in
+@file{MSGTE5_S.ZIP}, you need the source code of the special edition of the
+Squish Message API, from here on called @dfn{Smapi}, that is required to build
+@value{MSGED}.
+
+Unfortunately, there are a lot of different versions of the Smapi floating
+around.The best choice would be if you would use the snapshot of exactly that
+release level of the Smapi that I used to compile the binary releases. It can
+be found as @file{SMAPISS.ZIP} on all sites that carry the @value{MSGED}
+source code. Alternatively, you can use any @emph{newer} Smapi from the same
+development stream, which is made available on a regular basis by Michael
+Espey for file request and by Thomas Winter for non-anonymous CVS checkout. -
+All other versions of the Smapi or the Msgapi32 are probably not suited for
+building @value{MSGED}. They are definitely not suited if you want to compile
+for Unix.
+
+After you have obtained @file{SMAPISS.ZIP} and @file{MSGTE5_S.ZIP}, unzip
+them into two directories at the same level.  The files in the archives stick
+to the 8.3 notation, so you can even do this on FAT drives. You should use
+either Info-ZIP for unpacking these files, or use pkunzip with the @samp{-d}
+option, because the @value{MSGED} archives contains subdirectories.
+
+On OS/2, this could look  as follows:
+
+@example
+[C:\] mkdir compile
+[C:\] mkdir compile\smapi
+[C:\] mkdir compile\msged
+[C:\] cd compile\msged
+[C:\COMPILE\MSGED] unzip c:\download\msgte5_s.zip
+[C:\COMPILE\MSGED] cd ..\smapi
+[C:\COMPILE\SMAPI] unzip c:\download\smapiss.zip
+@end example
+
+while on Unix, it would look like this:
+
+@example
+  $ cd ~
+~ $ mkdir smapi
+~ $ mkdir msged
+~ $ cd msged
+~/msged $ unzip ~/downloads/msgte5_s.zip
+~/msged $ cd ../smapi
+~/smapi $ unzip ~/downlaods/smapiss.zip
+@end example
+
+@node Configuring, Building the Executables, Preparations, Compiling
+@section Configuring - Selecting the proper Makefile for your Compiler
+@value{MSGED} does not provide a @code{configure} skript. It rather provides
+a set of different makefiles. You ``configure'' the source code by simply
+renaming the makefile of your choice to @file{makefile}. You have do to this
+in both the @file{smapi} and the @file{msged} directory. For instance, on
+OS/2 with IBM C, you would use:
+
+@example
+[C:\COMPILE\SMAPI] copy makefile.ibo makefile
+[C:\COMPILE\SMAPI] copy ..\msged\makefile.ibo ..\msged\makefile
+@end example
+
+while on Unix, you would use:
+
+@example
+~/smapi $ cp makefile.ibo makefile
+~/smpai $ cp ../msged/makefile.ibo ../msged/makefile
+@end example
+
+The following compilers and target operating systems are supported:
+
+@example
+Makefile     | Platform                 
+-------------+-----------------------------------------
+makefile.bcd | DOS with Borland C 3.1 or Turbo C  
+makefile.bco | OS/2 with Borland C 2.0  
+makefile.djg | DOS/386 with DJGPP GCC 2.7.2
+makefile.emo | OS/2 with EMX 0.9c GCC 2.7.2
+makefile.ibo | OS/2 with IBM CSET/2 and maybe also VAC++
+makefile.rxw | NT with RSXNT + EMX GCC 2.7.2 
+makefile.unx | Any UNIX or Linux with any compiler
+@end example
+
+The following makefiles are also provided, but they are not supported, either
+because I do not have the appropriate compilers or because I cannot give
+support for some special features they are using. I try to update these
+makefiles along with the others, but I cannot make any promises.
+
+@example
+Makefile     | Platform
+-------------+----------------------------------------------
+makefile.bsd | FreeBSD with GCC; links the SMAPI dynamically
+makefile.hco | OS/2 with Metware High C 
+makefile.lnx | Linux with GCC; links the SMAPI dynamically
+makefile.qcd | DOS with MS Quick C      
+makefile.wcd | DOS with Watcom C     
+makefile.wcw | NT with Watcom C
+makefile.wco | OS/2 with Watcom C
+makefile.wcx | DOS/386 with Watcom C
+@end example
+
+Special note: Linux and FreeBSD users should, for the first try, use
+@file{makefile.unx} rather than @file{makefile.lnx}
+resp. @file{makefile.bsd}. @file{makefile.unx} is idiot proof: it statically
+links the Smapi, and it works on any Unix-like system that has any half Posix
+compliant "cc" available.
+
+The files @file{makefile.lnx} and @file{makefile.bsd} should @emph{only} be
+used if you want to linke the Smapi dynamically, and if you know what that
+means and what you are doing
+
+If you are annoyed by the executable generated with @file{makefile.unx}
+annouces itself as @samp{MsgEd/UNX} rather than @samp{MsgEd/LNX}, you can
+edit the @code{UNAME} preprocessor define in @file{makefile.unx}.
+
+@node Building the Executables, Building the other Files, Configuring, Compiling
+@section Building the Executables
+Now that you have done all necessary preparations, compilation is easy:
+
+@enumerate
+@item Change into the @file{smapi} directory and type @code{make}. This will
+generate a library, whose name depends on the makefile you used. For instance
+@file{libsmapiunx.a} or @file{smapiibo.lib}.
+
+@item Change into the @file{msged} directory and type @code{make}. This will
+gnereate the executable, whose name depends on the makefile you used. For
+instance @file{msgedp.exe} or @file{msged} or @file{msged.exe}.
+@end enumerate
+
+@node Building the other Files, Installing, Building the Executables, Compiling
+@section Compiling the help file, the charset files and the documentation
+
+After you have created the executables, you need to create some other files,
+namedly the compiled online help file, the character set translation files,
+and the manual.
+
+To compile the help file, call the @value{MSGED} executable with the
+@samp{-hc <infile> <outfile>} options. On OS/2:
+
+@example
+[C:\COMPILE\MSGED] msgedp -hc msghelp.src msghelp.dat
+@end example
+
+and on Unix:
+
+@example
+~/msged $ ./msged -hc msghelp.src msghelp.dat
+@end example
+
+In order for @value{MSGED} to behave smoothly in environments where mails
+with special national characters are received and/or transmitted (i.E.:
+everywhere in Europe), you must create @file{readmaps.dat} and
+@file{writmaps.dat} files @emph{that match your local character map
+settings}. On Unix, this is easily done thanks to the shell expansion
+feature:
+
+@example
+~/msged $ cd ~/msged/maps
+~/msged/maps $ gcc -o makemaps makemaps.c
+~/msged/maps $ ./makemaps LATIN-1 *.CHS *.chs
+@end example
+
+(If you have misconfigured your Unix to use CP850 or CP437 instead of
+ISO-9660, you should enter @samp{IBMPC} instead of @samp{LATIN-1} in the
+example above).
+
+On OS/2, DOS and NT it is a little more cumbersome. First, you have to
+compile the @file{makemaps.c} file with your C compiler. Then, you have to
+specify all character map files that are to be included into
+@file{readmaps.dat} and @file{writmaps.dat} manually:
+
+@example
+[C:\COMPILE\MSGED] cd c:\compile\msged\maps
+[C:\COMPILE\MSGED\MAPS] icc -o makemaps.exe makemaps.c
+ (...)
+[C:\COMPILE\MSGED\MAPS] makemaps IBMPC IBM_ISO.CHS ISO_IBM.CHS 
+IBM_ASC.CHS IBM_MAC.CHS MAC_IBM.CHS
+@end example
+
+Finally, you may want to create the documentation in your favourite output
+format. This requires quite some prerequisite software to be installed on
+your system, so you probably might simply want to grab @file{MSGTE5_M.ZIP}.
+
+But if you really wnat to compile the manual by hand, proceed as follows:
+Change to the @file{doc/manual} subdirectory:
+
+@example
+[C:\COMPILE\MSGED\MAPS] cd \compile\msged\doc\manual
+@end example
+
+or on Unix:
+
+@example
+~/msged/maps $ cd ~/msged/doc/manual
+@end example
+
+There, you have various options. You can type:
+
+@table @code
+@item make info
+This creates the documentation in GNU info format. It requires the
+@file{makeinfo} tool to be installed, and the @file{info} viewer for
+viewing. Both should be part of any modern Unix installation. For OS/2, they
+can be found in @file{GNUINFO.ZIP}
+
+@item make html
+This creates the documentation in HTML format. This requires Perl 5 to be
+installed as well as the texi2html.pl perl script. (The latter script does
+also work on OS/2 with the Perl for OS/2 port).
+
+@item make dvi
+This creates the documentation in DVI format. DVI can be converted to PS with
+dvips and yields a very high-quality output. However, this requires a working
+TeX installation and the @file{texi2dvi} shell script. (On OS/2, you need
+pdksh for executing the script and EmTeX. With a little manual work, it can
+also be done with Juergen Kleinboehls OS2TeX.
+
+@item make inf
+This creates the documentation in OS/2 INF format. It requires a Texi2Ipf
+tool as well as the IPFC compiler (which only runs on OS/2).
+
+@end table
+
+@node Installing,  , Building the other Files, Compiling
+@section Installing
+You have now created all files that are necessary to install
+@value{MSGED}. @xref{Installation,,Installation Procedures and Release
+Notes}, for information on how to install these files.
+
+@node Keyword Index, KeyFuncs Index, Compiling, Top
 @unnumbered Configuration File Keyword Index
 
 @printindex fn
@@ -3535,7 +3798,3 @@ the moderators of the echo areas that you are posting in do not forbid
 
 @contents
 @bye
-
-
-
-

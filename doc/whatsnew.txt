@@ -24,6 +24,11 @@ Changes:
 
 Features:
 
+- If you set "Switch Lowercase On", MsgEd TE will convert all filenames
+  that it reads from the configuration file or from an areafile to lower case
+  before, reading from, writing to or creating any file. This is helpful if
+  you are using a case sensitive filesystem ...
+
 - Conditionals: You can use IF, ELSE, ELIF, ELSEIF and ENDIF to skip
   or only include certain parts of the configurations based on the values
   of environment variables or on the operating system. See the section about
@@ -204,9 +209,13 @@ Features:
 
 - Ported MsgEd to Unix.
 
+- Updated MsgEd TE to again compile for the NT and DOS/386 platforms.
+
 Fixes:
 
-- The online help (F1, Alt+H) is no also available in the area list screen
+- Origin lines that contained parentheses in the origin text did not work.
+
+- The online help (F1, Alt+H) is now also available in the area list screen
   (which is the first screen that a new user sees ...) and the file request
   menu.
 
@@ -215,7 +224,7 @@ Fixes:
 
 - Fix for NT version: Ctrl+C does no longer kill MsgEd.
 
-- Tons of bugfixes in the special verison of the Squish Message API that
+- Tons of bugfixes in the special version of the Squish Message API that
   is used to build MsgEd TE. I can't list them all (particularly, the
   OS/2 executable delivered with TE 04 did NOT lock the message base
   correctly when writing mail, which could potentially screw up the
