@@ -475,6 +475,13 @@ to turn the @code{BS127} switch on by adding @code{Switch BS127 On} to your
 configuration file. The sample configuration file already contains correct
 settings of the @code{BS127} switch for some widespread Unix consoles.
 
+Also, some xterm variants are really broken. For example, the DEC Unix xterm
+does always report code 127 for both Delete and Backspace, so you will only
+be able to have either Backspace or Delete working. Also, the DEC Unix xterm
+dos not report codes for @key{Home} and @key{End} at all. If you have such
+an xterm, a tip would be to install rxvt and use msged in an rxvt window
+instead of an xterm window.
+
 Entering national special characters like the German a dieresis, or the
 french accented characters, is always a problem on Unix. If you want to do
 that with @value{MSGED}, refer to the sample configuration file and the
