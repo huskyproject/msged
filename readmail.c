@@ -1118,7 +1118,7 @@ static char *GetFastEchoOrigin(int board)
 		}
 		cnt++;
 	    }
-	    while (cnt <= ((fearea.flags.flags & 0x1f00) >> 8));
+	    while (cnt <= (fearea.flags.origin));
 	    found = 1;
 	}
 	else
@@ -1452,7 +1452,7 @@ int writemsg(msg * m)
     while (MsgLockArea() == -1)          /* Lock the Msg area for writing */
     {
 	int ret;
-	
+
 	ret = ChoiceBox(" Error! ", "Could not write message!",
 			"Retry", "Cancel", NULL);
 
@@ -2047,7 +2047,7 @@ int writemsg(msg * m)
 
 #if 0
     MsgUnlockArea();
-#endif    
+#endif
 
     if (abortWrite)
     {
