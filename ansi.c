@@ -530,107 +530,50 @@ unsigned int TTGetKey(void)
             case 77:
                 ch = Key_Rgt;
                 break;
-            case 'O':  /* OS/2 telnet Alt key combinations */
+            case 'O':  /* VT100 and ANSI Alt- and Function keys */
                 block_console(0,2);
                 ch = getchar();
                 block_console(0,0);
                 switch(ch)
                 {
-                case 121:
-                    ch = Key_PgUp;
-                    break;
-                case 115:
-                    ch = Key_PgDn;
-                    break;
-                case 119:
-                    ch = Key_Home;
-                    break;
-                case 113:
-                    ch = Key_End;
-                    break;
-                case 112:
-                    ch = Key_Ins;
-                    break;
-                case 110:
-                    ch = Key_Del;
-                    break;
-                case 92:
-                    ch = Key_A_Q;
-                    break;
-                case 44:
-                    ch = Key_A_W;
-                    break;
-                case 37:
-                    ch = Key_A_E;
+                case 33:
+                    ch = Key_A_A;
                     break;
                 case 34:
                     ch = Key_A_R;
                     break;
-                case 59:
-                    ch = Key_A_T;
-                    break;
-                case 62:
-                    ch = Key_A_Z;
-                    break;
-                case 58:
-                    ch = Key_A_U;
-                    break;
-                case 40:
-                    ch = Key_A_I;
-                    break;
-                case 93:
-                    ch = Key_A_O;
-                    break;
-                case 125:
-                    ch = Key_A_P;
-                    break;
-                case 33:
-                    ch = Key_A_A;
-                    break;
-                case 124:
-                    ch = Key_A_S;
+                case 35:
+                    ch = Key_A_C;
                     break;
                 case 36:
                     ch = Key_A_D;
                     break;
-                case 94:
-                    ch = Key_A_F;
+                case 37:
+                    ch = Key_A_E;
                     break;
                 case 38:
                     ch = Key_A_G;
                     break;
-                case 42:
-                    ch = Key_A_H;
+                case 39:
+                    ch = Key_A_V;
+                    break;
+                case 40:
+                    ch = Key_A_I;
                     break;
                 case 41:
                     ch = Key_A_J;
                     break;
-                case 95:
-                    ch = Key_A_K;
+                case 42:
+                    ch = Key_A_H;
                     break;
                 case 43:
                     ch = Key_A_L;
                     break;
+                case 44:
+                    ch = Key_A_W;
+                    break;
                 case 46:
                     ch = Key_A_Y;
-                    break;
-                case 60:
-                    ch = Key_A_X;
-                    break;
-                case 35:
-                    ch = Key_A_C;
-                    break;
-                case 39:
-                    ch = Key_A_V;
-                    break;
-                case 64:
-                    ch = Key_A_B;
-                    break;
-                case 132:
-                    ch = Key_A_N;
-                    break;
-                case 91:
-                    ch = Key_A_M;
                     break;
                 case 48:
                     ch = Key_A_0;
@@ -662,6 +605,138 @@ unsigned int TTGetKey(void)
                 case 57:
                     ch = Key_A_9;
                     break;
+                case 58:
+                    ch = Key_A_U;
+                    break;
+                case 59:
+                    ch = Key_A_T;
+                    break;
+                case 60:
+                    ch = Key_A_X;
+                    break;
+                case 62:
+                    ch = Key_A_Z;
+                    break;
+                case 64:
+                    ch = Key_A_B;
+                    break;
+                case 69:
+                    ch = Key_A_F5;
+                    break;
+                case 70:
+                    ch = Key_A_F6;
+                    break;
+                case 71:
+                    ch = Key_A_F7;
+                    break;
+                case 72:
+                    ch = Key_A_F8;
+                    break;
+                case 73:
+                    ch = Key_A_F9;
+                    break;
+                case 74:
+                    ch = Key_A_F10;
+                    break;
+                case 75:
+                    ch = Key_A_F1;
+                    break;
+                case 76:
+                    ch = Key_A_F2;
+                    break;
+                case 78:
+                    ch = Key_A_F4;
+                    break;
+                case 79:
+                    ch = Key_A_F3;
+                    break;
+                case 80:
+                    ch = Key_F1;
+                    break;
+                case 81:
+                    ch = Key_F2;
+                    break;
+                case 82:
+                    ch = Key_F3;
+                    break;
+                case 83:
+                    ch = Key_F4;
+                    break;
+                case 84:
+                    ch = Key_F5;
+                    break;
+                case 91:
+                    ch = Key_A_M;
+                    break;
+                case 92:
+                    ch = Key_A_Q;
+                    break;
+                case 93:
+                    ch = Key_A_O;
+                    break;
+                case 94:
+                    ch = Key_A_F;
+                    break;
+                case 95:
+                    ch = Key_A_K;
+                    break;
+                case 97:
+                    ch = Key_C_F1;
+                    break;
+                case 98:
+                    ch = Key_C_F2;
+                    break;
+                case 99:
+                    ch = Key_C_F3;
+                    break;
+                case 100:
+                    ch = Key_C_F4;
+                    break;
+                case 101:
+                    ch = Key_C_F5;
+                    break;
+                case 102:
+                    ch = Key_C_F6;
+                    break;
+                case 103:
+                    ch = Key_C_F7;
+                    break;
+                case 104:
+                    ch = Key_C_F8;
+                    break;
+                case 105:
+                    ch = Key_C_F9;
+                    break;
+                case 106:
+                    ch = Key_C_F10;
+                case 110:
+                    ch = Key_Del;
+                    break;
+                case 112:
+                    ch = Key_Ins;
+                    break;
+                case 113:
+                    ch = Key_End;
+                    break;
+                case 115:
+                    ch = Key_PgDn;
+                    break;
+                case 119:
+                    ch = Key_Home;
+                    break;
+                case 121:
+                    ch = Key_PgUp;
+                    break;
+                case 124:
+                    ch = Key_A_S;
+                    break;
+                case 125:
+                    ch = Key_A_P;
+                    break;
+                case 132:
+                    ch = Key_A_N;
+                    break;
+
                 default:
                     ch = 0x1B;
                     break;
@@ -709,6 +784,58 @@ unsigned int TTGetKey(void)
                     case '~':
                         ch = Key_Home; /* xterm Home ... */
                         break;
+                    case 53:
+                        block_console(0,2);
+                        ch = getchar();
+                        block_console(0,0);
+                        switch (ch)
+                        {
+                        case '~':
+                            ch = Key_F5; /* xterm F5 */
+                            break;
+                        default:
+                            goto skip;
+                        }
+                        break;
+                    case 55:
+                        block_console(0,2);
+                        ch = getchar();
+                        block_console(0,0);
+                        switch (ch)
+                        {
+                        case '~':
+                            ch = Key_F6; /* xterm / ANSI F6 */
+                            break;
+                        default:
+                            goto skip;
+                        }
+                        break;
+                    case 56:
+                        block_console(0,2);
+                        ch = getchar();
+                        block_console(0,0);
+                        switch (ch)
+                        {
+                        case '~':
+                            ch = Key_F7; /* xterm / ANSI F7 */
+                            break;
+                        default:
+                            goto skip;
+                        }
+                        break;
+                    case 57:
+                        block_console(0,2);
+                        ch = getchar();
+                        block_console(0,0);
+                        switch (ch)
+                        {
+                        case '~':
+                            ch = Key_F8; /* xterm / ANSI F8 */
+                            break;
+                        default:
+                            goto skip;
+                        }
+                        break;
                     default:
                         goto skip;
                     }
@@ -721,6 +848,32 @@ unsigned int TTGetKey(void)
                     {
                     case '~':
                         ch = Key_Ins; /* xterm Insert ... */
+                        break;
+                    case 48:
+                        block_console(0,2);
+                        ch = getchar();
+                        block_console(0,0);
+                        switch (ch)
+                        {
+                        case '~':
+                            ch = Key_F9; /* ansi/xterm F9 */
+                            break;
+                        default:
+                            goto skip;
+                        }
+                        break;
+                    case 49:
+                        block_console(0,2);
+                        ch = getchar();
+                        block_console(0,0);
+                        switch (ch)
+                        {
+                        case '~':
+                            ch = Key_F10; /* ansi/xterm F10 */
+                            break;
+                        default:
+                            goto skip;
+                        }
                         break;
                     default:
                         goto skip;
