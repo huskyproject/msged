@@ -671,7 +671,8 @@ void checkrcvd(msg * m, unsigned long n)
         {
             for (j = 0; j < MAXUSERS && (!set_received); j++)
             {
-                if (stricmp(user_list[j].name, m->isto) == 0)
+                if (user_list[j].name != NULL &&
+                    stricmp(user_list[j].name, m->isto) == 0)
                 {
                     set_received = 1;
                 }
@@ -705,7 +706,7 @@ void checkrcvd(msg * m, unsigned long n)
 static int is_sameaddr(ADDRESS * msg)
 {
     int j;
- 
+
     if (!CurArea.netmail)
     {
 	/* we only care about the address in netmail areas */

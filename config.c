@@ -354,7 +354,7 @@ static char *cfgswitches[] =
 #define CFG_SW_LOWERCASE            41
 #define CFG_SW_RECEIVEALLNAMES      42
 #define CFG_SW_RECEIVEALLADDR       43
-#define CFG_SW_SQUISH_LOCK          45 /* should be 45 */
+#define CFG_SW_SQUISH_LOCK          44 /* should be 45 */
 
 #ifdef UNIX
 #include <sys/types.h>
