@@ -470,7 +470,7 @@ int TTdelay(int mil)
 
 static void TTRepaint();
 
-char getkey()
+int getkey()
 {
 #ifdef sun
   return getch();
