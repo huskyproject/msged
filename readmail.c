@@ -2098,7 +2098,10 @@ int writemsg(msg * m)
 	}
 	if (!ctrl)
 	{
-            length += strlen(l->text);
+            temptext = translate_text(l->text, ltable);
+            if (temptext != NULL)
+                length += strlen(temptext);
+            release(temptext);
 	}
 	l = l->next;
     }
