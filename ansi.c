@@ -67,7 +67,7 @@ void block_console(int min, int time)
     tcgetattr(0, &tios);
     tios.c_cc[VMIN] = min;   
     tios.c_cc[VTIME] = time;
-    tcsetattr(0, 0, &tios);
+    tcsetattr(0, TCSANOW, &tios);
 }
 
 #endif
@@ -1469,7 +1469,7 @@ int TTkopen(void)
     oldtios = tios;
     tios.c_lflag &= ~(ICANON | ISIG);
     tios.c_lflag &= ~ECHO;
-    tcsetattr(0, 0, &tios);
+    tcsetattr(0, TCSANOW, &tios);
     block_console(0,0);
     setbuf(stdin, NULL);
 #ifdef sun
@@ -1553,7 +1553,7 @@ int TTkclose(void)
 #endif
 #ifdef UNIX
     signal (SIGWINCH, SIG_DFL);
-    tcsetattr(0, 0, &oldtios);
+    tcsetattr(0, TCSANOW, &oldtios);
 #endif
     fflush(stdout);
     if (scrnbuf != NULL)
