@@ -1,0 +1,12 @@
+Document: msged
+Title: Debian msged Manual
+Author: The Husky-Team
+Abstract: This manual describes what msged is
+ and what you can do with it.
+Section: devel
+
+Format: HTML
+Index: /usr/share/doc/msged/html/msged.html
+Files: /usr/share/doc/msged/html/*.html
+
+  

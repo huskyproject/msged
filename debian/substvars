@@ -1,0 +1,1 @@
+shlibs:Depends=fidoconf (<< 0.12), fidoconf (>= 0.11-1), libc6 (>= 2.2.2-2), libncurses5 (>= 5.2.20010310-1), smapi (<< 1.6.5), smapi (>= 1.6.4u-1)

@@ -1,0 +1,9 @@
+msged (0.6pre-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Joerg Jaspert (JJ) <joerg@goliathbbs.dnsalias.net>  Tue, 10 Apr 2001 22:15:33 +0200
+
+Local variables:
+mode: debian-changelog
+End:
