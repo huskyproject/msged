@@ -26,6 +26,7 @@
 #include "dlist.h"
 #include "list.h"
 #include "screen.h"
+#include "charset.h"
 
 static int long_subj;
 static int display_address = 1;
@@ -222,13 +223,71 @@ static void showit(MLHEAD * h, int y, int sel)
 static void getheader(unsigned long n, MLHEAD * h, int check_sel)
 {
     msg *x;
+    char *text;
+    char *charset; int level;
+    char *tokens[5];
+    LOOKUPTABLE *ltable = NULL;
 
+    /* Read the message header */
+    
     memset(h, 0, sizeof *h);
-    x = MsgReadHeader((unsigned int)n, RD_HEADER_BRIEF);
+    x = MsgReadHeader((unsigned int)n, RD_ALL);
     if (x == NULL)
     {
         return;
     }
+    
+
+    /* Search the CHRS kludge */
+
+    if (ST->input_charset != NULL)
+    {
+	charset = xstrdup(ST->input_charset);
+	level = 2;
+    }
+    else
+    {
+	charset = xstrdup("ASCII");
+        level = 2; /* ASCII 2 is nonsense, but get_readtable will return
+                      the correct table */
+    }
+
+    while ((text = MsgReadText((unsigned int)n)) != NULL)
+    {
+        if (*text == '\01')
+        {
+            if (strncmp(text + 1, "CHRS:", 5) == 0)
+            {
+		memset(tokens, 0, sizeof(tokens));
+		parse_tokens(text + 7, tokens, 2);
+		if (tokens[1] != NULL)
+		{
+
+                    if ( have_readtable(tokens[0], atoi(tokens[1])) ||
+                        ST->input_charset == NULL)
+                    {
+                        release(charset);
+                        charset = xstrdup(tokens[0]);
+                        level = atoi(tokens[1]);
+                    }
+                }
+            }
+            release(text);
+        }
+        else
+        {
+            /* Kludges are over! */
+            release(text); 
+            /* break;  this does not work, we have to read the whole msg */
+        }
+    }
+
+    MsgClose();
+
+    ltable = get_readtable(charset, level);
+    release(charset);
+
+    /* copy the header info */
 
     h->msgnum = n;
     h->umsgid = x->msgnum;
@@ -246,12 +305,20 @@ static void getheader(unsigned long n, MLHEAD * h, int check_sel)
         h->sel = 0;
     }
 
-    strncpy(h->subj, x->subj, 72);
+    text = translate_text(x->subj, ltable);
+    strncpy(h->subj, text, 72);
     h->subj[72] = '\0';
-    strncpy(h->to_name, x->isto, 36);
+    release(text);
+    
+    text = translate_text(x->isto, ltable);
+    strncpy(h->to_name, text, 36);
     h->to_name[36] = '\0';
-    strncpy(h->fr_name, x->isfrom, 36);
+    release(text);
+
+    text = translate_text(x->isfrom, ltable);
+    strncpy(h->fr_name, text, 36);
     h->fr_name[36] = '\0';
+    release(text);
 
     dispose(x);
 }
