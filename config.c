@@ -2208,9 +2208,11 @@ static void parsemail(char *keyword, char *value)
             if (tokens[4] != NULL)
             {
                 a.addr = parsenode(tokens[4]);
-            }
+            }	
         }
- E ‹≈V  E  (≈W@ 3˚S√&ÇaÅE¿W	a<Ω>ç∫tag = xstrdup(a.description);
+        else
+        {
+            a.tag = xstrdup(a.description);
         }
     }
     else
@@ -2641,7 +2643,8 @@ static void func_endif(int line_no)
 static void parseconfig(FILE * fp)
 {
     static char progress_indicators[4] =
-    {'-', '\\',E ‹≈g@ E  (≈i@ 3˚A√&ÇaÅE¿W	a<Ω>ç∫er[TEXTLEN];
+    {'-', '\\', '|', '/'};
+    static char raw_buffer[TEXTLEN];
     static char *buffer = NULL;
     char *keyword;
     char *value = NULL;
