@@ -1,3 +1,9 @@
+2003-01-10 Friday 12:43  mche
+
+	* dirute.c (1.15), fido.c (1.15), filedlg.c (1.13), msg.c (1.27),
+	msged.dsp (1.1), quick.c (1.7), textfile.c (1.15), timezone.c
+	(1.3), wrap.c (1.13): make msged compilable with MSVC
+
 2003-01-09 Thursday 12:57  stas_degteff
 
 	* doc/manual/makefile.husky (1.9): set permissions for install
