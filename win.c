@@ -965,7 +965,7 @@ int WndGetLine(int x, int y, int len, char *buf, int Attr, int *pos, int nokeys,
                 break;
 
             default:
-                if (ch > 0 && i < len && strlen(buf) < len)
+                if (ch > 0 && ch < 256 && i < len && strlen(buf) < len)
                 {
                     TTBeginOutput();
                     if (nokeys)
