@@ -1856,7 +1856,7 @@ int writemsg(msg * m)
 
 	if (!SW->usetearlines || SW->usepid || CurArea.netmail)
 	{
-	    sprintf(text, "\01PID: %s %s\r", PROG, PIDVER PIDBETA);
+	    sprintf(text, "\01PID: %s %s\r", PROG, VERNUM VERPATCH);
 	    curr = InsertAfter(curr, text);
 	}
 
@@ -2041,7 +2041,7 @@ int writemsg(msg * m)
 
 	    td = time(NULL);
 	    strftime(time_str, 80, "%a %b %d %Y at %H:%M UTC", gmtime(&td));
-	    sprintf(text, "\01Via " PROG " " PIDVER PIDBETA " %s, %s\r",
+	    sprintf(text, "\01Via " PROG " " VERNUM VERPATCH " %s, %s\r",
 	      show_address(&from), time_str);
 	    curr = InsertAfter(curr, text);
 	}
@@ -2062,7 +2062,7 @@ int writemsg(msg * m)
 		}
 		else
 		{
-		    sprintf(text, "--- %s %s\r", PROG, VERSION CLOSED);
+		    sprintf(text, "--- %s %s\r", PROG, VERNUM VERPATCH);
 		}
 
 		/* make sure it is not longer than 35 characters + \r*/

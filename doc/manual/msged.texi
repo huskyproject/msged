@@ -2,11 +2,11 @@
 
 @c %**start of header
 @setfilename msged.info
-@settitle MsgEd TE 06 - A Public Domain Fidonet Message Editor
+@settitle MsgEd TE 6.0 - A Public Domain Fidonet Message Editor
 @setchapternewpage odd
 @set MSGED MsgEd TE
-@set VERSION 06 (pre)
-@set EDITION 03
+@set VERSION 6.0
+@set EDITION 1
 @defindex kr
 @defindex ke
 @c %**end of header
@@ -126,31 +126,32 @@ UNIX environments.
 archives. This section describes the contents of each. You normally do only
 need one of these files containing the executable and documentation for your
 platform, and maybe the file that contains the printable version of the
-documentation.
+documentation. In the following files, ??? must be replaced by the version
+number, e.g. @file{600} for version @samp{6.0.0}.
 
 @table @file
-@item MSGTE6_O.ZIP
+@item MSGE???O.ZIP
 This archive contains an OS/2 executable, sample configuration files and a
 manual in OS/2 INF format.
 
-@item MSGTE6_D.ZIP
+@item MSGE???D.ZIP
 This archive contains a 16-Bit DOS executable, sample configuration files and
 a manual in plain text format.
 
-@item MSGTE6_3.ZIP
+@item MSGE???3.ZIP
 This archive contains a 32-Bit DPMI DOS executable, sample configuration
 files and a manual in plain text format.
 
-@item MSGTE6_W.ZIP
+@item MSGE???W.ZIP
 This archive contains a Windows 32 bit console executable that should be your
 primary choice when running Windows NT or 2000, sample configuration files
 and a manual in HTML format.
 
-@item MSGTE6_L.ZIP
+@item MSGE???L.ZIP
 This archive contains a statically linked, pre-compiled Linux executable,
 sample configuration files and a manual in GNU info format.
 
-@item MSGTE6_M.ZIP
+@item MSGE???M.ZIP
 This archive contains the manual for @value{MSGED} in Postscript and in HTML
 format. If you intend to print the documentation of @value{MSGED}, then you
 should get this file and use the Postscript version, because printing the
@@ -159,7 +160,7 @@ postscript capable printer, or by using Ghostscript) will result in the best
 possible output that looks much nicer than if you would print the HTML or
 plain text documentations.
 
-@item MSGTE6_S.ZIP
+@item MSGE???S.ZIP
 This archive contains the complete C source code for @value{MSGED},
 out-of-the-box makefiles for building @value{MSGED} on DOS, OS/2, Windows,
 and almost every imaginable Unix-like system (tested systems include Linux,
@@ -168,17 +169,18 @@ code for the manual that can be used to build the manual in OS/2 INF, HTML,
 GNU info or DVI format.
 @end table
 
-For compiling @value{MSGED}, you also need the @samp{smapi} library, and,
-though now optional, you might also want to use the @samp{fidoconfig}
-library. Both libraries are distributed by the Husky team. The filenames of
-the release versions of those libaries that can be used to build
-@value{MSGED} @value{VERSION} are
+For compiling @value{MSGED}, you also need the @samp{smapi} library. The
+@samp{fidoconfig} library is not needed, @value{MSGED} can now parse
+Fidoconfig without need for this library. The versions of @samp{smapi}
+libary that can be used to build @value{MSGED} @value{VERSION} are:
 
 @table @file
-@item smapi-1.6.4-src.tar.gz
-Also available as @file{smapi-1.6.4-src.zip}.
-@item fidoconf-0.10-src.tar.gz
-Also available as @file{fidoconf-0.10-src.zip}
+@item smapi-stable-010619-src.tar.gz
+or any other version from this stable branch
+@item smapi-2.0.0-src.tar.gz
+once it will have been released
+@item smapi-2.0.?-src.tar.gz
+practically, any version of smapi 2.0 should do.
 @end table
 
 @emph{Attention:} Most of these ZIP-files contain subdirectories, so you

@@ -3750,7 +3750,7 @@ void show_debuginfo(int macro_count)
       "%-30s; %s\n"
       "-------------------------------------------------------------------------------\n"
       "\n",
-      PROG " " VERSION CLOSED "; Mail Reader",
+      PROG " " VERPROJECT " " VERNUM VERPATCH VERBRANCH "; Mail Reader",
       "Compiled on " __DATE__ " at " __TIME__
     );
 
@@ -3844,7 +3844,7 @@ void opening(char *cfgfile, char *areafile)
 
     InitVars();
 
-    printf(PROG " " VERSION CLOSED " ... \n");
+    printf(PROG " " VERPROJECT " " VERNUM VERPATCH VERBRANCH " ... \n");
     fflush(stdout);
 
     fp = fileopen(cfnname, cfgfile);
@@ -3982,7 +3982,7 @@ void opening(char *cfgfile, char *areafile)
     hWnd = WndPopUp(42, 6, SBDR | SHADOW, cm[IN_BTXT], cm[IN_NTXT]);
 
     WndPutsCen(0, cm[IN_NTXT], PROG " Mail Reader");
-    WndPutsCen(2, cm[IN_BTXT], "Version " VERSION CLOSED);
+    WndPutsCen(2, cm[IN_BTXT], "Version " VERPROJECT " " VERNUM VERPATCH VERBRANCH);
     WndPutsCen(4, cm[IN_NTXT], "Press a key to continue");
 
     GetKey();

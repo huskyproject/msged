@@ -1162,7 +1162,7 @@ static void scan_areas(int all)
     TTgetxy(&x,&y);
 
     a = SW->area; ga = SW->grouparea;
-    l = strlen(PROG) + strlen(VERSION CLOSED);
+    l = strlen(PROG) + strlen(VERNUM VERPATCH);
     if (!SW->dmore)
     {
         l += sprintf(temp, "%ld of %ld", CurArea.current,  CurArea.messages);
@@ -1217,7 +1217,7 @@ static void scan_areas(int all)
             else
             {
                 line[79 - strlen(PROG) -
-                     strlen(VERSION CLOSED) - 16] = '\0';
+                     strlen(VERNUM VERPATCH) - 16] = '\0';
 
                 WndPutsn(l + 6, maxy - 1, maxx - l - 7, cm[CM_ITXT], "Scanning:");
                 WndWriteStr(l + 16, maxy - 1, cm[CM_ITXT], line);
@@ -1281,9 +1281,9 @@ static void scan_areas(int all)
         sprintf(line, "%ld of %ld %c", CurArea.current, CurArea.messages, SC7);
         l = strlen(line);
 
-        WndPutsn((strlen(PROG) + strlen(VERSION CLOSED) + 6),
+        WndPutsn((strlen(PROG) + strlen(VERNUM VERPATCH) + 6),
                  maxy - 1, l - 1, cm[CM_ITXT], line);
-        WndPutsn((strlen(PROG) + strlen(VERSION CLOSED) + 6 + l - 1),
+        WndPutsn((strlen(PROG) + strlen(VERNUM VERPATCH) + 6 + l - 1),
                  maxy - 1, 18 - (l - 1), cm[CM_ITXT] | F_ALTERNATE,
                  line + l - 1);
     }
@@ -1973,7 +1973,7 @@ void show_usage(void)
       "-hc <source> <target>   Compile help file.\n"
       "-hi <source>            Decompile compiled help file.\n"
       "-k                      Display keyboard scan codes.\n",
-      PROG " " VERSION CLOSED "; Mail Reader",
+      PROG " " VERPROJECT " " VERNUM VERPATCH VERBRANCH "; Mail Reader",
       "Compiled on " __DATE__ " at " __TIME__
     );
 }

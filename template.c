@@ -234,7 +234,7 @@ int MakeTemplateMsg(msg * m, msg * oldmsg, int olda, int type)
                 }
                 else
                 {
-                    sprintf(buf, "--- %s %s\n", PROG, VERSION CLOSED);
+                    sprintf(buf, "--- %s %s\n", PROG, VERNUM VERPATCH);
                 }
                 ln = addline(ln, xstrdup(buf));
             }
