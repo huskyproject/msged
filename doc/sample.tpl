@@ -112,5 +112,3 @@
 @nRegards,
 @n%ufn
 ;-----------------------------------------------------------------------------
-$w Mon Tue Wed Thu Fr Sa So
-$m Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec
