@@ -20,7 +20,7 @@ DEFAULT_CONFIG_FILE=~/.msged
 #INSTDIR=~/bin
 INSTDIR=~/bin
 
-INCDIR=/usr/local/include
+INCDIR=..
 
 # options for installing programs
 IBOPT=-s -c

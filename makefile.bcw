@@ -2,7 +2,7 @@
 # No support for the Husky build environment
 
 CC=	bcc32
-CFLAGS=	-w -WC -I..\smapi
+CFLAGS=	-w -WC -I..
 CDEFS=	-D__NT__ -DWINNT -DUSE_MSGAPI -I..\smapi
 COPT=	-O2
 
