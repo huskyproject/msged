@@ -38,10 +38,9 @@ Fidonet Message Reader and Editor Software for OS/2, Windows, DOS and Unix.
 * Advanced Concepts::           Advanced features and concepts.
 * Keyboard Reference::          How to use and change the key combinations.
 * Configuration Reference::     Explanation of the configuration file.
-* Compiling::                   
-* Concept Index::               
-* Keyword Index::               
-* Keyboard Indices::            
+* Compiling::                   Appendix: How to compile the source code.
+* Concept Index::               General Index
+* Keyword Index::               Configuration File Keywords Index
 @end menu
 @end ifinfo
 
@@ -303,11 +302,11 @@ This section provides information on installing @value{MSGED} on Linux,
 FreeBSD or any other Unix-like system.
 
 @menu
-* UNIX Installation Procedure::  How to install @value{MSGED}.
-* Notes on UNIX terminal I/O::  How @value{MSGED} handles the terminal.
+* UNIX Installation Procedure::   How to install @value{MSGED}.
+* Notes on UNIX terminal I/O::    How @value{MSGED} handles the terminal.
 * Notes on UNIX keyboard input::  Escape Meta Alt Control Shift ;-)
 * Notes on Big Endian Hardware::  Running @value{MSGED} on RISC processors.
-* Colors in the Unix version::  How to enable colors.
+* Colors in the Unix version::    How to enable colors.
 @end menu
 
 @node UNIX Installation Procedure, Notes on UNIX terminal I/O, UNIX installation, UNIX installation
@@ -856,9 +855,9 @@ format of the exported mail that might not be aware to you. Also, most users
 might not know that they can use the file export menu to print mails.
 
 @menu
-* Exporting Basics::            
-* Export Formats::              
-* Printing::                    
+* Exporting Basics::            How to export a mail to a text file.
+* Export Formats::              How to control the format of the text file.
+* Printing::                    How to print a mail to a line printer.
 @end menu
 
 @node Exporting Basics, Export Formats, Exporting and Printing, Exporting and Printing
@@ -4283,7 +4282,7 @@ Notes}, for information on how to install these files.
 @appendix General Index
 @printindex cp
 
-@node Keyword Index, Keyboard Indices, Concept Index, Top
+@node Keyword Index,  , Concept Index, Top
 @appendix Configuration File Keyword Index
 @printindex fn
 
