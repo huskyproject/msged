@@ -1,3 +1,8 @@
+2001-11-25 Sunday 15:38  tobi
+
+	* readmail.c (1.39.2.1): Fixed multiple TZUTC kludge lines when
+	generating mails with CC:
+
 2001-11-24 Saturday 10:38  tobi
 
 	* group.c (1.5.2.1): Fixed segfault handling areas that do not
