@@ -27,6 +27,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <time.h>
+#include <smapi/msgapi.h>
 #include "addr.h"
 #include "areas.h"
 #include "dirute.h"
@@ -51,6 +52,7 @@
 #include "fconf.h"
 #include "patmat.h"
 #include "group.h"
+
 
 int areas_type;
 
@@ -3864,6 +3866,13 @@ void opening(char *cfgfile, char *areafile)
                                 /* initialise the FTSC0054 charset engine */
     read_charset_maps(ST->readmap, ST->writemap);
     recode_area_descriptions();
+    if (!have_readtable ("IBMPC", 2))
+    {
+        printf ("\r\aWARNING: No readmap found for the IBMPC charset. "
+                "Read in the manual about the\n"
+                "CharsetAlias command!\n");
+    }
+
 
     if (cur_cond != NULL)
     {
