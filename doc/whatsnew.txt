@@ -128,8 +128,8 @@ Features:
   the terminal can do it. Looks much nicer than before. You must add
   "switch pseudographics on" to your config file to enable this.
 
-[ - JAM Support. Still experimental. Thanks to Fedor Lizunkov. ]
-[ JAM SUPPORT DOES NOT WORK YET! DO NOT USE IT! ]
+- JAM Support. Will work only when compiled with smapi 2.0.0 or higher.
+  Many thanks to Fedor Lizunkov and Oliver Grimm!
 
 - Character set translate now does not only recode the mail text, but also
   the message header (from, to, and subject field). This allows for umlauts

@@ -2555,6 +2555,7 @@ are generally case-insensitive.
 * GroupSettings::               Different templates for different areas.
 * HelpFile::                    Enabling online help.
 * Include::                     Including other configuration files.
+* Jam::                         Specifying a Jam format mail area.
 * Lastread::                    Handling of the lastread pointer.
 * MaxX and MaxY::               Hard-wiring the terminal size.
 * MountDir::                    DOS to Unix path translation.
@@ -3164,7 +3165,7 @@ Specify the complete path and file name of the compiled @value{MSGED} help
 file here. It is usally named @file{msghelp.dat}, or @file{~/.msged.help} on
 Unix.
 
-@node Include, Lastread, HelpFile, Keywords
+@node Include, Jam, HelpFile, Keywords
 @subsection Include
 @findex Include
 @table @asis
@@ -3178,7 +3179,13 @@ The file specified with the @var{file-name} parameter will be read in and
 parsed as a normal config file. This is often used for including color scheme
 configuration files.
 
-@node Lastread, MaxX and MaxY, Include, Keywords
+@node Jam, Lastread, Include, Keywords
+@subsection Jam
+
+This keyword is described in the section about manual message area definition
+(@pxref{Manual Area Definition,, Manual Area Definition}).
+
+@node Lastread, MaxX and MaxY, Jam, Keywords
 @subsection Lastread
 @findex Lastread
 @table @asis
@@ -4764,6 +4771,7 @@ area definition keywords.
 @findex Squish
 @findex Quick
 @findex Fido
+@findex Jam
 
 You can manually define a message area by putting a line of the following
 format into your configuration file:
@@ -4780,8 +4788,10 @@ meaning of these parameters is as follows:
 The @var{format} parameter tells the message base format this message area is
 held in. It can be either @samp{Fido}, designating a message area in Fido
 *.MSG file format, @samp{Quick}, desingating a message area held in a
-QuickBBS or Hudson Message Base, or @samp{Squish}, designating a message area
-in the Squish format.
+QuickBBS or Hudson Message Base, @samp{Squish}, designating a message area
+in the Squish format, or @samp{Jam}, designating a message area in the JAM
+format (Jam will only be enable when @value{MSGED} was compiled with Smapi
+2.0 or higher).
 
 @item flags
 The @var{flags} parameter is a sequence of characters where each character is
@@ -4831,7 +4841,7 @@ it between quotation marks.
 @item path
 The @var{path} parameter gives the location of the message area. For Fido *.MSG
 areas, this is the path name of the corresponding directory. For QuickBBS
-areas, it is the area number. For Squish areas, it is the base name of the
+areas, it is the area number. For Squish and Jam areas, it is the base name of the
 area files without extension.
 
 @item areatag
