@@ -27,6 +27,13 @@ Fixes:
 - MsgEd could not read AREAS.BBS files that contained references to
   Hudson / QuickBBS style message areas. (Core dump on OS/2 and Linux).
 
+- Fixed a cosmetical bug in conjunction with the "CC:" feature (there
+  was no line break inserted between the "crossposted to ..." text
+  and the message text).
+
+- Fixed a serious bug in the zone gating code, which caused totally
+  misadressed netmail if you had switched zonegating on and wrote netmail
+  in other zones than the primary one of the respective netmail area.
 
 
 Features, Changes and Fixes in MsgEd TE 05
