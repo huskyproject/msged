@@ -253,17 +253,12 @@
 
 2001-11-26 Monday 12:55  tobi
 
-	* bin/writmaps.ukr (1.1): file writmaps.ukr was initially added on
-	branch msged-6_0-stable.
-
-2001-11-26 Monday 12:55  tobi
-
 	* bin/writmaps.koi (1.1): file writmaps.koi was initially added on
 	branch msged-6_0-stable.
 
 2001-11-26 Monday 12:55  tobi
 
-	* bin/writmaps.is1 (1.1): file writmaps.is1 was initially added on
+	* bin/writmaps.ukr (1.1): file writmaps.ukr was initially added on
 	branch msged-6_0-stable.
 
 2001-11-26 Monday 12:55  tobi
@@ -273,12 +268,7 @@
 
 2001-11-26 Monday 12:55  tobi
 
-	* bin/writmaps.865 (1.1): file writmaps.865 was initially added on
-	branch msged-6_0-stable.
-
-2001-11-26 Monday 12:55  tobi
-
-	* bin/writmaps.850 (1.1): file writmaps.850 was initially added on
+	* bin/writmaps.is1 (1.1): file writmaps.is1 was initially added on
 	branch msged-6_0-stable.
 
 2001-11-26 Monday 12:55  tobi
@@ -288,7 +278,17 @@
 
 2001-11-26 Monday 12:55  tobi
 
-	* bin/writmaps.437 (1.1): file writmaps.437 was initially added on
+	* bin/writmaps.850 (1.1): file writmaps.850 was initially added on
+	branch msged-6_0-stable.
+
+2001-11-26 Monday 12:55  tobi
+
+	* bin/writmaps.865 (1.1): file writmaps.865 was initially added on
+	branch msged-6_0-stable.
+
+2001-11-26 Monday 12:55  tobi
+
+	* bin/readmaps.koi (1.1): file readmaps.koi was initially added on
 	branch msged-6_0-stable.
 
 2001-11-26 Monday 12:55  tobi
@@ -298,7 +298,7 @@
 
 2001-11-26 Monday 12:55  tobi
 
-	* bin/readmaps.koi (1.1): file readmaps.koi was initially added on
+	* bin/writmaps.437 (1.1): file writmaps.437 was initially added on
 	branch msged-6_0-stable.
 
 2001-11-26 Monday 12:55  tobi
@@ -313,12 +313,12 @@
 
 2001-11-26 Monday 12:55  tobi
 
-	* bin/readmaps.865 (1.1): file readmaps.865 was initially added on
+	* bin/readmaps.866 (1.1): file readmaps.866 was initially added on
 	branch msged-6_0-stable.
 
 2001-11-26 Monday 12:55  tobi
 
-	* bin/readmaps.866 (1.1): file readmaps.866 was initially added on
+	* bin/readmaps.865 (1.1): file readmaps.865 was initially added on
 	branch msged-6_0-stable.
 
 2001-11-26 Monday 12:55  tobi
@@ -535,8 +535,8 @@
 2001-04-11 Wednesday 20:22  tobi
 
 	* maps/: iso_850.chs (1.4), iso_865.chs (1.2), iso_asc.chs (1.4),
-	iso_ibm.chs (1.5), iso_mac.chs (1.4) (utags: msged-6_0_0-release,
-	msged-6_0_1-release): support for non-standard euro currency sign
+	iso_ibm.chs (1.5), iso_mac.chs (1.4) (utags: msged-6_0_1-release,
+	msged-6_0_0-release): support for non-standard euro currency sign
 	in latin-1 codepage
 
 2001-04-11 Wednesday 20:18  tobi
@@ -759,7 +759,7 @@
 2000-09-03 Sunday 17:11  tobi
 
 	* maps/: 1125_866.chs (1.3), is5_866.chs (1.6), koi_866.chs (1.3)
-	(utags: msged-6_0_0-release, msged-6_0_1-release): softcrxlat
+	(utags: msged-6_0_1-release, msged-6_0_0-release): softcrxlat
 	workarounds for codepage 866
 
 2000-09-03 Sunday 17:05  tobi
@@ -777,7 +777,7 @@
 2000-09-03 Sunday 14:33  tobi
 
 	* .cvsignore (1.1), doc/manual/.cvsignore (1.1), maps/.cvsignore
-	(1.1) (utags: msged-6_0_0-release, msged-6_0_1-release): added
+	(1.1) (utags: msged-6_0_1-release, msged-6_0_0-release): added
 	.cvsignore files, thanks to max khon for the tip
 
 2000-09-02 Saturday 21:04  tobi
@@ -961,7 +961,7 @@
 2000-05-20 Saturday 10:38  tobi
 
 	* maps/: 850_asc.chs (1.2), 850_ibm.chs (1.3), 850_iso.chs (1.2)
-	(utags: msged-6_0_0-release, msged-6_0_1-release): Fixes for Euro
+	(utags: msged-6_0_1-release, msged-6_0_0-release): Fixes for Euro
 	currency support
 
 2000-05-17 Wednesday 18:36  sms
@@ -1789,7 +1789,7 @@
 1999-05-11 Tuesday 12:11  tobi
 
 	* contrib/: README (1.1), kdeconsole (1.1) (utags:
-	msged-6_0_0-release, msged-6_0_1-release): Added contrib
+	msged-6_0_1-release, msged-6_0_0-release): Added contrib
 	subdirectory
 
 1999-04-21 Wednesday 09:57  tobi
