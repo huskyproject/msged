@@ -39,9 +39,6 @@ TERM term =
     0
 };
 
-char *tt_specials = "xqlkmjxqlkmja>< p^V\268*";
-
-/*    "|-****|-*****><!*^v&*" */
 
 #define EBUFSZ 100
 static EVT EVent[EBUFSZ];	/* event circular queue */

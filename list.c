@@ -177,17 +177,18 @@ static void update(MLHEAD * headers, unsigned long i, int y)
  */
 
 static void showit(MLHEAD * h, int y, int sel)
-{
+ {
     unsigned long msgn;
     char line[384];
     char msgnbuf[9];
     int l;
+    char *cp;
 
     TTBeginOutput();
 
     msgn = SW->showrealmsgn ? h->umsgid : h->msgnum;
     sprintf(msgnbuf, "%5ld %c", msgn, h->sel ? SC14 : ' ');
-    l = strlen(msgnbuf - 1);
+    l = strlen(msgnbuf) - 1;
 
     if (long_subj)
     {
@@ -201,35 +202,40 @@ static void showit(MLHEAD * h, int y, int sel)
           h->to_name, h->subj);
     }
 
+    /* caveat the broken subject line!!! */
+    for (cp=line; *cp; cp++)
+        if (*cp < ' ')
+            *cp = ' ';
+
     if (sel)
     {
-        if (l > 1)
-            WndPutsn(1, y, l - 1, cm[LS_STXT], line);
-        if (l)
-            WndPutsn(l, y, 1, cm[LS_STXT] | F_ALTERNATE, line + l);
+        if (l>0)
+            WndPutsn(1, y, l, cm[LS_STXT], line);
+        if (l>1)
+            WndPutsn(1+l, y, 1, cm[LS_STXT] | F_ALTERNATE, line + l);
         if (l + 1 < maxx - 2)
-            WndPutsn(l + 1, y, (maxx - 2) - (l + 1), cm[LS_STXT],
-                     line + l + 1);
+            WndPutsn(1+l+1, y, (maxx - 2) - (l + 1), cm[LS_STXT],
+                     line+l+1);
     }
     else if (stricmp(h->to_name, ST->username) == 0 ||
       stricmp(h->fr_name, ST->username) == 0)
     {
-        if (l > 1)
-            WndPutsn(1, y, l - 1, cm[LS_ITXT], line);
-        if (l)
-            WndPutsn(l, y, 1, cm[LS_ITXT] | F_ALTERNATE, line + l);
+        if (l > 0)
+            WndPutsn(1, y, l, cm[LS_ITXT], line);
+        if (l>1)
+            WndPutsn(1+l, y, 1, cm[LS_ITXT] | F_ALTERNATE, line + l);
         if (l + 1 < maxx - 2)
-            WndPutsn(l + 1, y, (maxx - 2) - (l + 1), cm[LS_ITXT],
+            WndPutsn(l + 2, y, (maxx - 2) - (l + 1), cm[LS_ITXT],
                      line + l + 1);
     }
     else
     {
-        if (l > 1)
-            WndPutsn(1, y, l - 1, cm[LS_NTXT], line);
-        if (l)
-            WndPutsn(l, y, 1, cm[LS_NTXT] | F_ALTERNATE, line + l);
+        if (l > 0)
+            WndPutsn(1, y, l, cm[LS_NTXT], line);
+        if (l>1)
+            WndPutsn(1+l, y, 1, cm[LS_NTXT] | F_ALTERNATE, line + l);
         if (l + 1 < maxx - 2)
-            WndPutsn(l + 1, y, (maxx - 2) - (l + 1), cm[LS_NTXT],
+            WndPutsn(l + 2, y, (maxx - 2) - (l + 1), cm[LS_NTXT],
                      line + l + 1);
     }
 
