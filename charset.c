@@ -472,3 +472,82 @@ int get_codepage_number(const char *kludge_name)
     else
         return 0;
 }
+
+char *get_local_charset(void)
+{
+    static char buffer[20];
+
+    if (readmaps == NULL)
+    {
+        return NULL;
+    }
+    
+    sprintf (buffer, "%s 2", readmaps->charset_name);
+    return buffer;
+}
+
+static int ct_comparator(const void *p1, const void *p2)
+{
+    return stricmp((const char *)p1, (const char *)p2);
+}
+
+/* This function gets a human readable list of character set for which we have
+   read maps available. It can be used by the calling program to display a list
+   of these character sets, e.g. when offering the user a possibility to
+   override a character set kludge in the mail and to manually select the read
+   map to use.
+
+   nelem and elem_size must not be NULL; they will be filled in with the number
+   of elements in the list and the size of each element (including a trailing
+   \0), respectively.
+
+   The pointer that is returned has to be free'ed by the program.
+*/
+
+char *get_known_charset_table(int *nelem, int *elem_size)
+{
+    char *array;
+    int i;
+
+    if (nelem == NULL || elem_size == NULL || readmaps == NULL ||
+        readmaps->tables == NULL || readmaps->n_tables <= 0)
+    {
+        return NULL;
+    }
+
+    *elem_size = 9 + 1 + 1; /* name, space, level */
+    *nelem = readmaps->n_tables;
+    array = malloc((*nelem) * (*elem_size));
+
+    for (i = 0; i < (*nelem); i++)
+    {
+        sprintf(array + i * (*elem_size), "%s %d",
+                readmaps->tables[i].from_charset,
+                readmaps->tables[i].level);
+    }
+
+    sprintf (array + (*nelem) * (*elem_size), "%s 2",
+             readmaps->charset_name);
+    (*nelem)++;
+
+    qsort(array, *nelem, *elem_size, ct_comparator);
+
+    /* filter out duplicates */
+
+    for (i = 0; i < (*nelem) - 1; i++)
+    {
+        if (!stricmp(array + i * (*elem_size),
+                     array + (i + 1) * (*elem_size)))
+        {
+            memmove(array + i * (*elem_size),
+                    array + (i + 1) * (*elem_size),
+                    ((*nelem) - i) * (*elem_size));
+            (*nelem)--;
+        }
+    }
+
+    return array;
+}
+    
+
+    

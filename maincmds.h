@@ -99,7 +99,7 @@ void (*mainakeys[256]) (void) =
 {
     NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,           /* 0 */
     NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,           /* 8 */
-    quote, outtxt, newmsg, reply, NULL, replyextra, followup, NULL,  /* 10 */
+    quote, outtxt, newmsg, reply, sel_chs, replyextra, followup, NULL, /* 10 */
     go_dos, pmail, NULL, NULL, NULL, NULL, quit, set,         /* 18 */
     delete, search, gotomsg0, do_help, NULL, NULL, list, NULL,  /* 20 */
     NULL, NULL, NULL, NULL, hdrsearch, quit, change, view,      /* 28 */
@@ -149,6 +149,7 @@ const struct _command maincmds[] =
     {"quote", quote},
     {"move", move},
     {"export", outtxt},
+    {"sel_chs", sel_chs},
     {"dos", rundos},
     {"config", set},
     {"list", list},

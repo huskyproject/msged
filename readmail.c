@@ -176,6 +176,7 @@ msg *readmsg(unsigned long n)
     int had_codepage = 0;
     LOOKUPTABLE *ltable = NULL;
     int fmpt, topt;
+    int clevel = 0;
 
     l = NULL;
 
@@ -190,11 +191,29 @@ msg *readmsg(unsigned long n)
 
     stripSoft = 1;
     m->replyarea = NULL;
-    if (ST->input_charset != NULL)
+    if (ST->enforced_charset != NULL || ST->input_charset != NULL)
     {
-	m->charset_name = xstrdup(ST->input_charset);
-	m->charset_level = 2;
-	ltable = get_readtable(ST->input_charset, 2);
+        memset(tokens, 0, sizeof(tokens));
+        if (ST->enforced_charset != NULL)
+        {
+            text = xstrdup(ST->enforced_charset);
+        }
+        else
+        {
+            text = xstrdup(ST->input_charset);
+        }
+        parse_tokens(text, tokens, 2);
+        if (tokens[1])
+        {
+            m->charset_level = atoi(tokens[1]);
+        }
+        else
+        {
+            m->charset_level = 2;
+        }
+        m->charset_name = xstrdup(tokens[0]);
+        ltable = get_readtable(m->charset_name, m->charset_level);
+        free(text);
     }
     else
     {
@@ -241,6 +260,13 @@ msg *readmsg(unsigned long n)
 		break;
 
 	    case 'C':
+                if (ST->enforced_charset != NULL)
+                {
+                    /* CHRS kludge is ignored if a special input charset
+                       is enforced */
+                    break;
+                }
+                
 		if (strncmp(text + 1, "CHRS:", 5) == 0)
 		{
                     if (had_codepage)
@@ -265,7 +291,6 @@ msg *readmsg(unsigned long n)
                 {
                     break;
                 }
-
 
 		memset(tokens, 0, sizeof(tokens));
 		parse_tokens(tmp, tokens, 2);

@@ -257,7 +257,7 @@ int SelBox(char **Itms, int y1, int y2, int len, int def, WND * hPrev, WND * hWn
                 currItem++;
                 if (curY == y2)
                 {
-                    WndScroll(1, y1, len - 1, y2, 1);
+                    WndScroll(1, y1, len, y2, 1);
                     Top++;
                 }
                 else
@@ -277,7 +277,7 @@ int SelBox(char **Itms, int y1, int y2, int len, int def, WND * hPrev, WND * hWn
                 currItem--;
                 if (curY == y1)
                 {
-                    WndScroll(1, y1, len - 1, y2, 0);
+                    WndScroll(1, y1, len, y2, 0);
                     if (Top)
                     {
                         Top--;
@@ -360,18 +360,21 @@ int SelBox(char **Itms, int y1, int y2, int len, int def, WND * hPrev, WND * hWn
 
             case '*':
             case Key_A_S:
-                arealist_area_scan(1);
-                for (i = 0; i < SW->areas; i++)
+                if (selbox_id == SELBOX_REPLYOTH)
                 {
-                    xfree(alist2[i]);
+                    arealist_area_scan(1);
+                    for (i = 0; i < SW->areas; i++)
+                    {
+                        xfree(alist2[i]);
+                    }
+                    xfree(alist2);
+                    BuildList(&alist2);
+                    Itms = alist2;
+                    SelShowPage(Itms, y1, y2, len, Top, Norm, 1);
+                    SelShowItem(Itms[currItem], curY, len, Sel, 1);
+                    memset(find, '\0', sizeof find);
+                    CurArea.messages = MsgAreaOpen(&CurArea);
                 }
-                xfree(alist2);
-                BuildList(&alist2);
-                Itms = alist2;
-                SelShowPage(Itms, y1, y2, len, Top, Norm, 1);
-                SelShowItem(Itms[currItem], curY, len, Sel, 1);
-                memset(find, '\0', sizeof find);
-                CurArea.messages = MsgAreaOpen(&CurArea);
                 break;
 
             default:

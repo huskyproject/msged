@@ -4,9 +4,10 @@ TODO-List for Msged
 Category 1: Will certainly be implemented until next release
 ============================================================
 
-- Menu for manual charset selection override
-
-- Debug "Switch Statbar Off" (MMC)
+- Still: Sascha's Lastread pointer problem.
+  (If name taken from fidoconfig -> no lastread pointer at all.
+  Also: Problem with capital / small spelling of lastread file name
+  in name keyword on Linux. High time to fix this!!!)
 
 - Header recoding for Message List
 

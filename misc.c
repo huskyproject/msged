@@ -25,6 +25,7 @@
 #include "dialogs.h"
 #include "help.h"
 #include "misc.h"
+#include "charset.h"
 
 void change_curr_addr(void)
 {
@@ -476,4 +477,73 @@ void hex_dump(void)
         fprintf(ofp, "%s\n", prtln);
     }
     fclose(ofp);
+}
+
+/* select the charset to use */
+
+void sel_chs(void)
+{
+    static char *stdrecode = "Use @CHRS kludge (recommended!)";
+    static char *norecode  = "Don't do any translation at all";
+    char *kludgelist;
+    int kn, ksz;
+    int num, ch = -1;
+    int x1, y1, x2, y2;
+    char **kludgemenu;
+
+    kludgelist = get_known_charset_table(&kn, &ksz);
+    if (kludgelist == NULL)
+    {
+        return;
+    }
+
+    kludgemenu = xcalloc(kn + 4, sizeof(char *));
+
+    kludgemenu[0] = stdrecode;
+    kludgemenu[1] = norecode;
+
+    for (num = 0; num < kn; num++)
+    {
+        kludgemenu[num + 2] = kludgelist + num * ksz;
+    }
+    
+    kludgemenu[num + 2] = NULL;
+
+    x1 = (maxx / 2) - 17;
+    x2 = (maxx / 2) + 17;
+    y1 = 8;
+
+    if (num + 2 > maxy - 1)
+    {
+        y2 = maxy - 1;
+    }
+    else
+    {
+        y2 = y1 + num + 3;
+    }
+
+    while (ch < 0)
+        ch = DoMenu(x1 + 1, y1 + 1, x2 - 1, y2 - 1, kludgemenu, 0,
+                    SELBOX_CHARSET, "Override Character Set Recognition");
+
+    switch (ch)
+    {
+    case 0:
+        release(ST->enforced_charset);
+        break;
+
+    case 1:
+        release(ST->enforced_charset);
+        ST->enforced_charset = xstrdup(get_local_charset());
+        break;
+
+    default:
+        release(ST->enforced_charset);
+        ST->enforced_charset = xstrdup(kludgemenu[ch]);
+        break;
+    }
+
+    message = KillMsg(message); /* force message re-read */
+
+    xfree(kludgemenu);
 }

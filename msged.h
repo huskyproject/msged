@@ -322,6 +322,7 @@ struct _sv
     char *freqarea;             /* area tag for area to make f.req.in */
     char *input_charset;        /* charset  assumed when reading mail
                                    without CHRS kludge. */
+    char *enforced_charset;     /* input charset that is always enforced */
     char *uucpreplyto;          /* a replyto: string for e-mail */
     char *freqflags;            /* flags to use for file requests */
     char *printer;              /* printer port or command name */

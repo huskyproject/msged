@@ -1201,7 +1201,7 @@ WRITMAPS.850 | console fonts, that uses Codepage 850. This applies to most
              | systems might also use this code page.
 -------------------------------------------------------------------------
 READMAPS.437 | Any DOS or OS/2 computer, or Windows computer with the OEM
-WRITMAPS.850 | fonts, that uses the standard codepage 437. This applies to
+WRITMAPS.437 | fonts, that uses the standard codepage 437. This applies to
              | most US-American installations, and also to some European 
              | ones that use Codepage 850 because it has some more IBM 
              | graphics characters.
@@ -1214,7 +1214,8 @@ WRITMAPS.UKR | Windows installations for text mode applications in
              | Ukraine and Belorussia.
 -------------------------------------------------------------------------
 READMAPS.IS1 | This is ISO 8859-1. It is the standard encoding for 
-WRITMAPS.IS1 | X11 fonts and console fonts on Linux and Unix system
+WRITMAPS.IS1 | X11 fonts and console fonts on Linux and Unix systems
+             | in Western Europe.
 -------------------------------------------------------------------------
 READMAPS.IS5 | This is ISO 8859-5. It is the encoding used for vendor
 WRITMAPS.IS5 | shipped additional fonts in Russian editions of commercial
@@ -1295,17 +1296,32 @@ CharsetAlias RUFIDO CP866
 Once FSC 0054 is activated, @value{MSGED} will be able to correctly display
 all mails that have been created with one of the characters sets listed
 above, as long as they contain the proper charset kludge
-line. (Unfortunately, quite some still don't - do tell their authors to
-correct their setup!). Mails that you write yourself may contain any
-special characters, but @value{MSGED} will convert them into a 7 bit ASCII
-character set when you save them.
+line. 
+
+Unfortunately, quite some still don't - do tell their authors to correct
+their setup! Until those users fix their editors, @value{MSGED} offers you
+two options. The one is the @samp{AssumeCharset} keyword, which sets a
+default character set kludge name for mails that do not contain such a kludge
+line. @xref{AssumeCharset,,The @code{AssumeCharset} keyword}, for more
+information. The other option is the @key{Alt}-@key{T} key combination that
+you can press in message reading mode. You will get a menu that allows you to
+select from all supported codepages and character sets. You can use this menu
+if you must read a mail that contains a wrong character set kludge line, or
+one that does not contain such a kludge and does not meet the assumption you
+made with @samp{AssumeCharset}. @xref{Misc Reader Functions,,Miscellaneous
+other Reader Functions}, for more information.
+
+Now that you have set up @value{MSGED} so far, you are able to read almost
+all mails with correct 8 bit characters, and mails that you write yourself
+may also contain any special characters, but @value{MSGED} will convert them
+into a 7 bit ASCII character set when you save them.
 
 If you want to retain special characters in your mail by adding a charset
-kludge, you have to do two things. First, you have to define which character
-set to use for saving your mails . @xref{OutputCharset,,The
-@code{OutputCharset} Keyword}, for information on how to do this. In most
-cases, you will simply want to add the following line to your configuration
-file:
+kludge (which is highly recommended), you have to do two things. First, you
+have to define which character set to use for saving your mails
+. @xref{OutputCharset,,The @code{OutputCharset} Keyword}, for information on
+how to do this. In most cases, you will simply want to add the following line
+to your configuration file:
 
 @example
 OutputCharset IBMPC
@@ -1831,6 +1847,28 @@ when writing messages.
 Export the text of the current message to a file or printer port. You will be
 shown a dialog box where you can enter a filename and some other
 options. @xref{Exporting and Printing}, for further information.
+
+@item Function: @code{selchs}, bound to: @key{Alt}-@key{T}
+@krindex selchs
+@cindex overriding CHRS kludge
+@cindex CHRS kludge, override
+This will show a select box where you can manually select which codepage or
+character set you think the messages that you are reading are in. You only
+need this in two cases: Either when some idiot is inserting a wrong CHRS
+kludge into this mail, or when a mail does not have a CHRS kludge and it is
+@emph{not} written in the character set that you have specified as argument
+to the @code{AssumeCharset} keyword (@pxref{AssumeCharset,,The AssumeCharset
+Keyword}. 
+
+An example would be if you have configured your computer with
+@samp{AssumeCharset 850} because you usually write in a Western European
+language, but ocasionally read Russian echomail. Then, if the Russian mail
+does not have a charset kludge, you would need to press @key{Alt}-@key{T} and
+manually select @samp{CP866 2} in order to view the proper transcription of
+the cyrillic text.
+
+The selection that you make lasts until you make a differnt one, or until you
+quite @value{MSGED}.
 
 @item Function: @code{shell}, bound to: @key{Alt}-@key{O}
 @krindex shell

@@ -52,6 +52,12 @@ Changes:
 
 Features:
 
+- New Key "Alt+T" (function "selchs") introduced. It allows you to manually
+  specify the charcter set to use for recoding a mail when reading it. You
+  should only need this in rare occasions (like when trying to read Russian
+  mails that do not have CHRS kludges in a Western setup). Normally, the
+  AssumeCharset keywords should do all work for you.
+
 - Added recoding tables for cyrillic codepages (KOI8-RU, CP866, CP1125,
   ISO 8859-5). Msged is now fully "cyrillified". Please read the manual,
   section "Special Characters", for information on how to set up Msged
@@ -69,11 +75,12 @@ Features:
   pipe graphics that was used previously) if the termcap entry suggests that
   the terminal can do it. Looks much nicer than before.
 
-- JAM Support. Still experimental. Thanks to Fedor Lizunkov.
+[ - JAM Support. Still experimental. Thanks to Fedor Lizunkov. ]
+[ JAM SUPPORT DOES NOT WORK YET! DO NOT USE IT! ]
 
 - Character set translate now does not only recode the mail text, but also
   the message header (from, to, and subject field). This allows for umlauts
-  or kyrillic letters in the header, provided the recipient mail editor also
+  or cyrillic letters in the header, provided the recipient mail editor also
   has this feature.
 
 - New Switch: DirectList. If you put "Switch DirectList On" into your config
@@ -184,6 +191,8 @@ Features:
   "Switch ReceiveAllAddresses Off" to the configuration file.
 
 Fixes:
+
+- Fixed the "PrivateNet" feature.
 
 - Fixed the SoftCRXlat translation method to work on the transport charset
   instead of the local charset. This affects specifically the problem with

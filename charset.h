@@ -45,6 +45,8 @@ int          get_codepage_number (const char *);
 void         strip_control_chars (char *);
 char        *translate_text      (const char *, LOOKUPTABLE *);
 
+char *get_known_charset_table(int *n_elem, int *elem_size); /* free ptr! */
+char *get_local_charset(void); /* don't free ptr! */
 
 #endif
 

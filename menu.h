@@ -213,6 +213,7 @@ void MnuSetColours(int nbc, int nnc, int nsc);
 #define SELBOX_WRTMODE   6
 #define SELBOX_WRTOVER   7
 #define SELBOX_LINKTO    8
+#define SELBOX_CHARSET   9
 
 int DoMenu(int x1, int y1, int x2, int y2, char **Itms, int def, int selbox_id, char *topMsg);
 int SelBox(char **Itms, int y1, int y2, int len, int def, WND * hPrev, WND * hWnd, int Sel, int Norm, int selbox_id, char *topMsg);
