@@ -1,3 +1,7 @@
+2002-11-25 Monday 09:00  mche
+
+	* fconf.c (1.21), fido.c (1.14): s_addr --> hs_addr
+
 2002-11-09 Saturday 22:17  os2tobi
 
 	* fconf.c (1.20): fidoconfig parser now flags netmail areas as
