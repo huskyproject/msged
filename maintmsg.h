@@ -10,10 +10,10 @@
 #define __MAINTMSG_H__
 
 void deletemsg(void);
-void forward_msg(void);
-void redirect_msg(void);
-void copy_msg(void);
-void move_msg(void);
+int forward_msg(int to_area);
+int redirect_msg(int to_area);
+int copy_msg(int to_area);
+int move_msg(int to_area);
 void movemsg(void);
 
 #endif

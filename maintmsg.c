@@ -101,19 +101,21 @@ void deletemsg(void)
  *  Forwards the current message.
  */
 
-void forward_msg(void)
+int forward_msg(int to_area)
 {
     msg *m;
     msg *oldm;
     int fr_area = SW->area;
     time_t now = time(NULL);
-    int to_area;
 
-    to_area = selectarea("Forward To Area", SW->area);
+    if (to_area == -1)
+    {
+        to_area = selectarea("Forward To Area", SW->area);
+    }
 
     if (msgederr)
     {
-        return;
+        return -1;
     }
 
     if (message == NULL)
@@ -121,7 +123,7 @@ void forward_msg(void)
         message = readmsg(CurArea.current);
         if (message == NULL)
         {
-            return;
+            return -1;
         }
     }
 
@@ -141,7 +143,7 @@ void forward_msg(void)
         dispose(oldm);
         dispose(m);
         set_area(fr_area);
-        return;
+        return -1;
     }
 
     if ((m->reply && fr_area != to_area) || CurArea.netmail)
@@ -189,24 +191,27 @@ void forward_msg(void)
     }
     dispose(oldm);
     dispose(m);
+    return to_area;
 }
 
 /*
  *  Redirects the current message.
  */
 
-void redirect_msg(void)
+int redirect_msg(int to_area)
 {
     msg *m;
     msg *oldm;
     int fr_area = SW->area;
-    int to_area;
 
-    to_area = selectarea("Redirect To Area", SW->area);
+    if (to_area == -1)
+    {
+        to_area = selectarea("Redirect To Area", SW->area);
+    }
 
     if (msgederr)
     {
-        return;
+        return -1;
     }
 
     if (message != NULL)
@@ -218,7 +223,7 @@ void redirect_msg(void)
     message = readmsg(CurArea.current);
     if (message == NULL)
     {
-        return;
+        return -1;
     }
 
     oldm = duplicatemsg(message);
@@ -231,7 +236,7 @@ void redirect_msg(void)
         dispose(oldm);
         dispose(m);
         set_area(fr_area);
-        return;
+        return -1;
     }
 
     memset(m->replies, 0, sizeof(m->replies));
@@ -267,23 +272,26 @@ void redirect_msg(void)
     }
     dispose(oldm);
     dispose(m);
+    return to_area;
 }
 
 /*
  *  Copies the current message.
  */
 
-void copy_msg(void)
+int copy_msg(int to_area)
 {
     msg *m;
     int fr_area = SW->area;
-    int to_area;
 
-    to_area = selectarea("Copy To Area", SW->area);
+    if (to_area == -1)
+    {
+        to_area = selectarea("Copy To Area", SW->area);
+    }
 
     if (msgederr)
     {
-        return;
+        return -1;
     }
 
     if (message != NULL)
@@ -296,7 +304,7 @@ void copy_msg(void)
 
     if (message == NULL)
     {
-        return;
+        return -1;
     }
 
     m = message;
@@ -307,7 +315,7 @@ void copy_msg(void)
     {
         dispose(m);
         set_area(fr_area);
-        return;
+        return -1;
     }
     clear_attributes(&m->attrib);
     CurArea.new = 1;
@@ -331,24 +339,27 @@ void copy_msg(void)
     writemsg(m);
     set_area(fr_area);
     dispose(m);
+    return to_area;
 }
 
 /*
  *  Moves the current message.
  */
 
-void move_msg(void)
+int move_msg(int to_area)
 {
     msg *m;
     int fr_area = SW->area;
-    int to_area;
     int status;
 
-    to_area = selectarea("Move To Area", SW->area);
+    if (to_area == -1)
+    {
+        to_area = selectarea("Move To Area", SW->area);
+    }
 
     if (msgederr)
     {
-        return;
+        return -1;
     }
 
     if (message != NULL)
@@ -362,7 +373,7 @@ void move_msg(void)
 
     if (message == NULL)
     {
-        return;
+        return -1;
     }
 
     m = message;      /* save the msg so we can write it */
@@ -373,7 +384,7 @@ void move_msg(void)
     {
         set_area(fr_area);
         dispose(m);
-        return;
+        return -1;
     }
     clear_attributes(&m->attrib);
     CurArea.new = 1;
@@ -406,6 +417,7 @@ void move_msg(void)
         deletemsg();
         SW->confirmations = confirm_temp;
     }
+    return to_area;
 }
 
 /*
@@ -422,19 +434,19 @@ void movemsg(void)
     switch (rc)
     {
     case 0:                    /* Move */
-        move_msg();
-        break;
+        move_msg(-1);          /* to_area = -1  will present a menu that */
+        break;                 /* lets the user select an area           */
 
     case 1:                    /* Copy */
-        copy_msg();
+        copy_msg(-1);
         break;
 
     case 2:                    /* Redirect */
-        redirect_msg();
+        redirect_msg(-1);
         break;
 
     case 3:                    /* Forward */
-        forward_msg();
+        forward_msg(-1);
         break;
 
     case -1:                   /* Escape */

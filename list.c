@@ -25,11 +25,12 @@
 #include "nshow.h"
 #include "dlist.h"
 #include "list.h"
+#include "screen.h"
 
 static int long_subj;
 static int display_address = 1;
 
-static void getheader(unsigned long n, MLHEAD * h);
+static void getheader(unsigned long n, MLHEAD * h, int check_sel);
 static void showit(MLHEAD * h, int y, int sel);
 
 static DLIST *ulist;
@@ -156,7 +157,7 @@ static void update(MLHEAD * headers, unsigned long i, int y)
 {
     while (i <= CurArea.messages && y <= maxy - 4)
     {
-        getheader(i, &headers[y - 1]);
+        getheader(i, &headers[y - 1], 1);
         showit(&headers[y - 1], y, 0);
         i++;
         y++;
@@ -211,7 +212,7 @@ static void showit(MLHEAD * h, int y, int sel)
  *  Gets a header from the msgbase.
  */
 
-static void getheader(unsigned long n, MLHEAD * h)
+static void getheader(unsigned long n, MLHEAD * h, int check_sel)
 {
     msg *x;
 
@@ -229,7 +230,14 @@ static void getheader(unsigned long n, MLHEAD * h)
     h->fr_net = x->from.net;
     h->fr_node = x->from.node;
     h->times_read = x->times_read;
-    h->sel = ulistFindUid(x->msgnum);
+    if (check_sel)
+    {
+        h->sel = ulistFindUid(x->msgnum);
+    }
+    else
+    {
+        h->sel = 0;
+    }
 
     strncpy(h->subj, x->subj, 72);
     h->subj[72] = '\0';
@@ -263,11 +271,17 @@ static void DeleteMsgs(unsigned long *CurrMsgn)
         int confirm_temp;
         DLISTNODE *p_node;
         unsigned long msgn, oldmsgn;
+        char messagetxt[80];
 
-        if (!confirm("Erase messages?"))
+        if (!confirm("Erase all selected messages?"))
         {
             return;
         }
+        if (!OpenMsgWnd(50, 6, "Deleting Messages", NULL, 0, 0))
+        {
+            return;
+        }
+        SendMsgWnd("Press Esc to interrupt", 2);
 
         confirm_temp = SW->confirmations;
         SW->confirmations = 0;
@@ -279,8 +293,19 @@ static void DeleteMsgs(unsigned long *CurrMsgn)
         {
             unsigned long *puid;
 
+            if (KeyHit() && GetKey() == Key_Esc)
+            {
+                p_node = NULL;
+                break;
+            }
+
             puid = dlistGetElement(p_node);
             msgn = UidToMsgn(*puid);
+
+            sprintf(messagetxt, "Working on message #%lu", 
+                    SW->showrealmsgn ? *puid: msgn);
+            SendMsgWnd(messagetxt, 1);
+
             if (oldmsgn == 0L)
             {
                 oldmsgn = msgn - 1;
@@ -300,6 +325,8 @@ static void DeleteMsgs(unsigned long *CurrMsgn)
         *CurrMsgn = oldmsgn;
         CurArea.current = oldmsgn;
         SW->confirmations = confirm_temp;
+
+        CloseMsgWnd();
     }
 }
 
@@ -307,8 +334,10 @@ static void DeleteMsgs(unsigned long *CurrMsgn)
  *  Forwards, redirects, moves or copies a group of messages.
  */
 
-static void movemsgs(int rc)
+static int movemsgs(int rc, int to_area)
 {
+    int clear = (to_area == -1);
+    
     if (rc == 2 || rc == 3)
     {
         DrawHeader();
@@ -316,37 +345,41 @@ static void movemsgs(int rc)
     switch (rc)
     {
     case 0:                    /* Move */
-        move_msg();
+        to_area = move_msg(to_area);
         break;
 
     case 1:                    /* Copy */
-        copy_msg();
+        to_area = copy_msg(to_area);
         break;
 
     case 2:                    /* Redirect */
-        redirect_msg();
+        to_area = redirect_msg(to_area);
         break;
 
     case 3:                    /* Forward */
-        forward_msg();
+        to_area = forward_msg(to_area);
         break;
 
     case -1:                   /* Escape */
-        return;
+        return -1;
     }
 
-    WndClearLine(0, cm[MN_NTXT]);
-    WndWriteStr(2, 0, cm[LS_TTXT], CurArea.description);
-
-    if (rc == 2 || rc == 3)
+    if (clear)
     {
-        int i;
-        for (i = 1; i <= 5; i++)
+        WndClearLine(0, cm[MN_NTXT]);
+        WndWriteStr(2, 0, cm[LS_TTXT], CurArea.description);
+
+        if (rc == 2 || rc == 3)
         {
-            WndClearLine(i, cm[MN_NTXT]);
+            int i;
+            for (i = 1; i <= 5; i++)
+            {
+                WndClearLine(i, cm[MN_NTXT]);
+            }
+            WndBox(0, 1, maxx - 1, maxy - 2, cm[LS_BTXT], SBDR);
         }
-        WndBox(0, 1, maxx - 1, maxy - 2, cm[LS_BTXT], SBDR);
     }
+    return to_area;
 }
 
 /*
@@ -368,39 +401,89 @@ static void MoveMsgs(unsigned long *CurrMsgn)
         hCurr = WndTop();
         WndCurr(hMnScr);
         groupmove = 1;
-        movemsgs(rc);
+        movemsgs(rc, -1);
         groupmove = 0;
         WndCurr(hCurr);
     }
     else
     {
-        DLISTNODE *p_node;
+        DLISTNODE *p_node, *p_old_node;
         unsigned long msgn, oldmsgn;
+        int to_area = -1;
+        char messagetxt[80];
 
         oldmsgn = 0L;
+
+        switch(rc)
+        {
+        case 0:
+            strcpy(messagetxt," Moving");
+            break;
+
+        case 1:
+            strcpy(messagetxt," Copying");
+            break;
+
+        case 2:
+            strcpy(messagetxt," Redirecting");
+            break;
+
+        case 3:
+            strcpy(messagetxt," Forwarding");
+            break;
+
+        default:
+            strcpy(messagetxt," <internal error>");
+            break;
+        }
+        strcat(messagetxt, " Messages ");
+
+        if (!OpenMsgWnd(50, 6, messagetxt, NULL, 0, 0))
+        {
+            return;
+        }
+        SendMsgWnd("Press Esc to stop", 2);
 
         p_node = dlistTravFirst(ulist);
         while (p_node != NULL)
         {
             unsigned long *puid;
 
+            if (KeyHit() && GetKey() == Key_Esc)
+            {
+                p_node = NULL;
+                break;
+            }
+
             puid = dlistGetElement(p_node);
             msgn = UidToMsgn(*puid);
+
+            sprintf(messagetxt, "Working on message #%lu", 
+                    SW->showrealmsgn ? *puid: msgn);
+            SendMsgWnd(messagetxt, 1);
+            
             if (oldmsgn == 0L)
             {
                 oldmsgn = msgn - 1L;
             }
+            p_old_node = p_node;
             if (msgn != 0L)
             {
                 CurArea.current = msgn;
                 hCurr = WndTop();
                 WndCurr(hMnScr);
                 groupmove = 1;
-                movemsgs(rc);
+                to_area = movemsgs(rc, to_area);
                 groupmove = 0;
                 WndCurr(hCurr);
             }
             p_node = dlistTravNext(p_node);
+            dlistDropNode(ulist, p_old_node);
+
+            if (to_area == -1) /* an escape or an error occured */
+            {
+                p_node = NULL;
+            }
         }
         if (oldmsgn == 0L)
         {
@@ -408,6 +491,8 @@ static void MoveMsgs(unsigned long *CurrMsgn)
         }
         *CurrMsgn = oldmsgn;
         CurArea.current = oldmsgn;
+
+        CloseMsgWnd();
     }
 }
 
@@ -427,7 +512,7 @@ void do_list(void)
     int ForceEvt = 0;           /* forced/piped keypress */
     int Msg;                    /* message */
     int lbutton = 0;
-    unsigned long i, a;
+    unsigned long i, a, j;
     int y;
 
     if (in_list || !CurArea.status)  /* stop recursion */
@@ -667,7 +752,7 @@ void do_list(void)
                             memmove(headers + 1, headers,
                               sizeof(MLHEAD) * (maxy - 1));
                         }
-                        getheader(a, &headers[0]);
+                        getheader(a, &headers[0], 1);
                     }
                 }
                 break;
@@ -693,7 +778,7 @@ void do_list(void)
                             memmove(headers, headers + 1,
                               sizeof(MLHEAD) * (maxy - 1));
                         }
-                        getheader(a, &headers[y - 1]);
+                        getheader(a, &headers[y - 1], 1);
                     }
                 }
                 break;
@@ -705,6 +790,20 @@ void do_list(void)
 
             case Key_End:
                 a = CurArea.last;
+                update(headers, a, y = 1);
+                break;
+
+            case '+':
+                ulistTerm();
+                for (j = CurArea.first; j <= CurArea.messages; j++)
+                {
+                    ulistAddUid(MsgnToUid(j));
+                }
+                update(headers, a, y = 1);
+                break;
+
+            case '-':
+                ulistTerm();
                 update(headers, a, y = 1);
                 break;
 
