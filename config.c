@@ -3394,6 +3394,8 @@ static void parseconfig(FILE * fp)
     }
 }
 
+#define NP(x) ((x==NULL)?("<not set>"):(x))
+
 void show_debuginfo(int macro_count)
 {
     int i;
@@ -3413,22 +3415,22 @@ void show_debuginfo(int macro_count)
     );
 
     printf("Screen size       : %d columns, %d rows\n", maxx, maxy);
-    printf("User              : \"%s\" (%s)\n", ST->username, show_address(&thisnode));
-    printf("Origin            : \"%s\"\n", ST->origin);
+    printf("User              : \"%s\" (%s)\n", NP(ST->username), show_address(&thisnode));
+    printf("Origin            : \"%s\"\n", NP(ST->origin));
     printf("Macros            : %d macros defined\n", macro_count);
-    printf("Home directory    : %s\n", ST->home);
-    printf("Quote string      : \"%s\"\n", ST->quotestr);
-    printf("Export file       : %s (default)\n", ST->outfile);
-    printf("Config file       : %s\n", ST->cfgfile);
-    printf("Echotoss log      : %s\n", ST->echotoss);
-    printf("Template file     : %s\n", ST->template);
+    printf("Home directory    : %s\n", NP(ST->home));
+    printf("Quote string      : \"%s\"\n", NP(ST->quotestr));
+    printf("Export file       : %s (default)\n", NP(ST->outfile));
+    printf("Config file       : %s\n", NP(ST->cfgfile));
+    printf("Echotoss log      : %s\n", NP(ST->echotoss));
+    printf("Template file     : %s\n", NP(ST->template));
 #ifdef MSDOS
-    printf("Swap path         : %s\n", ST->swap_path);
+    printf("Swap path         : %s\n", NP(ST->swap_path));
 #endif
-    printf("Help file         : %s\n", ST->helpfile);
-    printf("Command processor : %s\n", ST->comspec);
-    printf("External editor   : %s\n", ST->editorName);
-    printf("QuickBBS path     : %s\n", ST->quickbbs);
+    printf("Help file         : %s\n", NP(ST->helpfile));
+    printf("Command processor : %s\n", NP(ST->comspec));
+    printf("External editor   : %s\n", NP(ST->editorName));
+    printf("QuickBBS path     : %s\n", NP(ST->quickbbs));
     printf("\n");
     printf("Areas                     : %d area%s configured\n", SW->areas, SW->areas == 1 ? "" : "s");
     printf("Generate MSGIDs           : %s\n", SW->msgids ? szYes : szNo);
