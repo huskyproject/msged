@@ -70,6 +70,17 @@ static void fc_add_area(s_area *fc_area, int netmail, int local)
     a.description = xstrdup(fc_area->areaName);
     a.tag = xstrdup(a.description);
     a.path = xstrdup(fc_area->fileName);
+    
+    if (strcmp(fc_area->group, "\060") != 0)
+    {
+      int hash = 0;
+      int i;
+      int sl = strlen(fc_area->group);
+
+      for (i = 0; i < sl; i++) hash = hash + (int) fc_area->group[i];
+
+      a.group = hash;
+    }
 
     if (netmail)
     {
