@@ -342,7 +342,7 @@ char *qtime(time_t now)
 
 /* find_token - returns the token number or -1 if not found */
 
-int find_token(char *token)
+static int find_token(char *token)
 {
     int i;
     i = 0;
