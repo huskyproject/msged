@@ -181,6 +181,8 @@ Fixes:
   misadressed netmail if you had switched zonegating on and wrote netmail
   in other zones than the primary one of the respective netmail area.
 
+- AKA matching for echomail areas deactivated
+
 
 Features, Changes and Fixes in MsgEd TE 05
 ------------------------------------------
