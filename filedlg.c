@@ -50,6 +50,11 @@
 #define getcwd _getcwd
 #endif
 
+#ifdef __WATCOMC__
+#include <sys/types.h>
+#include <direct.h>
+#endif
+
 #include "addr.h"
 #include "config.h"
 #include "nedit.h"
@@ -898,7 +903,7 @@ int FileDialog(char *retpath, const char *title)
     else
     {
                  /* in case retpath does not include a path */
-        strcpy(curdir, homedir); 
+        strcpy(curdir, homedir);
         strcpy(curfile.name, retpath);
         process_fileinput(retpath, curdir);
     }

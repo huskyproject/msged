@@ -1,38 +1,15 @@
-# look for libs in c:\lib
-LIBDIR=..
-
-# install programs in c:\bin
-BINDIR=c:\bin
-
-# look for includes here
-INCDIR=..
-
-# options for installing programs
-IBOPT=-s
-
-# debug?
-DEBUG=0
-
-# use fidoconfig?
-USE_FIDOCONFIG=0
+# Watcom OS/2 makefile
+# No Support for Husky build environment
 
 CC=	wcl386
 
-!IF $(DEBUG) == 1
-CFLAGS= -zq -wx -I$(INCDIR) -d2
-!ELSE
-CFLAGS= -zq -wx -I$(INCDIR)
-!ENDIF
-
-#COPT=  -oneatx -5
-MSGAPI= $(LIBDIR)\smapi\smapiwco.lib
-
-!IF $(USE_FIDOCONFIG) == 1
-CDEFS=  -DOS2 -DUSE_MSGAPI -DUSE_FIDOCONFIG
-FIDOCFG= $(LIBDIR)\fidoconf\fconfwcw.lib
-!ELSE
+CSWITCH= -zq -wx -I.. -bt=os2v2
+COPT=-oneatx -5
+MSGAPI= ..\smapi\smapiwco.lib
 CDEFS=  -DOS2 -DUSE_MSGAPI
-!ENDIF
+
+CFLAGS=$(CDEFS) $(COPT) $(CSWITCH)
+LFLAGS=-l=os2v2
 
 TARGET=	msgedp.exe
 
@@ -94,10 +71,10 @@ objs=	addr.obj     &
 all: $(TARGET)
 
 .c.obj:
-	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
+	$(CC) $(CFLAGS) -c $<
 
 $(TARGET): $(objs)
-	$(CC) $(COPT) -fe=$(TARGET) $(objs) $(MSGAPI)
+	$(CC) $(LFLAGS) -fe=$(TARGET) $(objs) $(MSGAPI)
 
 clean:
 	del *.obj
@@ -106,6 +83,4 @@ clean:
 distclean: clean
 	del $(TARGET)
 
-install: $(TARGET)
-	copy $(TARGET) $(BINDIR)
 

@@ -13,8 +13,10 @@
 #include <assert.h>
 #include <ctype.h>
 
+#if 0
 #if defined(__WATCOMC__)
 #include <wtypes.h>
+#endif
 #endif
 
 #include "dirute.h"
@@ -240,7 +242,7 @@ int dir_findfirst(char *filename, int attribute, struct _dta *dta)
     }
 
     dwFileAttributes = attribute;
-    
+
     hDirA = FindFirstFile(filename, &InfoBuf);
     return dir_find_common(dta);
 }
@@ -262,7 +264,7 @@ static int dir_find_common(struct _dta *dta)
 {
     while (hDirA != INVALID_HANDLE_VALUE)
     {
-        if (!(InfoBuf.dwFileAttributes & 
+        if (!(InfoBuf.dwFileAttributes &
               (~(dwFileAttributes | DIR_ARCHVD))))
         {
             if (strlen(InfoBuf.cFileName) < sizeof(dta->name))
@@ -524,7 +526,7 @@ int dir_findnext(struct _dta *dta)
 
 #if (defined(__unix__) || defined(unix)) && !defined(USG)
 #include <sys/param.h>          /* used to differentiate BSD from SYSV  */
-#endif                                
+#endif
 
 
 static DIR *dir;
@@ -545,12 +547,12 @@ static int match(const char *name, const char *pattern, int attribute,
     {
         matpattern = strdup(pattern);
         matname = strdup(name);
-        
+
         if (matpattern == NULL || matname == NULL)
         {
             return 0;
         }
-        
+
         if (attribute & DIR_ICASE)
         {
             for (cp=matpattern; *cp; cp++)
@@ -564,7 +566,7 @@ static int match(const char *name, const char *pattern, int attribute,
         }
 
         rc = patmat(matname, matpattern);
-        
+
         free(matname);
         free(matpattern);
     }
@@ -599,7 +601,7 @@ static int match(const char *name, const char *pattern, int attribute,
     return 0;
 
 }
-    
+
 
 int dir_findfirst(char *filename, int attribute, struct _dta *dta)
 {
@@ -651,7 +653,7 @@ int dir_findfirst(char *filename, int attribute, struct _dta *dta)
             dir = NULL;
             return -1;
         }
-        
+
         if (match(de->d_name, lastbit,
                   attribute, sb.st_mode, access(fullname, W_OK)))
         {
@@ -700,7 +702,7 @@ int dir_findnext(struct _dta *dta)
             dir = NULL;
             return -1;
         }
-        
+
         if (match(de->d_name, lastbit, ff_attribute,
                   sb.st_mode, access(fullname, W_OK)))
         {
@@ -905,7 +907,7 @@ static int cache_find_cmp(const void *a, const void *b)
 {
     return stricmp((const char *)a, current_cache+(*((const size_t *)b)));
 }
-  
+
 /* #define TRACECACHE */
 
 #ifdef BSD
@@ -926,14 +928,14 @@ void adaptcase(char *pathname)
 #ifdef TRACECACHE
     FILE *ftrc;
 #endif
-    
+
     if (!*pathname)
         return;
 #ifdef TRACECACHE
     ftrc = fopen ("trace.log", "a");
     fprintf(ftrc, "--Query: %s\n", pathname);
-#endif    
-    
+#endif
+
     if (adaptcase_cache_position == -1)
     {
         /* initialise the cache */
@@ -941,7 +943,7 @@ void adaptcase(char *pathname)
                sizeof(struct adaptcase_cache_entry));
         adaptcase_cache_position = 0;
     }
-    
+
     k = strlen(pathname);
     if (k > 2)
     {
@@ -951,7 +953,7 @@ void adaptcase(char *pathname)
     {
         k = 0;
     }
-    
+
     j = 0; i = 0;
 
 
@@ -965,13 +967,13 @@ start_over:
             if (adaptcase_cache[l].query != NULL)
             {
                 if ((!memcmp(adaptcase_cache[l].query,pathname,k)) &&
-                    (adaptcase_cache[l].query[k] == '\0'))                                                  
+                    (adaptcase_cache[l].query[k] == '\0'))
                 {
                     /* cache hit for the directory */
 #ifdef TRACECACHE
                     fprintf (ftrc, "Cache hit for Dir: %s\n",
                              adaptcase_cache[l].result);
-#endif                   
+#endif
                     memcpy(buf, adaptcase_cache[l].result, k);
                     buf[k] = '/';
                     current_cache=adaptcase_cache[l].raw_cache;
@@ -984,7 +986,7 @@ start_over:
                     {
 #ifdef TRACECACHE
                         fprintf (ftrc, "Cache miss for file.\n");
-#endif                   
+#endif
 
                         /* file does not exist - convert to lower c. */
                         for (n = k + 1; pathname[n-1]; n++)
@@ -995,7 +997,7 @@ start_over:
 #ifdef TRACECACHE
                         fprintf(ftrc, "Return: %s\n", pathname);
                         fclose(ftrc);
-#endif    
+#endif
                         return;
                     }
                     else
@@ -1003,7 +1005,7 @@ start_over:
 #ifdef TRACECACHE
                         fprintf (ftrc, "Cache hit for file: %s\n",
                                  adaptcase_cache[l].raw_cache+(*m));
-#endif                   
+#endif
 
                         /* file does exist = cache hit for the file */
                         for (n = k + 1; pathname[n-1]; n++)
@@ -1026,19 +1028,19 @@ start_over:
 
 #ifdef TRACECACHE
         fprintf (ftrc, "Cache miss for directory.\n");
-#endif                   
+#endif
 
 
         /* no hit for the directory */
         addresult = 1;
     }
 
-               
+
     while (pathname[i])
     {
         if (pathname[i] == '/')
         {
-            buf[i] = pathname[i]; 
+            buf[i] = pathname[i];
             if (addresult && i == k)
             {
                 goto add_to_cache;
@@ -1052,7 +1054,7 @@ cache_failure:
             {
                 fprintf (ftrc, "Error opening directory %s\n", buf);
             }
-#endif            
+#endif
         }
         else
         {
@@ -1063,7 +1065,7 @@ cache_failure:
             {
                 fprintf (ftrc, "Error opening directory ./\n");
             }
-#endif            
+#endif
         }
 
         j = i;
@@ -1079,7 +1081,7 @@ cache_failure:
                 if (!strcasecmp(dp->d_name, buf + j))
                 {
                     /* file exists, take over it's name */
-            
+
                     assert(i - j == DIRENTLEN(dp));
                     memcpy(buf + j, dp->d_name, DIRENTLEN(dp) + 1);
                     closedir(dirp);
@@ -1093,7 +1095,7 @@ cache_failure:
         {
             /* file does not exist - so the rest is brand new and
                should be converted to lower case */
-            
+
             for (i = j; pathname[i]; i++)
                 buf[i] = tolower(pathname[i]);
             buf[i] = '\0';
@@ -1138,7 +1140,7 @@ add_to_cache:
 
         adaptcase_cache[l].n = 0;
         raw_high = 0;
-        
+
         c = buf[k]; buf[k] = '\0';
         if ((dirp = opendir(buf)) == NULL)
         {
@@ -1158,7 +1160,7 @@ add_to_cache:
                     goto cache_error;
                 }
             }
-           
+
             if (adaptcase_cache[l].n == nmax - 1)
             {
                 if ((adaptcase_cache[l].cache_index =
@@ -1184,12 +1186,12 @@ add_to_cache:
         adaptcase_cache[l].query[k] = '\0';
         memcpy(adaptcase_cache[l].result, buf, k);
         adaptcase_cache[l].result[k] = '\0';
-        
+
         adaptcase_cache_position = l;
 
 #ifdef TRACECACHE
         fprintf  (ftrc, "Sucessfully added cache entry.\n");
-#endif        
+#endif
         goto start_over;
 
     cache_error:
@@ -1219,11 +1221,11 @@ add_to_cache:
         }
 #ifdef TRACECACHE
         fprintf  (ftrc, "Error in building cache entry.\n");
-#endif        
+#endif
         addresult = 0;
         goto cache_failure;
     }
-        
+
 #ifdef TRACECACHE
     fprintf(ftrc, "Return: %s\n", pathname);
     fclose(ftrc);
@@ -1231,7 +1233,7 @@ add_to_cache:
     strcpy(pathname, buf);
     return;
 }
-#endif  
+#endif
 
 #if defined (TEST)
 int main(int argc, char **argv)
