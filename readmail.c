@@ -149,7 +149,7 @@ msg *readmsg(unsigned long n)
     char tmp[128];
     int goteot = 0;
     int gotsot = 0;
-    LOOKUPTABLE *ltable = get_readtable("ASCII", 2);
+    LOOKUPTABLE *ltable = NULL;
     int fmpt, topt;
 
     l = NULL;
@@ -165,8 +165,18 @@ msg *readmsg(unsigned long n)
 
     stripSoft = 1;
     m->replyarea = NULL;
-    m->charset_name = NULL;
-    m->charset_level = 0;
+    if (ST->input_charset != NULL)
+    {
+        m->charset_name = xstrdup(ST->input_charset);
+        m->charset_level = 2;
+        ltable = get_readtable(ST->input_charset, 2);
+    }
+    else
+    {
+        m->charset_name = NULL;
+        m->charset_level = 0;
+        ltable = get_readtable("ASCII", 2);
+    }
 
     while ((text = MsgReadText(n)) != NULL)
     {
@@ -573,9 +583,12 @@ msg *readmsg(unsigned long n)
 
             l->block = 0;
             if (!read_verbatim)
-            {   /* character set translation: import to local  charset */
+            {
+                /* character set translation: import to local  charset */
                 l->text = translate_text(text, ltable);
-            } else
+                strip_control_chars(l->text);
+            }
+            else
             {
                 l->text = xstrdup(text);
             }
@@ -1804,6 +1817,14 @@ int writemsg(msg * m)
 
     if (!m->rawcopy)
     {
+        if (SW->usetearlines && SW->useoriginlines &&
+            *curr->text != '\r' && CurArea.echomail)
+        {
+            strcpy(text, "\r");
+            curr = InsertAfter(curr, text);
+            xblank = curr;
+        }
+
         if (SW->soteot)
         {
             strcpy(text, "\01EOT:\r");
@@ -1824,13 +1845,6 @@ int writemsg(msg * m)
 
         if (CurArea.echomail)
         {
-            if (SW->usetearlines && SW->useoriginlines && *curr->text != '\r')
-            {
-                strcpy(text, "\r");
-                curr = InsertAfter(curr, text);
-                xblank = curr;
-            }
-
             if (SW->usetearlines)
             {
                 /* add the tearline */
