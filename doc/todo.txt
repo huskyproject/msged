@@ -4,6 +4,16 @@ TODO-List for Msged
 Category 1: Will certainly be implemented until next release
 ============================================================
 
+Bugfixes:
+
+- Fix display on FreeBSD syscons
+- Fix Filename import dialog box.  Problems when entering "C:\" (does not
+  change, but exit), and also selecting directory entries sometimes leads
+  to strange results.
+- When deleting messages in list mode, in some situations the "x of y done"
+  dialog is not updated, but stays where it is.
+
+
 Category 2: Might be implemented, but volunteers are always very welcome!
 =========================================================================
 
