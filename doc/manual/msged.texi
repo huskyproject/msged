@@ -245,8 +245,8 @@ files, charset kludge lines, codepages, and character set recoding.
 
 @item
 Rename the file @file{sample.cfg} to @file{msged.cfg} and modify it according
-to your needs with your favoruite text editor. 
-@xref{Configuration Reference,,Configuration Reference}
+to your needs with your favoruite text editor.
+@xref{Configuration Reference,,Configuration Reference},
 for detailed descriptions of each keyword that can be used in this file.
 
 @item
@@ -442,7 +442,7 @@ lines, and character set recoding.
 @item
 Modify the configuration file @file{~/.msged} with your favourite text editor
 according to your needs.
-@xref{Configuration Reference,,Configuration Reference} for detailed
+@xref{Configuration Reference,,Configuration Reference}, for detailed
 descriptions of each keyword that can be used in this file.
 
 @item

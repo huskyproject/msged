@@ -1557,7 +1557,7 @@ int writemsg(msg * m)
     char *uucp_to;              /* saved UUCP to address */
     int domain_gated, uucp_gated;
     char *s;
-    int i, abortWrite, got_origin, got_tear;
+    int i, abortWrite, got_origin, got_tear, ctrl;
     static unsigned long now = 0L;
     LOOKUPTABLE *ltable = NULL;
     int write_chrs_kludge;
@@ -1566,6 +1566,7 @@ int writemsg(msg * m)
     domain_gated = 0;
     uucp_gated = 0;
     length = 0;
+    ctrl = 1;
     n = m->msgnum;
     curr = NULL;
     uto = NULL;
@@ -2046,7 +2047,14 @@ int writemsg(msg * m)
     l = m->text;
     while (l)
     {
-	length += strlen(l->text);
+        if (*(l->text) != '\01')
+	{
+	    ctrl = 0;
+	}
+	if (!ctrl)
+	{
+            length += strlen(l->text);
+	}
 	l = l->next;
     }
 

@@ -192,6 +192,11 @@ Features:
 
 Fixes:
 
+- The message body length that Msged was reporting to the Squish API was
+  longer than necessary.  This caused space waste and could also confuse
+  other programs that read from the Squish base (though no real-life
+  programs that have problems with this are known to me).
+
 - Fixed the "PrivateNet" feature.
 
 - Fixed the SoftCRXlat translation method to work on the transport charset

@@ -35,6 +35,7 @@ maps: 	makemaps$(EXE) readmaps.437 readmaps.850 readmaps.866 readmaps.koi readma
 	readmaps.is1 readmaps.is5
 
 readmaps.437:
+	-echo "DO NOT WORRY ABOUT WARNINGS ABOUT no matching charset!"
 	./makemaps$(EXE) CP437 $(allmaps)
 	-$(RM) writmaps.437
 	-$(RM) readmaps.437
