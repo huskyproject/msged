@@ -10,6 +10,7 @@
  */
 
 #include <time.h>
+#include <stdlib.h>             /* NULL */
 #include "timezone.h"
                                 /* guess our time zone */
 int tz_my_offset(void)
@@ -23,7 +24,7 @@ int tz_my_offset(void)
     tzset();
 
     now = time(NULL);
-    
+
     tm = localtime(&now);
     local_minutes = tm->tm_hour * 60 + tm->tm_min;
     local_days = (long)tm->tm_year * 366L + (long)tm->tm_yday;
@@ -40,7 +41,7 @@ int tz_my_offset(void)
     {
         gm_minutes += 1440;
     }
-    
+
     return local_minutes - gm_minutes;
 }
 
@@ -53,13 +54,13 @@ void adjust_date (struct _stamp *pdate, int offset)
     int minutes = pdate->time.mm * 60 + pdate->time.hh;
 
     minutes += offset;
-    
+
     while (minutes >= 24 * 60)
     {
         day++; /* not yet implemented */
         minutes -= 24 * 60;
     }
-    
+
     while (minutes < 0)
     {
         day--; /* not yet implemented */
