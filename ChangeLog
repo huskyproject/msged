@@ -1,3 +1,8 @@
+2002-11-05 Tuesday 13:40  mche
+
+	* strextra.c (1.5), strextra.h (1.5): first attempt of making msged
+	compilable with MSVC correct me if i was wrong
+
 2002-11-04 Monday 21:38  os2tobi
 
 	* msg.c (1.25): use .jlr for lastread pointers for jam instead of
