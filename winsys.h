@@ -241,4 +241,7 @@ void PopHotGroup(void);
 int LocateHotItem(int x, int y, unsigned long wid);
 unsigned int MnuGetMsg(EVT * event, unsigned long wid);
 
+extern int wnd_suppress_shadows;
+extern int wnd_force_monochrome;
+
 #endif

@@ -40,9 +40,16 @@
 unsigned char Dbdr[6] = {SC1, SC2, SC3, SC4, SC5, SC6};
 unsigned char Sbdr[6] = {SC7, SC8, SC9, SC10, SC11, SC12};
 
-int FillChr = SC13;        /* fill char for fields */
-unsigned long wndid = 20;  /* unique window ID */
-WND *CW = NULL;            /* current window */
+int wnd_suppress_shadows = 0; /* do not suppress window shadows */
+#ifdef UNIX
+int wnd_force_monochrome = 1;
+#else
+int wnd_force_monochrome = 0; /* do not enforce monochrome output */
+#endif
+
+int FillChr = SC13;           /* fill char for fields */
+unsigned long wndid = 20;     /* unique window ID */
+WND *CW = NULL;               /* current window */
 
 static void WDrwBox(int x1, int y1, int x2, int y2, unsigned char *Bdrc, int Battr, int ins);
 
@@ -79,6 +86,11 @@ WND *WndOpen(int x1, int y1, int x2, int y2, int Bdr, int BAttr, int Attr)
     if (w == NULL)
     {
         return NULL;
+    }
+
+    if (wnd_suppress_shadows)
+    {
+        Bdr = Bdr & (~SHADOW);
     }
 
     w->wid = ++wndid;
