@@ -662,14 +662,6 @@ char *attrib_line(msg * m, msg * old, int olda, char *format)
             t = work + strlen(work);
             format += 3;
         }
-        else if (*format == '\\')
-        {
-            if (*(++format) == 'n')
-            {
-                *t++ = '\n';
-            }
-            format++;
-        }
         else
         {
             *t++ = *format++;
