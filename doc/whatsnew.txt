@@ -209,6 +209,9 @@ Features:
 
 Fixes:
 
+- "xc:" crossposting now also works when editing a message, not only when
+  creating a new message.
+
 - Fixes for treatment of High-ASCII characters, in message list and on
   text import/export.
 

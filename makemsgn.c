@@ -1772,10 +1772,15 @@ void save(msg * m)
     current = m->text;
     do_lookup = TRUE;
 
-    if (m->new)
+/*    if (m->new) */
     {
         if (!strncmpi(current->text, "xc:", 3) && !CurArea.netmail)
         {
+            if (m == message)
+            {
+                message = NULL;
+                scan_base = 1;
+            }
             crosspost(m);
             return;
         }
@@ -2153,7 +2158,6 @@ static void crosspost(msg * m)
         }
     }
 
-    m->new = 1;
     i = 0;
     while (arean[i] != NULL)
     {
@@ -2181,7 +2185,16 @@ static void crosspost(msg * m)
 
         if (CurArea.status)
         {
-            m->msgnum = MsgnToUid(CurArea.messages) + 1;
+            if (i > 0)
+            {
+                m->new = 1;
+            }
+
+            if (m->new)
+            {
+                m->msgnum = MsgnToUid(CurArea.messages) + 1;
+            }
+                
             if (strncmpi(s, "cc:", 3) == 0)
             {
                 save(m);
