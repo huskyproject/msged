@@ -60,7 +60,13 @@ distclean: clean
 msged.inf: msged.texi clean
 	texi2i msged.texi
 
+ifdef INFODIR
 install: info
 	-$(MKDIR) $(MKDIROPT) $(INFODIR)
-	$(INSTALL)  msged.info $(INFODIR)
+	$(INSTALL) msged.info $(INFODIR)
 	install-info --info-dir=$(INFODIR)  $(INFODIR)$(DIRSEP)msged.info
+else
+install:
+	@echo
+endif
+
