@@ -91,6 +91,23 @@ static unsigned long setDefaultDisk(unsigned short x);
 
 static int changeDir(char *path);
 
+char *do_softcrxlat(char *ptr)
+{
+    char *p;
+
+    if (softcrxlat)
+    {
+        p = strchr(line, 0x8d);
+        while (p != NULL)
+        {
+            *p++ = softcrxlat;
+            p = strchr(p, 0x8d);
+        }
+    }
+
+    return ptr;
+}
+
 LINE *clearbuffer(LINE * buffer)
 {
     LINE *curline;
@@ -2024,12 +2041,15 @@ int writemsg(msg * m)
         char *tmp;
 
         tmp = translate_text(m->isfrom, ltable);
+        do_softcrxlat(tmp);
         release(m->isfrom); m->isfrom = tmp;
 
         tmp = translate_text(m->isto, ltable);
+        do_softcrxlat(tmp);
         release(m->isto); m->isto = tmp;
 
         tmp = translate_text(m->subj, ltable);
+        do_softcrxlat(tmp);
         release(m->subj); m->subj = tmp;
     }
 
@@ -2057,6 +2077,7 @@ int writemsg(msg * m)
 		if (!m->rawcopy)
 		{
 		    temptext = translate_text(l->text, ltable);
+                    do_softcrxlat(temptext);
 		    /* output CHRS translation */
 		}
 		else

@@ -982,10 +982,9 @@ static void insert_char(char ch)
 
     TTBeginOutput();
 
-    if ((unsigned char)ch == 0x8d && softcrxlat)
-    {
-        ch = softcrxlat;
-    }
+    /* softcrxlat functionality moved to readmail.c, because it should take
+       place in the transport charset layer, not in the local charset
+       layer */
 
     if (insert == 0 && line_buf[x - 1] != '\n')
     {

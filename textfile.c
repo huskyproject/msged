@@ -182,16 +182,9 @@ void import(LINE * l)
                 n = l;
             }
 
-            if (softcrxlat)
-            {
-                char *p;
-                p = strchr(line, 0x8d);
-                while (p != NULL)
-                {
-                    *p++ = softcrxlat;
-                    p = strchr(p, 0x8d);
-                }
-            }
+            /* softcrxlat functionality moved to readmail.c, because it
+               should take place in the transport charset, not in the
+               local charset! */
 
             n->text = strdup(line);
             if (strlen(n->text) > (size_t) SW->rm)

@@ -111,7 +111,7 @@ unsigned int *macros[41];       /* function key macros + 1 for autostart */
 int maxx;                       /* maximum screen columns */
 int maxy;                       /* maximum screen rows */
 int rot13;
-int stripSoft;
+int stripSoft = 0;
 int softcrxlat = 0;
 
 #ifndef READMAPSDAT

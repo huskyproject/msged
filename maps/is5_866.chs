@@ -1,4 +1,4 @@
-; This module Converts ISO8859-5 to CP866
+; This module converts ISO8859-5 to CP866
 0               ; ID number
 0               ; version number
 ;

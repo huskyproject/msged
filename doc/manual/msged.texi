@@ -2238,7 +2238,7 @@ are generally case-insensitive.
 * Right::                       Selecting the right margin for message display.
 * RobotName::                   Do not use templates for Areafix mails :-)
 * Scan::                        Enabling auto-scan on program startup.
-* SoftCrXlat::                  
+* SoftCrXlat::                  How to treat code 0x8D (e.g. cyrillic En).
 * SortAreas::                   Sort message areas by name or group.
 * Squish::                      Specifying a Squish format mail area.
 * SwapPath::                    DOS users need this @dots{}
@@ -3317,18 +3317,65 @@ message areas on startup.
 @findex SoftCrXlat
 @table @asis
 @item Syntax:
-@code{SoftCrXlat @var{character}}
+@code{SoftCrXlat @var{ascii-code}}
 @item Example:
-@code{SoftCrXlat 0x48}
+@code{SoftCrXlat 72}
 @end table
 
-This configures @value{MSGED} to replace the "soft carriage return" character
-(0x8d) with the @var{character} specified as argument to the
-@code{SoftCrXlat} keyword when you compose a message or import a file into
-the internal editor.  @var{character} specifies the ASCII character with
-which to replace, and should be a numeric value between 1 and 255
-(decimal). For example, CodePage 866 (Russian) uses SoftCR as letter "H", so
-Russian users should define: @samp{SoftCrXlat 0x48}.
+Fidonet, historically, has a problem with the character with ASCII code 142
+(0x8D). The FTS 0001 document says the following about this code:
+
+@quotation
+So   called  'soft'  carriage  returns,  8DH,  may  mark  a   previous
+processor's  automatic line wrap, and should be ignored.
+@end quotation
+
+Despite of the fact that I do not know any single mail editor which adds
+stray 0x8D characters into a mail, without the SoftCrXlat keyword,
+@value{MSGED} behaves exactly like this: It ignores any 0x8D that it finds in
+a message, i.E. it simply does not display it.
+
+This may be a problem for you because some languages need to use that
+character. For example, in codepage 866, this code represents the cyrillic
+big en, or in codepage 437, it is an i with accent grave.
+
+Specifying the SoftCrXlat keyword changes the behaviour of @value{MSGED} in
+two ways. First, as soon as this keyword is present and has a non-zero
+numerical argument, Msged will no longer ignore any 0x8D character in the
+input, but display it as a normal letter. So if other people use those
+characters in their mails, you will be able to see them.
+
+Second, if you yourself type a character which, in the transport character
+set that you have chosen (@pxref{OutputCharset,,The OutputCharset Keyword}),
+would result in a character with hex code 0x8D, it will be replaced with the
+character that has the ASCII code which is specified as argument when the
+message is being saved. In the example above, any 0x8D would be replaced with
+a character with code 72, which is the latin big H. This would be the ideal
+setting for a user in Russia, who has to use codepage 866 as transport
+character set, because the latin big H looks exactly like the cyrillic big
+en.
+
+So a Russian user who specifies "SoftCrXLat 72" will be able to see any big
+en character that other users write, and any big en character that he writes
+will be replaced with it's low-ASCII-look alike, thus avoiding problems at
+other message readers.
+
+Now suppose that you don't want to translate the 0x8D character 
+to any other value. If your language uses the i with accent grave, for
+example, there is no other equivalent of this character, so you could only
+change it to an i without accent grave, which you might not like. In this
+case, you can also instruct @value{MSGED} to keep the 0x8D character as is,
+by setting @code{SoftCrXlat 141} (141 is the decimal representation of
+0x8D). With @code{SoftCrXlat 141}, the 0x8d character becomes an ordinary
+character for @value{MSGED}, i.E. it does not behave different to any other
+character any more. 
+
+However, be aware of the fact that this might cause problems on other systems
+that behave according to FTS 0001 and ignore any 0x8D characters. Another
+option specifically for the language that needs the i with accent grave would
+of course be not to use codepage 437 or 850 as transport character set, but
+to use Latin-1 (ISO 8859-1). In this charset, all printable characters are at
+non-critical positions.
 
 @node SortAreas, Squish, SoftCrXlat, Keywords
 @subsection SortAreas

@@ -180,6 +180,11 @@ Features:
 
 Fixes:
 
+- Fixed the SoftCRXlat translation method to work on the transport charset
+  instead of the local charset. This affects specifically the problem with 
+  the cyrillic big en ("H"). Please refer to the entry for the keyword
+  "SoftCRXlat" in the updated Msged manual.
+
 - The OS/2 version now also allows entry of the "cyrillic small er" letter
   (scan code 0xe0) in codepage 866.
 
