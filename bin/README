@@ -1,0 +1,20 @@
+The subdirectories of this directory contain character set translation tables
+that enable FSC 0054 CHRS support for MsgEd TE.
+
+For the DOS, OS/2 and Windows versions, simply copy the "readmaps.dat" and
+"writmaps.dat" file from the "ibmpc" subdirectory into the path where the
+MsgEd TE executable resides.
+
+If your OS/2, DOS or Windows machine is using codepage 850 instead of
+codepage 437, you can use readmaps.dat and writmaps.dat from the "cp850"
+subdirectory instead, but you should really consider switching to codepage 437.
+You can find out the codepage that your are using by issueing the CHCP command.
+
+For a Linux/Unix machine that uses ISO 8859-1 (any Unix machine
+should do so!), the "readmaps.dat" file from the "latin"
+subdirectory must be renamed and moved to "~/.msged.readmaps" and
+the "writmaps.dat" file from the "latin" subdirectory must be
+renamed and moved to "~/.msged.writmaps".  For a Linux machine that
+is misconfigured and uses codepage 437 or 850, use the files from
+the "ibmpc" "or "cp850" subdirectory instead.
+
