@@ -1211,14 +1211,14 @@ void AddArea(AREA * a)
     {
         converted_path = xmalloc((l = strlen(a->path)) + 5);
         memcpy(converted_path, a->path, l + 1);
+        kill_trail_slash(converted_path);
         if (a->msgtype == SQUISH)
         {
             /* we add the .sqd temporarily so that the case
                adaption on Unix works correctly, because it can
                only work if an existing file is referenced */
-            strcpy(converted_path + l, ".sqd");
+            strcat(converted_path, ".sqd");
         }
-        kill_trail_slash(converted_path);
         converted_path = pathcvt(converted_path);
         if (a->msgtype == SQUISH && (l=strlen(converted_path)) > 4)
         {
@@ -3311,10 +3311,12 @@ static void parseconfig(FILE * fp)
 
 void show_debuginfo(int macro_count)
 {
+    int i;
     char *szYes = "Yes";
     char *szNo = "No";
 
     MouseOFF();
+    TTclose();
 
     printf(
       "\n"
@@ -3380,6 +3382,15 @@ void show_debuginfo(int macro_count)
     printf("Generate netmail Via      : %s\n", SW->netmailvia ? szYes : szNo);
     printf("Domain in origin line     : %s\n", SW->domainorigin ? szYes : szNo);
     printf("Key right to next unread  : %s\n", SW->rightnextunreadarea ? szYes : szNo);
+
+    printf("-------------------------------------------------------------------------------\n");
+    for (i = 0; i < SW->areas; i++)
+    {
+        printf("%s: %s (%s)\n", arealist[i].tag, arealist[i].path,
+               (arealist[i].msgtype == SQUISH) ? "squish" :
+               (arealist[i].msgtype == QUICK) ? "hudson" :
+               (arealist[i].msgtype == FIDO) ? "fido" : "other");
+    }
 
     exit(0);
 }
