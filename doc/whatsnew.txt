@@ -6,6 +6,9 @@ Features, Changes and Fixes in Msged TE 6.0.1
 
 Fixes:
 
+- Fixed handling of CHARSET kludge and of CHRS kludge without "level".  Level
+  2 is now assumed as default.
+
 - In template text in forwarded and redirected messages, the areatag was
   filled in incorrectly if the area grouping feature (group separators
   etc.) was used.

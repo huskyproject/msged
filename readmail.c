@@ -298,15 +298,22 @@ msg *readmsg(unsigned long n)
 		parse_tokens(tmp, tokens, 2);
 		if (!tokens[1])
 		{
-		    break;
+                    clevel = 2;
+                       /* Assume level 2 as default. The CHARSET kludge has no
+                          level at all, and some broken message readers omit
+                          the level also for the CHRS kludge. */
 		}
+                else
+                {
+                    clevel = atoi(tokens[1]);
+                }
 
-                if ( have_readtable(tokens[0], atoi(tokens[1])) ||
+                if ( have_readtable(tokens[0], clevel)) ||
                      ST->input_charset == NULL /* user wants no assumptions */)
                 {
                     release(m->charset_name);
                     m->charset_name  = xstrdup(tokens[0]);
-                    m->charset_level = atoi(tokens[1]);
+                    m->charset_level = clevel;
                     ltable = get_readtable(m->charset_name,
                                            m->charset_level);
                 }
