@@ -369,7 +369,6 @@ void export_text(msg *mesg, LINE *line)
         else
         {
             f = fopen(fn, "w");
-            break;
         }
 
         if (f == NULL)
