@@ -282,6 +282,7 @@ struct _sv
     char *userlist;             /* personal user list */
     char *origin;               /* origin line */
     char *outfile;              /* default export filename */
+    char *infile;               /* default import filename */
     char *home;                 /* home directory */
     char *lastread;             /* name of the lastread file */
     char *cfgfile;              /* name of the config file */
