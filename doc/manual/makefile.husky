@@ -61,5 +61,6 @@ msged.inf: msged.texi clean
 	texi2i msged.texi
 
 install: info
+	-$(MKDIR) $(MKDIROPT) $(INFODIR)
 	$(INSTALL)  msged.info $(INFODIR)
 	install-info --info-dir=$(INFODIR)  $(INFODIR)$(DIRSEP)msged.info

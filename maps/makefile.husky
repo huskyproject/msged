@@ -31,53 +31,53 @@ CDEFS=$(ADDCDEFS)
 makemaps$(EXE): makemaps$(OBJ)
 	$(CC) $(LFLAGS) -o makemaps$(EXE) makemaps$(OBJ)
 
-maps: 	readmaps.437 readmaps.850 readmaps.866 readmaps.koi readmaps.ukr \
+maps: 	makemaps$(EXE) readmaps.437 readmaps.850 readmaps.866 readmaps.koi readmaps.ukr \
 	readmaps.is1 readmaps.is5
 
 readmaps.437:
-	makemaps$(EXE) CP437 $(allmaps)
+	./makemaps$(EXE) CP437 $(allmaps)
 	-$(RM) writmaps.437
 	-$(RM) readmaps.437
 	$(MV) writmaps.dat writmaps.437
 	$(MV) readmaps.dat readmaps.437
 
 readmaps.850:
-	makemaps$(EXE) CP850 $(allmaps)
+	./makemaps$(EXE) CP850 $(allmaps)
 	-$(RM) writmaps.850
 	-$(RM) readmaps.850
 	$(MV) writmaps.dat writmaps.850
 	$(MV) readmaps.dat readmaps.850
 
 readmaps.866:
-	makemaps$(EXE) CP866 $(allmaps)
+	./makemaps$(EXE) CP866 $(allmaps)
 	-$(RM) writmaps.866
 	-$(RM) readmaps.866
 	$(MV) writmaps.dat writmaps.866
 	$(MV) readmaps.dat readmaps.866
 
 readmaps.koi:
-	makemaps$(EXE) KOI8-R $(allmaps)
+	./makemaps$(EXE) KOI8-R $(allmaps)
 	-$(RM) writmaps.koi
 	-$(RM) readmaps.koi
 	$(MV) writmaps.dat writmaps.koi
 	$(MV) readmaps.dat readmaps.koi
 
 readmaps.ukr:
-	makemaps$(EXE) CP1125 $(allmaps)
+	./makemaps$(EXE) CP1125 $(allmaps)
 	-$(RM) writmaps.ukr
 	-$(RM) readmaps.ukr
 	$(MV) writmaps.dat writmaps.ukr
 	$(MV) readmaps.dat readmaps.ukr
 
 readmaps.is1:
-	makemaps$(EXE) LATIN-1 $(allmaps)
+	./makemaps$(EXE) LATIN-1 $(allmaps)
 	-$(RM) writmaps.is1
 	-$(RM) readmaps.is1
 	$(MV) writmaps.dat writmaps.is1
 	$(MV) readmaps.dat readmaps.is1
 
 readmaps.is5:
-	makemaps$(EXE) ISO-5 $(allmaps)
+	./makemaps$(EXE) ISO-5 $(allmaps)
 	-$(RM) writmaps.is5
 	-$(RM) readmaps.is5
 	$(MV) writmaps.dat writmaps.is5
@@ -91,6 +91,7 @@ distclean: clean
 	-$(RM) writmaps.*
 
 install: maps
+	-$(MKDIR) $(MKDIROPT) $(CFGDIR)
 	$(INSTALL) $(IIOPT) readmaps.437 $(CFGDIR)
 	$(INSTALL) $(IIOPT) readmaps.850 $(CFGDIR)
 	$(INSTALL) $(IIOPT) readmaps.866 $(CFGDIR)
