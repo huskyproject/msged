@@ -199,9 +199,12 @@ void group_build_arealist(void)
                 (groupno != 0   ||  /* we display only a single group, so a
                                        separator is allowed as group "title"
                                        header - otherwise ... */
-                 ST->sort_criteria[0] == 'g' || /* separators only work when */
-                 ST->sort_criteria[0] == 'G')   /* alist is sorted by group */
+		 (ST->sort_criteria && (
+                  ST->sort_criteria[0] == 'g' || /* separators only work when */
+                  ST->sort_criteria[0] == 'G')   /* alist is sorted by group */
+                 )   
                 )
+               )
             {
                 lastgroup = arealist[i].group;
                 grouparealist[SW->groupareas] = -lastgroup;
