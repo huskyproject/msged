@@ -1,0 +1,85 @@
+# Makefile for IBM CSet on OS/2
+
+CC=     icc
+CFLAGS= -Sp1 -W2 -Q
+CDEFS=  -DOS2 -DUSE_MSGAPI
+#COPT=  -O
+MSGDIR= ..\smapi
+
+TARGET=	msgedp.exe
+default: $(TARGET)
+MSGAPI=	$(MSGDIR)\smapiibo.lib
+
+objs1=	addr.obj     \
+	areas.obj    \
+	bmg.obj      \
+	charset.obj  \
+	config.obj   \
+	control.obj  \
+	date.obj     \
+	dialogs.obj  \
+	dirute.obj   \
+	dlgbox.obj   \
+	dlist.obj    \
+	echotoss.obj 
+objs2=	environ.obj  \
+	fido.obj     \
+	freq.obj     \
+	getopts.obj  \
+	help.obj     \
+	helpcmp.obj  \
+	helpinfo.obj \
+	init.obj     \
+	keycode.obj  \
+	list.obj     \
+	maintmsg.obj \
+	makemsgn.obj \
+	malloc16.obj \
+	memextra.obj \
+	menu.obj     \
+	misc.obj     
+objs3=	mnu.obj      \
+	msg.obj      \
+	msged.obj    \
+	mxbt.obj     \
+	normalc.obj  \
+	nshow.obj    \
+	os2scr.obj   \
+	quick.obj    \
+	quote.obj    \
+	readmail.obj \
+	screen.obj   \
+	strextra.obj 
+objs4=	system.obj   \
+	template.obj \
+	textfile.obj \
+	userlist.obj \
+	vsev.obj     \
+	vsevops.obj  \
+	win.obj      \
+	wrap.obj
+
+# Thunderbirds are go!
+
+.c.obj:
+	$(CC) $(COPT) $(CFLAGS) $(CDEFS) /I$(MSGDIR) -c $<
+
+icc.cfg: makefile.ibo
+	echo $(COPT) /Fe$(TARGET) /B"/NOE" > icc.cfg
+        echo $(objs1) >> icc.cfg
+        echo $(objs2) >> icc.cfg
+	echo $(objs3) >> icc.cfg
+	echo $(objs4) >> icc.cfg
+        echo $(MSGAPI) >> icc.cfg
+
+
+$(TARGET): $(objs1) $(objs2) $(objs3) $(objs4) icc.cfg
+	icc @icc.cfg
+
+
+
+
+
+
+
+
