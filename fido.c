@@ -96,16 +96,6 @@ int sopen(char *filename, unsigned int access, int flags,...);
 #define OPENC   O_WRONLY | O_BINARY | O_CREAT   /* open/create */
 #define OPENRW  O_RDWR | O_BINARY               /* open read/write */
 
-#if defined(UNIX)                               /* file permissions for creation */
-#define S_IMODE_NETMAIL  S_IRUSR|S_IWUSR
-#define S_IMODE_ECHOMAIL S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH
-#define S_IMODE_LASTREAD S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH
-#define S_IMODE ((CurArea.netmail||CurArea.local)?S_IMODE_NETMAIL:S_IMODE_ECHOMAIL)
-#else /* not UNIX */
-#define S_IMODE S_IREAD|S_IWRITE
-#define S_IMODE_LASTREAD S_IREAD|S_IWRITE
-#endif
-
 /* prototypes */
 
 #include "normal.h"

@@ -134,7 +134,7 @@ long SquishMsgAreaOpen(AREA * a)
     }
 
     sprintf(work, "%s.sql", a->path);
-    sql = sopen(work, O_BINARY | O_RDONLY, SH_DENYNO, S_IWRITE | S_IREAD);
+    sql = sopen(work, O_BINARY | O_RDONLY, SH_DENYNO, S_IMODE);
     if (sql != -1)
     {
 #if defined(PACIFIC) || defined(LATTICE)
@@ -146,7 +146,7 @@ long SquishMsgAreaOpen(AREA * a)
         if (bstat.st_size < SW->useroffset * 4)
         {
             close(sql);
-            sql = sopen(work, O_BINARY | O_RDWR, SH_DENYNO, S_IWRITE | S_IREAD);
+            sql = sopen(work, O_BINARY | O_RDWR, SH_DENYNO, S_IMODE);
             if (sql != -1)
             {
 #if defined(PACIFIC) || defined(LATTICE)
@@ -1065,19 +1065,13 @@ int SquishAreaSetLast(AREA * a)
     {
         sprintf(work, "%s.sql", a->path);
 
-        fd = sopen(work, O_BINARY | O_RDWR, SH_DENYNO, S_IWRITE | S_IREAD);
+        fd = sopen(work, O_BINARY | O_RDWR, SH_DENYNO, S_IMODE);
         if (fd == -1)
         {
             if (errno != EACCES && errno != EMFILE)
             {
-#ifdef UNIX
-                fd = sopen(work, O_BINARY | O_WRONLY | O_CREAT,
-                  SH_DENYNO, 
-                  S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
-#else
-                fd = sopen(work, O_BINARY | O_WRONLY | O_CREAT,
-                  SH_DENYNO, S_IWRITE | S_IREAD);
-#endif
+	        fd = sopen(work, O_BINARY | O_WRONLY | O_CREAT, SH_DENYNO,
+			   S_IMODE);
                 if (fd == -1)
                 {
                     ret = FALSE;
