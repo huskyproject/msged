@@ -1,3 +1,12 @@
+2002-03-05 Tuesday 13:40  joerg.jaspert
+
+	* debian/: changelog (1.4), control (1.4), huskymak.cfg (1.6): New
+	Debian Package
+
+2002-03-05 Tuesday 11:44  joerg.jaspert
+
+	* Makefile (1.16): Removed -ltmalloc -> Breaks Build
+
 2002-03-02 Saturday 10:07  tobi
 
 	* doc/todo.txt (1.31): updated todo
