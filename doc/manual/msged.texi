@@ -56,7 +56,7 @@ Fidonet Message Reader and Editor Software for OS/2, Windows, DOS and Unix.
 @chapter An Overview on @value{MSGED} @value{VERSION}.
 
 @value{MSGED} is a message reader and editor software for Fidonet (and
-compatible) network(s), supporting Squish, Hudson and Fido *.MSG message
+compatible) network(s), supporting Squish, Hudson, Jam and Fido *.MSG message
 bases. This program is released to the public domain.  There are absolutely
 no usage or distribution restrictions. This is truely free software.
 
@@ -169,16 +169,16 @@ GNU info or DVI format.
 @end table
 
 For compiling @value{MSGED}, you also need the @samp{smapi} library, and,
-though now optional, you might also want to use the @samp{fidoconfig
-library}. Both libraries are distributed by the Husky team. The filenames of
+though now optional, you might also want to use the @samp{fidoconfig}
+library. Both libraries are distributed by the Husky team. The filenames of
 the release versions of those libaries that can be used to build
 @value{MSGED} @value{VERSION} are
 
 @table @file
-@item smapi-1.6.4.tar.gz
-Also available as @file{smapi164.zip}.
-@item fidoconf-0.10.tar.gz
-Also available as @file{fconf010.zip}
+@item smapi-1.6.4-src.tar.gz
+Also available as @file{smapi-1.6.4-src.zip}.
+@item fidoconf-0.10-src.tar.gz
+Also available as @file{fidoconf-0.10-src.zip}
 @end table
 
 @emph{Attention:} Most of these ZIP-files contain subdirectories, so you
@@ -350,6 +350,7 @@ FreeBSD or any other Unix-like system.
 
 @menu
 * UNIX Installation Procedure::   How to install @value{MSGED}.
+* Husky Installation Procedure::  Installing @value{MSGED} as part of Husky.
 * Notes on UNIX terminal I/O::    How @value{MSGED} handles the terminal.
 * Notes on UNIX keyboard input::  Escape Meta Alt Control Shift ;-)
 * Notes on Big Endian Hardware::  Running @value{MSGED} on RISC processors.
@@ -357,8 +358,16 @@ FreeBSD or any other Unix-like system.
 * Case Sensitivity::            About case sensitivity problems.
 @end menu
 
-@node UNIX Installation Procedure, Notes on UNIX terminal I/O, UNIX installation, UNIX installation
+@node UNIX Installation Procedure, Husky Installation Procedure, UNIX installation, UNIX installation
 @subsection Installation Procedure
+@xref{Husky Installation Procedure,,Installing @value{MSGED} as part of the
+Husky Project Tools}, if you want to use @value{MSGED} in conjunction with
+the hpt Tosser and other Husky Project tools. 
+
+The rest of this subsection only covers manual installation of @value{MSGED}
+as a standalone message reader, and may be skipped if you are using
+@value{MSGED} in a Husky environemnt.
+
 If you are using Linux you can get the Linux distribution archive which
 contains a pre-compiled binary. If you are running any other Unix (including
 FreeBSD, which due to a strange problem in the termios code won't run the
@@ -422,12 +431,12 @@ user's home directory, i.E. you need to copy the file @file{sample.cfg} to
 ~/msged-work $ cp sample.cfg ~/.msged
 @end example
 
-If you are an administrator and want to install @value{MSGD} system-globally,
+If you are an administrator and want to install @value{MSGED} system-globally,
 you can make @value{MSGED} read a different configuration file either by
 re-compiling @value{MSGED} and define the @code{MSGEDCFG} macro (this is also
 done automatically when you compile @value{MSGED} with @file{huskymak.cfg} -
 in this case the default location is @file{msged.cfg} in the @file{etc}
-subdirectory that you defined in @file{huskymak.cfg}. Or you can simply
+subdirectory that you defined in @file{huskymak.cfg}). Or you can simply
 create a script that calls the @value{MSGED} binary with the @code{-c}
 command line option. Specify the desired file name directly behind the
 @code{-c}. 
@@ -473,6 +482,47 @@ you absolutely must read the chapter devoted to problems with shared message
 bases in heterogenous networks (@pxref{Network Notes,,Using Fidonet software
 in network environments}).
 @end enumerate
+
+@node Husky Installation Procedure, Notes on UNIX terminal I/O, UNIX Installation Procedure, UNIX installation
+@subsection Installiong @value{MSGED} as part of the Husky software
+@cindex Husky
+If you are using Husky sofware, e.g. the hpt tosser, you can also install
+@value{MSGED} as part of the Husky software. In this case, you should first
+follow the generic Husky installation instruction as found in the file
+@file{INSTALL} found in the @file{huskybse} package.
+
+These instructions essentially boil down to getting the source code packages
+of Huskybse, Smapi, Fidoconf and Msged (in this case, use the Husky Msged
+distribution, @file{msged-VERSION-src.tar.gz}), untar each file, create a
+@file{huskymak.cfg} based on the template found in the @file{huskybse}
+package, and then entering each of the subdirectories and typing @code{make;
+make install}. But be sure to read the file in detail.
+
+After you have done so, you already have a working installation of
+@value{MSGED}. The command @code{make install} entered in the @value{MSGED}
+subdirectory will already have taken care of installing a workable default
+configuration file @file{msged.cfg} into your Husky @file{etc}
+subdirectory. This file is set up to read most of the necessary settings for
+@value{MSGED} from your @file{fidoconfig} (the basic Husky configuration
+file), so that once you have configured @file{fidoconfig}, you can directly
+start using @value{MSGED}.
+
+The only thing that you need to adjust is the codepage setting. @value{MSGED}
+is designed to do codepage translation, so that if your computer uses a
+different characters set compared to what is commonly encountered in fidonet
+echos, @value{MSGED} will handle the job of translation those messages to a
+character set your local terminal can handle, and likewise translate text you
+type back so that it is stored in a way other users can read it. This is
+important for most non-English languages (like German, French, Russian
+etc.). If you use this feature of @value{MSGED}, you don't need to abuse your
+tosser to do codepage translation any more.
+
+In order to select the proper codepage for your terminal, simply load the
+@value{MSGED} configuration file @file{msged.cfg} into your favourite editor
+and uncomment the line that is correct for your location. The file is
+commented, and further instructions can be found there.
+@xref{Special Characters,,Using Special Characters like Umlauts or Cyrillics - The Charset Kludge},
+for further information.
 
 @node Notes on UNIX terminal I/O, Notes on UNIX keyboard input, UNIX Installation Procedure, UNIX installation
 @subsection How Terminal I/O is handled on Unix
