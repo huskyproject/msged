@@ -62,27 +62,25 @@ no usage or distribution restrictions. This is truely free software.
 
 @value{MSGED} emerged from MsgEd, a public domain fidonet message reader
 initially written by Jim Nutt and thereafter maintained by numerous people
-(among them Paul Edwards, Andrew Clarke, and Kim Lykkegaard, who is currently
-maintaing MsgEd). @value{MSGED} is being developed by Tobias Ernst. You can
-reach me at 2:2476/418 or via e-mail at tobi@@bland.fido.de.
+(among them Paul Edwards, Andrew Clarke, and Kim Lykkegaard). @value{MSGED}
+is being developed by Tobias Ernst. You can reach me at 2:2476/418 or via
+e-mail at tobi@@bland.fido.de.
 
-@value{MSGED} differs from the mainstream MsgEd in that it tries to support a
-vast number of platforms by employing portable software design
-techniques. It is my policy to release executables and source code at the
-same time for all supported platforms, among them OS/2, Unix (Linux and
-FreeBSD as well as commercial Unix systems), Windows NT and 16-bit DOS.
+@value{MSGED} tries to support a vast number ooperating system platforms by
+employing portable software design techniques. It is my policy to release
+executables and source code at the same time for all supported platforms,
+among them OS/2, Unix (Linux and FreeBSD as well as commercial Unix systems),
+Windows NT, 16- and 32-bit DOS.
 
 @value{MSGED} is developed with the GNU C compiler and GNU boundary checking,
-which assures high program stability. @value{MSGED} also has some features
-that the mainstream MsgEd currently has not, like full "seamless" internet
-gateway support for Fidogate and simliar gateway programs.
+which assures high program stability.
 
-In developing @value{MSGED}, I am in contact with the mainstream MsgEd
-developer team, so most features they introduce will be migrated to
-@value{MSGED}, and most features that I introduce in @value{MSGED} will
-possibly also be migrated to the mains team MsgEd over time. There is no
-"rivalry" between Kim and me, it is just that we have a little different
-goals in mind and therefore decided to maintain separate streams of MsgEd.
+@value{MSGED} formerly was an alternative branch to the main Msged
+development line, which was evolving into a slightly different direction, but
+as that main development line seems to have ceased, you can now consider
+@value{MSGED} to be the most recent version of Msged. Since then, most of the
+features of the last incarnation of the main Msged development line, Msged
+4.30, have been incorporated into @value{MSGED}.
 
 If you like @value{MSGED} and start to use it as your everyday Fidonet
 editor, please drop me a note saying that you do so at @samp{Tobias Ernst @
@@ -97,8 +95,8 @@ use @value{MSGED}. Therefore: Don't be shy - drop me a mail. :-)
 
 At this place, I also would like to express my thankfulness to all people
 that helped making @value{MSGED} what it is now, that being all the
-developers that haved worked on the sources in the past, the team that makes
-MsgEd 4.30, and all the beta testers that used the Pre-Release of
+developers that haved worked on the Msged sources in the past, the Husky
+developers, and all the beta testers that used the Pre-Release of
 @value{MSGED} @value{VERSION}.
 
 @node Installation, Introduction, Overview, Top
@@ -131,28 +129,28 @@ platform, and maybe the file that contains the printable version of the
 documentation.
 
 @table @file
-@item MSGTE5_O.ZIP
+@item MSGTE6_O.ZIP
 This archive contains an OS/2 executable, sample configuration files and a
 manual in OS/2 INF format.
 
-@item MSGTE5_D.ZIP
+@item MSGTE6_D.ZIP
 This archive contains a 16-Bit DOS executable, sample configuration files and
 a manual in plain text format.
 
-@item MSGTE5_3.ZIP
+@item MSGTE6_3.ZIP
 This archive contains a 32-Bit DPMI DOS executable, sample configuration
 files and a manual in plain text format.
 
-@item MSGTE5_W.ZIP
-This archive contains a Windows 32 bit executable that has been tested on
-Windows NT, but should also work with Windows 95 and 98, sample configuration
-files and a manual in HTML format.
+@item MSGTE6_W.ZIP
+This archive contains a Windows 32 bit console executable that should be your
+primary choice when running Windows NT or 2000, sample configuration files
+and a manual in HTML format.
 
-@item MSGTE5_L.ZIP
+@item MSGTE6_L.ZIP
 This archive contains a statically linked, pre-compiled Linux executable,
 sample configuration files and a manual in GNU info format.
 
-@item MSGTE5_M.ZIP
+@item MSGTE6_M.ZIP
 This archive contains the manual for @value{MSGED} in Postscript and in HTML
 format. If you intend to print the documentation of @value{MSGED}, then you
 should get this file and use the Postscript version, because printing the
@@ -167,23 +165,24 @@ out-of-the-box makefiles for building @value{MSGED} on DOS, OS/2, Windows,
 and almost every imaginable Unix-like system (tested systems include Linux,
 FreeBSD and IBM AIX), sample configuration files, and the texinfo source code
 for the manual that can be used to build the manual in OS/2 INF, HTML, GNU
-info or DVI format. You will also need @file{SMAPISS.ZIP} if you intend to
-compile @value{MSGED} yourself.
+info or DVI format.
+@end table
 
-@item SMAPISS.ZIP
-This archive contains a snapshot of the source code level of the SMAPI
-(alternative Squish Message API) that has been used to compile the binary
-versions of @value{MSGED} @value{VERSION}. Note that bug reports for
-@value{MSGED} are only considered if you used exactly this version of the
-SMAPI to compile @value{MSGED} or a newer version obtained from the Linux
-Fidosoft Project. All other versions of the SMAPI (that is @file{SMAPI11.ZIP}
-through @file{SMAPI15.ZIP}) have severe bugs that make it impossible for this
-version of @value{MSGED} to function properly under all circumstances.
+For compiling @value{MSGED}, you also need the @samp{smapi} library,
+and, if you want support for the @file{fidoconfig} config file standard,
+then you also need the @samp{fidoconfig library}. Both libraries are
+distributed by the husky team. The filenames of the release versions of those
+libaries that have been used to build @value{MSGED} @value{VERSION} are
 
+@table @file
+@item smapi-1.6.4.tar.gz
+Also available as @file{smapi164.zip}.
+@item fidoconf-0.10.tar.gz
+Also available as @file{fconf010.zip}
 @end table
 
 @emph{Attention:} Most of these ZIP-files contain subdirectories, so you
-should use the @samp{-d} option when unzipping them!
+should use the @samp{-d} option when unzipping them with @file{pkunzip}.!
 
 @node Non-Unix Installation, UNIX installation, Distribution Archives, Installation
 @section Installation on OS/2, DOS or Windows
@@ -300,7 +299,7 @@ servers include the Windows and OS/2 DOS box, Quarterdeck QDPMI, and others.
 
 @item
 In case you are running plain DOS without any DPMI server, @file{CWSDPMI.EXE}
-is shipped in the distribution archive. Simply but it in the same path where
+is shipped in the distribution archive. Simply put it into the same path where
 you put @file{MSGED32.EXE}, and it will act as an DPMI server as long as no
 other one is installed already. Please note that CWSDPMI is not a public
 domain program. It is licensed under the GNU Public License instead. You can
