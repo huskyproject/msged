@@ -365,6 +365,10 @@ char *firstname(char *name)
     static char work[40];
 
     memset(work, 0, sizeof work);
+    if (name == NULL)
+    {
+	return work;
+    }
     s = strchr(name, ' ');
     if (s == NULL)
     {
@@ -387,6 +391,11 @@ char *lastname(char *name)
     static char work[40];
 
     memset(work, 0, sizeof work);
+    if (name == NULL)
+    {
+	return work;
+    }
+
     s = strchr(name, ' ');
     if (s == NULL)
     {

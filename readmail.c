@@ -1041,9 +1041,12 @@ static void trans_token(char *line, int maxlen, msg *m)
 	    linelen++;
 	    break;
 	case 'N':                      /* insert full name */
-	    linelen += sprintf(line + linelen, "%-.*s",
-			       maxlen - 1 - linelen,
-			       m->isto);
+	    if (m->isto != NULL)
+	    {
+		linelen += sprintf(line + linelen, "%-.*s",
+				   maxlen - 1 - linelen,
+				   m->isto);
+	    }
 	    break;
 	case 'A':                      /* insert reply area name */
 	    linelen += sprintf(line + linelen, "%-.*s",

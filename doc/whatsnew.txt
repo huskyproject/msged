@@ -15,6 +15,10 @@ Features:
 
 Fixes:
 
+- Fix coredump if "To" field is null and origin line contains @N token.
+  and "(null)" in origin in same case with @F and @L tokens. By Danial
+  Klimkin.
+
 - Made Hudson/Quick code platform independent. This fixes Hudson for Win32,
   DOS/32 and other platforms.
 
