@@ -695,7 +695,7 @@ void MsgScroll(int Dir)
     }
     else
     {
-        WndScroll(0, 6, maxx - 1, maxy, Dir);
+        WndScroll(0, 6, maxx - 1, maxy - 1, Dir);
     }
 }
 
