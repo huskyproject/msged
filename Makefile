@@ -139,7 +139,7 @@ distclean: clean
 
 ifeq ($(OSTYPE), UNIX)
 
-install: $(TARGET) msghelp.dat
+install: $(TARGET) msghelp.dat testcons$(EXE)
 	-$(MKDIR) $(MKDIROPT) $(CFGDIR)
 	-$(MKDIR) $(MKDIROPT) $(BINDIR)
 	$(INSTALL) $(IBOPT) $(TARGET) $(BINDIR)
@@ -159,3 +159,11 @@ install: $(TARGET) msghelp.dat
 	(cd doc && cd manual && $(MAKE) -f makefile.husky install)
 
 endif
+
+uninstall:
+	-$(RM) $(BINDIR)$(DIRSEP)$(TARGET) 
+	-$(RM) $(BINDIR)$(DIRSEP)testcons$(EXE) $(BINDIR)
+	-$(RM) $(CFGDIR)$(DIRSEP)msghelp.dat
+	(cd maps && $(MAKE) -f makefile.husky uninstall)
+	(cd doc && cd manual && $(MAKE) -f makefile.husky uninstall)
+

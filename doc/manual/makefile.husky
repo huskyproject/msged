@@ -87,9 +87,14 @@ msged.inf: msged.texi clean
 install-info: info
 	-$(MKDIR) $(MKDIROPT) $(INFODIR)
 	$(INSTALL) msged.info $(INFODIR)
-	install-info --info-dir=$(INFODIR)  $(INFODIR)$(DIRSEP)msged.info
+	-install-info --info-dir=$(INFODIR)  $(INFODIR)$(DIRSEP)msged.info
 
 install-html: html
 	-$(MKDIR) $(MKDIROPT) $(HTMLDIR)
 	$(INSTALL) msged_*.html $(HTMLDIR)
+
+uninstall:
+	-install-info --remove --info-dir=$(INFODIR) $(INFODIR)$(DIRSEP)msged.info
+	-$(RM) $(INFODIR)$(DIRSEP)msged.info
+	-$(RM) $(HTMLDIR)$(DIRSEP)msged_*.html
 

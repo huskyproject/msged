@@ -116,3 +116,21 @@ else
 	$(LN) $(LNOPT) $(CFGDIR)$(DIRSEP)writmaps.437 $(CFGDIR)$(DIRSEP)writmaps.dat
 endif
 
+uninstall:
+	-$(RM) $(CFGDIR)$(DIRSEP)readmaps.437
+	-$(RM) $(CFGDIR)$(DIRSEP)readmaps.850
+	-$(RM) $(CFGDIR)$(DIRSEP)readmaps.866
+	-$(RM) $(CFGDIR)$(DIRSEP)readmaps.koi
+	-$(RM) $(CFGDIR)$(DIRSEP)readmaps.is1
+	-$(RM) $(CFGDIR)$(DIRSEP)readmaps.is5
+	-$(RM) $(CFGDIR)$(DIRSEP)readmaps.ukr
+	-$(RM) $(CFGDIR)$(DIRSEP)writmaps.437
+	-$(RM) $(CFGDIR)$(DIRSEP)writmaps.850
+	-$(RM) $(CFGDIR)$(DIRSEP)writmaps.866
+	-$(RM) $(CFGDIR)$(DIRSEP)writmaps.koi
+	-$(RM) $(CFGDIR)$(DIRSEP)writmaps.is1
+	-$(RM) $(CFGDIR)$(DIRSEP)writmaps.is5
+	-$(RM) $(CFGDIR)$(DIRSEP)writmaps.ukr
+	-$(RM) $(CFGDIR)$(DIRSEP)readmaps.dat
+	-$(RM) $(CFGDIR)$(DIRSEP)writmaps.dat
+
