@@ -20,11 +20,13 @@ DEFAULT_CONFIG_FILE=~/.msged
 #INSTDIR=/usr/local/bin
 INSTDIR=~/bin
 
+INCDIR=/usr/local/lib
+
 # options for installing programs
 IBOPT=-s
 
 CC=	gcc
-CFLAGS=	-Wall -I../smapi -I../fidoconfig
+CFLAGS=	-Wall -I$(INCDIR)
 CDEFS=	-DUNIX -DUSE_MSGAPI -DUSE_FIDOCONFIG -DUNAME=\"LNX\" -DREADMAPSDAT='"$(READMAPS)"' -DWRITMAPSDAT='"$(WRITMAPS)"' -DDEFAULT_CONFIG_FILE='"$(DEFAULT_CONFIG_FILE)"'
 COPT=	-O3 -fomit-frame-pointer -fstrength-reduce
 LFLAGS= -L../smapi -L../fidoconfig -s
