@@ -14,6 +14,11 @@
 
 #define TERMDEF 1
 
+#ifdef KEYDEBUG
+#include <stdio.h>
+static FILE *fTrace = NULL;
+#endif
+
 int vcol, vrow;                 /* cursor position         */
 int color;                      /* current color on screen */
 int cur_start = 0;
@@ -93,7 +98,7 @@ int TTPutChr(unsigned int Ch)
     return 1;
 }
 
-static int mykbhit(void)
+static int mykbhit(int block)
 {
     int iKey = 0;
     INPUT_RECORD irBuffer;
@@ -111,9 +116,25 @@ static int mykbhit(void)
 
     memset(&irBuffer, 0, sizeof irBuffer);
 
-    if (WaitForSingleObject(HInput, 0L) == 0)
+    if (WaitForSingleObject(HInput, (block)? INFINITE : 0L) == 0)
     {
         ReadConsoleInput(HInput, &irBuffer, 1, &pcRead);
+
+#ifdef KEYDEBUG
+        if (irBuffer.EventType == KEY_EVENT)
+        {
+            fprintf(fTrace, "bKD=%d wRC=%hd wVKC=%hd wVSC=%hd c='%c' c=%d dwCKS=%lx\n",
+                    irBuffer.Event.KeyEvent.bKeyDown,
+                    irBuffer.Event.KeyEvent.wRepeatCount,
+                    irBuffer.Event.KeyEvent.wVirtualKeyCode,
+                    irBuffer.Event.KeyEvent.wVirtualScanCode,
+                    irBuffer.Event.KeyEvent.uChar.AsciiChar,
+                    irBuffer.Event.KeyEvent.uChar.AsciiChar,
+                    irBuffer.Event.KeyEvent.dwControlKeyState);
+        }
+#endif        
+        
+
         if (irBuffer.EventType == KEY_EVENT && irBuffer.Event.KeyEvent.bKeyDown != 0 && irBuffer.Event.KeyEvent.wRepeatCount <= 1)
         {
             WORD vk, vs, uc;
@@ -244,7 +265,7 @@ unsigned int TTGetKey(void)
     int iKey;
     while (key_hit == 0xFFFFFFFFUL)
     {
-        mykbhit();
+        mykbhit(1);
     }
     iKey = key_hit;
     key_hit = 0xFFFFFFFFUL;
@@ -293,7 +314,7 @@ void TTSendMsg(unsigned int msg, int x, int y, unsigned int msgtype)
 
 int collect_events(int delay)
 {
-    if (mykbhit())
+    if (mykbhit(0))
     {
         TTSendMsg(TTGetKey(), 0, 0, WND_WM_CHAR);
     }
@@ -313,6 +334,14 @@ int TTkopen(void)
 
     GetConsoleMode(HInput, (LPDWORD)&cmode);
     SetConsoleMode(HInput, cmode & (~ENABLE_PROCESSED_INPUT));
+
+#ifdef KEYDEBUG
+    fTrace = fopen("ntkeys.trc", "w");
+    if (fTrace == NULL)
+    {
+        abort();
+    }
+#endif    
     
     return 0;
 }
@@ -323,6 +352,11 @@ int TTkclose(void)
     HInput = INVALID_HANDLE_VALUE;
     CloseHandle(HOutput);
     HOutput = INVALID_HANDLE_VALUE;
+
+#ifdef KEYDEBUG
+    fclose(fTrace);
+#endif
+
     return 0;
 }
 
@@ -471,7 +505,7 @@ int TTWriteStr(unsigned short *b, int len, int row, int col)
     DWORD i, wlen;
     COORD coord;
     LPWORD pwattr;
-    char *pstr;
+    unsigned char *pstr;
 
     pwattr = malloc(len * sizeof *pwattr);
     if (pwattr == NULL)
@@ -505,7 +539,7 @@ int TTReadStr(unsigned short *b, int len, int row, int col)
     DWORD i, wlen;
     COORD coord;
     LPWORD pwattr;
-    char *pstr;
+    unsigned char *pstr;
 
     pwattr = malloc(len * sizeof *pwattr);
     if (pwattr == NULL)
@@ -558,9 +592,9 @@ static void gettext(int x1, int y1, int x2, int y2, char *dest)
         ReadConsoleOutputAttribute(HOutput, pwattr, width, coord, &len);
         for (i = 0; i < width; i++)
         {
-            *dest = *(pstr + i);
+            *((unsigned char *)dest) = *(pstr + i);
             dest++;
-            *dest = (char)*(pwattr + i);
+            *((unsigned char *)dest) = (char)*(pwattr + i);
             dest++;
         }
     }
@@ -590,9 +624,9 @@ static void puttext(int x1, int y1, int x2, int y2, char *srce)
     {
         for (i = 0; i < width; i++)
         {
-            *(pstr + i) = *srce;
+            *(pstr + i) = *((unsigned char *)srce);
             srce++;
-            *(pwattr + i) = *srce;
+            *(pwattr + i) = *((unsigned char *)srce);
             srce++;
         }
         coord.X = (SHORT) x1;
