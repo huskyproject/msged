@@ -34,6 +34,7 @@ Fidonet Message Reader and Editor Software for OS/2, DOS and Unix.
 @menu
 * Overview::                    What is @value{MSGED}?
 * Introduction::                @value{MSGED} for beginners. 
+* Advanced Concepts::           Advanced features and concepts.
 * Keyboard Reference::          How to use and change the key combinations.
 * Configuration Reference::     Explanation of the configuration file.
 * Keyword Index::               
@@ -73,13 +74,211 @@ possibly also be migrated to the mains team MsgEd over time. There is no
 "rivalry" between Kim and me, it is just that we have a little different
 goals in mind and therefore decided to maintain separate streams of MsgEd.
 
-@node Introduction, Keyboard Reference, Overview, Top
+
+@node Introduction, Advanced Concepts, Overview, Top
 @chapter A quick tour through @value{MSGED}
 This chapter will be supplied in a future revision of this
 document.
 
-@node Keyboard Reference, Configuration Reference, Introduction, Top
-@chapter @value{MSGED} Keystroke Reference
+@node Advanced Concepts, Keyboard Reference, Introduction, Top
+@chapter Advanced Concepts in @value{MSGED}
+After you have managed to perform basic functions with @value{MSGED}, like
+reading messages, entering new messages, and replying to messages, this
+chapter will introduce you into some selected advanced concepts in
+@value{MSGED} that deserve special attention, like how to use a
+Fidonet-Internet gateway, how to use eight bit character sets, and similar.
+
+@menu
+* Special Characters::          Special Characters and FSC 0054 Charset Kludges
+@end menu
+
+@node Special Characters,  , Advanced Concepts, Advanced Concepts
+@section Using Special Characters - The FSC 0054 Charset Kludge
+@cindex FSC 0054
+@cindex special characters
+@cindex charset kludge
+@cindex character set conversion
+
+Languages other than English often use special characters beside the normal
+alphabet. Examples are the accented letters in French or the umlauts in
+German. IBM block graphics are also called special characters. This section
+will describe what measures have to be taken in order to be able to transmit
+special characters via Fidonet.
+
+@menu
+* Charset Kludges for the Impatient::  
+* Problems with Special Characters::  
+* Special Characters in Fidonet::  
+* @value{MSGED} and Special Characters::  
+@end menu
+
+@node Charset Kludges for the Impatient, Problems with Special Characters, Special Characters, Special Characters
+@subsection Charset Kludges for the Impatient
+
+The transmission of special characters is handled by FSC 0054 charset
+kludges. If you do not want to work into the technical details and just want
+to assure that your system complies to the standards, simply copy
+@file{READMAPS.DAT} and @file{WRITMAPS.DAT} into the directory you are
+starting @value{MSGED} from, put the following to the beginning of your
+config file:
+
+@example
+OutputCharSet IBMPC
+AreaFileFlags 8
+@end example
+
+and stop reading :-). The following sections only explain the same matter in
+more detail for the interested reader.
+
+@node Problems with Special Characters, Special Characters in Fidonet, Charset Kludges for the Impatient, Special Characters
+@subsection What is so special about special characters?
+
+In order to be able to exchange text between computers, it was necessary to
+agree on a scheme on how to encode letters into numbers, the so called
+@dfn{character set}. The standard character set for transferring text between
+a huge variety of computer systems is the ASCII character set. Unfortunately,
+the ASCII character set is only 7 bit wide and does not leave room for
+national special characters. 
+
+In order to be able to transfer special characters like accents and umlauts,
+it was therefore necessary to use the eigtht bit in a byte and create an
+extended character set that defines how speical characters are encoded.
+
+In contrast to the standard 7 bit ASCII character set, which is a single
+character set used by all computer systems, there exist several
+pseudo-standard character sets thant are 8 bits wide. All of them contain
+ASCII as an subset, but they all differ in how they encode special
+characters. DOS and OS/2 computers typically use the IBM PC character
+set. Unix computers and the Amiga typically use the ISO8859 character set,
+also known as Latin-1. Windows uses IBM PC for console applications, but
+ISO8859 for graphical applications. The Macintosh uses the Macintosh
+character set. The consequence of this is clear: If you write a text on a
+Unix or Windows computer using special characters like accented letters or
+umlauts, you cannot expect it to be properly displayed on a DOS or OS/2
+computer, and vice versa, unless special measures are taken.
+
+@node Special Characters in Fidonet, @value{MSGED} and Special Characters, Problems with Special Characters, Special Characters
+@subsection How has this problem been solved in Fidonet?
+This issue of special characters has been a problem for Fidonet in the past,
+but it has been solved through the advent FSC 0054, so that you can now
+safely use special characters in Fidonet mail @emph{if} your message editor
+supports FSC 0054. FSC0054 basically works like this:
+
+Every Fidonet editor that wants to be compatible with FSC 0054 must be
+delivered along with built-in or external character translation tables that
+tell the editor how it can convert text that contains special characters.
+
+When composing a message using a FSC 0054 compliant editor, you have two
+choices: By default, the editor allows you to enter the full range of special
+characters that your computer supports, but when saving the message, the
+editor will use its character translation tables and convert your text into a
+7 bit clean representation that can be displayed on @emph{all} computers even
+if they don't support FSC 0054. For example, a German sharp s would be
+converted into double s (@samp{ss}), an e with accent would be converted into
+an e without accent, and so on. This is the maximum compatibility mode, and
+you should always use it if your editor offers it. It offers you the comfort
+of being able to write text just as you would in a letter (without having to
+translate special characters manually), but your mails will still be properly
+displayed on all computers.
+
+The other possibility is that your editor leaves the special characters that
+you typed in as is, but inserts a hidden kludge line, from here on referred
+to as the @dfn{charset kludge} into the message, that designates which
+character set you have used for composing the message. When your message is
+read on another computer by a Fidonet message reader that also supports FSC
+0054, the message reader will see the charset kludge in your mail and then
+use its internal translation tables to convert your message into the
+character set that this computer uses. The consequence is that even if your
+computer and the computer of the receiver use different character sets,
+everything that you typed in will look just the same on the receiver's screen
+than on yours. The only drawback is that this way of doing it requires that
+the receiver's system also supports FSC 0054, but nearly all message editors
+do it nowadays.
+
+@node @value{MSGED} and Special Characters,  , Special Characters in Fidonet, Special Characters
+@subsection How do I configure @value{MSGED} to support FSC 0054?
+@value{MSGED} fully supports FSC 0054. The character set translation files
+are named @file{READMAPS.DAT} and @file{WRITMAPS.DAT}. You enable character
+set translation support in @value{MSGED} by simply copying these files into
+the directory from which @value{MSGED} is started. If the files can be found
+and are valid, you will be notified that the FSC 0054 character set
+translation engine has been activated. 
+
+It is important that you use the correct @file{READMAPS.DAT} and
+@file{WRITMAPS.DAT} files that have been shipped with the executable, because
+these files are tailored to the charcter set that you are using locally: The
+OS/2, DOS and Windows versions of @value{MSGED} ship with a pair of
+@file{READMAPS.DAT} and @file{WRITMAPS.DAT} that is intend for use with
+computers that use the IBMPC character set, while the Linux version ships
+with a pair of @file{READMAPS.DAT} and @file{WRITMAPS.DAT} that are tailored
+to computers that use the ISO 8859 character set (Latin-1). (Some Linux boxes
+use IBMPC, codepage 437, or even 850, instead, but I strongly suggest that
+you change your system configuration to use ISO 8859 in that case!).
+
+The following table lists all level 2 character sets that @value{MSGED}
+understands (meaning all character sets that are defined in the
+@file{READMAPS.DAT} and @file{WRITMAPS.DAT} files):
+
+@example
+@@CHRS-Kludge: | Conventional Name:   | Used by these computers:
+--------------+----------------------+---------------------------
+IBMPC         | IBM PC, Codepage 437 | DOS, OS/2, Windows console
+LATIN-1       | ISO 8859-1           | Unix, Amiga, Windows GUI
+MAC           | MAC                  | Macintosh computers
+@end example
+
+These are the character sets that are used in the Western World. I would like
+to also support the different Kyrillic and Slavic character sets, but do not
+have any information on those. If you can supply me with more information,
+please contact me!
+
+Once FSC 0054 is activated, @value{MSGED} will be able to correctly display
+all mails that have been created with one of the characters sets listed
+above, as long as they contain the proper charset kludge
+line. (Unfortunately, quite some still don't - do tell their authors to
+correct their setup!). Mails that you write yourself may contain any
+special characters, but @value{MSGED} will convert them into a 7 bit ASCII
+character set when you save them.
+
+If you want to retain special characters in your mail by adding a charset
+kludge, you have to do two things. First, you have to define which character
+set to use for saving your mails (it must not necessarily be the character
+set that you are using locally). @xref{OutputCharset,,The
+@code{OutputCharset} Keyword}, for information on how to do this. In most
+cases, you will simply want to add the following line to your configuration
+file:
+
+@example
+OutputCharset IBMPC
+@end example
+
+Then, you have to tell @value{MSGED} in which areas it is allowable to send
+mails with special characters and charset kludges. @value{MSGED} will only
+write special characters into areas that have the @samp{8} flag set. If you
+are importing your message area configuration from a tosser configuration
+file, you can simply put the following line to the beginning of your
+configuration file:
+
+@example
+AreaFileFlags 8
+@end example
+
+(If you already have an @code{AreaFileFlags} statement, just add the @samp{8}
+character to its parameters).
+
+This will allow @value{MSGED} to use special characters in conjunction with a
+charset kludge in all message areas imported from a tosser configuration
+file.
+
+If you only want to enable special characters for a few areas, you have to
+define these areas manually, giving each of them the @samp{8} flag
+individually. The same applies if you have to define your areas manually for
+other reaseons. @xref{Manual Area Definition,,Manual Area Definition}, for
+more information on this.
+
+
+@node Keyboard Reference, Configuration Reference, Advanced Concepts, Top
+@chapter @value{MSGED} Keyboard Reference
 This chapter gives a complete listing of available keystroke combinations in
 @value{MSGED}. After that, you will find instructions on how you can redefine
 the keyboard to suit your preferences.
@@ -107,7 +306,7 @@ the area name that you are looking for.
 
 In addition, the following commands are available in the arealist screen:
 
-@table @kbd
+@table @asis
 @item @key{Right}
 @itemx @key{Enter}
 Enter the selected area
@@ -158,65 +357,65 @@ Keyboard}).
 @subsection Reader Functions for Navigation
 
 @table @asis
-@item Function: @code{down}, bound to: @kbd{@key{Down}}
+@item Function: @code{down}, bound to: @key{Down}
 @krindex down
 Scrolls the text of the current message down.
 
-@item Function: @code{up}, bound to: @kbd{@key{Up}}
+@item Function: @code{up}, bound to: @key{Up}
 @krindex up
 Scrolls the text of the current message up.
 
-@item Function: @code{help}, bound to: @kbd{@key{Alt}-@key{H}}
+@item Function: @code{help}, bound to: @key{Alt}-@key{H}
 @krindex help
 Displays online help on available keyboard commands.
 
-@item Function: @code{next}, bound to: @kbd{@key{Right}}
+@item Function: @code{next}, bound to: @key{Right}
 @krindex next
 Go to the next message in this area.
 
-@item Function: @code{previous}, bound to: @kbd{@key{Left}}
+@item Function: @code{previous}, bound to: @key{Left}
 @krindex previous
 Go to the previous message in this area.
 
-@item Function: @code{first}, bound to: @kbd{@key{Home}}
+@item Function: @code{first}, bound to: @key{Home}
 @krindex first
 Go to the very first message in this area.
 
-@item Function: @code{slast}, bound to: @kbd{@key{End}}
+@item Function: @code{slast}, bound to: @key{End}
 @krindex slast
 Go to the very last message in this area.
 
-@item Function: @code{link_to}, bound to: @kbd{@key{Ctrl}-@key{Right}}
+@item Function: @code{link_to}, bound to: @key{Ctrl}-@key{Right}
 @krindex link_to
 Go to the message that is a reply to this message. If there is more than one
 reply to this message, you will be presented a select box.
 
-@item Function: @code{u-next}, bound to: @kbd{@key{Ctrl}-@key{I}}
+@item Function: @code{u-next}, bound to: @key{Ctrl}-@key{I}
 @krindex u-next
 Go to the message that is a reply to this message. If there is more than one
 reply to this message, this function does not present a select box, but
 simply jumps to the first of all replies.
 
-@item Function: @code{link_from}, bound to: @kbd{@key{Ctrl}-@key{Left}}
+@item Function: @code{link_from}, bound to: @key{Ctrl}-@key{Left}
 @krindex link_from
 Go to the message that this message is in reply to (if any).
 
-@item Function: @code{next_area}, bound to: @kbd{@key{+}}
+@item Function: @code{next_area}, bound to: @key{+}
 @krindex next_area
 Go to the next message area.
 
-@item Function: @code{prev_area}, bound to: @kbd{@key{-}}
+@item Function: @code{prev_area}, bound to: @key{-}
 @krindex prev_area
 Go the the previous message area.
 
-@item Function: @code{list}, bound to: @kbd{@key{Alt}-@key{L}}
+@item Function: @code{list}, bound to: @key{Alt}-@key{L}
 @krindex list
 This will display a list of all messages in this area. You can navigate
 through this list with the cursor keys, tag entries by pressing space, and
 apply a subset of the functions of the message reading mode (like delete,
 move, etc.) to the tagged messages. You can leave the list by pressing either
-@kbd{@key{Enter}}, which will position you to the message that was selected
-in the list when pressing @kbd{@key{Enter}}, or by pressing @kbd{@key{Esc}},
+@key{Enter}, which will position you to the message that was selected
+in the list when pressing @key{Enter}, or by pressing @key{Esc},
 which will position you to the message that was active before entering the
 message list mode.
 
@@ -225,7 +424,7 @@ message list mode.
 Go to the last read message in this area (the message right before the first
 unread message).
 
-@item Function: @code{astart}, no pre-bound to any key
+@item Function: @code{astart}, not pre-bound to any key
 @krindex astart
 Go to the message that was active when you entered this message area.
 
@@ -245,44 +444,44 @@ Goes back to where you were in the reply chain before using the
 @subsection Reader Functions for Entering, Modifying and Deleting Messages
 
 @table @asis
-@item Function: @code{newmsg}, bound to: @kbd{@key{Alt}-@key{E}} or @kbd{@key{Ins}}
+@item Function: @code{newmsg}, bound to: @key{Alt}-@key{E} or @key{Ins}
 @krindex newmsg
 Enter a new message.
 
-@item Function: @code{reply}, bound to: @kbd{@key{Alt}-@key{R}}
+@item Function: @code{reply}, bound to: @key{Alt}-@key{R}
 @krindex reply
 Reply to the message currently displayed without quoting it.
 
-@item Function: @code{quote}, bound to: @kbd{@key{Alt}-@key{Q}}
+@item Function: @code{quote}, bound to: @key{Alt}-@key{Q}
 @krindex quote
 Write a quoted reply to the message currently displayed.
 
-@item Function: @code{repoth}, bound to: @kbd{@key{Alt}-@key{N}}
+@item Function: @code{repoth}, bound to: @key{Alt}-@key{N}
 @krindex repoth
 Reply to this message in a different message area. You can use this for
 netmail replies as well as for moving a thread from one area to a different
 one.
 
-@item Function: @code{followup}, bound to: @kbd{@key{Alt}-@key{U}}
+@item Function: @code{followup}, bound to: @key{Alt}-@key{U}
 @krindex followup
 Reply to this message, but adress the reply to the recipient of the message
 you are replying to instead of the sender.
 
 @c    {"repext", replyextra},
 
-@item Function: @code{change}, bound to: @kbd{@key{Alt}-@key{C}}
+@item Function: @code{change}, bound to: @key{Alt}-@key{C}
 @krindex change
 This allows you to edit an existing message.
 
-@item Function: @code{edithdr}, bound to: @kbd{@key{Ctrl}-@key{H}}
+@item Function: @code{edithdr}, bound to: @key{Ctrl}-@key{H}
 @krindex edithdr
 Edit the header of the current message (but not the text).
 
-@item Function: @code{move}, bound to: @kbd{@key{Alt}-@key{M}}
+@item Function: @code{move}, bound to: @key{Alt}-@key{M}
 @krindex move
 Move the message currently displayed to another area.
 
-@item Function: @code{delete}, bound to: @kbd{@key{Alt}-@key{D}} or @kbd{@key{Del}}
+@item Function: @code{delete}, bound to: @key{Alt}-@key{D} or @key{Del}
 @krindex delete
 Delete the message currently being displayed.
 @end table
@@ -296,16 +495,16 @@ Delete the message currently being displayed.
 @cindex searching mails
 
 @table @asis
-@item Function: @code{scan}, bound to: @kbd{@key{*}}
+@item Function: @code{scan}, bound to: @key{*}
 @krindex scan
 Scan all message areas for new messages.
 
-@item Function: @code{scan_unscanned}, bound to: @kbd{@key{#}}
+@item Function: @code{scan_unscanned}, bound to: @key{#}
 @krindex scan_unscanned
 Scan message areas for new messages, but only scan areas that have not been
 scanned perviously.
 
-@item Function: @code{pmail}, bound to: @kbd{@key{Alt}-@key{P}}
+@item Function: @code{pmail}, bound to: @key{Alt}-@key{P}
 @cindex personal mail cscan
 @krindex pmail
 Personal mail scan: this scans all message areas for messages addressed to you.
@@ -314,17 +513,17 @@ Personal mail scan: this scans all message areas for messages addressed to you.
 @krindex spmail
 This scans for messages addressed to you in the current area only.
  
-@item Function: @code{search}, bound to: @kbd{@key{Alt}-@key{F}}
+@item Function: @code{search}, bound to: @key{Alt}-@key{F}
 @krindex search
 @cindex searching
 Allows you to search a message area for a specific keyword. The search
 direction will be the direction that you previously moved into. For example,
 in order to searcha complete message area backwards for a certain area, you
-must press @kbd{@key{End}} to go to the end of the area, then press
-@kbd{@key{Left}} in order to set the search direction to ``backwards'', and
-then press @kbd{@key{Alt}-@key{F}} to start the search.
+must press @key{End} to go to the end of the area, then press
+@key{Left} in order to set the search direction to ``backwards'', and
+then press @key{Alt}-@key{F} to start the search.
 
-@item Function: @code{hdrsearch}, bound to: @kbd{@key{Alt}-@key{Z}}
+@item Function: @code{hdrsearch}, bound to: @key{Alt}-@key{Z}
 @krindex hdrsearch
 This works like @code{search}, but only scans message headers.
 @end table
@@ -333,26 +532,26 @@ This works like @code{search}, but only scans message headers.
 @subsection Reader Functions for modifying @value{MSGED} Options
 
 @table @asis
-@item Function: @code{view}, bound to: @kbd{@key{Alt}-@key{V}}
+@item Function: @code{view}, bound to: @key{Alt}-@key{V}
 @krindex view
 Toogle display of message control lines, kludge lines, etc.
 
-@item Function: @code{config}, bound to: @kbd{@key{Alt}-@key{S}}
+@item Function: @code{config}, bound to: @key{Alt}-@key{S}
 @krindex config
 This function allows you to set some (but not all) of the system
 switches. @xref{Switches,,Switches}, for more information.
 
-@item Function: @code{chngaddr}, bound to: @kbd{@key{Ctrl}-@key{W}}
+@item Function: @code{chngaddr}, bound to: @key{Ctrl}-@key{W}
 @krindex chngaddr
 Change the origination address used for writing mail. You will not need this
 key in normal operation, as @value{MSGED} employs and intelligent mechanism
 for AKA matching.
 
-@item Function: @code{chnodel}, bound to: @kbd{@key{Ctrl}-@key{N}}
+@item Function: @code{chnodel}, bound to: @key{Ctrl}-@key{N}
 @krindex chnodel
 Change the currently active nodelist.
 
-@item Function: @code{name}, bound to: @kbd{@key{Ctrl}-@key{U}}
+@item Function: @code{name}, bound to: @key{Ctrl}-@key{U}
 @krindex name
 If you have defined more than one user name with the @code{Name}
 configuration keyword, you can use this function to select the name to use
@@ -363,19 +562,21 @@ when writing messages.
 @subsection Miscellaneous other Reader Functions
 
 @table @asis
-@item Function: @code{export}, bound to: @kbd{@key{Alt}-@key{W}}
+@item Function: @code{export}, bound to: @key{Alt}-@key{W}
 @krindex export
+@cindex printing messages
+@cindex exporting message text
 Export the text of the current message to a file or printer port. You will be
 shown a dialog box where you can enter a filename. @xref{Outfile,,The Outfile
 confgiruation keyword}, for an explanation of the modifiers for the filename
 you can use to control how the output file is written.
 
-@item Function: @code{shell}, bound to: @kbd{@key{Alt}-@key{O}}
+@item Function: @code{shell}, bound to: @key{Alt}-@key{O}
 @krindex shell
 Call an operating system shell (prompt). Under DOS, @value{MSGED} is swapped
 out of memory for this.
 
-@item Function: @code{dos}, bound to: @kbd{@key{!}}
+@item Function: @code{dos}, bound to: @key{!}
 @krindex dos
 Directly execute an operating system command.
 
@@ -383,14 +584,15 @@ Directly execute an operating system command.
 @krindex null
 Simply does nothing.
 
-@item Function: @code{exit}, bound to: @kbd{@key{Alt}-@key{X}},@kbd{@key{Alt}-@key{A}} and @kbd{@key{Esc}}
+@item Function: @code{exit}, bound to: @key{Alt}-@key{X},@key{Alt}-@key{A}
+and @key{Esc}
 @krindex exit
 Leave the message reading mode. Returns to the arealist screen.
 @end table
 
 @node Editor Keystrokes, Redefining the Keyboard, Reader Keystrokes, Keyboard Reference
 @section Keyboard Commands and the internal Message Editor
-@value{MSGED} has a bulit in message editor. It is suggested that, before you
+@value{MSGED} has a built in message editor. It is suggested that, before you
 start using an external editor for writing messages, you should at least try
 to use the internal message editor, because it is best suited for composing
 FTN-style messages. The internal message editor is highly configurable, so you
@@ -406,10 +608,10 @@ be given in the following section (@pxref{Redefining the Keyboard,,Redefining
 the Keyboard bindings}).
 
 @menu
-* Cursor Movement::          Keystrokes for moving the cursor.
-* Killing Text::             Keystrokes for deleting text.
-* Text Block Commands::      Keystrokes for cut and paste functionality.   
-* Misc. Editor Commands::    Other functions like saving, importing, etc.
+* Cursor Movement::             Keystrokes for moving the cursor.
+* Killing Text::                Keystrokes for deleting text.
+* Text Block Commands::         Keystrokes for cut and paste functionality.   
+* Miscellaneous Commands::      Other functions like saving, importing, etc.
 @end menu
 
 @node Cursor Movement, Killing Text, Editor Keystrokes, Editor Keystrokes
@@ -427,8 +629,8 @@ right, up or down by one line.
 @item Functions: @code{wordleft}, @code{wordright}
 @keindex wordleft
 @keindex wordright
-These functions are pre-bound to @kbd{@key{Ctrl}-@key{Left}} and
-@kbd{@key{Ctrl}-@key{Right}} and move the cursor to the beginning of the
+These functions are pre-bound to @key{Ctrl}-@key{Left} and
+@key{Ctrl}-@key{Right} and move the cursor to the beginning of the
 previous or the beginning of the next word respectively.
 
 @item Functions: @code{pgup}, @code{pgdn}
@@ -447,15 +649,15 @@ the cursor to the beginning or end of the current line.
 @item Functions: @code{top}, @code{bottom}
 @keindex top
 @keindex bottom
-These functions are pre-bound to the @kbd{@key{Ctrl}-@key{PgUp}} and
-@kbd{@key{Ctrl}-@code{PgDn}} keys and move the cursor to the top or bottom
+These functions are pre-bound to the @key{Ctrl}-@key{PgUp} and
+@key{Ctrl}-@code{PgDn} keys and move the cursor to the top or bottom
 line of the current screen.
 
 @item Functions: @code{first}, @code{last}
 @keindex first
 @keindex last
-These functions are pre-bound to the @kbd{@key{Ctrl}-@key{Home}} and
-@kbd{@key{Ctrl}-@code{End}} keys and move the cursor to the very first or
+These functions are pre-bound to the @key{Ctrl}-@key{Home} and
+@key{Ctrl}-@code{End} keys and move the cursor to the very first or
 very last line of the mail that is currently being edited.
 
 @item Function: @code{tab}, pre-bound to: @key{Tab}
@@ -490,35 +692,35 @@ one step.
 @keindex del
 Deletes the character at the current cursor position.
 
-@item Function: @code{deleol}, pre-bound to: @kbd{@key{Alt}-@key{K}}
+@item Function: @code{deleol}, pre-bound to: @key{Alt}-@key{K}
 @keindex deleol
 Deletes all characters from the current cursor position to the end of the
 line. This function has no effect if issued in an empty line.
 
-@item Function: @code{delline}, pre-bound to: @kbd{@key{Alt}-@key{D}}, @kbd{@key{Ctrl}-@key{Y}}
+@item Function: @code{delline}, pre-bound to: @key{Alt}-@key{D}, @key{Ctrl}-@key{Y}
 @keindex delline
 Deletes all character in the current line and removes this line.
 
-@item Function: @code{emacskill}, pre-bound to: @kbd{@key{Ctrl}-@key{K}}
+@item Function: @code{emacskill}, pre-bound to: @key{Ctrl}-@key{K}
 @keindex emacskill
 This function works like @code{deleol}, i.E. it kills all characters from the
 current cursor position to the end of the line, but if issued in an empty
 line, it removes that line. This is just what pressing
-@kbd{@key{Ctrl}-@key{K}} does in the emacs editor.
+@key{Ctrl}-@key{K} does in the emacs editor.
 
-@item Function: @code{killword}, pre-bound to: @kbd{@key{Ctrl}-@key{T}}
+@item Function: @code{killword}, pre-bound to: @key{Ctrl}-@key{T}
 @keindex killword
 Deletes all characters from the current cursor postition to the end of the
 current word.
 
-@item Function: @code{undel}, pre-bound to: @kbd{@key{Ctrl}-@key{U}}
+@item Function: @code{undel}, pre-bound to: @key{Ctrl}-@key{U}
 @keindex undel
 This is a rather limited undelete function. It will restore lines that have
 previously been killed with the @code{delline} function. It will neither
 will it restore single charactres that have been killed with @code{del},
 @code{deleol}, @code{killword} or similar functions.
 
-@item Function: @code{zap}, pre-bound to: @kbd{@key{Alt}-@key{L}}
+@item Function: @code{zap}, pre-bound to: @key{Alt}-@key{L}
 @keindex zap
 This function is useful when using the quoted reply features. It will kill
 all lines below the current cursor position that only contain quoted text
@@ -528,48 +730,98 @@ this to reduce the number of unnecessary quoted lines in your mails!
 
 @end table
 
-@node Text Block Commands, Misc. Editor Commands, Killing Text, Editor Keystrokes
+@node Text Block Commands, Miscellaneous Commands, Killing Text, Editor Keystrokes
 @subsection Editor Functions dealing with Text Blocks
+@cindex cut and paste
+
+These functions provide cut'n'paste functionality:
 
 @table @asis
-
-@item Function: @code{anchor}, pre-bound to: @kbd{@key{Alt}-@key{A}}
+@item Function: @code{anchor}, pre-bound to: @key{Alt}-@key{A}
 This drops an anchor at the current cursor position. You have to drop two
 anchors at different places, then the text between the two anchors will be
 highlighted and treated as a selected text block.
 
-@item Function: @code{cut}, pre-bound to: @kbd{@key{Alt}-@key{C}}
+@item Function: @code{cut}, pre-bound to: @key{Alt}-@key{C}
 This will cut the currently selected text block (use @code{anchor} to select
 a text block), i.E., it will delete all selected characters and store them in
 an internal clipboard.
 
-@item Function: @code{paste}, pre-bound to: @kbd{@key{Alt}-@key{P}}
+@item Function: @code{paste}, pre-bound to: @key{Alt}-@key{P}
 This will paste (insert) the text block from the clipboard (i.E. the last text
 that has been cut with the @code{cut} function) at the current cursor
 position.
 
-@item Function: @code{unblock}, pre-bound to: @kbd{@key{Alt}-@key{U}}
+@item Function: @code{unblock}, pre-bound to: @key{Alt}-@key{U}
 Any anchors that have been dropped with the @code{anchor} function will be
 removed, that is, any previously highlighted text will again be displayed
 normally.
 
 @end table
 
-@node Misc. Editor Commands,  , Text Block Commands, Editor Keystrokes
+@node Miscellaneous Commands,  , Text Block Commands, Editor Keystrokes
 @subsection Miscellaneous Editor Functions
 
 @table @asis
 @item Function: @code{abort}, pre-bound to: @key{ESC}
+@keindex abort
 Aborts the current message without saving.
 
-@item Function: @code{bytecount}, pre-bound to: @kbd{@key{Alt}-@key{B}}
+@item Function: @code{bytecount}, pre-bound to: @key{Alt}-@key{B}
+@keindex bytecount
 Displays the number of bytes and the quote ratio in the current message.
 
-@item Function: @code{edithdr}, pre-bound to: @kbd{@key{Alt}-@key{E}}
+@item Function: @code{edithdr}, pre-bound to: @key{Alt}-@key{E}
+@keindex edithdr
 Lets you edit the header of the message (receipient, sender and subject
 information) in case you made an error when first entering the header.
 
-STILL INCOMPLETE - FIXME!
+@item Function: @code{export}, pre-bound to: @key{Alt}-@key{W}
+@keindex export
+Export the text of the current message to a file or printer port. You will be
+shown a dialog box where you can enter a filename. @xref{Outfile,,The Outfile
+confgiruation keyword}, for an explanation of the modifiers for the filename
+you can use to control how the output file is written.
+
+@item Function: @code{insert}, pre-bound to: @key{Ins}
+@keindex insert
+This function toggles between the ``insert'' and ``overwrite'' modes of the
+editor.
+
+@item Function: @code{import}, pre-bound to: @key{Alt}-@key{I}
+@keindex import
+@cindex importing text files into a message
+Imports text from a text file into the message. You will be shown a dialog
+box where you can enter a filename.
+
+@item Function: @code{null}, not pre-bound to any key.
+@keindex null
+Simply does nothing.
+
+@item Function: @code{oscmd}, pre-bound to: @key{Alt}-@key{1}
+@keindex oscmd
+This allows you to enter an operating system command that will be executed
+directly.
+
+@item Function: @code{setup}, bound to: @key{Alt}-@key{T}
+@keindex setup
+This function allows you to set some (but not all) of the system
+switches. @xref{Switches,,Switches}, for more information.
+
+@item Function: @code{shell}, bound to: @key{Alt}-@key{O}
+@keindex shell
+Call an operating system shell (prompt). Under DOS, @value{MSGED} is swapped
+out of memory for this.
+
+@item Function: @code{toogleq}, bound to: @key{Alt}-@key{Q}
+@keindex toogleq
+This function toogles the quote state of the current line (whatever that
+means ...).
+
+@item Function: @code{quit}, bound to: @key{Alt}-@key{S}
+@keindex quit
+This function saves the message currently being edited and quits the internal
+message editor.
 
 @end table
 
@@ -607,9 +859,9 @@ Key: 0x2100
 Key: 0x0071 (q)
 @end example
 
-I pressed @kbd{@key{Alt}-@key{F}} and @kbd{@key{q}} to reproduce this
-output. From the output, we can see that @kbd{@key{Alt}-@key{F}} has the
-keycode @samp{0x2100}, and @kbd{@key{q}} has the keycode
+I pressed @key{Alt}-@key{F} and @kbd{q} to reproduce this
+output. From the output, we can see that @key{Alt}-@key{F} has the
+keycode @samp{0x2100}, and @kbd{q} has the keycode
 @samp{0x0071}. Keycodes might vary depending on your hardware and operating
 system.
 
@@ -621,14 +873,14 @@ Functions in the internal Message Editor}, for a complete list of available
 keyboard functions in the built-in message editor.
 
 As an example, let us assign the keystroke
-@kbd{@key{Alt}-@key{F}} to the @samp{wordright} editor function:
+@key{Alt}-@key{F} to the @samp{wordright} editor function:
 
 @example
 EditKey 0x2100 wordright
 @end example
 
 With this line in your configuration file, you will be able to press
-@kbd{@key{Alt}-@key{F}} in order to move the cursor to the beginning of the
+@key{Alt}-@key{F} in order to move the cursor to the beginning of the
 next word.
 
 @node Configuration Reference, Keyword Index, Keyboard Reference, Top
@@ -970,8 +1222,8 @@ combinations.
 
 The example from above enables all German national charcters. The only
 relevant @key{Alt} key combination that you will loose by enabling those
-characters is @kbd{@key{Alt}-@key{V}} (``show notes''). This function is also
-available by pressing @kbd{@key{Alt}-@key{K}} (``show kludges''), so that
+characters is @key{Alt}-@key{V} (``show notes''). This function is also
+available by pressing @key{Alt}-@key{K} (``show kludges''), so that
 isn't a problem.
 
 Note that you will have to use an editor that allows the input of national
@@ -1001,7 +1253,7 @@ This keyword is described in the section about manual message area definition
 @end table
 
 This keyword defines the message area where file request messages will be
-written when the @kbd{@key{Ctrl}-@key{F}} function is invoked.  If not
+written when the @key{Ctrl}-@key{F} function is invoked.  If not
 defined, @samp{NETMAIL} is the default areatag.  Only one file request area
 may be defined.
 
@@ -1017,7 +1269,7 @@ may be defined.
 @end table
 
 A function key macro is a predefined keystroke sequence that is assigned on a
-function key. If you press this function key, MsgEd will do exactly what it
+function key. If you press this function key, @value{MSGED} will do exactly what it
 would have done if you have typed in alle the keystrokes of this macro
 manually.
 
@@ -1028,13 +1280,13 @@ are available:
 @item 0
 Execute this macro at program startup.
 @item 1 .. 10
-@kbd{@key{F1}} .. @kbd{@key{F10}}
+@key{F1} .. @key{F10}
 @item 11 .. 20
-@kbd{@key{Shift}-@key{F1}} .. @kbd{@key{Shift}-@key{F10}}
+@key{Shift}-@key{F1} .. @key{Shift}-@key{F10}
 @item 21 .. 30
-@kbd{@key{Ctrl}-@key{F1}} .. @kbd{@key{Ctrl}-@key{F10}}
+@key{Ctrl}-@key{F1} .. @key{Ctrl}-@key{F10}
 @item 1 .. 10
-@kbd{@key{Alt}-@key{F1}} .. @kbd{@key{Alt}-@key{F10}}
+@key{Alt}-@key{F1} .. @key{Alt}-@key{F10}
 @end table
 
 When using key scancodes in a macro, you must escape them with a backslash
@@ -1042,7 +1294,7 @@ character (@samp{\}).  If you wish to have this character appear in the text
 of a message (or if it's needed as part of a path to a file), use two
 backslash characters, like in the example above.
 
-The example from above will assign @kbd{@key{Shift}-@key{F1}} to display a
+The example from above will assign @key{Shift}-@key{F1} to display a
 pick list of the files in the @file{D:\TEXT} directory.  After the list is
 displayed, you may select a file to import into a message while in Msged's
 internal editor.  Note that control characters in a macro such as ^M
@@ -1238,7 +1490,7 @@ names that are correct for the UNIX system.
 You can specify your user name as the @var{name} parameter inside quotation
 marks here. You can specify more than one user name by repeating the
 @code{Name} keyword. Then, you can select which name to use during program
-execution by pressing @kbd{@key{CTRL}-U}.
+execution by pressing @key{CTRL}-@key{U}.
 
 Optionally, you can use the @var{lastread-file} parameter to specify the name
 of the file that stores the lastread pointers in Fido *.MSG areas. This one
@@ -1390,7 +1642,7 @@ an origin line. This feature is called @dfn{origin shuffling}.
 @end table
 
 This keyword is used to configure the default @var{file-name} that should be
-used for exporting mails as text by pressing @kbd{@key{Alt}-@key{W}}. You can
+used for exporting mails as text by pressing @key{Alt}-@key{W}. You can
 change this value at runtime; here, you just configure the default that the
 dialog box will be filled in with. You can specify a normal file name, or you
 can specify a special file name designating a device like for example
@@ -1904,7 +2156,7 @@ the message is saved.  This works only when using the internal editor. If you
 are using an external editor, ChopQuote has no effect.  When set to off, all
 quoted lines are saved, regardless of their location in the message.  Note
 that you can also manually chop quotes by pressing
-@key{@kbd{Alt}-@kbd{L}}. Default: Off.
+@key{Alt}-@key{L}. Default: Off.
 
 @item Confirm
 @findex Confirm
@@ -2004,7 +2256,7 @@ is also turned on. Default: Off.
 @cindex notes, displaying
 If turned on, @value{MSGED} will display kludge line information in message
 reading mode. You can also toogle this switch during program execution by
-pressing @kbd{@key{Alt}-@key{V}}. Unlike in older MsgEd versions, this switch
+pressing @key{Alt}-@key{V}. Unlike in older MsgEd versions, this switch
 does not pertain to origin and/or tear lines. Default: Off.
 
 @item UseLastr
@@ -2040,7 +2292,7 @@ area definition keywords.
 
 @menu
 * Manual Area Definition::      
-* Areafile Parsing::            
+* Areafile Parsing::            Reading areas from a tosser config file.
 @end menu
 
 @node Manual Area Definition, Areafile Parsing, Area Definitions, Area Definitions
@@ -2050,7 +2302,7 @@ area definition keywords.
 @findex Fido
 
 You can manually define a message area by putting a line of the following
-format into your confgiuration file. 
+format into your confgiuration file:
 
 @example
 @var{format} @var{flags} "@var{description}" @var{path} @var{areatag} [@var{address}]
@@ -2218,6 +2470,7 @@ the moderators of the echo areas that you are posting in do not forbid
 
 @contents
 @bye
+
 
 
 
