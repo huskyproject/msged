@@ -163,14 +163,14 @@ int TTScolor(unsigned int Attr)
     {
         printf ("%c%c0m",0x1b,0x5b);  /* reset attributes */
 
-        printf ("\x1b\x5b");
+        fputs ("\x1b\x5b", stdout);
         if (Attr & 0x08)
         {
-            printf ("1;");  /* intensified foreground */
+            fputs ("1;", stdout);  /* intensified foreground */
         }
         if (Attr & 0x80)
         {
-            printf ("5;");  /* intensified background */
+            fputs ("5;", stdout);  /* intensified background */
         }
         printf("%d;%dm", ansi_foreground_colors[Attr&0x7],
                ansi_background_colors[(Attr >> 4) & 0x7]);
@@ -261,7 +261,7 @@ int TTStrWr(unsigned char *s, int row, int col)
     TTgotoxy_noflush(row, col);
     memcpy(&scrnbuf[vrow * term.NCol + vcol], s, len);
     memset(&colbuf[vrow * term.NCol + vcol], color % 256, len);
-    printf("%s", s);
+    fputs(s, stdout);
     TTgotoxy(row, col + len);
     return 1;
 }
@@ -375,7 +375,7 @@ int TTClear(int x1, int y1, int x2, int y2)
 
 int TTEeol(void)
 {
-    printf("\x1b[K"); 
+    fputs("\x1b[K", stdout); 
     fflush(stdout);
     return 1;
 }
@@ -385,6 +385,8 @@ int TTdelay(int mil)
     unused(mil);
     return 0;
 }
+
+static void TTRepaint();
 
 unsigned int TTGetKey(void)
 {
@@ -447,9 +449,14 @@ unsigned int TTGetKey(void)
             }
             else if (isdigit(ch - 128))
             {
-                ch = meta_digits[ch - 128];
+                ch = meta_digits[ch - 128 - '0'];
             }
         }
+    }
+    else if (ch == 12)
+    {
+        TTRepaint();
+        goto skip;
     }
     else if (ch == 0x1b)   /* interprete VT100 escape sequences */
     {
@@ -849,6 +856,36 @@ unsigned int TTGetKey(void)
                 case 'L':
                     ch = Key_Ins;
                     break;
+                case 'M':
+                    ch = Key_F1;
+                    break;
+                case 'N':
+                    ch = Key_F2;
+                    break;
+                case 'O':
+                    ch = Key_F3;
+                    break;
+                case 'P':
+                    ch = Key_F4;
+                    break;
+                case 'Q':
+                    ch = Key_F5;
+                    break;
+                case 'R':
+                    ch = Key_F6;
+                    break;
+                case 'S':
+                    ch = Key_F7;
+                    break;
+                case 'T':
+                    ch = Key_F8;
+                    break;
+                case 'U':
+                    ch = Key_F9;
+                    break;
+                case 'V':
+                    ch = Key_F10;
+                    break;
                 case '[':  /* linux console F1 .. F5 */
                     block_console(0,2);
                     ch = getchar();
@@ -1118,13 +1155,46 @@ int TTkopen(void)
     return 0;
 }
 
+static void TTRepaint(void)
+{
+    int x,y, xp, yp, oldcol, col, c;
+
+    xp = vcol; yp = vrow; oldcol = col = color;
+    TTgotoxy_noflush(0,0);
+    fputs("\x1b[J", stdout);
+    
+    for (y = 0; y < term.NRow; y++)
+    {
+        for (x = 0; x < term.NCol; x++)
+        {
+            if (colbuf[y * term.NCol + x] != col)
+            {
+                TTScolor(col = colbuf[y * term.NCol + x]);
+            }
+            if (x != term.NCol -1 || y != term.NRow -1)
+            {
+                c = scrnbuf[y * term.NCol + x];
+                putchar(c);
+            }
+            else
+            {
+                fputs("\x1b[K", stdout);
+            }
+        }
+    }
+
+    TTgotoxy(yp, xp);
+    TTScolor(oldcol);
+    fflush(stdout);
+}
+
 int TTkclose(void)
 {
 #ifdef SASC
     confin();
-    printf("\x1b[31m");
+    fputs("\x1b[31m", stdout);
 #else
-    printf("\x1b[0m\x1b[1;1H\x1b[J"); 
+    fputs("\x1b[0m\x1b[1;1H\x1b[J", stdout); 
 #endif
 #ifdef UNIX
     tcsetattr(0, 0, &oldtios);
