@@ -16,6 +16,7 @@
 #include "nedit.h"
 #include "charset.h"
 #include "msged.h"
+#include "config.h"
 
 
 static READWRITEMAPS *readmaps=NULL, *writemaps=NULL;
@@ -142,6 +143,7 @@ cleanup:
 void read_charset_maps(void)
 {
     int i;
+    char *fnr, *fnw;
 
     destroy_charset_maps();
 
@@ -155,21 +157,26 @@ void read_charset_maps(void)
         maskout_table.lookuptable[i * 2 + 1] = '?';
     }
 
-    readmaps=read_map("readmaps.dat");
+    fnr = shell_expand(xstrdup(READMAPSDAT));
+    fnw = shell_expand(xstrdup(WRITMAPSDAT));
+    
+    readmaps=read_map(fnr);
     toasc_encountered=0;
-    writemaps=read_map("writmaps.dat");
+    writemaps=read_map(fnw);
     if (readmaps != NULL && writemaps != NULL)
     {
         if (!toasc_encountered)
         {
-           fprintf (stderr, "\nWarning: Writmaps.dat does not contain an entry for converting"
-                            "           back to ASCII!");
+           fprintf (stderr, "\nWarning: %s does not contain an entry for converting\n"
+                            "           back to ASCII!", fnw);
         }
         if (strcmp(readmaps->charset_name, writemaps->charset_name) == 0 &&
             toasc_encountered)
         {
            printf ("\nIncorporating FSC 0054 charset engine. "
                    "Local charset is: %s\n", readmaps->charset_name);
+           xfree(fnr);
+           xfree(fnw);
            return;
         }
         else
@@ -179,6 +186,8 @@ void read_charset_maps(void)
         }
     }
     destroy_charset_maps();
+    xfree(fnr);
+    xfree(fnw);
     return;
 }
 
