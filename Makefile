@@ -19,6 +19,12 @@ ifndef MSGEDCFG
   MSGEDCFG=\"$(CFGDIR)/msged.cfg\"
 endif
 
+# adapt to new huskymak.cfg
+
+ifeq ("$(OBJ)", "")
+  OBJ=$(_OBJ)
+endif
+
 CDEFS=-D$(OSTYPE) -DUSE_MSGAPI -DUSE_FIDOCONFIG -DUNAME=\"$(UNAME)\" \
       $(ADDCDEFS) -DREADMAPSDAT=\"$(CFGDIR)/msged/readmaps.dat\" \
       -DWRITMAPSDAT=\"$(CFGDIR)/msged/writmaps.dat\" \
