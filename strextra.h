@@ -10,6 +10,10 @@
 #ifndef __STREXTRA_H__
 #define __STREXTRA_H__
 
+#ifdef __MINGW32
+#define strncmpi _strncmpi
+#endif
+
 int strncmpi(const char *s, const char *t, size_t n);
 void strdel(char *l, int x);
 #ifndef UNIX

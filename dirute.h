@@ -30,7 +30,7 @@ struct _dta
 #define DIR_ICASE  0           /* HPFS is always case insensitive  */
 #define DIR_NO_WILDCARDS 0x0
 
-#elif defined(__RSXNT__)
+#elif defined(__RSXNT__) || defined (__MINGW32__ )
 
 struct _dta
 {

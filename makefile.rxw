@@ -1,3 +1,18 @@
+# WARNING!!!!
+# SUPPORT FOR MINGW32 AND RSXNT COMPILERS IN MSGED IS CURRENTLY BROKEN!
+# Both Mingw32 and RsxNT compiled Msged versions show strange
+# behaviour. After scanning some areas, they will suddenly return a number of
+# 0 - 0 messages for each area because they fail to open the area, both on
+# NT/i386 and on NT/alpha. The Rsxnt compiled version for i386 will even kill
+# the LAN Requester services when run on NT/alpha with FX32. I don't have an
+# exact idea as to what the problem is, probably something with file locking
+# or directory search services (the latter because it is the only platform
+# dependent code that is shared between rsxnt and mingw32).
+# Until I get to fixing this (which I want to do because it is the only way
+# of getting an Alpha/NT executable for my DEC Multia),
+# THE ONLY RELIABLE WAY OF PRODUCING A WIN32 EXECUTABLE OF MSGED IS TO USE
+# BORLAND C++ 4.0 OR HIHGER WITH MAKEFILE.BCW
+
 # Makefile for building a Windows 95/NT verison of MsgEd using
 # the RSXNT GNU compiler. This can be used to either compile MsgEd
 # on a Windows box or to cross-compile from an OS/2 machine.
