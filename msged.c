@@ -1111,9 +1111,17 @@ static void scan_areas(int all)
     char line[255];
     char temp[20];
     int a;
+    int l;
+    int x,y;
+
+    TTgetxy(&x,&y);
 
     a = SW->area;
-    sprintf(temp, "%ld of %ld", CurArea.current, CurArea.messages);
+    l = strlen(PROG) + strlen(VERSION CLOSED);
+    if (!SW->dmore)
+    {
+        l += sprintf(temp, "%ld of %ld", CurArea.current,  CurArea.messages);
+    }
 
     if (!SW->statbar)
     {
@@ -1152,17 +1160,18 @@ static void scan_areas(int all)
             sprintf(line, "%.40s", CurArea.description);
             if (!SW->dmore)
             {
-                WndPutsn((strlen(PROG) + strlen(VERSION CLOSED) + strlen(temp) + 9),
-                  maxy - 1, maxx - 16, cm[CM_ITXT], "Scanning:");
-                WndWriteStr((strlen(PROG) + strlen(VERSION CLOSED) + strlen(temp) + 19),
-                  maxy - 1, cm[CM_ITXT], line);
+                line[maxx - l - 20] = '\0';
+
+                WndPutsn(l + 9,  maxy - 1, maxx - l - 10, cm[CM_ITXT], "Scanning:");
+                WndWriteStr(l + 19,  maxy - 1, cm[CM_ITXT], line);
             }
             else
             {
-                WndPutsn((strlen(PROG) + strlen(VERSION CLOSED) + 6),
-                  maxy - 1, maxx - 16, cm[CM_ITXT], "Scanning:");
-                WndWriteStr((strlen(PROG) + strlen(VERSION CLOSED) + 16),
-                  maxy - 1, cm[CM_ITXT], line);
+                line[79 - strlen(PROG) -
+                     strlen(VERSION CLOSED) - 16] = '\0';
+
+                WndPutsn(l + 6, maxy - 1, maxx - l - 7, cm[CM_ITXT], "Scanning:");
+                WndWriteStr(l + 16, maxy - 1, cm[CM_ITXT], line);
             }
         }
         else
@@ -1195,13 +1204,11 @@ static void scan_areas(int all)
     {
         if (!SW->dmore)
         {
-            WndPutsn((strlen(PROG) + strlen(VERSION CLOSED) + strlen(temp) + 9),
-              maxy - 1, maxx - 16, cm[CM_ITXT], " ");
+            WndPutsn(l + 9, maxy - 1, maxx - l - 10, cm[CM_ITXT], " ");
         }
         else
         {
-            WndPutsn((strlen(PROG) + strlen(VERSION CLOSED) + 6), maxy - 1,
-              maxx - 16, cm[CM_ITXT], " ");
+            WndPutsn(l + 6, maxy - 1, maxx - l - 7, cm[CM_ITXT], " ");
         }
     }
 
@@ -1218,6 +1225,7 @@ static void scan_areas(int all)
         sprintf(line, "%ld of %ld %c", CurArea.current, CurArea.messages, SC7);
         WndPutsn((strlen(PROG) + strlen(VERSION CLOSED) + 6), maxy - 1, 18, cm[CM_ITXT], line);
     }
+    TTgotoxy(x,y);
 }
 
 /*
@@ -2105,13 +2113,13 @@ int main(int argc, char *argv[])
                 default:
                     if (command & 0xff)
                     {
-                        if (isdigit(command))
+                        if (isdigit(command & 0xff))
                         {
-                            gotomsg(command - 0x30);
+                            gotomsg((command & 0xff)- 0x30);
                         }
                         else
                         {
-                            if (mainckeys[command])
+                            if (mainckeys[command & 0xff])
                             {
                                 (*mainckeys[command & 0xff]) ();
                             }
