@@ -1025,12 +1025,12 @@ unsigned int TTGetKey(void)
                         }
                         break;
                     case 55:
-                        blocE  (¡N@ 3ˇ√&ÇaÅE¿¢	a
-EÛöVÀs_        ch = getkey();
+                        block_console(0,2);
+                        ch = getkey();
                         block_console(0,0);
                         switch (ch)
-  E  (æ∆@ 3ö√&ÇaÅE¿¢	a
-B¿‘Ÿ…˚÷                case '~':
+                        {
+                        case '~':
                             ch = Key_F6; /* xterm / ANSI F6 */
                             break;
                         default:
