@@ -1,0 +1,3 @@
+msged 6.1-stable
+cvs tag: HEAD
+required: fidoconfig 1.4-stable, smapi 2.4-stable
