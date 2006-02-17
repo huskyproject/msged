@@ -7,9 +7,9 @@
 #ifndef __VERSION_H__
 #define __VERSION_H__
 
-#define VERNUM "6.1"
-#define VERPATCH ".2"
-#define VERBRANCH "-current"
+#define VERNUM "6.2"
+#define VERPATCH ".0"
+#define VERBRANCH "-stable"
 #define VERPROJECT "TE"
 
 #ifdef MSDOS

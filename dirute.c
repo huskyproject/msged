@@ -221,7 +221,7 @@ char *dir_getdrivelist(void)
 
 
 
-#elif defined(__RSXNT__) || defined (__MINGW32__) || (defined(_MSC_VER) && (_MSC_VER >= 1200)) || (defined (__WATCOMC__) && defined(__NT__))
+#elif defined(__RSXNT__) || defined(__CYGWIN__) || defined (__MINGW32__) || (defined(_MSC_VER) && (_MSC_VER >= 1200)) || (defined (__WATCOMC__) && defined(__NT__))
 #define WIN32_LEAN_AND_MEAN
 #define NOGDI
 #define NOUSER
@@ -311,7 +311,7 @@ int dir_getdrive(void)
 {
     char buf[FILENAME_MAX + 1];
 
-#if defined (__WATCOMC__) || defined (__MINGW32__) || (defined(_MSC_VER) && (_MSC_VER >= 1200))
+#if defined (__WATCOMC__) || defined(__CYGWIN__) || defined (__MINGW32__) || (defined(_MSC_VER) && (_MSC_VER >= 1200))
     GetCurrentDirectory(FILENAME_MAX, buf);
 #else
     GetCurrentDirectory(buf, FILENAME_MAX);

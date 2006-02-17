@@ -67,7 +67,7 @@ int sopen(char *filename, unsigned int access, int flags,...);
 #define O_BINARY 0x0000
 #endif
 
-#elif defined(UNIX) || defined(__DJGPP__)
+#elif defined(UNIX) || defined(__DJGPP__) || defined(__CYGWIN__)
 
 #include <sys/types.h>
 #include <sys/stat.h>
