@@ -2,10 +2,10 @@
 
 @c %**start of header
 @setfilename msged.info
-@settitle MsgEd TE 6.1 - A Public Domain Fidonet Message Editor
+@settitle MsgEd TE 6.3 - A Public Domain Fidonet Message Editor
 @setchapternewpage odd
 @set MSGED MsgEd TE
-@set VERSION 6.1
+@set VERSION 6.3
 @set EDITION 1
 @defindex kr
 @defindex ke
@@ -175,12 +175,8 @@ Fidoconfig without need for this library. The versions of @samp{smapi}
 libary that can be used to build @value{MSGED} @value{VERSION} are:
 
 @table @file
-@item smapi-stable-010619-src.tar.gz
+@item smapi-stable-2.5-src.tar.gz
 or any other version from this stable branch
-@item smapi-2.0.0-src.tar.gz
-once it will have been released
-@item smapi-2.0.?-src.tar.gz
-practically, any version of smapi 2.0 should do.
 @end table
 
 @emph{Attention:} Most of these ZIP-files contain subdirectories, so you
@@ -402,7 +398,7 @@ Create a temporary working directory and change into it:
 Unzip the Linux distribution archive:
 
 @example
-~/msged-work $ unzip ~/msgte5_l.zip
+~/msged-work $ unzip ~/msgte63l.zip
 @end example
 
 @item
@@ -5092,7 +5088,7 @@ type configuration file, as @value{MSGED} also has it's own fidoconfig access ro
 @node Preparations, Configuring, Compiling, Compiling
 @section Step 1: Preparing the build directories; Obtaining the SMAPI
 Besides the source code of @value{MSGED}, which is supplied in
-@file{msged-te-06.tar.gz} or in @file{MSGTE6_S.ZIP}, you need the source code
+@file{msged-te-6.3.tar.gz} or in @file{MSGTE63S.ZIP}, you need the source code
 of the special edition of the Squish Message API, from here on called
 @dfn{Smapi}, that is required to build @value{MSGED}.
 
@@ -5100,7 +5096,7 @@ Unfortunately, there are a lot of different versions of the Smapi floating
 around. The best choice would be if you would use the same version of Smapi
 that I used to compile the binary releases. for @value{MSGED}
 @value{VERSION}, this is Smapi 1.6.3, which can be obtained as
-@file{smapi-1.6.3.tar.gz} or as @file{smapi163.zip}. You should be able to
+@file{smapi-2.5.tar.gz} or as @file{smapi25.zip}. You should be able to
 obtain these files from the same location you got @value{MSGED} from.
 
 Alternatively, you can use any @emph{newer} Smapi from the Husky development
@@ -5121,9 +5117,9 @@ On OS/2, this could look  as follows:
 [C:\] mkdir compile\smapi
 [C:\] mkdir compile\msged
 [C:\] cd compile\msged
-[C:\COMPILE\MSGED] unzip c:\download\msgte5_s.zip
+[C:\COMPILE\MSGED] unzip c:\download\msgte63s.zip
 [C:\COMPILE\MSGED] cd ..\smapi
-[C:\COMPILE\SMAPI] unzip c:\download\smapiss.zip
+[C:\COMPILE\SMAPI] unzip c:\download\smapi25s.zip
 @end example
 
 If you use the version in @file{.tar.gz} format, you don't need to make the
@@ -5133,8 +5129,8 @@ it would probably look like this:
 @example
 ~ $ mkdir ~/compile
 ~ $ cd ~/compile
-~/compile $ tar xzf ~/downloads/msged-te-06.tar.gz
-~/compile $ tar xzf ~/downloads/smapi-1.6.3.tar.gz
+~/compile $ tar xzf ~/downloads/msged-te-63.tar.gz
+~/compile $ tar xzf ~/downloads/smapi-2.5.tar.gz
 
 @end example
 
