@@ -911,7 +911,7 @@ char *QuickMsgReadText(unsigned long n)
             memset(&text, 0, sizeof text);
             if (read_qtext(textfp, &text) == 1)
             {
-                if (text.length > sizeof text.text)
+                if (text.length > sizeof text.text) /* Always false!!! */
                 {
                     text.length = sizeof text.text;
                 }
