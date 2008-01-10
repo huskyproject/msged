@@ -83,7 +83,7 @@ void make_tearline(char *buf)
 int MakeTemplateMsg(msg * m, msg * oldmsg, int olda, int type)
 {
     LINE *ln = NULL;
-    FILE *fp;
+    FILE *fp = NULL;
     char buf[TEXTLEN], buf2[TEXTLEN];
     char *wdaybuf=NULL, *monthbuf=NULL;
     char **use_month = NULL;
