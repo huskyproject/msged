@@ -1,3 +1,6 @@
+# $Id$
+# Makefile for the husky-integrated build
+#
 ifeq ($(DEBIAN), 1)
 include ../../debian/huskymak.cfg
 else
@@ -28,7 +31,7 @@ endif
 
 endif
 
-html: msged_toc.html
+html: msged.html
 
 dvi: msged.dvi
 
@@ -40,8 +43,8 @@ doc: msged.doc
 # The INF target does only work on OS/2 ...
 inf: msged.inf
 
-msged_toc.html: msged.texi
-	texi2html -split_node -number -menu msged.texi
+msged.html: msged.texi
+	export LC_ALL=C; makeinfo --html --no-split msged.texi
 
 msged.dvi: msged.texi
 	texi2dvi msged.texi

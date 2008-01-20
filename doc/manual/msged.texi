@@ -33,8 +33,9 @@
 @direntry
 * Msged: (msged).               Msged is the message reader and editor.
 @end direntry
+@end ifinfo
 
-@node Top, Overview, (dir), (dir)
+@node Contents, Overview, (dir), (dir)
 @top @value{MSGED}
 This document describes @value{MSGED} @value{VERSION}, a Public Domain
 Fidonet Message Reader and Editor Software for OS/2, Windows, DOS and Unix.
@@ -50,9 +51,8 @@ Fidonet Message Reader and Editor Software for OS/2, Windows, DOS and Unix.
 * Concept Index::               General Index
 * Keyword Index::               Configuration File Keywords Index
 @end menu
-@end ifinfo
 
-@node Overview, Installation, Top, Top
+@node Overview, Installation, Contents, Contents
 @chapter An Overview on @value{MSGED} @value{VERSION}.
 
 @value{MSGED} is a message reader and editor software for Fidonet (and
@@ -99,7 +99,7 @@ developers that haved worked on the Msged sources in the past, the Husky
 developers, and all the beta testers that used the Pre-Release of
 @value{MSGED} @value{VERSION}.
 
-@node Installation, Introduction, Overview, Top
+@node Installation, Introduction, Overview, Contents
 @chapter Installation Procedures and Release Notes
 This chapter provides you with information that is necessary to successfully
 install and use @value{MSGED}. Part of this chapter applies to all versions
@@ -976,7 +976,7 @@ tobi@@bland.fido.de
 
 
 
-@node Introduction, Advanced Concepts, Installation, Top
+@node Introduction, Advanced Concepts, Installation, Contents
 @chapter A quick tour through @value{MSGED}
 This chapter will be supplied in a future revision of this
 document. It will provide an introduction for beginners on using
@@ -986,7 +986,7 @@ As long as this chapter is not provided, you must help yourself using the
 online help. Nearly everywhere in @value{MSGED}, you can press
 @kbd{Alt}-@kbd{H} to get a somewhat context sensitive help screen.
 
-@node Advanced Concepts, Keyboard Reference, Introduction, Top
+@node Advanced Concepts, Keyboard Reference, Introduction, Contents
 @chapter Advanced Concepts in @value{MSGED}
 After you have managed to perform basic functions with @value{MSGED}, like
 reading messages, entering new messages, and replying to messages, this
@@ -1831,7 +1831,7 @@ the message header. If you do a private reply (i.E. a reply to a netmail area
 using @key{Alt}-@key{N}), the e-mail reply will correctly be addressed to
 your favorite internet gateway.
 
-@node Keyboard Reference, Configuration Reference, Advanced Concepts, Top
+@node Keyboard Reference, Configuration Reference, Advanced Concepts, Contents
 @chapter @value{MSGED} Keyboard Reference
 This chapter gives a complete listing of available keystroke combinations in
 @value{MSGED}. After that, you will find instructions on how you can redefine
@@ -2483,7 +2483,7 @@ With this line in your configuration file, you will be able to press
 @key{Alt}-@key{F} in order to move the cursor to the beginning of the
 next word.
 
-@node Configuration Reference, Compiling, Keyboard Reference, Top
+@node Configuration Reference, Compiling, Keyboard Reference, Contents
 @chapter @value{MSGED} Configuration Reference
 @value{MSGED} has to be configured using a configuration file. This is a
 plain text ASCII file containing a list of keywords, settings and switches
@@ -5054,7 +5054,7 @@ another @file{areas.bbs} file, you have to define it separately for
 @end itemize
 
 
-@node Compiling, Concept Index, Configuration Reference, Top
+@node Compiling, Concept Index, Configuration Reference, Contents
 @appendix Compiling the Source Code
 @cindex source code
 @cindex compiling the source code
@@ -5326,11 +5326,11 @@ You have now created all files that are necessary to install
 @value{MSGED}. @xref{Installation,,Installation Procedures and Release
 Notes}, for information on how to install these files.
 
-@node Concept Index, Keyword Index, Compiling, Top
+@node Concept Index, Keyword Index, Compiling, Contents
 @appendix General Index
 @printindex cp
 
-@node Keyword Index,  , Concept Index, Top
+@node Keyword Index,  , Concept Index, Contents
 @appendix Configuration File Keyword Index
 @printindex fn
 
