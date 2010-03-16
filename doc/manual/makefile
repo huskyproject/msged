@@ -1,4 +1,4 @@
-
+default: info
 
 html: msged_toc.html
 
