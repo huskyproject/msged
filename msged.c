@@ -18,6 +18,7 @@
 #include <process.h>
 #endif
 
+#include <smapi/compiler.h>
 #include "addr.h"
 #include "nedit.h"
 #include "maintmsg.h"
