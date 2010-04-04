@@ -28,6 +28,8 @@
 #include <ctype.h>
 #include <time.h>
 #include <smapi/msgapi.h>
+#include <huskylib/huskylib.h>
+#include <fidoconf/fidoconf.h>
 #include "addr.h"
 #include "areas.h"
 #include "dirute.h"
@@ -50,7 +52,6 @@
 #include "environ.h"
 #include "charset.h"
 #include "fconf.h"
-#include "patmat.h"
 #include "group.h"
 
 

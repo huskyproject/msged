@@ -1,0 +1,72 @@
+# $Id$
+#
+# Microsoft Visual C++ Makefile for build msged
+
+
+## include common makefiles part ##
+!include makefile.inc
+!include ../../huskymak.cfg
+
+
+## program options ##
+
+## options for compiler ##
+CINCL   = -I$(H_DIR) -I..\..\huskylib -I..\..\smapi -I..\..\fidoconf
+
+CFLAGS  = $(CFLAGS) $(CINCL) -DUSE_FIDOCONFIG
+
+## options for linker ##
+LFLAGS=$(LFLAGS) $(LINKPDBOPT)$(BINOUT)
+
+LDLLFLAGS=$(LDLLFLAGS) $(LINKNAMEOPT)$(TARGETDLL) \
+          $(LINKPDBOPT)$(BINOUT) /implib:"$(DLLIMPORTLIB)"
+
+# List of HUSKY libraries required to build binary file(s)
+# for executables -- $(LIBSL)
+# for dynamic libraries -- $(DLLS)
+!if $(DYNLIBS)==1
+LIBSL   = $(LIBS) \
+          $(IMPLIBPREFIX)fidoconfig$(DLLSUFFIX)$(_LIB) \
+          $(IMPLIBPREFIX)smapi$(DLLSUFFIX)$(_LIB) \
+          $(IMPLIBPREFIX)husky$(DLLSUFFIX)$(_LIB)
+
+!else
+LIBSL   = $(LIBS) \
+          $(LIBPREFIX)fidoconfig$(LIBSUFFIX)$(_LIB) \
+          $(LIBPREFIX)smapi$(LIBSUFFIX)$(_LIB) \
+          $(LIBPREFIX)husky$(LIBSUFFIX)$(_LIB)
+
+!endif
+
+default:
+        @echo Set DYNLIBS=1 in huskymak.cfg to build dynamic version of program
+        @echo Run 'make all' to build ($(PROGRAMS))
+
+programs: $(PROGRAMS)
+all: programs
+
+$(OBJS) $(PRGOBJS) : $(HEADERS) makefile.mvc ../../huskymak.cfg makefile.inc
+
+{$(_SRC_DIR)}$(_C){$(O)}$(_OBJ)::
+        @$(CC) $(CFLAGS) $(OBJOPT) $(OBJNAMEOPT)$(O) @<<
+$<
+<<
+
+
+$(msged): $(OBJS)
+        @echo Create $(msged)...
+        @$(LINK) $(LFLAGS) $(LINKNAMEOPT)$@ $** $(LIBSL)
+
+#man:
+
+#doc: man
+#       man2html$(_EXE) <..\$(LIBNAME).1 >$(LIBNAME).html
+
+clean:
+        -$(RM) $(RMOPT) VC*$(_PDB)
+        -$(RM) $(RMOPT) $(OBJS:/=\)
+        -$(RM) $(RMOPT) $(PROGRAMSILK:/=\)
+
+distclean: clean
+        -$(RM) $(RMOPT) $(PROGRAMSPDB:/=\)
+        -$(RM) $(RMOPT) $(PROGRAMS:/=\)

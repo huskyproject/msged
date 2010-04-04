@@ -523,7 +523,6 @@ int dir_findnext(struct _dta *dta)
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <ctype.h>
-#include "patmat.h"
 
 #if (defined(__unix__) || defined(unix)) && !defined(USG)
 #include <sys/param.h>          /* used to differentiate BSD from SYSV  */
