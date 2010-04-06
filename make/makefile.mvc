@@ -13,7 +13,7 @@
 ## options for compiler ##
 CINCL   = -I$(H_DIR) -I..\..\huskylib -I..\..\smapi -I..\..\fidoconf
 
-CFLAGS  = $(CFLAGS) $(CINCL) -DUSE_FIDOCONFIG
+CFLAGS  = $(CFLAGS) $(CINCL) -DUSE_FIDOCONFIG -DUSE_MSGAPI
 
 ## options for linker ##
 LFLAGS=$(LFLAGS) $(LINKPDBOPT)$(BINOUT)
