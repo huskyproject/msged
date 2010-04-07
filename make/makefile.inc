@@ -11,7 +11,7 @@
 # DLLPREFIX  dinamic linking library prefix (usually empty)
 # DLLSUFFIX  dinamic linking library suffix (compiler ID or empty)
 # O, B, L, H prefixes to use with names of objects, binaries, libraries and
-headers respectively
+# headers respectively
 
 # Module name
 LIBNAME = msged
