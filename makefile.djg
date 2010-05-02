@@ -1,14 +1,20 @@
 # Legacy Makefile for DOS / DJGPP
 # No support for the Husky build environment.
 
+include ../huskymak.cfg
+
 CC=	$(CROSSPREFIX)gcc
-CFLAGS=	-Wall -I../smapi -I..
+CFLAGS= -Wall -I../smapi -I.. -I../huskylib -I../fidoconf
 CDEFS=	-D__FLAT__ -DUSE_MSGAPI -DNOSEMAPHORES
 COPT=	-O3 -fomit-frame-pointer -fstrength-reduce
-LFLAGS= -L../smapi -s
+LFLAGS= -L../smapi -L../huskylib -L../fidoconf -s
 
 TARGET=	msged32.exe
-MSGAPI= ../smapi/smapidjg.a
+MSGAPI	= ../areafix/make/$(LIBPREFIX)areafix$(LIBSUFFIX)$(_LIB) \
+	  ../fidoconf/make/$(LIBPREFIX)fconf$(LIBSUFFIX)$(_LIB) \
+	  ../smapi/make/$(LIBPREFIX)smapi$(LIBSUFFIX)$(_LIB) \
+	  ../huskylib/make/$(LIBPREFIX)husky$(LIBSUFFIX)$(_LIB)
+
 
 #If you don't have ncurses, try this, but be aware that the Linux termcap
 #database has many bugs. For example, you will lose pseudographics in the
