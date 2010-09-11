@@ -12,6 +12,13 @@ else
   LFLAGS=$(OPTLFLAGS)
 endif
 
+ifeq ("$(OBJ)", "")
+  OBJ=$(_OBJ)
+endif
+ifeq ("$(EXE)", "")
+  EXE=$(_EXE)
+endif
+
 allmaps = \
  1125_866.chs    1125_asc.chs    1125_ibm.chs    1125_is5.chs    1125_koi.chs\
  850_asc.chs     850_ibm.chs     850_iso.chs     866_1125.chs    866_asc.chs \
