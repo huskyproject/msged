@@ -100,7 +100,6 @@ objs=   addr$(OBJ)     \
 	mxbt$(OBJ)     \
 	normalc$(OBJ)  \
 	nshow$(OBJ)    \
-	patmat$(OBJ)   \
 	quick$(OBJ)    \
 	quote$(OBJ)    \
 	readmail$(OBJ) \
