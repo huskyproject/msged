@@ -1,7 +1,7 @@
 # Legacy Makefile for DOS / DJGPP
 # No support for the Husky build environment.
 
-include ../huskymak.cfg
+include ../huskybse/huskymak.cfg.djg
 
 CC=	$(CROSSPREFIX)gcc
 CFLAGS= -Wall -I../smapi -I.. -I../huskylib -I../fidoconf
