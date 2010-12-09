@@ -83,10 +83,12 @@ objs=   addr.o     \
 all: $(TARGET)
 
 .c.o:
-	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
+	@echo Compiling $<
+	@$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
 
 $(TARGET): $(objs)
-	$(CC) $(COPT) $(LFLAGS) -o $(TARGET) $(objs) $(MSGAPI)
+	@echo Create $(TARGET)
+	@$(CC) $(COPT) $(LFLAGS) -o $(TARGET) $(objs) $(MSGAPI)
 
 clean:
 	-del *.o
