@@ -70,8 +70,9 @@ int TTclose(void)
     return 1;
 }
 
-
+#ifdef __GNUC__
 #pragma warn -par
+#endif
 
 /*
  * Configure the terminal. This must be called *before* TTopen!
@@ -85,8 +86,9 @@ int TTconfigure(const char *keyword, const char *value)
     return 0;
 }
 
+#ifdef __GNUC__
 #pragma warn +par
-
+#endif
 
 int TTgotoxy(int row, int col)
 {
