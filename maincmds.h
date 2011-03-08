@@ -42,7 +42,7 @@ void newmsg(void);
 void reply(void);
 void quote(void);
 void reply_oarea(void);
-void replyextra();
+void replyextra(void);
 void followup(void);
 void change(void);
 void Go_Dwn(void);
