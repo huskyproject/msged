@@ -1,3 +1,9 @@
+2011-05-09 Monday 13:12  os2tobi
+
+	* config.c (1.50): Bugfix from Markus: Msged now honors the
+	GroupSettings template index, previously it always used the first
+	template.
+
 2004-09-10 Friday 00:21  os2tobi
 
 	* Makefile (1.22): see last checkin
