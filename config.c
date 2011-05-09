@@ -1257,7 +1257,7 @@ static void SetAreaGroupInfo(AREA * a)
     if (a->group);
     {
         a->username = group_getusername(a->group);
-        a->template = group_getusername(a->group);
+        a->template = group_gettemplate(a->group);
 
 
         if ((a->username >= MAXUSERS) ||
