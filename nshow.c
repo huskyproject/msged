@@ -44,7 +44,16 @@ int InitScreen(void)
     }
     TTopen();
     if (maxx_force)
+    {
         maxx = maxx_force;
+        if (maxx_force > term.NCol)
+        {
+            fprintf(stderr,"Warning: MaxX setting does not seem to match your actual terminal size. Screen\n"
+                           "corruption will result from this. If you know your MaxX setting is correct,\n"
+                           "ignore this message. If you see screen corruption, remove the MaxX setting\n"
+                           "setting from your configuration.\n");
+        } 
+    }
     else
         maxx = term.NCol;
     if (maxx >= sizeof(line))
@@ -52,7 +61,16 @@ int InitScreen(void)
         maxx = sizeof(line) - 1;
     }
     if (maxy_force)
-        maxy = term.NRow;
+    {
+        maxy = maxy_force;
+        if (maxy_force > term.NRow)
+        {
+            fprintf(stderr,"Warning: MaxY setting does not seem to match your actual terminal size. Screen\n"
+                           "corruption will result from this. If you know your MaxY setting is correct,\n"
+                           "ignore this message. If you see screen corruption, remove the MaxY setting\n"
+                           "setting from your configuration.\n");
+        } 
+    }
     else
         maxy = term.NRow;
     hMnScr = WndOpen(0, 0, maxx - 1, maxy - 1, NBDR, 0, cm[CM_NTXT]);
