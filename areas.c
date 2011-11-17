@@ -39,7 +39,7 @@ void BuildList(char ***lst)
 {
     int i;
     AREA *a;
-    char line[181];
+    char line[256];
     unsigned long unread, last;
     int areano;
 
