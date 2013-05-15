@@ -9,12 +9,12 @@ BINDIR=~/bin
 # where to put the recoding table
 #READMAPS=/usr/local/share/msged/readmaps.dat
 #WRITMAPS=/usr/local/share/msged/writmaps.dat
-READMAPS=~/.msged.readmaps
-WRITMAPS=~/.msged.writmaps
+READMAPS=~/.msged/readmaps
+WRITMAPS=~/.msged/writmaps
 
 # where to find the configuration file
 #DEFAULT_CONFIG_FILE=/usr/local/share/msged/msged.cfg
-DEFAULT_CONFIG_FILE=~/.msged
+DEFAULT_CONFIG_FILE=~/.msged/msged.conf
 
 INCDIR=..
 
@@ -106,6 +106,7 @@ distclean: clean
 	-rm $(TARGET) testcons
 
 install: $(TARGET)
+	install -d $(BINDIR) $(READMAPS) $(WRITMAPS)
 	install -c $(IBOPT) $(TARGET) $(BINDIR)
-	install -c bin/latin/readmaps.dat $(READMAPS)
-	install -c bin/latin/writmaps.dat $(WRITMAPS)
+	install -c maps/readmaps.??? $(READMAPS)
+	install -c maps/writmaps.??? $(WRITMAPS)
