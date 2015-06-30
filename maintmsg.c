@@ -345,6 +345,38 @@ int copy_msg(int to_area)
     return to_area;
 }
 
+
+/*
+ *  create bitmask for area type of current area based on
+ *  the area type variables
+ *
+ *  returns:
+ *  - bitmask containing the flags from the area type variables
+ *    bit 0: local
+ *    bit 1: netmail
+ *    bit 2: echomail
+ *    bit 3: uucp
+ *    bit 4: news
+ */
+
+unsigned int get_areatype(void)
+{
+  unsigned int      bitmask;
+
+  bitmask = CurArea.news;
+  bitmask <<= 1;
+  bitmask |= CurArea.uucp;
+  bitmask <<= 1;
+  bitmask |= CurArea.echomail;
+  bitmask <<= 1;
+  bitmask |= CurArea.netmail;
+  bitmask <<= 1;
+  bitmask |= CurArea.local;
+
+  return bitmask;
+}
+
+
 /*
  *  Moves the current message.
  */
@@ -354,6 +386,8 @@ int move_msg(int to_area)
     msg *m;
     int fr_area = SW->grouparea;
     int status;
+    unsigned int sent_flag;             /* flag for sent attribute */
+    unsigned int src_type, dest_type;   /* area types */
 
     if (to_area == -1)
     {
@@ -382,6 +416,8 @@ int move_msg(int to_area)
     m = message;      /* save the msg so we can write it */
     message = NULL;
 
+    src_type = get_areatype();     /* areatype of source area */
+
     set_area(to_area);
     if (!CurArea.status)
     {
@@ -389,7 +425,17 @@ int move_msg(int to_area)
         dispose(m);
         return -1;
     }
-    clear_attributes(&m->attrib);
+
+    dest_type = get_areatype();    /* areatype of destination area */
+
+    /* reset attributes when area types differ */
+    if (src_type != dest_type)
+    {
+        sent_flag = m->attrib.sent;          /* save sent attribute */
+        clear_attributes(&m->attrib);        /* reset all attributes */
+        m->attrib.sent = sent_flag;          /* restore sent attribute */
+    }
+
     CurArea.new = 1;
     release(m->from.domain);
     m->from = CurArea.addr;
@@ -399,7 +445,6 @@ int move_msg(int to_area)
     }
     m->msgnum = MsgnToUid(CurArea.messages) + 1;
     m->new = 1;
-    m->attrib.sent = 0;
     m->attrib.local = 1;
     m->scanned = 0;
     m->attrib.priv = CurArea.priv;
