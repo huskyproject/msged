@@ -2617,11 +2617,11 @@ multiple addresses.
 @item Syntax:
 @code{Alias @var{alias} "@var{name}" @var{address} [@var{attribute} ["@var{subject}"]]}
 @item Examples:
-@code{Alias tobias "Tobias Ernst" 2:2476/418.0}
-@item
-@code{Alias tobi "tobi@@bland.fido.de" UUCP}
-@item
-@code{Alias af "Areafix" 2:2476/418.0 p "PASSWORT"}
+@example
+Alias tobias "Tobias Ernst" 2:2476/418.0
+Alias tobi "tobi@@bland.fido.de" UUCP
+Alias af "Areafix" 2:2476/418.0 p "PASSWORT"
+@end example
 @end table
 
 Aliases are used to simplify the entry of new messages. When you enter a new
@@ -2803,13 +2803,15 @@ in the Unix version,, Colors in the Unix version}, for more information.
 @cindex cursor shape
 @table @asis
 @item Syntax:
-@code{CurStart @var{row}}
-@item
-@code{CurEnd @var{row}}
+@example
+CurStart @var{row}
+CurEnd @var{row}
+@end example
 @item Example:
-@code{CurStart 5}
-@item
-@code{CurEnd 7}
+@example
+CurStart 5
+CurEnd 7
+@end example
 @end table
 
 This keyword is used to control the shape of the cursor (only on terminals
@@ -3058,13 +3060,12 @@ internal editor.  Note that control characters in a macro such as ^M
 @item Syntax:
 @code{Gate @var{what}}
 @item Examples:
-@code{Gate Zones}
-@item
-@code{Gate Domains}
-@item
-@code{Gate Both}
-@item
-@code{Gate Ask}
+@example
+Gate Zones
+Gate Domains
+Gate Both
+Gate Ask
+@end example
 @end table
 
 The @var{what} parameter to the @code{Gate} keyword specifies if
@@ -3214,13 +3215,15 @@ this keyword.
 @cindex screen size
 @table @asis
 @item Syntax:
-@code{MaxX @var{columns}}
-@item
-@code{MaxY @var{rows}}
+@example
+MaxX @var{columns}
+MaxY @var{rows}
+@end example
 @item Example:
-@code{MaxX 80}
-@item
-@code{MaxY 25}
+@example
+MaxX 80
+MaxY 25
+@end example
 @end table
 
 The @code{MaxX} and @code{MaxY} keywords are used to define the screen or
@@ -3274,11 +3277,11 @@ configuration file.
 @item Syntax:
 @code{Name "@var{name}" [@var{lastread-file} [@var{user-offset}]]}
 @item Examples:
-@code{Name "Tobias Ernst"}
-@item
-@code{Name "Joe Sysop"  lastread 0}
-@item
-@code{Name "Jane Sysop" lastread 1}
+@example
+Name "Tobias Ernst"
+Name "Joe Sysop"  lastread 0
+Name "Jane Sysop" lastread 1
+@end example
 @end table
 
 You can specify your user name as the @var{name} parameter inside quotation
@@ -4910,11 +4913,11 @@ The following three keywords are used to perform this goal:
 @item Syntax:
 @code{AreaDesc [@var{how}] @var{what} @dots{}}
 @item Examples:
-@code{AreaDesc tag}
-@item
-@code{AreaDesc tag desc}
-@item
-@code{AreaDesc upper tag asis desc}
+@example
+AreaDesc tag
+AreaDesc tag desc
+AreaDesc upper tag asis desc
+@end example
 @end table
 
 The tosser configuration file normally stores two sorts if information about
@@ -4985,15 +4988,13 @@ the moderators of the echo areas that you are posting in do not forbid
 @item Syntax:
 @code{Areafile @var{type} @var{filename}}
 @item Examples:
-@code{Areafile Fastecho c:\fastecho\fastecho.cfg}
-@item
-@code{Areafile Squish c:\squish\squish.cfg}
-@item
-@code{Areafile AreasBBS c:\squish\areas.bbs}
-@item
-@code{Areafile GEcho c:\gecho}
-@item
-@code{Areafile Fidoconfig}
+@example
+Areafile Fastecho c:\fastecho\fastecho.cfg
+Areafile Squish c:\squish\squish.cfg
+Areafile AreasBBS c:\squish\areas.bbs
+Areafile GEcho c:\gecho
+Areafile Fidoconfig
+@end example
 @end table
 
 This keyword tells @value{MSGED} which areafile to use. The @var{type}
