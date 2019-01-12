@@ -1,27 +1,29 @@
-# Makefile for EMX GCC OMF-style on OS/2
+# Makefile to build MSGED/OS2 with gcc 3.x.x from EMX v0.9d.
 # No support for the Husky build environment
 
-CC=	 gcc
-CFLAGS=	-Wall -Zcrtdll
-CDEFS=	-DOS2 -DUSE_MSGAPI -I..
-COPT=   -O3 -fomit-frame-pointer -fstrength-reduce
+include ../huskymak.cfg
+
+CFLAGS= -Wall -Zcrtdll
+CDEFS=	-DOS2 -DUSE_MSGAPI -I.. -I../smapi -I../huskylib -I../fidoconf
+COPT=	-O3 -fomit-frame-pointer -fstrength-reduce
 LFLAGS= -Zcrtdll -s
 
 .SUFFIXES:
 .SUFFIXES: .c .o
 
-TARGET=	msgedp.exe
-TMPLIB= msgedemx.a
-LIB=    ar
-MSGAPI= ../smapi/smapiemx.a
+TARGET= msged2e.exe
+MSGAPI	= ../areafix/make/$(LIBPREFIX)areafix$(LIBSUFFIX)$(_LIB) \
+	  ../fidoconf/make/$(LIBPREFIX)fidoconfig$(LIBSUFFIX)$(_LIB) \
+	  ../smapi/make/$(LIBPREFIX)smapi$(LIBSUFFIX)$(_LIB) \
+	  ../huskylib/make/$(LIBPREFIX)husky$(LIBSUFFIX)$(_LIB)
 
-objs=	addr.o     \
+objs=	addr.o	   \
 	areas.o    \
-	bmg.o      \
+	bmg.o	   \
 	charset.o  \
 	config.o   \
 	control.o  \
-	date.o     \
+	date.o	   \
 	dialogs.o  \
 	dirute.o   \
 	dlgbox.o   \
@@ -30,29 +32,29 @@ objs=	addr.o     \
 	environ.o  \
 	fconf.o    \
 	fecfg145.o \
-	fido.o     \
+	fido.o	   \
 	filedlg.o  \
 	flags.o    \
-	freq.o     \
+	freq.o	   \
 	gestr120.o \
 	getopts.o  \
 	group.o    \
-	help.o     \
+	help.o	   \
 	helpcmp.o  \
 	helpinfo.o \
-	init.o     \
+	init.o	   \
 	keycode.o  \
-	list.o     \
+	list.o	   \
 	maintmsg.o \
 	makemsgn.o \
 	malloc16.o \
 	memextra.o \
-	menu.o     \
-	misc.o     \
-	mnu.o      \
-	msg.o      \
+	menu.o	   \
+	misc.o	   \
+	mnu.o	   \
+	msg.o	   \
 	msged.o    \
-	mxbt.o     \
+	mxbt.o	   \
 	normalc.o  \
 	nshow.o    \
 	os2scr.o   \
@@ -66,19 +68,20 @@ objs=	addr.o     \
 	textfile.o \
 	timezone.o \
 	userlist.o \
-	vsev.o     \
+	vsev.o	   \
 	vsevops.o  \
-	win.o      \
+	win.o	   \
 	wrap.o
 
 all: $(TARGET)
 
 .c.o:
-	$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
-	$(LIB) r $(TMPLIB) $@
+	@echo Compiling $<
+	@$(CC) $(COPT) $(CFLAGS) $(CDEFS) -c $<
 
 $(TARGET): $(objs)
-	$(CC) $(COPT) $(LFLAGS) -o $(TARGET) msged.o $(TMPLIB) $(MSGAPI)
+	@echo Create $(TARGET)
+	@$(CC) $(COPT) $(LFLAGS) -o $(TARGET) $(objs) $(MSGAPI)
 
 clean:
 	-del *.o
