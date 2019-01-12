@@ -344,13 +344,13 @@ void MakeMsgAttrs(char *buf, struct _attributes *att, int scanned, int times_rea
             att->hub ? "Hub " : nul);
 }
 
-void ShowAddress(ADDRESS * addr, int y)
+void ShowAddress(FIDO_ADDRESS * addr, int y)
 {
     sprintf(line, "  %s", show_address(addr));
     WndPutsn(32, y, 26, cm[CM_HTXT], line);
 }
 
-void ShowNameAddress(char *name, ADDRESS * addr, int y, int newrcvd, int nm_only)
+void ShowNameAddress(char *name, FIDO_ADDRESS * addr, int y, int newrcvd, int nm_only)
 {
     char tmp[256];
 

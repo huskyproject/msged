@@ -57,10 +57,10 @@ static long filelen(FILE * fp)
     return ret;
 }
 
-ADDRESS lookup(char *name, char *fn)
+FIDO_ADDRESS lookup(char *name, char *fn)
 {
     FILE *fp;
-    ADDRESS tmpAddr;
+    FIDO_ADDRESS tmpAddr;
     char buf[200];
     char revName[200];
     char **nodeinfo = NULL;

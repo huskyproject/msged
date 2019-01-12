@@ -82,7 +82,7 @@ int bdos(int func, unsigned reg_dx, unsigned char reg_al);
 #define TEXTLEN 96
 
 static void deleteCrapLine(LINE * crap);
-static int is_sameaddr(ADDRESS * msg);
+static int is_sameaddr(FIDO_ADDRESS * msg);
 
 extern int set_rcvd;      /* located in msged.c */
 
@@ -164,7 +164,7 @@ static void KillTrailingLF(char *text)
 
 msg *readmsg(unsigned long n)
 {
-    ADDRESS a;
+    FIDO_ADDRESS a;
     LINE *l;
     char *tokens[10];
     int headerfin = 0, lastwasfromto = 0;
@@ -815,7 +815,7 @@ void checkrcvd(msg * m, unsigned long n)
     }
 }
 
-static int is_sameaddr(ADDRESS * msg)
+static int is_sameaddr(FIDO_ADDRESS * msg)
 {
     int j;
 
@@ -1600,8 +1600,8 @@ int writemsg(msg * m)
 {
     LINE *curr, *l, *ufrom, *uto, *ureplyto, *xblank,
          *xtear, *xorigin, *ublank;
-    ADDRESS to;
-    ADDRESS from;
+    FIDO_ADDRESS to;
+    FIDO_ADDRESS from;
     unsigned long n;            /* UMSGID msgnum */
     unsigned long length;       /* length in bytes of the message */
     char text[255];             /* buffer useage */

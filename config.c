@@ -3196,7 +3196,7 @@ static void parseconfig(FILE * fp)
             break;
 
         case CFG_ADDRESS:
-            alias = xrealloc(alias, (++SW->aliascount) * sizeof(ADDRESS));
+            alias = xrealloc(alias, (++SW->aliascount) * sizeof(FIDO_ADDRESS));
             alias[SW->aliascount - 1] = parsenode(value);
             break;
 
@@ -3440,7 +3440,7 @@ static void parseconfig(FILE * fp)
             break;
 
         case CFG_DOMAIN:
-            domain_list = xrealloc(domain_list, (++SW->domains) * sizeof(ADDRESS));
+            domain_list = xrealloc(domain_list, (++SW->domains) * sizeof(FIDO_ADDRESS));
             domain_list[SW->domains - 1] = parsenode(value);
             break;
 

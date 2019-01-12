@@ -34,9 +34,9 @@ static int compareNode(void *a, void *b, int len)
         short point;
     }
     v7addr;
-    ADDRESS *addrp;
+    FIDO_ADDRESS *addrp;
 
-    addrp = (ADDRESS *) b;
+    addrp = (FIDO_ADDRESS *) b;
     memcpy(&v7addr, a, len);
     if (len <= 6)
     {
@@ -85,7 +85,7 @@ static int compareNode(void *a, void *b, int len)
  *  Edwards) and was also released to the public domain.
  */
 
-char *v7lookupnode(ADDRESS * faddr, char *name)
+char *v7lookupnode(FIDO_ADDRESS * faddr, char *name)
 {
     long record;
     char index_filename[FILENAME_MAX];
@@ -133,9 +133,9 @@ char *v7lookupnode(ADDRESS * faddr, char *name)
     }
 }
 
-ADDRESS v7lookup(char *name)
+FIDO_ADDRESS v7lookup(char *name)
 {
-    ADDRESS faddr;
+    FIDO_ADDRESS faddr;
     char reverse[80];
     long record;
     char index_filename[FILENAME_MAX];
@@ -190,7 +190,7 @@ ADDRESS v7lookup(char *name)
     return faddr;
 }
 
-char *v7lookupsystem(ADDRESS * faddr, char *system)
+char *v7lookupsystem(FIDO_ADDRESS * faddr, char *system)
 {
     long record;
     int is_point = 0;

@@ -98,14 +98,14 @@ msghandle msgdo[] =
 D_LIST *node_lists = NULL;      /* the nodelists recognized by the system */
 AREA *arealist = NULL;          /* list of areas */
 ALIAS *aliaslist = NULL;        /* list of aliases */
-ADDRESS *domain_list = NULL;    /* list of domain-gates */
-ADDRESS *alias = NULL;          /* list of akas */
+FIDO_ADDRESS *domain_list = NULL; /* list of domain-gates */
+FIDO_ADDRESS *alias = NULL;     /* list of akas */
 msg *message = NULL;            /* current message */
 char **templates = NULL;        /* templates in system */
 char **origins = NULL;          /* origins for the origin shuffler */
 int n_origins = 0;              /* number of origins */
 USER user_list[MAXUSERS];       /* list of users */
-ADDRESS uucp_gate;              /* the uucp gate */
+FIDO_ADDRESS uucp_gate;         /* the uucp gate */
 
 unsigned int *macros[41];       /* function key macros + 1 for autostart */
 int maxx = 80;                  /* maximum screen columns */

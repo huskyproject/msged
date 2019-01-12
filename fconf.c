@@ -58,9 +58,9 @@
 /* Part 1: Fidoconfig routines that use the Fidoconfig library           */
 /* ===================================================================== */
 
-static void fc_copy_address(ADDRESS *a, hs_addr *fc_a)
+static void fc_copy_address(FIDO_ADDRESS *a, hs_addr *fc_a)
 {
-    memset(a, 0, sizeof(ADDRESS));
+    memset(a, 0, sizeof(FIDO_ADDRESS));
 
     a->zone  = fc_a->zone;
     a->net   = fc_a->net;
@@ -200,7 +200,7 @@ void check_fidoconfig(char *option_string)
             {
                 alias = xrealloc(alias,
                                  (SW->aliascount + fc_config->addrCount) *
-                                 sizeof (ADDRESS));
+                                 sizeof (FIDO_ADDRESS));
 
                 for (i = 0; i < fc_config->addrCount; i++)
                 {
@@ -290,7 +290,7 @@ void check_fidoconfig(char *option_string)
 /* ===================================================================== */
 
 static void read_fidoconfig_file (char *filename, int check_type);
-static ADDRESS fc_default_address;
+static FIDO_ADDRESS fc_default_address;
 static int fc_default_address_set;
 static char *fc_config_nodelistDir;
 static char *fc_config_fidoUserList;
@@ -322,7 +322,7 @@ void check_fidoconfig(char *option_string)
     }
 
     fc_default_address_set = 0;
-    memset(&fc_default_address, 0, sizeof(ADDRESS));
+    memset(&fc_default_address, 0, sizeof(FIDO_ADDRESS));
     release (fc_default_address.domain);
 
     fc_config_nodelistDir = NULL;
@@ -405,7 +405,7 @@ static void parse_fc_sysop(void)
 static void parse_fc_address(int check_type)
 {
     char *token = strtok(NULL, " \t");
-    ADDRESS tmp;
+    FIDO_ADDRESS tmp;
     tmp = parsenode(token);
 
     if (token == NULL)
@@ -422,8 +422,8 @@ static void parse_fc_address(int check_type)
 
     if (check_type & 1) /* load settings */
     {
-        alias = xrealloc(alias, (++SW->aliascount) * sizeof(ADDRESS));
-        memset(alias + SW->aliascount - 1, 0, sizeof(ADDRESS));
+        alias = xrealloc(alias, (++SW->aliascount) * sizeof(FIDO_ADDRESS));
+        memset(alias + SW->aliascount - 1, 0, sizeof(FIDO_ADDRESS));
         copy_addr(alias + SW->aliascount - 1, &tmp);
     }
     release(tmp.domain);

@@ -112,7 +112,7 @@ void makefreq(void)
     msg *m = NULL, *n = NULL;
     LINE *line = NULL, *curr = NULL, *l2;
     FREQ *freq = NULL;
-    ADDRESS from;
+    FIDO_ADDRESS from;
     char file[256], txt[236];
     char *desc;
     int k = 0;                   /* UMSGID msgnum */

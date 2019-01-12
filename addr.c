@@ -15,7 +15,7 @@
 #include "msged.h"
 #include "mctype.h"
 
-char *show_address(ADDRESS * a)
+char *show_address(FIDO_ADDRESS * a)
 {
     static char s[80];
     char field[20];
@@ -93,7 +93,7 @@ char *show_address(ADDRESS * a)
     return s;
 }
 
-char *show_4d(ADDRESS * a)
+char *show_4d(FIDO_ADDRESS * a)
 {
     static char s[80];
     char field[20];
@@ -155,9 +155,9 @@ char *show_4d(ADDRESS * a)
     return s;
 }
 
-ADDRESS parsenode(char *t)
+FIDO_ADDRESS parsenode(char *t)
 {
-    ADDRESS tmp;
+    FIDO_ADDRESS tmp;
     int n, point = 0;
     char *s, ch;
 
@@ -467,7 +467,7 @@ char *compose_internet_address (const char *domain, const char *name)
 
 /* routines for AKA matching */
 
-static int match_degree(ADDRESS *pfrom, ADDRESS *pto)
+static int match_degree(FIDO_ADDRESS *pfrom, FIDO_ADDRESS *pto)
 {
     int degree = 0;
     if (pfrom->zone == pto->zone) degree++; else return degree;
@@ -477,7 +477,7 @@ static int match_degree(ADDRESS *pfrom, ADDRESS *pto)
     return degree;
 }
 
-void copy_addr(ADDRESS *pdest, ADDRESS *psource)
+void copy_addr(FIDO_ADDRESS *pdest, FIDO_ADDRESS *psource)
 {
     release(pdest->domain);
 
@@ -488,7 +488,7 @@ void copy_addr(ADDRESS *pdest, ADDRESS *psource)
     }
 }
 
-int akamatch(ADDRESS *pfrom, ADDRESS *pto)
+int akamatch(FIDO_ADDRESS *pfrom, FIDO_ADDRESS *pto)
 {
     int changed = 0, degree, newdegree, i;
 

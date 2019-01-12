@@ -176,7 +176,7 @@ static int findArea(char *tag)
 
 static void reply_msg(int type)
 {
-    ADDRESS tmp;
+    FIDO_ADDRESS tmp;
     msg *hlink;
     msg *m;
     unsigned long t = CurArea.current;
@@ -896,7 +896,7 @@ int ChangeAttrib(msg * m)
  *  corresponding alias.
  */
 
-static char *alias_lookup(ADDRESS * addr, char *isto)
+static char *alias_lookup(FIDO_ADDRESS * addr, char *isto)
 {
     int l;
     char *name;
@@ -978,7 +978,7 @@ char *subj_lookup(char *isto)
  *  Modifications by: Roland Gautschi (V7 lookup code - added flexibility).
  */
 
-static char *addr_lookup(char *name, ADDRESS * tmp)
+static char *addr_lookup(char *name, FIDO_ADDRESS * tmp)
 {
     char *nname;
     char xname[73];
@@ -1077,7 +1077,7 @@ static char *addr_lookup(char *name, ADDRESS * tmp)
     return nname;
 }
 
-static void GetAddress(ADDRESS * addr, char *from, char *subj)
+static void GetAddress(FIDO_ADDRESS * addr, char *from, char *subj)
 {
     char *name, *str;
 
@@ -1129,7 +1129,7 @@ static void GetAddress(ADDRESS * addr, char *from, char *subj)
     release(name);
 }
 
-static int ChangeName(ADDRESS * addr, char *from, char *subj, int y)
+static int ChangeName(FIDO_ADDRESS * addr, char *from, char *subj, int y)
 {
     EVT e;
     char tmp[73], tmp2[73];
@@ -1216,7 +1216,7 @@ static int ChangeName(ADDRESS * addr, char *from, char *subj, int y)
     return ch;
 }
 
-int ChangeAddress(ADDRESS * addr, int y, int nm_len)
+int ChangeAddress(FIDO_ADDRESS * addr, int y, int nm_len)
 {
     EVT e;
     char tmp[41];
@@ -1578,7 +1578,7 @@ void clear_attributes(struct _attributes *h)
 typedef struct
 {
     char *name;
-    ADDRESS addr;
+    FIDO_ADDRESS addr;
 }
 NA;
 

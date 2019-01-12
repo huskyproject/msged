@@ -170,7 +170,7 @@ typedef struct _alias
     char *name;                 /* the real name */
     char *subj;                 /* the subject */
     struct _attributes attrib;  /* the attributes (if used) */
-    ADDRESS addr;               /* the address (if used) */
+    FIDO_ADDRESS addr;          /* the address (if used) */
 }
 ALIAS;
 
@@ -206,7 +206,7 @@ USER;
 typedef struct _area
 {
     int status;                 /* status of the area, 0 = closed, 1 = open */
-    ADDRESS addr;               /* the address to use in this message */
+    FIDO_ADDRESS addr;          /* the address to use in this message */
     char *description;          /* what the user calls the area */
     char *tag;                  /* what confmail calls it! */
     char *path;                 /* where the area is on disk */
@@ -281,8 +281,8 @@ typedef struct _msg
     int times_read;             /* times msg been read */
     int cost;                   /* cost of message */
 
-    ADDRESS to;                 /* destination address of message */
-    ADDRESS from;               /* origin address of message */
+    FIDO_ADDRESS to;            /* destination address of message */
+    FIDO_ADDRESS from;          /* origin address of message */
     LINE *text;                 /* the message buffer */
 }
 msg;
@@ -447,9 +447,9 @@ struct _swv
 extern struct _swv *switch_vars;  /* array of switches */
 extern struct _sv *string_vars;   /* array of strings */
 extern msghandle msgdo[];         /* msgbase functions */
-extern ADDRESS *domain_list;      /* list of ^aDOMAIN lookups */
-extern ADDRESS *alias;            /* list of AKA's */
-extern ADDRESS uucp_gate;         /* closest UUCP gate */
+extern FIDO_ADDRESS *domain_list; /* list of ^aDOMAIN lookups */
+extern FIDO_ADDRESS *alias;       /* list of AKA's */
+extern FIDO_ADDRESS uucp_gate;    /* closest UUCP gate */
 extern D_LIST *node_lists;        /* list of v7 nodelists */
 extern AREA *arealist;            /* list of areas for system */
 extern ALIAS *aliaslist;          /* list of alias lookups */

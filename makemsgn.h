@@ -17,9 +17,9 @@ void replyextra(void);
 void change(void);
 int ChangeAttrib(msg * m);
 char *subj_lookup(char *isto);
-/* void GetAddress(ADDRESS * addr, char *from, char *subj);
-   int ChangeName(ADDRESS * addr, char *from, char *subj, int y); */
-int ChangeAddress(ADDRESS * addr, int y, int nm_len);
+/* void GetAddress(FIDO_ADDRESS * addr, char *from, char *subj);
+   int ChangeName(FIDO_ADDRESS * addr, char *from, char *subj, int y); */
+int ChangeAddress(FIDO_ADDRESS * addr, int y, int nm_len);
 int ChangeSubject(char *subj);
 int EditHeader(msg * m);
 void clear_attributes(struct _attributes *h);
