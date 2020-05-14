@@ -42,7 +42,7 @@ static void go_tom(void);
 static void nada(void);
 static void emacskill(void);
 static void killeol(void);
-static void undelete(void);
+static void do_undelete(void);
 static void bytecount(void);
 static void do_help(void);
 static void doscmd(void);
@@ -59,7 +59,7 @@ void (*editckeys[256]) (void) =
 {
     NULL, NULL, NULL, NULL, e_uudecode, NULL, NULL, NULL,     /* 0 */
     backspace, tabit, NULL, emacskill, NULL, newline, NULL, NULL,  /* 8 */
-    NULL, NULL, NULL, NULL, delword, undelete, NULL, NULL,    /* 10 */
+    NULL, NULL, NULL, NULL, delword, do_undelete, NULL, NULL,    /* 10 */
     NULL, delete_line, NULL, die, NULL, NULL, NULL, NULL,     /* 18 */
     NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,           /* 20 */
     NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,           /* 28 */
@@ -157,7 +157,7 @@ const struct _command editcmds[] =
     {"shell", shellos},
     {"gobol", go_bol},
     {"insert", toggle_ins},
-    {"undel", undelete},
+    {"undel", do_undelete},
     {"tab", tabit},
     {"null", nada},
     {"top", go_tos},

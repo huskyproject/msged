@@ -1671,11 +1671,11 @@ static LINE *udel_delete_q(void)
 }
 
 /*
- *  undelete(); If there is a line to undelete, undeletes the last line
+ *  do_undelete(); If there is a line to undelete, undeletes the last line
  *  deleted and inserts it before the current line.
  */
 
-static void undelete(void)
+static void do_undelete(void)
 {
     LINE *nl;
 
