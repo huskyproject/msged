@@ -3,6 +3,9 @@
 # include Husky-Makefile-Config
 ifeq ($(DEBIAN), 1)
 include debian/huskymak.cfg
+else ifdef RPM_BUILD_ROOT
+# RPM build requires all files to be in the source directory
+include huskymak.cfg
 else
 include ../huskymak.cfg
 endif
@@ -157,32 +160,44 @@ distclean: clean
 
 ifeq ($(OSTYPE), UNIX)
 
+ifdef RPM_BUILD_ROOT
+install: $(TARGET) msghelp.dat
+	-$(MKDIR) $(MKDIROPT) $(DESTDIR)$(BINDIR)
+	$(INSTALL) $(IBOPT) $(TARGET) $(DESTDIR)$(BINDIR)
+	-$(MKDIR) $(MKDIROPT) $(DESTDIR)$(CFGDIR)
+	-$(MKDIR) $(MKDIROPT) $(DESTDIR)$(CFGDIR)/msged
+	$(INSTALL) $(IIOPT) msghelp.dat $(DESTDIR)$(CFGDIR)/msged
+	(cd maps && $(MAKE) -f makefile.husky install)
+	(cd doc && $(MAKE) -f makefile.husky install)
+	(cd doc && cd manual && $(MAKE) -f makefile.husky install)
+else
 install: $(TARGET) msghelp.dat testcons$(EXE)
-	-$(MKDIR) $(MKDIROPT) $(BINDIR)
-	$(INSTALL) $(IBOPT) $(TARGET) $(BINDIR)
-	-$(MKDIR) $(MKDIROPT) $(CFGDIR)
-	$(INSTALL) $(IIOPT) msghelp.dat $(CFGDIR)
+	-$(MKDIR) $(MKDIROPT) $(DESTDIR)$(BINDIR)
+	$(INSTALL) $(IBOPT) $(TARGET) $(DESTDIR)$(BINDIR)
+	-$(MKDIR) $(MKDIROPT) $(DESTDIR)$(CFGDIR)
+	$(INSTALL) $(IIOPT) msghelp.dat $(DESTDIR)$(CFGDIR)
 	(cd maps && $(MAKE) -f makefile.husky install)
 	(cd doc && cd manual && $(MAKE) -f makefile.husky install)
-	$(INSTALL) $(IBOPT) testcons$(EXE) $(BINDIR)
+	$(INSTALL) $(IBOPT) testcons$(EXE) $(DESTDIR)$(BINDIR)
+endif
 
 else
 
 install: $(TARGET) msghelp.dat
-	-$(MKDIR) $(MKDIROPT) $(BINDIR)
-	$(INSTALL) $(IBOPT) $(TARGET) $(BINDIR)
-	-$(MKDIR) $(MKDIROPT) $(CFGDIR)
-	-$(MKDIR) $(MKDIROPT) $(CFGDIR)/msged
-	$(INSTALL) $(IIOPT) msghelp.dat $(CFGDIR)/msged
+	-$(MKDIR) $(MKDIROPT) $(DESTDIR)$(BINDIR)
+	$(INSTALL) $(IBOPT) $(TARGET) $(DESTDIR)$(BINDIR)
+	-$(MKDIR) $(MKDIROPT) $(DESTDIR)$(CFGDIR)
+	-$(MKDIR) $(MKDIROPT) $(DESTDIR)$(CFGDIR)/msged
+	$(INSTALL) $(IIOPT) msghelp.dat $(DESTDIR)$(CFGDIR)/msged
 	(cd maps && $(MAKE) -f makefile.husky install)
 	(cd doc && cd manual && $(MAKE) -f makefile.husky install)
 
 endif
 
 uninstall:
-	-$(RM) $(RMOPT) $(BINDIR)$(DIRSEP)$(TARGET)
-	-$(RM) $(RMOPT) $(BINDIR)$(DIRSEP)testcons$(EXE) $(BINDIR)
-	-$(RM) $(RMOPT) $(CFGDIR)$(DIRSEP)msghelp.dat
+	-$(RM) $(RMOPT) $(DESTDIR)$(BINDIR)$(DIRSEP)$(TARGET)
+	-$(RM) $(RMOPT) $(DESTDIR)$(BINDIR)$(DIRSEP)testcons$(EXE) $(BINDIR)
+	-$(RM) $(RMOPT) $(DESTDIR)$(CFGDIR)$(DIRSEP)msghelp.dat
 	(cd maps && $(MAKE) -f makefile.husky uninstall)
 	(cd doc && cd manual && $(MAKE) -f makefile.husky uninstall)
 

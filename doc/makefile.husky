@@ -1,0 +1,23 @@
+ifdef RPM_BUILD_ROOT
+# RPM build requires all files to be in the source directory
+include ../huskymak.cfg
+
+vernum = $(shell grep -Po '\#define\s+VERNUM\s+"\K\d+\.\d+' ../version.h)
+verpatch = $(shell grep -Po '\#define\s+VERPATCH\s+"\K\.\d+' ../version.h)
+version = $(vernum)$(verpatch)
+OURDOCDIR = msged-$(version)
+
+install:
+	-$(MKDIR) $(MKDIROPT) $(DESTDIR)$(DOCDIR)
+	-$(MKDIR) $(MKDIROPT) $(DESTDIR)$(DOCDIR)$(DIRSEP)$(OURDOCDIR)
+	$(INSTALL) $(IMOPT) sample.* $(DESTDIR)$(DOCDIR)$(DIRSEP)$(OURDOCDIR)
+	$(INSTALL) $(IMOPT) scheme.* $(DESTDIR)$(DOCDIR)$(DIRSEP)$(OURDOCDIR)
+	$(INSTALL) $(IMOPT) whatsnew.txt $(DESTDIR)$(DOCDIR)$(DIRSEP)$(OURDOCDIR)
+
+uninstall:
+	-$(RM) $(DESTDIR)$(DOCDIR)$(DIRSEP)$(OURDOCDIR)$(DIRSEP)sample.*
+	-$(RM) $(DESTDIR)$(DOCDIR)$(DIRSEP)$(OURDOCDIR)$(DIRSEP)scheme.*
+	-$(RM) $(DESTDIR)$(DOCDIR)$(DIRSEP)$(OURDOCDIR)$(DIRSEP)whatsnew.txt
+	-$(RMDIR) $(DESTDIR)$(DOCDIR)$(DIRSEP)$(OURDOCDIR)
+
+endif

@@ -1,5 +1,8 @@
 ifeq ($(DEBIAN), 1)
 include ../../debian/huskymak.cfg
+else ifdef RPM_BUILD_ROOT
+# RPM build requires all files to be in the source directory
+include ../../huskymak.cfg
 else
 include ../../../huskymak.cfg
 endif
@@ -48,6 +51,7 @@ msged.dvi: msged.texi
 
 msged.info: msged.texi
 	makeinfo --no-split  msged.texi
+	gzip -c msged.info > msged.info.gz
 
 msged.doc: msged.texi
 	texi2txt msged.texi
@@ -89,16 +93,16 @@ msged.inf: msged.texi clean
 	texi2i msged.texi
 
 install-info: info
-	-$(MKDIR) $(MKDIROPT) $(INFODIR)
-	$(INSTALL) $(IMOPT) msged.info $(INFODIR)
-	-install-info --info-dir=$(INFODIR)  $(INFODIR)$(DIRSEP)msged.info
+	-$(MKDIR) $(MKDIROPT) $(DESTDIR)$(INFODIR)
+	$(INSTALL) $(IMOPT) msged.info.gz $(DESTDIR)$(INFODIR)
+	-install-info --info-dir=$(DESTDIR)$(INFODIR)  $(DESTDIR)$(INFODIR)$(DIRSEP)msged.info.gz
 
 install-html: html
-	-$(MKDIR) $(MKDIROPT) $(HTMLDIR)
-	$(INSTALL) $(IMOPT) msged_*.html $(HTMLDIR)
+	-$(MKDIR) $(MKDIROPT) $(DESTDIR)$(HTMLDIR)
+	$(INSTALL) $(IMOPT) msged_*.html $(DESTDIR)$(HTMLDIR)
 
 uninstall:
-	-install-info --remove --info-dir=$(INFODIR) $(INFODIR)$(DIRSEP)msged.info
-	-$(RM) $(INFODIR)$(DIRSEP)msged.info
-	-$(RM) $(HTMLDIR)$(DIRSEP)msged_*.html
+	-install-info --remove --info-dir=$(DESTDIR)$(INFODIR) $(DESTDIR)$(INFODIR)$(DIRSEP)msged.info.gz
+	-$(RM) $(DESTDIR)$(INFODIR)$(DIRSEP)msged.info.gz
+	-$(RM) $(DESTDIR)$(HTMLDIR)$(DIRSEP)msged_*.html
 
