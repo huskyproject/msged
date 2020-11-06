@@ -97,9 +97,17 @@ Msged is a FTN mail reader from the Husky Project
 %install
 umask 022
 %if %{with static}
-    %make_install
+    %if %{with debug}
+        %make_install DEBUG=1
+    %else
+        %make_install
+    %endif
 %else
-    %make_install DYNLIBS=1
+    %if %{with debug}
+        %make_install DYNLIBS=1 DEBUG=1
+    %else
+        %make_install DYNLIBS=1
+    %endif
 %endif
 chmod -R a+rX,u+w,go-w %buildroot
 
