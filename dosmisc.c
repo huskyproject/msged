@@ -21,7 +21,7 @@ long corerem(void)
 
 long corerem(void)
 {
-    return ((long)dosavmem() * 16L);
+    return (long)dosavmem() * 16L;
 }
 
 #endif

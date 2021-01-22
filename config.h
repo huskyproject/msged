@@ -12,19 +12,19 @@
 
 struct colorverb
 {
-    char *name;
-    int color;
+    char * name;
+    int    color;
 };
 
-char *makeareadesc(char*, char *);
-char *strip_geese_feet(char *s);
-char *striplwhite(char *str);
-char *striptwhite(char *str);
-char *skip_to_blank(char *str);
-void kill_trail_slash(char *str);
-void opening(char *cfgfile, char *areafile);
-void parse_tokens(char *str, char *tokens[], int num);
-char *shell_expand(char *str);  /* expands ~ to home dir etc. */
-char *pathcvt(char *);
+char * makeareadesc(char *, char *);
+char * strip_geese_feet(char * s);
+char * striplwhite(char * str);
+char * striptwhite(char * str);
+char * skip_to_blank(char * str);
+void kill_trail_slash(char * str);
+void opening(char * cfgfile, char * areafile);
+void parse_tokens(char * str, char * tokens[], int num);
+char * shell_expand(char * str); /* expands ~ to home dir etc. */
+char * pathcvt(char *);
 
 #endif

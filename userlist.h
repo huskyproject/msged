@@ -9,8 +9,8 @@
 
 #ifndef __USERLIST_H__
 #define __USERLIST_H__
- 
-FIDO_ADDRESS lookup(char *name, char *fn);
-void makeReverse(char *revName, char *name);
+
+FIDO_ADDRESS lookup(char * name, char * fn);
+void makeReverse(char * revName, char * name);
 
 #endif

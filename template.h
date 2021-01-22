@@ -10,6 +10,6 @@
 #define __TEMPLATE_H__
 
 int MakeTemplateMsg(msg * m, msg * oldmsg, int olda, int type);
-void make_tearline(char *buf);
+void make_tearline(char * buf);
 
 #endif

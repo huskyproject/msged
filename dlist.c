@@ -8,41 +8,47 @@
 #include "dlist.h"
 #include "unused.h"
 
-DLIST *dlistInit(void)
+DLIST * dlistInit(void)
 {
-    DLIST *p_list;
+    DLIST * p_list;
+
     p_list = malloc(sizeof *p_list);
-    if (p_list != NULL)
+
+    if(p_list != NULL)
     {
-        p_list->L_first = NULL;
-        p_list->L_last = NULL;
+        p_list->L_first    = NULL;
+        p_list->L_last     = NULL;
         p_list->L_elements = 0L;
     }
+
     return p_list;
 }
 
 void dlistTerm(DLIST * p_list)
 {
-    DLISTNODE *p_node;
-    if (p_list != NULL)
+    DLISTNODE * p_node;
+
+    if(p_list != NULL)
     {
-        if (p_list->L_elements != 0)
+        if(p_list->L_elements != 0)
         {
             p_node = p_list->L_first;
-            while (p_node != NULL)
+
+            while(p_node != NULL)
             {
                 p_list->L_first = p_node->L_next;
                 free(p_node);
                 p_node = p_list->L_first;
             }
         }
+
         free(p_list);
     }
 }
 
-void *dlistGetElement(DLISTNODE * p_node)
+void * dlistGetElement(DLISTNODE * p_node)
 {
-    if (p_node != NULL)
+    if(p_node != NULL)
     {
         return p_node->L_element;
     }
@@ -52,30 +58,33 @@ void *dlistGetElement(DLISTNODE * p_node)
     }
 }
 
-void dlistSetElement(DLISTNODE * p_node, void *p_element)
+void dlistSetElement(DLISTNODE * p_node, void * p_element)
 {
-    if (p_node != NULL)
+    if(p_node != NULL)
     {
         p_node->L_element = p_element;
     }
 }
 
-DLISTNODE *dlistCreateNode(void *p_element)
+DLISTNODE * dlistCreateNode(void * p_element)
 {
-    DLISTNODE *p_node;
+    DLISTNODE * p_node;
+
     p_node = malloc(sizeof *p_node);
-    if (p_node != NULL)
+
+    if(p_node != NULL)
     {
-        p_node->L_next = NULL;
-        p_node->L_prev = NULL;
+        p_node->L_next    = NULL;
+        p_node->L_prev    = NULL;
         p_node->L_element = p_element;
     }
+
     return p_node;
 }
 
 void dlistDeleteNode(DLISTNODE * p_node)
 {
-    if (p_node != NULL)
+    if(p_node != NULL)
     {
         free(p_node);
     }
@@ -83,18 +92,22 @@ void dlistDeleteNode(DLISTNODE * p_node)
 
 void dlistAddNode(DLIST * p_list, DLISTNODE * p_node)
 {
-    if (p_list != NULL)
+    if(p_list != NULL)
     {
         p_node->L_prev = p_list->L_last;
-        if (p_node->L_prev != NULL)
+
+        if(p_node->L_prev != NULL)
         {
             p_list->L_last->L_next = p_node;
         }
+
         p_node->L_next = NULL;
-        if (p_list->L_first == NULL)
+
+        if(p_list->L_first == NULL)
         {
             p_list->L_first = p_node;
         }
+
         p_list->L_last = p_node;
         p_list->L_elements++;
     }
@@ -102,37 +115,41 @@ void dlistAddNode(DLIST * p_list, DLISTNODE * p_node)
 
 void dlistDropNode(DLIST * p_list, DLISTNODE * p_node)
 {
-    DLISTNODE *poldnext;
+    DLISTNODE * poldnext;
 
     poldnext = p_node->L_next;
 
-    if (p_list != NULL)
+    if(p_list != NULL)
     {
-        if (p_list->L_first == p_node)
+        if(p_list->L_first == p_node)
         {
             p_list->L_first = p_node->L_next;
-	}
-        if (p_list->L_last == p_node)
+        }
+
+        if(p_list->L_last == p_node)
         {
             p_list->L_last = p_node->L_prev;
         }
-        if (p_node->L_next != NULL)
+
+        if(p_node->L_next != NULL)
         {
             (p_node->L_next)->L_prev = p_node->L_prev;
-            p_node->L_next = NULL;
+            p_node->L_next           = NULL;
         }
-        if (p_node->L_prev != NULL)
+
+        if(p_node->L_prev != NULL)
         {
             p_node->L_prev->L_next = poldnext;
-            p_node->L_prev = NULL;
+            p_node->L_prev         = NULL;
         }
+
         p_list->L_elements--;
     }
-}
+} /* dlistDropNode */
 
-DLISTNODE *dlistTravFirst(DLIST * p_list)
+DLISTNODE * dlistTravFirst(DLIST * p_list)
 {
-    if (p_list != NULL)
+    if(p_list != NULL)
     {
         return p_list->L_first;
     }
@@ -142,9 +159,9 @@ DLISTNODE *dlistTravFirst(DLIST * p_list)
     }
 }
 
-DLISTNODE *dlistTravLast(DLIST * p_list)
+DLISTNODE * dlistTravLast(DLIST * p_list)
 {
-    if (p_list != NULL)
+    if(p_list != NULL)
     {
         return p_list->L_last;
     }
@@ -154,9 +171,9 @@ DLISTNODE *dlistTravLast(DLIST * p_list)
     }
 }
 
-DLISTNODE *dlistTravPrevious(DLISTNODE * p_node)
+DLISTNODE * dlistTravPrevious(DLISTNODE * p_node)
 {
-    if (p_node != NULL)
+    if(p_node != NULL)
     {
         return p_node->L_prev;
     }
@@ -166,9 +183,9 @@ DLISTNODE *dlistTravPrevious(DLISTNODE * p_node)
     }
 }
 
-DLISTNODE *dlistTravNext(DLISTNODE * p_node)
+DLISTNODE * dlistTravNext(DLISTNODE * p_node)
 {
-    if (p_node != NULL)
+    if(p_node != NULL)
     {
         return p_node->L_next;
     }
@@ -178,34 +195,38 @@ DLISTNODE *dlistTravNext(DLISTNODE * p_node)
     }
 }
 
-int dlistCompareNodes(DLISTNODE * p_node1, DLISTNODE * p_node2, int (*fcmp) (const void *, const void *))
+int dlistCompareNodes(DLISTNODE * p_node1, DLISTNODE * p_node2, int (* fcmp)(const void *,
+                                                                             const void *))
 {
     return fcmp(p_node1->L_element, p_node2->L_element);
 }
 
 void dlistSwapNodes(DLISTNODE * p_node1, DLISTNODE * p_node2)
 {
-    DLISTNODE *p_temp;
-    if (p_node1 != NULL && p_node2 != NULL)
+    DLISTNODE * p_temp;
+
+    if(p_node1 != NULL && p_node2 != NULL)
     {
-        p_temp = p_node1->L_next;
+        p_temp          = p_node1->L_next;
         p_node1->L_next = p_node2->L_next;
         p_node2->L_next = p_temp;
-        p_temp = p_node1->L_prev;
+        p_temp          = p_node1->L_prev;
         p_node1->L_prev = p_node2->L_prev;
         p_node2->L_prev = p_temp;
     }
 }
 
-DLISTNODE *dlistSearch(DLIST * p_list, void *p_element, int (*fcmp) (const void *, const void *))
+DLISTNODE * dlistSearch(DLIST * p_list, void * p_element, int (* fcmp)(const void *, const void *))
 {
-    DLISTNODE *p_node;
-    if (p_list != NULL && p_list->L_elements != 0)
+    DLISTNODE * p_node;
+
+    if(p_list != NULL && p_list->L_elements != 0)
     {
         p_node = p_list->L_first;
-        while (p_node != NULL)
+
+        while(p_node != NULL)
         {
-            if (fcmp(p_node->L_element, p_element) == 0)
+            if(fcmp(p_node->L_element, p_element) == 0)
             {
                 return p_node;
             }
@@ -215,12 +236,13 @@ DLISTNODE *dlistSearch(DLIST * p_list, void *p_element, int (*fcmp) (const void 
             }
         }
     }
+
     return NULL;
 }
 
 unsigned long dlistTotalNodes(DLIST * p_list)
 {
-    if (p_list != NULL)
+    if(p_list != NULL)
     {
         return p_list->L_elements;
     }
@@ -241,11 +263,10 @@ int dlistIsEmpty(DLIST * p_list)
 
 int main(void)
 {
-    DLIST *p_list;
-    DLISTNODE *p_node;
+    DLIST * p_list;
+    DLISTNODE * p_node;
 
     p_list = dlistInit();
-
     p_node = dlistCreateNode("One banana");
     dlistAddNode(p_list, p_node);
     p_node = dlistCreateNode("Two banana");
@@ -256,16 +277,15 @@ int main(void)
     dlistAddNode(p_list, p_node);
     p_node = dlistCreateNode("Five banana");
     dlistAddNode(p_list, p_node);
-
     p_node = dlistTravFirst(p_list);
-    while (p_node != NULL)
+
+    while(p_node != NULL)
     {
-        printf("%s\n", (char *) dlistGetElement(p_node));
+        printf("%s\n", (char *)dlistGetElement(p_node));
         p_node = dlistTravNext(p_node);
     }
-
     dlistTerm(p_list);
     return 0;
 }
 
-#endif
+#endif /* ifdef TEST */

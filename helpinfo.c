@@ -15,59 +15,67 @@
 #include "help.h"
 #include "memextra.h"
 
-static char *line = NULL;
-static FILE *fp;
+static char * line = NULL;
+static FILE * fp;
 static HFileHdr Fheader;
-static HTopicHdr *topics;
+static HTopicHdr * topics;
 static int setup, CurrTopic;
 static int numTopics;
-
-static void helpinfoInit(char *fnm)
+static void helpinfoInit(char * fnm)
 {
     int i;
+
     setup = 0;
-    fp = fopen(fnm, "rb");
-    if (fp == NULL)
+    fp    = fopen(fnm, "rb");
+
+    if(fp == NULL)
     {
-        fprintf(stderr, "HELPINFO: Error opening help source file, '%s' : %s\n",
-          fnm, strerror(errno));
+        fprintf(stderr, "HELPINFO: Error opening help source file, '%s' : %s\n", fnm,
+                strerror(errno));
         return;
     }
+
     fread(&Fheader, sizeof Fheader, 1, fp);
     numTopics = (Fheader.topics[1] << 8) | Fheader.topics[0];
-    topics = calloc(numTopics, sizeof(HTopicHdr));
-    if (topics == NULL)
+    topics    = calloc(numTopics, sizeof(HTopicHdr));
+
+    if(topics == NULL)
     {
         fprintf(stderr, "HELPINFO: Memory allocation failure!\n");
         return;
     }
-    for (i = 0; i < numTopics; i++)
+
+    for(i = 0; i < numTopics; i++)
     {
         fread(&topics[i], sizeof *topics, 1, fp);
     }
-    setup = 1;
+    setup     = 1;
     CurrTopic = 0;
-}
+} /* helpinfoInit */
 
 static void helpinfoDisplayPage(long offset)
 {
-    char *s;
+    char * s;
 
     fseek(fp, offset, SEEK_SET);
 
-    if (line == NULL) line = xmalloc(255);
-
-    while (fgets(line, 254, fp) != NULL)
+    if(line == NULL)
     {
-        if (!strncmp(line, "*Page", 5) || !strncmp(line, "*End", 4))
+        line = xmalloc(255);
+    }
+
+    while(fgets(line, 254, fp) != NULL)
+    {
+        if(!strncmp(line, "*Page", 5) || !strncmp(line, "*End", 4))
         {
             break;
         }
 
-        if (*line != '\n')
+        if(*line != '\n')
         {
             s = strchr(line, '\n');
-            if (s != NULL)
+
+            if(s != NULL)
             {
                 *s = '\0';
             }
@@ -75,81 +83,83 @@ static void helpinfoDisplayPage(long offset)
             printf("%s\n", line);
         }
     }
-}
+} /* helpinfoDisplayPage */
 
 static void helpinfoDoHelp(int topic)
 {
     long offset[20];
     int page, pages;
 
-    if (line == NULL) line = xmalloc(255);
+    if(line == NULL)
+    {
+        line = xmalloc(255);
+    }
 
-    if (topic < 0 || topic > numTopics)
+    if(topic < 0 || topic > numTopics)
     {
         return;
     }
+
     fseek(fp, topics[topic].offset, SEEK_SET);
 
-    if (fgets(line, 254, fp) == NULL)
+    if(fgets(line, 254, fp) == NULL)
     {
         fprintf(stderr, "HELPINFO: Input line too long!\n");
         return;
     }
 
-    if (strncmp(line, "*Begin", 6))
+    if(strncmp(line, "*Begin", 6))
     {
         return;
     }
 
-    pages = 1;
+    pages             = 1;
     offset[pages - 1] = ftell(fp);
 
-    while (1)
+    while(1)
     {
-        if (fgets(line, 254, fp) == NULL)
+        if(fgets(line, 254, fp) == NULL)
         {
             fprintf(stderr, "HELPINFO: Input line too long!\n");
             break;
         }
 
-        if (!strncmp(line, "*End", 4))
+        if(!strncmp(line, "*End", 4))
         {
             break;
         }
 
-        if (!strncmp(line, "*Page", 5))
+        if(!strncmp(line, "*Page", 5))
         {
             pages++;
             offset[pages - 1] = ftell(fp);
         }
     }
-
     fseek(fp, offset[0], SEEK_SET);
-
     page = 0;
 
-    while (page < pages)
+    while(page < pages)
     {
         helpinfoDisplayPage(offset[page++]);
     }
-}
+} /* helpinfoDoHelp */
 
-void helpinfo(int argc, char *argv[])
+void helpinfo(int argc, char * argv[])
 {
     int curr;
 
     puts("Msged help file decompiler");
 
-    if (argc < 2)
+    if(argc < 2)
     {
         printf("\nUsage: MSGED -hi <source>\n");
         return;
     }
 
     helpinfoInit(argv[1]);
-
     curr = 0;
-    while (curr < numTopics)
+
+    while(curr < numTopics)
     {
         helpinfoDoHelp(curr);
         curr++;

@@ -17,16 +17,15 @@
 #include "screen.h"
 
 static int autostart;
-static unsigned int *macro;
-
+static unsigned int * macro;
 unsigned int KeyHit(void)
 {
-    if (macro && (*macro))
+    if(macro && (*macro))
     {
         return 1;
     }
 
-    if (TTPeekQue())
+    if(TTPeekQue())
     {
         return 1;
     }
@@ -43,93 +42,99 @@ unsigned int GetKey(void)
 {
     int ch;
 
-    if (macros[0] != NULL && !autostart)
+    if(macros[0] != NULL && !autostart)
     {
         autostart = 1;
-        macro = macros[0];
+        macro     = macros[0];
     }
 
-    if (macro != NULL)
+    if(macro != NULL)
     {
-        if (*macro)
+        if(*macro)
         {
             macro++;
             return *(macro - 1);
         }
+
         macro = NULL;
     }
 
     ch = TTGetChr();
 
-    if (ch >= 0x3b && ch <= 0x44)
+    if(ch >= 0x3b && ch <= 0x44)
     {
         macro = macros[ch - 0x3a];
     }
     else
     {
-        if (ch >= 0x54 && ch <= 0x71)
+        if(ch >= 0x54 && ch <= 0x71)
         {
             macro = macros[ch - 0x49];
         }
     }
 
-    if (macro != NULL)
+    if(macro != NULL)
     {
-        if (*macro)
+        if(*macro)
         {
             macro++;
-            return *(macro-1);
+            return *(macro - 1);
         }
 
         macro = NULL;
     }
+
     return (unsigned int)ch;
-}
+} /* GetKey */
 
 unsigned int ConvertKey(int ch)
 {
     int idx = ch >> 8;
 
-    if (ch == 0)
+    if(ch == 0)
     {
-        if (macros[0] != NULL && !autostart)
+        if(macros[0] != NULL && !autostart)
         {
             autostart = 1;
-            macro = macros[0];
+            macro     = macros[0];
         }
 
-        if (macro != NULL)
+        if(macro != NULL)
         {
             macro++;
-            if (*macro)
+
+            if(*macro)
             {
                 return *macro;
             }
+
             macro = NULL;
         }
+
         return 0;
     }
 
-    if (idx >= 0x3b && idx <= 0x44)
+    if(idx >= 0x3b && idx <= 0x44)
     {
         macro = macros[idx - 0x3a];
     }
     else
     {
-        if (idx >= 0x54 && idx <= 0x71)
+        if(idx >= 0x54 && idx <= 0x71)
         {
             macro = macros[idx - 0x49];
         }
     }
 
-    if (macro != NULL)
+    if(macro != NULL)
     {
-        if (*macro)
+        if(*macro)
         {
             return *macro;
         }
+
         macro = NULL;
     }
-    return (unsigned int)ch;
-}
 
+    return (unsigned int)ch;
+} /* ConvertKey */

@@ -10,14 +10,13 @@
 #ifndef __DATE_H__
 #define __DATE_H__
 
-time_t parsedate(char *ds);
-char *firstname(char *name);
-char *lastname(char *name);
-char *itime(time_t now);
-char *atime(time_t now);
-char *mtime(time_t now);
-char *qtime(time_t now);
-char *attrib_line(msg * m, msg * old, int olda, char *format,
-                  char **days, char **months);
+time_t parsedate(char * ds);
+char * firstname(char * name);
+char * lastname(char * name);
+char * itime(time_t now);
+char * atime(time_t now);
+char * mtime(time_t now);
+char * qtime(time_t now);
+char * attrib_line(msg * m, msg * old, int olda, char * format, char ** days, char ** months);
 
 #endif

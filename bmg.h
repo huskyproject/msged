@@ -10,8 +10,8 @@
 #ifndef __BMG_H__
 #define __BMG_H__
 
-void bmg_setsearch(char *pattern);
-char *bmg_find(char *text, char *search);
-char *bmg_search(char *text);
+void bmg_setsearch(char * pattern);
+char * bmg_find(char * text, char * search);
+char * bmg_search(char * text);
 
 #endif

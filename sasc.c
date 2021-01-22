@@ -31,47 +31,46 @@ int agetche(void);
 int agetchr(void);
 
 /* Private prototypes */
+struct MsgPort * findconport(void);
+struct StandardPacket * createpkt(void);
+void deletepkt(struct StandardPacket ** packet);
 
-struct MsgPort *findconport(void);
-
-struct StandardPacket *createpkt(void);
-void deletepkt(struct StandardPacket **packet);
-void fillpkt(struct StandardPacket *packet, LONG action, LONG args[], LONG nargs);
-void sendpkt(struct StandardPacket *packet, struct MsgPort *port, struct MsgPort *replyport);
+void fillpkt(struct StandardPacket * packet, LONG action, LONG args[], LONG nargs);
+void sendpkt(struct StandardPacket * packet, struct MsgPort * port, struct MsgPort * replyport);
 
 void setmode(int mode);
 
 static int initflag;            /* Set to 1 after console is set to raw mode */
-static struct StandardPacket *conpacket;
-static struct MsgPort *conreply;
-static struct MsgPort *conport;
+static struct StandardPacket * conpacket;
+static struct MsgPort * conreply;
+static struct MsgPort * conport;
 static BPTR conin;              /* Console input AmigaDOS file handle */
-
 /* Initialize console stuff */
-
 int coninit(void)
 {
-    if (initflag)
+    if(initflag)
     {
         return 0;
     }
 
     /* Find console filehandle & message port */
-
     conport = findconport();
-    if (conport == NULL)
+
+    if(conport == NULL)
     {
-        return 0;;
+        return 0;
     }
 
     conpacket = createpkt();
-    if (conpacket == NULL)
+
+    if(conpacket == NULL)
     {
-        return 0;;
+        return 0;
     }
 
-    conreply = (struct MsgPort *) CreatePort(NULL, 0);
-    if (conreply == NULL)
+    conreply = (struct MsgPort *)CreatePort(NULL, 0);
+
+    if(conreply == NULL)
     {
         confin();
         return 0;
@@ -79,28 +78,29 @@ int coninit(void)
 
     setmode(-1);  /* Set RAW Console input */
     initflag = 1;
-
     return 1;
-}
+} /* coninit */
 
 /* End console stuff */
-
 void confin(void)
 {
-    if (conreply)
+    if(conreply)
     {
-        if (initflag)
+        if(initflag)
         {
             conport = findconport();
-            if (conport != NULL)
+
+            if(conport != NULL)
             {
                 setmode(0);
             }
         }
+
         initflag = 0;
         DeletePort(conreply);
     }
-    if (conpacket)
+
+    if(conpacket)
     {
         deletepkt(&conpacket);
     }
@@ -110,94 +110,106 @@ void confin(void)
  *  Find console filehandle & message port
  *  Returns message port & sets conin
  */
-
-struct MsgPort *findconport(void)
+struct MsgPort * findconport(void)
 {
-    struct UFB *ufb;
+    struct UFB * ufb;
+
     ufb = chkufb(0);
-    if (ufb == NULL)
+
+    if(ufb == NULL)
     {
         return NULL;
     }
+
     conin = ufb->ufbfh);
-    if (conin == NULL)
+
+    if(conin == NULL)
     {
         return NULL;
     }
-    return ((struct FileHandle *) (conin << 2))->fh_Type;
+
+    return ((struct FileHandle *)(conin << 2))->fh_Type;
 }
 
-struct StandardPacket *createpkt(void)
+struct StandardPacket * createpkt(void)
 {
-    struct StandardPacket *packet;
-    packet = (struct StandardPacket *)AllocMem((long) sizeof(struct StandardPacket), MEMF_PUBLIC | MEMF_CLEAR);
-    if (packet == NULL)
+    struct StandardPacket * packet;
+
+    packet = (struct StandardPacket *)AllocMem((long)sizeof(struct StandardPacket),
+                                               MEMF_PUBLIC | MEMF_CLEAR);
+
+    if(packet == NULL)
     {
         return NULL;
     }
-    packet->sp_Msg.mn_Node.ln_Name = (char *) &(packet->sp_Pkt);
-    packet->sp_Pkt.dp_Link = &(packet->sp_Msg);
+
+    packet->sp_Msg.mn_Node.ln_Name = (char *)&(packet->sp_Pkt);
+    packet->sp_Pkt.dp_Link         = &(packet->sp_Msg);
     return packet;
 }
 
-void deletepkt(struct StandardPacket **packet)
+void deletepkt(struct StandardPacket ** packet)
 {
-    if (*packet)
+    if(*packet)
     {
-        FreeMem((char *) *packet, (long) sizeof(struct StandardPacket));
+        FreeMem((char *)*packet, (long)sizeof(struct StandardPacket));
     }
+
     *packet = NULL;  /* So we can't delete twice */
 }
 
-void fillpkt(struct StandardPacket *packet, LONG action, LONG args[], LONG nargs)
+void fillpkt(struct StandardPacket * packet, LONG action, LONG args[], LONG nargs)
 {
-    LONG *pargs;
+    LONG * pargs;
+
     packet->sp_Pkt.dp_Type = action;
+
     /* copy the arguments into the packet */
     pargs = &(packet->sp_Pkt.dp_Arg1);  /* address of 1st arg */
-    while (nargs--)
+
+    while(nargs--)
     {
         *pargs++ = *args++;
     }
 }
 
-void sendpkt(struct StandardPacket *packet, struct MsgPort *port, struct MsgPort *replyport)
+void sendpkt(struct StandardPacket * packet, struct MsgPort * port, struct MsgPort * replyport)
 {
     packet->sp_Pkt.dp_Port = replyport;
-    PutMsg(port, (struct Message *) packet);
+    PutMsg(port, (struct Message *)packet);
 }
 
 /*
  *  Set console mode: -1 -> raw;  0 -> cooked.
  */
-
 void setmode(int mode)
 {
-    fillpkt(conpacket, ACTION_SCREEN_MODE, (LONG *) &mode, 1);
+    fillpkt(conpacket, ACTION_SCREEN_MODE, (LONG *)&mode, 1);
     sendpkt(conpacket, conport, conreply);
     WaitPort(conreply);
     GetMsg(conreply);
 }
 
-                   /*
-#define TIMEOUT 1   *  Number of microseconds to wait.  Don't use 0, due to
-                    *  a bug in the V1 "timer.device".
-                    */
-
+/*
+ #define TIMEOUT 1   *  Number of microseconds to wait.  Don't use 0, due to
+ *  a bug in the V1 "timer.device".
+ */
 /*
  *  Tests if a character is available to be read from the console.
  *  Returns 1 if there is, 0 if there isn't, and -1 on failure.
  *  Assumes the console is set to "raw" mode.
  */
-
 int akbhit(void)
 {
-    struct UFB *ufb;
+    struct UFB * ufb;
+
     ufb = chkufb(0);
-    if (ufb == NULL || ufb->ufbfh == NULL)
+
+    if(ufb == NULL || ufb->ufbfh == NULL)
     {
         return -1;
     }
+
     return WaitForChar(ufb->ufbfh, TIMEOUT) ? 1 : 0;
 }
 
@@ -206,71 +218,80 @@ int akbhit(void)
  *  Returns EOF on end-of-file or failure.
  *  Assumes the console is set to "raw" mode.
  */
-
 int agetch()
 {
     int len;
     unsigned char buf;
-    struct UFB *ufb;
+    struct UFB * ufb;
+
     ufb = chkufb(0);
-    if (ufb == NULL || ufb->ufbfh == NULL)
+
+    if(ufb == NULL || ufb->ufbfh == NULL)
     {
         return EOF;
     }
+
     len = Read(ufb->ufbfh, &buf, 1);
-    if (len == 0)
+
+    if(len == 0)
     {
         return EOF;
     }
-    return (int) buf;
+
+    return (int)buf;
 }
 
 /* Getch() with echo */
-
 int agetche(void)
 {
     int buf;
+
     buf = agetch();
-    if (buf != EOF)
+
+    if(buf != EOF)
     {
-        Write(conin, (char *) &buf, 1);  /* Well... :) */
+        Write(conin, (char *)&buf, 1);   /* Well... :) */
     }
+
     return buf;
 }
 
 /* Handle function & cursor keys, etc. Needs work! */
-
 int agetchr(void)
 {
     int c, d;
 
     c = agetch();
-    if (c == 0x9b && akbhit())
+
+    if(c == 0x9b && akbhit())
     {
         /* Special key report sequence */
         d = 0;
+
         do
         {
             c = agetch();
-            if (c == EOF || c == '~')
+
+            if(c == EOF || c == '~')
             {
                 break;
             }
-            if (isdigit(c))
+
+            if(isdigit(c))
             {
                 c -= '0';
             }
+
             d = 10 * d + c;
         }
-        while (c < '@' && akbhit());
+        while(c < '@' && akbhit());
         c = 256 + d;
     }
 
     /* Convert keys - should be done with table(s) */
-
-    if (c > 0x80)
+    if(c > 0x80)
     {
-        switch (c)
+        switch(c)
         {
             /* Convert Ctrl-Alt letters to Alt */
             case 0x0081:
@@ -378,7 +399,6 @@ int agetchr(void)
                 break;
 
             /* Alt Numeric keys */
-
             case 0x00b9:
                 c = Key_A_1;
                 break;
@@ -420,7 +440,6 @@ int agetchr(void)
                 break;
 
             /* Plain Function keys */
-
             case 0x0100:
                 c = Key_F1;
                 break;
@@ -462,7 +481,6 @@ int agetchr(void)
                 break;
 
             /* Shifted Function keys */
-
             case 0x010a:
                 c = Key_S_F1;
                 break;
@@ -504,13 +522,11 @@ int agetchr(void)
                 break;
 
             /* Help -> Alt-h */
-
             case 0x013f:
                 c = Key_A_H;
                 break;
 
             /* Cursor keys */
-
             case 0x0141:
                 c = Key_Up;
                 break;
@@ -528,7 +544,6 @@ int agetchr(void)
                 break;
 
             /* Shift-Cursor keys */
-
             case 0x0153:
                 c = Key_PgDn;
                 break;
@@ -547,8 +562,8 @@ int agetchr(void)
 
             default:
                 break;
-          }
+        } /* switch */
     }
 
     return c;
-}
+} /* agetchr */

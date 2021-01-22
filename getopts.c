@@ -46,7 +46,6 @@
 /*  Written 16-Feb-1990.                                             */
 /*                                                                   */
 /*********************************************************************/
-
 /*#define DOFLOAT*/
 
 #include <stdlib.h>
@@ -56,49 +55,70 @@
 
 #include "getopts.h"
 
-int getopts(int argc, char **argv, opt_t opttable[])
+int getopts(int argc, char ** argv, opt_t opttable[])
 {
-  int i,j;
-  argv++;
-  argc--;
-  for (i=1;i<=argc;i++)
-  {
-    if ((*(*argv) != '-') && (*(*argv) != '/')) return (i);
-    for (j=0;opttable[j].sw != NULL;j++)
-    {
-      if (strncmp(*argv+1,opttable[j].sw,
-          strlen(opttable[j].sw)) == 0)
-      {
-        switch ((int)opttable[j].opttyp)
-        {
-          case OPTINT :
-            *((int *)opttable[j].var) =
-                (int)strtol(*argv+1+strlen(opttable[j].sw),NULL,10);
-            if (errno == ERANGE) return (i);
-            break;
-          case OPTSTR :
-            strcpy((char *)opttable[j].var,
-                *argv+1+strlen((char *)opttable[j].sw));
-            break;
-          case OPTBOOL :
-            *((int *)opttable[j].var) = 1;
-            break;
-          case OPTLONG :
-            *((long *)opttable[j].var) =
-                strtol(*argv+1+strlen(opttable[j].sw),NULL,10);
-            if (errno == ERANGE) return (i);
-            break;
-#ifdef DOFLOAT
-          case OPTFLOAT :
-            *((float *)opttable[j].var) =
-                (float)strtod(*argv+1+strlen(opttable[j].sw),NULL);
-            break;
-#endif
-        }
-        break;
-      }
-    }
+    int i, j;
+
     argv++;
-  }
-  return (i);
-}
+    argc--;
+
+    for(i = 1; i <= argc; i++)
+    {
+        if((*(*argv) != '-') && (*(*argv) != '/'))
+        {
+            return i;
+        }
+
+        for(j = 0; opttable[j].sw != NULL; j++)
+        {
+            if(strncmp(*argv + 1, opttable[j].sw, strlen(opttable[j].sw)) == 0)
+            {
+                switch((int)opttable[j].opttyp)
+                {
+                    case OPTINT:
+                        *((int *)opttable[j].var) = (int)strtol(*argv + 1 + strlen(opttable[j].sw),
+                                                                NULL,
+                                                                10);
+
+                        if(errno == ERANGE)
+                        {
+                            return i;
+                        }
+
+                        break;
+
+                    case OPTSTR:
+                        strcpy((char *)opttable[j].var,
+                               *argv + 1 + strlen((char *)opttable[j].sw));
+                        break;
+
+                    case OPTBOOL:
+                        *((int *)opttable[j].var) = 1;
+                        break;
+
+                    case OPTLONG:
+                        *((long *)opttable[j].var) = strtol(*argv + 1 + strlen(opttable[j].sw),
+                                                            NULL,
+                                                            10);
+
+                        if(errno == ERANGE)
+                        {
+                            return i;
+                        }
+
+                        break;
+
+#ifdef DOFLOAT
+                    case OPTFLOAT:
+                        *((float *)opttable[j].var) =
+                            (float)strtod(*argv + 1 + strlen(opttable[j].sw), NULL);
+                        break;
+#endif
+                } /* switch */
+                break;
+            }
+        }
+        argv++;
+    }
+    return i;
+} /* getopts */

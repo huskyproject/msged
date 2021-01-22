@@ -17,11 +17,11 @@
 #include <errno.h>
 #include <assert.h>
 
-#if !defined(UNIX) && !defined(SASC)
+#if !defined (UNIX) && !defined (SASC)
 #include <io.h>
 #endif
 
-#if defined(UNIX) || defined(__CYGWIN__)
+#if defined (UNIX) || defined (__CYGWIN__)
 #include <unistd.h>
 #endif
 
@@ -33,7 +33,7 @@
 #include <sys/locking.h>
 #endif
 
-#if !defined(UNIX) && !defined(SASC) && !defined(__CYGWIN__)
+#if !defined (UNIX) && !defined (SASC) && !defined (__CYGWIN__)
 #include <share.h>
 #endif
 
@@ -48,42 +48,32 @@
 #include "msg.h"
 #include "charset.h"
 
-static char *cinfbuf = NULL;    /* control info buffer, size BUFLEN */
-
+static char * cinfbuf = NULL;    /* control info buffer, size BUFLEN */
 static unsigned long num_msgs;  /* number of messages in msgbase */
 static unsigned long new = 0;   /* if msg being written is new */
-
-static time_t stampToTimeT(struct _stamp *st);
-static struct _stamp *timeTToStamp(time_t);
+static time_t stampToTimeT(struct _stamp * st);
+static struct _stamp * timeTToStamp(time_t);
 
 static struct _minf minf;
-
-static MSGA *Ahandle = NULL;     /* area handle */
-static MSGH *mh = NULL;         /* message handle */
+static MSGA * Ahandle = NULL;   /* area handle */
+static MSGH * mh      = NULL;   /* message handle */
 static XMSG xmsg;               /* squish message header */
-
                                 /* these are used by the JAM routines only */
-static char *global_text = NULL;
+static char * global_text       = NULL;
 static unsigned long global_pos = 0;
 static unsigned long global_len;
 static unsigned long global_msgn;
 static int global_ctrl = 1;
-
 static int ready = FALSE, ctrl = TRUE;
-
-
 static UMSGID replyto = 0;      /* to ensure correct uplinks when mxx is used */
-
 /* Make Msged work with both stable and current smapi: */
 #ifndef S_IMODE
 #define S_IMODE S_IREAD | S_IWRITE
 #endif
-
 /*
  *  SquishMsgAreaOpen; Scans an area for messages, opening the message
  *  base and filling the message[] array.
  */
-
 long SquishMsgAreaOpen(AREA * a)
 {
     unsigned long lastread;     /* lastread record */
@@ -93,46 +83,46 @@ long SquishMsgAreaOpen(AREA * a)
     struct stat bstat;          /* stats for sql file */
     unsigned char buffer[4];    /* for reading and writing the sql */
 
-
-    a->scanned = 1;
-    a->last = 1;
-    a->first = 1;
+    a->scanned  = 1;
+    a->last     = 1;
+    a->first    = 1;
     a->lastread = 0;
-    a->current = 0;
-    a->status = 0;
+    a->current  = 0;
+    a->status   = 0;
 
     /* open the msgbase */
-
-    if (mh != NULL)
+    if(mh != NULL)
     {
         MsgCloseMsg(mh);
         mh = NULL;
     }
 
-    if (Ahandle != NULL)
+    if(Ahandle != NULL)
     {
-        if (SW->squish_lock)
+        if(SW->squish_lock)
         {
             MsgUnlock(Ahandle);
         }
 
-        if (MsgCloseArea(Ahandle) == -1)
+        if(MsgCloseArea(Ahandle) == -1)
         {
             return 0;
         }
     }
 
+    Ahandle =
+        MsgOpenArea((byte *)a->path,
+                    MSGAREA_CRIFNEC,
+                    ((a->msgtype == JAM) ? MSGTYPE_JAM : MSGTYPE_SQUISH));
 
-    Ahandle = MsgOpenArea((byte *)a->path, MSGAREA_CRIFNEC,
-                          ((a->msgtype == JAM) ? MSGTYPE_JAM:MSGTYPE_SQUISH));
-    if (Ahandle == NULL)
+    if(Ahandle == NULL)
     {
         return 0;
     }
 
-    if (SW->squish_lock)
+    if(SW->squish_lock)
     {
-        if (MsgLock(Ahandle) == -1)  /* Lock failed - return */
+        if(MsgLock(Ahandle) == -1)   /* Lock failed - return */
         {
             MsgCloseArea(Ahandle);
             Ahandle = NULL;
@@ -142,30 +132,34 @@ long SquishMsgAreaOpen(AREA * a)
 
     sprintf(work, "%s.sql", a->path);
     sql = sopen(work, O_BINARY | O_RDONLY, SH_DENYNO, S_IMODE);
-    if (sql != -1)
+
+    if(sql != -1)
     {
-#if defined(PACIFIC) || defined(LATTICE)
+#if defined (PACIFIC) || defined (LATTICE)
         stat(work, &bstat);
 #else
         fstat(sql, &bstat);
 #endif
+
         /* we make it big enough */
-        if (bstat.st_size < SW->useroffset * 4)
+        if(bstat.st_size < SW->useroffset * 4)
         {
             close(sql);
             sql = sopen(work, O_BINARY | O_RDWR, SH_DENYNO, S_IMODE);
-            if (sql != -1)
+
+            if(sql != -1)
             {
-#if defined(PACIFIC) || defined(LATTICE)
+#if defined (PACIFIC) || defined (LATTICE)
                 stat(work, &bstat);
 #else
                 fstat(sql, &bstat);
 #endif
-                lastread = 0;
+                lastread  = 0;
                 buffer[0] = buffer[1] = buffer[2] = buffer[3] = '\0';
-                k = bstat.st_size / 4;
+                k         = bstat.st_size / 4;
                 lseek(sql, 0L, SEEK_END);
-                while (SW->useroffset > k)
+
+                while(SW->useroffset > k)
                 {
                     farwrite(sql, buffer, 4);
                     k++;
@@ -176,13 +170,14 @@ long SquishMsgAreaOpen(AREA * a)
         {
             /* we read the data in */
             lseek(sql, SW->useroffset * 4, SEEK_SET);
-            if (farread(sql, buffer, 4) == 4)
+
+            if(farread(sql, buffer, 4) == 4)
             {
                 lastread = buffer[0] + (((unsigned long)(buffer[1])) << 8) +
-                    (((unsigned long)(buffer[2])) << 16) +
-                    (((unsigned long)(buffer[3])) << 24);
+                           (((unsigned long)(buffer[2])) << 16) +
+                           (((unsigned long)(buffer[3])) << 24);
 
-                if (CurArea.netmail)
+                if(CurArea.netmail)
                 {
                     a->lastread = MsgUidToMsgn(Ahandle, lastread, UID_PREV);
                 }
@@ -190,47 +185,55 @@ long SquishMsgAreaOpen(AREA * a)
                 {
                     a->lastread = MsgUidToMsgn(Ahandle, lastread, UID_NEXT);
                 }
+
                 a->current = a->lastread;
             }
         }
+
         close(sql);
     }
 
-    if (Ahandle->type != MSGTYPE_JAM)
+    if(Ahandle->type != MSGTYPE_JAM)
+    {
         a->last = MsgHighMsg(Ahandle);
+    }
     else
+    {
         a->last = Ahandle->num_msg; /* work around bug in JAM api */
+    }
 
     a->status = 1;
 
-    if (a->last >= 1 && a->current == 0)
+    if(a->last >= 1 && a->current == 0)
     {
         a->lastread = 0;
-        a->current = 1;
+        a->current  = 1;
     }
 
     return a->last;
-}
+} /* SquishMsgAreaOpen */
 
 /*
  *  SquishMsgReadHeader; Reads in the message header and control
  *  information for the message.
  */
-
-msg *SquishMsgReadHeader(unsigned long n, int type)
+msg * SquishMsgReadHeader(unsigned long n, int type)
 {
     char path[PATHLEN];
-    msg *m;
+    msg * m;
     int i = 0;
 
-    if (cinfbuf == NULL) cinfbuf = xmalloc(BUFLEN);
+    if(cinfbuf == NULL)
+    {
+        cinfbuf = xmalloc(BUFLEN);
+    }
 
-    if (Ahandle == NULL)
+    if(Ahandle == NULL)
     {
         return NULL;
     }
 
-    if (mh != NULL)
+    if(mh != NULL)
     {
         /* if open, close it */
         MsgCloseMsg(mh);
@@ -238,12 +241,13 @@ msg *SquishMsgReadHeader(unsigned long n, int type)
 
     /* open msg we want to open */
     mh = MsgOpenMsg(Ahandle, MOPEN_READ, n);
-    if (mh == NULL)
+
+    if(mh == NULL)
     {
         return NULL;
     }
 
-    if (MsgReadMsg(mh, &xmsg, 0L, 0L, NULL, BUFLEN, (byte *) cinfbuf) == (dword) - 1)
+    if(MsgReadMsg(mh, &xmsg, 0L, 0L, NULL, BUFLEN, (byte *)cinfbuf) == (dword) - 1)
     {
         /* no message header or control info! */
         MsgCloseMsg(mh);
@@ -252,23 +256,20 @@ msg *SquishMsgReadHeader(unsigned long n, int type)
     }
 
     m = xcalloc(1, sizeof *m);
-
     /* basically copy info across to msg */
-    m->msgnum = MsgMsgnToUid(Ahandle, n);
-    m->from.zone = xmsg.orig.zone;
-    m->from.net = xmsg.orig.net;
-    m->from.node = xmsg.orig.node;
-    m->from.point = xmsg.orig.point;
-
-    m->to.zone = xmsg.dest.zone;
-    m->to.net = xmsg.dest.net;
-    m->to.node = xmsg.dest.node;
-    m->to.point = xmsg.dest.point;
-
+    m->msgnum      = MsgMsgnToUid(Ahandle, n);
+    m->from.zone   = xmsg.orig.zone;
+    m->from.net    = xmsg.orig.net;
+    m->from.node   = xmsg.orig.node;
+    m->from.point  = xmsg.orig.point;
+    m->to.zone     = xmsg.dest.zone;
+    m->to.net      = xmsg.dest.net;
+    m->to.node     = xmsg.dest.node;
+    m->to.point    = xmsg.dest.point;
     m->from.domain = NULL;
-    m->to.domain = NULL;
+    m->to.domain   = NULL;
 
-    if (xmsg.date_written.date.yr != 0)
+    if(xmsg.date_written.date.yr != 0)
     {
         m->timestamp = stampToTimeT(&xmsg.date_written);
         m->time_arvd = stampToTimeT(&xmsg.date_arrived);
@@ -281,45 +282,42 @@ msg *SquishMsgReadHeader(unsigned long n, int type)
         m->timestamp = parsedate(path);
     }
 
-    m->isto = xcalloc(1, sizeof xmsg.to + 1);
+    m->isto   = xcalloc(1, sizeof xmsg.to + 1);
     m->isfrom = xcalloc(1, sizeof xmsg.from + 1);
-    m->subj = xcalloc(1, sizeof xmsg.subj + 1);
-
+    m->subj   = xcalloc(1, sizeof xmsg.subj + 1);
     memcpy(m->isto, xmsg.to, sizeof xmsg.to);
     memcpy(m->isfrom, xmsg.from, sizeof xmsg.from);
     memcpy(m->subj, xmsg.subj, sizeof xmsg.subj);
-
-    m->attrib.priv = (xmsg.attr & MSGPRIVATE) != 0;
-    m->attrib.crash = (xmsg.attr & MSGCRASH) != 0;
-    m->attrib.rcvd = (xmsg.attr & MSGREAD) != 0;
-    m->attrib.sent = (xmsg.attr & MSGSENT) != 0;
-    m->attrib.attach = (xmsg.attr & MSGFILE) != 0;
-    m->attrib.forward = (xmsg.attr & MSGFWD) != 0;
-    m->attrib.orphan = (xmsg.attr & MSGORPHAN) != 0;
+    m->attrib.priv     = (xmsg.attr & MSGPRIVATE) != 0;
+    m->attrib.crash    = (xmsg.attr & MSGCRASH) != 0;
+    m->attrib.rcvd     = (xmsg.attr & MSGREAD) != 0;
+    m->attrib.sent     = (xmsg.attr & MSGSENT) != 0;
+    m->attrib.attach   = (xmsg.attr & MSGFILE) != 0;
+    m->attrib.forward  = (xmsg.attr & MSGFWD) != 0;
+    m->attrib.orphan   = (xmsg.attr & MSGORPHAN) != 0;
     m->attrib.killsent = (xmsg.attr & MSGKILL) != 0;
-    m->attrib.local = (xmsg.attr & MSGLOCAL) != 0;
-    m->attrib.hold = (xmsg.attr & MSGHOLD) != 0;
-    m->attrib.direct = (xmsg.attr & MSGXX2) != 0;
-    m->attrib.freq = (xmsg.attr & MSGFRQ) != 0;
-    m->attrib.rreq = (xmsg.attr & MSGRRQ) != 0;
-    m->attrib.rcpt = (xmsg.attr & MSGCPT) != 0;
-    m->attrib.areq = (xmsg.attr & MSGARQ) != 0;
-    m->attrib.ureq = (xmsg.attr & MSGURQ) != 0;
+    m->attrib.local    = (xmsg.attr & MSGLOCAL) != 0;
+    m->attrib.hold     = (xmsg.attr & MSGHOLD) != 0;
+    m->attrib.direct   = (xmsg.attr & MSGXX2) != 0;
+    m->attrib.freq     = (xmsg.attr & MSGFRQ) != 0;
+    m->attrib.rreq     = (xmsg.attr & MSGRRQ) != 0;
+    m->attrib.rcpt     = (xmsg.attr & MSGCPT) != 0;
+    m->attrib.areq     = (xmsg.attr & MSGARQ) != 0;
+    m->attrib.ureq     = (xmsg.attr & MSGURQ) != 0;
+    m->attrib.lock     = (xmsg.attr & MSGLOCKED) != 0;
 
-    m->attrib.lock = (xmsg.attr & MSGLOCKED) != 0;
-
-    if (xmsg.attr & MSGSCANNED)
+    if(xmsg.attr & MSGSCANNED)
     {
         m->scanned = 1;
     }
 
-    if (type != RD_HEADER_BRIEF)
+    if(type != RD_HEADER_BRIEF)
     {
         m->replyto = MsgUidToMsgn(Ahandle, xmsg.replyto, UID_EXACT);
 
-        while (i < 9)
+        while(i < 9)
         {
-            if (xmsg.replies[i] != 0)
+            if(xmsg.replies[i] != 0)
             {
                 m->replies[i] = MsgUidToMsgn(Ahandle, xmsg.replies[i], UID_EXACT);
             }
@@ -327,25 +325,26 @@ msg *SquishMsgReadHeader(unsigned long n, int type)
             {
                 m->replies[i] = 0;
             }
+
             i++;
         }
         m->replies[9] = 0;
     }
 
-    m->cost = 0;
-    m->times_read = 0;
-    m->text = NULL;
-    m->to.fidonet = 1;
+    m->cost         = 0;
+    m->times_read   = 0;
+    m->text         = NULL;
+    m->to.fidonet   = 1;
     m->from.fidonet = 1;
 
-    if (type == RD_HEADER || type == RD_HEADER_BRIEF)
+    if(type == RD_HEADER || type == RD_HEADER_BRIEF)
     {
         MsgCloseMsg(mh);
         mh = NULL;
     }
 
     return m;
-}
+} /* SquishMsgReadHeader */
 
 /*
  *  SquishMsgReadText; Reads in the entire message, adds the control
@@ -353,73 +352,83 @@ msg *SquishMsgReadHeader(unsigned long n, int type)
  *  the message to the caller line by line (at each subsequent call).
  *  Basically a conversion of the correspoding Fido function.
  */
-
-char *SquishMsgReadText(unsigned long n)
+char * SquishMsgReadText(unsigned long n)
 {
-    static char *next = NULL;
-    static char *end = NULL;
-    char *t = NULL;
-    char *text = NULL;
+    static char * next = NULL;
+    static char * end = NULL;
+    char * t = NULL;
+    char * text = NULL;
     char eol = '\0';
     unsigned long i, l;
     static unsigned long ofs = 0, s = 0;
 
     unused(n);
-    if (Ahandle == NULL)
+
+    if(Ahandle == NULL)
     {
         return NULL;
     }
 
-    if (cinfbuf == NULL) cinfbuf = xmalloc(BUFLEN);
+    if(cinfbuf == NULL)
+    {
+        cinfbuf = xmalloc(BUFLEN);
+    }
 
-    if (next == NULL && s != 0)
+    if(next == NULL && s != 0)
     {
         /* we are finished */
         s = ofs = 0;
         return NULL;
     }
 
-    if (s == 0)
+    if(s == 0)
     {
         /* ready to read in new msg */
         memset(msgbuf, 0, BUFLEN - 1);
         next = msgbuf;
-        if (MsgGetCtrlLen(mh) > 0)
+
+        if(MsgGetCtrlLen(mh) > 0)
         {
             /* copy control info from */
             t = cinfbuf;  /* insert /r's */
-            *(t + (size_t) ((MsgGetCtrlLen(mh)>=BUFLEN) ? (BUFLEN - 1) :
-                             MsgGetCtrlLen(mh))) = '\0';
-            if (*t != '\0')
+            *(t +
+              (size_t)((MsgGetCtrlLen(mh) >= BUFLEN) ? (BUFLEN - 1) : MsgGetCtrlLen(mh))) = '\0';
+
+            if(*t != '\0')
             {
                 *next++ = *t++;
-                while (*t != '\0' && next - msgbuf < BUFLEN - 2)
+
+                while(*t != '\0' && next - msgbuf < BUFLEN - 2)
                 {
-                    if (*t == '\01')
+                    if(*t == '\01')
                     {
                         *next++ = '\r';  /* add a \r to the text */
                     }
-                    if (next - msgbuf < BUFLEN - 2)
+
+                    if(next - msgbuf < BUFLEN - 2)
                     {
                         *next++ = *t++;
                     }
                 }
-                if (*(next - 1) == '\01')
+
+                if(*(next - 1) == '\01')
                 {
                     next--;
                     *(next) = '\0';
                 }
                 else
                 {
-                    if (next - msgbuf < BUFLEN - 2)
+                    if(next - msgbuf < BUFLEN - 2)
                     {
                         *next++ = '\r';
                     }
+
                     *next = '\0';  /* terminate string         */
                 }
             }
+
             next = msgbuf;
-            end = msgbuf + normalize(msgbuf);
+            end  = msgbuf + normalize(msgbuf);
         }
         else
         {
@@ -430,31 +439,35 @@ char *SquishMsgReadText(unsigned long n)
     }
 
     /* return msg a line at a time */
-    if (next == NULL)
+    if(next == NULL)
     {
-        i = MsgReadMsg(mh, NULL, ofs, s - 1, (byte *) msgbuf, 0L, NULL);
+        i    = MsgReadMsg(mh, NULL, ofs, s - 1, (byte *)msgbuf, 0L, NULL);
         ofs += i;
-        if (i < 1)
+
+        if(i < 1)
         {
-            s = ofs = 0;
+            s    = ofs = 0;
             next = NULL;
             return NULL;
         }
+
         next = msgbuf;
-        while (i && *next == '\0')
+
+        while(i && *next == '\0')
         {
             i--;
             next++;
         }
         normalize(next);
         end = msgbuf + strlen(msgbuf);
-        if (end < next)
+
+        if(end < next)
         {
             next = end;
         }
     }
 
-    if (end - next == 0)
+    if(end - next == 0)
     {
         t = NULL;
     }
@@ -463,36 +476,37 @@ char *SquishMsgReadText(unsigned long n)
         t = memchr(next, '\n', (int)(end - next));
     }
 
-    if (t == NULL)
+    if(t == NULL)
     {
         l = strlen(next);
-        memmove(msgbuf, next, (size_t) (l + 1));
-        i = MsgReadMsg(mh, NULL, ofs, s - l - 1,
-          (byte *)(msgbuf + (size_t) l), 0L, NULL);
+        memmove(msgbuf, next, (size_t)(l + 1));
+        i    = MsgReadMsg(mh, NULL, ofs, s - l - 1, (byte *)(msgbuf + (size_t)l), 0L, NULL);
         ofs += i;
-        if (i < 1)
+
+        if(i < 1)
         {
             next = NULL;
             return xstrdup(msgbuf);
         }
-        *(msgbuf + (size_t) l + (size_t) i) = '\0';
-        end = msgbuf + l + normalize(msgbuf + (size_t) l);
+
+        *(msgbuf + (size_t)l + (size_t)i) = '\0';
+        end  = msgbuf + l + normalize(msgbuf + (size_t)l);
         next = msgbuf;
-        t = strchr(next, '\n');
+        t    = strchr(next, '\n');
     }
 
-    if (t != NULL)
+    if(t != NULL)
     {
-        eol = *(t + 1);
+        eol      = *(t + 1);
         *(t + 1) = '\0';
     }
 
     text = xstrdup(next);
 
-    if (t != NULL)
+    if(t != NULL)
     {
         *(t + 1) = eol;
-        next = t + 1;
+        next     = t + 1;
     }
     else
     {
@@ -500,13 +514,12 @@ char *SquishMsgReadText(unsigned long n)
     }
 
     return text;
-}
+} /* SquishMsgReadText */
 
 /*
  *  SquishMsgWriteHeader; Writes message header to the message base,
  *  creates new frame if new message, and makes sure links are correct.
  */
-
 int SquishMsgWriteHeader(msg * m, int type)
 {
     unsigned long n;
@@ -514,191 +527,206 @@ int SquishMsgWriteHeader(msg * m, int type)
 
     n = MsgUidToMsgn(Ahandle, m->msgnum, UID_EXACT);
 
-    if (Ahandle == NULL)
+    if(Ahandle == NULL)
     {
         return FALSE;
     }
 
-    if (mh != NULL)  /* close old msg, if left open */
+    if(mh != NULL)   /* close old msg, if left open */
     {
         MsgCloseMsg(mh);
     }
 
-    if (m->new)
+    if(m->new)
     {
         /*
          *  If new, store current number of messages (for use in
          *  SquishMsgWriteText, and create a new frame for the new
          *  message.
          */
-
         num_msgs = MsgGetNumMsg(Ahandle);
-        mh = MsgOpenMsg(Ahandle, MOPEN_CREATE, 0L);
-        if (mh == NULL)
+        mh       = MsgOpenMsg(Ahandle, MOPEN_CREATE, 0L);
+
+        if(mh == NULL)
         {
             return ERR_OPEN_MSG;
         }
+
         new = TRUE;
     }
     else
     {
         /* else we open the message to be changed */
         mh = MsgOpenMsg(Ahandle, MOPEN_RW, n);
-        if (mh == NULL)
+
+        if(mh == NULL)
         {
             return ERR_OPEN_MSG;
         }
+
         new = FALSE;
     }
 
     memset(&xmsg, 0, sizeof xmsg);
-
     xmsg.attr = 0;
-    if (m->attrib.priv)
+
+    if(m->attrib.priv)
     {
         xmsg.attr |= MSGPRIVATE;
     }
-    if (m->attrib.crash)
+
+    if(m->attrib.crash)
     {
         xmsg.attr |= MSGCRASH;
     }
-    if (m->attrib.rcvd)
+
+    if(m->attrib.rcvd)
     {
         xmsg.attr |= MSGREAD;
     }
-    if (m->attrib.sent)
+
+    if(m->attrib.sent)
     {
         xmsg.attr |= MSGSENT;
     }
-    if (m->attrib.attach)
+
+    if(m->attrib.attach)
     {
         xmsg.attr |= MSGFILE;
     }
-    if (m->attrib.forward)
+
+    if(m->attrib.forward)
     {
         xmsg.attr |= MSGFWD;
     }
-    if (m->attrib.orphan)
+
+    if(m->attrib.orphan)
     {
         xmsg.attr |= MSGORPHAN;
     }
-    if (m->attrib.killsent)
+
+    if(m->attrib.killsent)
     {
         xmsg.attr |= MSGKILL;
     }
-    if (m->attrib.local)
+
+    if(m->attrib.local)
     {
         xmsg.attr |= MSGLOCAL;
     }
-    if (m->attrib.hold)
+
+    if(m->attrib.hold)
     {
         xmsg.attr |= MSGHOLD;
     }
-    if (m->attrib.direct)
+
+    if(m->attrib.direct)
     {
         xmsg.attr |= MSGXX2;
     }
-    if (m->attrib.freq)
+
+    if(m->attrib.freq)
     {
         xmsg.attr |= MSGFRQ;
     }
-    if (m->attrib.rreq)
+
+    if(m->attrib.rreq)
     {
         xmsg.attr |= MSGRRQ;
     }
-    if (m->attrib.rcpt)
+
+    if(m->attrib.rcpt)
     {
         xmsg.attr |= MSGCPT;
     }
-    if (m->attrib.areq)
+
+    if(m->attrib.areq)
     {
         xmsg.attr |= MSGARQ;
     }
-    if (m->attrib.ureq)
+
+    if(m->attrib.ureq)
     {
         xmsg.attr |= MSGURQ;
     }
-    if (m->attrib.lock)
+
+    if(m->attrib.lock)
     {
         xmsg.attr |= MSGLOCKED;
     }
 
-    if (new == FALSE)
+    if(new == FALSE)
     {
         /*
          *  If the old message had been scanned, then we make sure that
          *  the MSGSCANNED bit is set on the way out. New messages get
          *  this bit stripped.
          */
-
-        if (m->scanned && !m->new)
+        if(m->scanned && !m->new)
         {
             xmsg.attr |= MSGSCANNED;
         }
     }
 
-    if (m->replyto != 0)
+    if(m->replyto != 0)
     {
         /* get the links for replies */
         xmsg.replyto = MsgMsgnToUid(Ahandle, m->replyto);
     }
 
-    for (i = 0; i < 9; i++)
+    for(i = 0; i < 9; i++)
     {
-        if (m->replies[i] != 0)
+        if(m->replies[i] != 0)
         {
             xmsg.replies[i] = MsgMsgnToUid(Ahandle, m->replies[i]);
         }
     }
-
     i = 0;
 
-    while (m->replies[i] != 0 && i < 9)
+    while(m->replies[i] != 0 && i < 9)
     {
         i++;
     }
 
-    if (i == 9)
+    if(i == 9)
     {
         i = 8;
     }
 
-    if (!m->new && replyto != 0)
+    if(!m->new && replyto != 0)
     {
         xmsg.replies[i] = replyto;
-        replyto = 0;
+        replyto         = 0;
     }
 
-    xmsg.dest.zone = (word) m->to.zone;
-    xmsg.dest.net = (word) m->to.net;
-    xmsg.dest.node = (word) m->to.node;
-    xmsg.dest.point = (word) m->to.point;
+    xmsg.dest.zone  = (word)m->to.zone;
+    xmsg.dest.net   = (word)m->to.net;
+    xmsg.dest.node  = (word)m->to.node;
+    xmsg.dest.point = (word)m->to.point;
+    xmsg.orig.zone  = (word)m->from.zone;
+    xmsg.orig.net   = (word)m->from.net;
+    xmsg.orig.node  = (word)m->from.node;
+    xmsg.orig.point = (word)m->from.point;
 
-    xmsg.orig.zone = (word) m->from.zone;
-    xmsg.orig.net = (word) m->from.net;
-    xmsg.orig.node = (word) m->from.node;
-    xmsg.orig.point = (word) m->from.point;
-
-    if (m->isto != NULL)
+    if(m->isto != NULL)
     {
         memcpy(xmsg.to, m->isto, min(sizeof xmsg.to, strlen(m->isto)));
     }
 
-    if (m->isfrom != NULL)
+    if(m->isfrom != NULL)
     {
         memcpy(xmsg.from, m->isfrom, min(sizeof xmsg.from, strlen(m->isfrom)));
     }
 
-    if (m->subj != NULL)
+    if(m->subj != NULL)
     {
         memcpy(xmsg.subj, m->subj, min(sizeof xmsg.subj, strlen(m->subj)));
     }
 
     memcpy(xmsg.__ftsc_date, mtime(m->timestamp), 20);
-
     xmsg.date_written = *timeTToStamp(m->timestamp);
 
-    if (m->time_arvd != 0)
+    if(m->time_arvd != 0)
     {
         xmsg.date_arrived = *timeTToStamp(m->time_arvd);
     }
@@ -707,7 +735,7 @@ int SquishMsgWriteHeader(msg * m, int type)
         xmsg.date_arrived = xmsg.date_written;
     }
 
-    if (type == WR_HEADER || !new)
+    if(type == WR_HEADER || !new)
     {
         MsgWriteMsg(mh, FALSE, &xmsg, NULL, 0L, 0L, 0L, NULL);
         MsgCloseMsg(mh);
@@ -715,49 +743,53 @@ int SquishMsgWriteHeader(msg * m, int type)
     }
 
     return TRUE;
-}
+} /* SquishMsgWriteHeader */
 
 /*
  *  strip_whitel; Strips the white spaces from the control info,
  *  copying it to the msgbuf array while it's at it.  Returns new
  *  length.
  */
-
 static dword strip_whitel(void)
 {
-    char *s, *c, *cptr;
+    char * s, * c, * cptr;
 
-    if (cinfbuf == NULL) cinfbuf = xmalloc(BUFLEN);
+    if(cinfbuf == NULL)
+    {
+        cinfbuf = xmalloc(BUFLEN);
+    }
 
     /* we put it in the cinfbuf, killing any \r & \n's in the process */
     cptr = cinfbuf;
-    s = msgbuf;
-    c = s + strlen(s) + 1;
-    while (s != c)
+    s    = msgbuf;
+    c    = s + strlen(s) + 1;
+
+    while(s != c)
     {
         /* copy buffer across, ignoring any fluff in the source buffer */
-        switch (*s)
+        switch(*s)
         {
-        case '\r':
-        case '\n':
-            s++;
-            break;
-        default:
-            *cptr++ = *s++;
-            break;
+            case '\r':
+            case '\n':
+                s++;
+                break;
+
+            default:
+                *cptr++ = *s++;
+                break;
         }
     }
     *cptr = '\0';
     return cptr - cinfbuf;
-}
+} /* strip_whitel */
 
-int JamMsgWriteText(char *text, unsigned long msgn, unsigned long mlen)
+int JamMsgWriteText(char * text, unsigned long msgn, unsigned long mlen)
 {
     int l;
 
-    if (global_ctrl)
+    if(global_ctrl)
     {
-        if (text != NULL && *text != '\01')
+        if(text != NULL && *text != '\01')
         {
             global_ctrl = 0;
         }
@@ -767,8 +799,7 @@ int JamMsgWriteText(char *text, unsigned long msgn, unsigned long mlen)
         }
     }
 
-
-    if (global_text == NULL)
+    if(global_text == NULL)
     {
         global_text = xmalloc(mlen + 1);
         global_pos  = 0;
@@ -776,15 +807,19 @@ int JamMsgWriteText(char *text, unsigned long msgn, unsigned long mlen)
         global_msgn = msgn;
     }
 
-    if (text != NULL)
+    if(text != NULL)
+    {
         l = strlen(text);
+    }
     else
+    {
         l = 0;
+    }
 
     assert(global_len == mlen);
     assert(global_pos + l <= mlen);
 
-    if (l)
+    if(l)
     {
         memcpy(global_text + global_pos, text, l);
         global_text[global_pos + l] = '\0';
@@ -792,8 +827,7 @@ int JamMsgWriteText(char *text, unsigned long msgn, unsigned long mlen)
     }
 
     return TRUE;
-}
-
+} /* JamMsgWriteText */
 
 /*
  *  SquishMsgWriteText; Writes message text (and header if a new
@@ -801,91 +835,92 @@ int JamMsgWriteText(char *text, unsigned long msgn, unsigned long mlen)
  *  new text is larger, it creates a new frame, while keeping the
  *  same position in the index.
  */
-
-int SquishMsgWriteText(char *text, unsigned long msgn, unsigned long mlen)
+int SquishMsgWriteText(char * text, unsigned long msgn, unsigned long mlen)
 {
-    static char *tptr, *c;
+    static char * tptr, * c;
     static unsigned long n = 0;
     char cz = 0;
     unsigned long clen;
 
-    if (Ahandle == NULL)
+    if(Ahandle == NULL)
     {
         return FALSE;
     }
 
-    if (cinfbuf == NULL) cinfbuf = xmalloc(BUFLEN);
+    if(cinfbuf == NULL)
+    {
+        cinfbuf = xmalloc(BUFLEN);
+    }
 
-    if (ready == FALSE)
+    if(ready == FALSE)
     {
         /* starting on new message; reset pointers */
         ready = TRUE;
-        tptr = msgbuf;
-        n = MsgUidToMsgn(Ahandle, msgn, UID_EXACT);
+        tptr  = msgbuf;
+        n     = MsgUidToMsgn(Ahandle, msgn, UID_EXACT);
     }
 
-    if (text == NULL)
+    if(text == NULL)
     {
-        if (ctrl)
+        if(ctrl)
         {
             /* no body in the message */
-            if (new)
+            if(new)
             {
                 clen = strip_whitel();
-
-                                /* we could fix this to not use append. */
-                MsgWriteMsg(mh, FALSE, &xmsg, NULL, 0L, mlen, clen,
-                  (byte *)cinfbuf);
-                MsgWriteMsg(mh, TRUE, NULL, (byte *)&cz,
-                  sizeof(char), mlen, 0L, NULL);
+                /* we could fix this to not use append. */
+                MsgWriteMsg(mh, FALSE, &xmsg, NULL, 0L, mlen, clen, (byte *)cinfbuf);
+                MsgWriteMsg(mh, TRUE, NULL, (byte *)&cz, sizeof(char), mlen, 0L, NULL);
             }
             else
             {
                 mh = MsgOpenMsg(Ahandle, MOPEN_RW, n);
-                if (mh == NULL)
+
+                if(mh == NULL)
                 {
                     ready = FALSE;
-                    ctrl = TRUE;
-                    new = FALSE;  /* we only change the header */
+                    ctrl  = TRUE;
+                    new   = FALSE; /* we only change the header */
                     return FALSE;
                 }
+
                 MsgWriteMsg(mh, FALSE, &xmsg, NULL, 0L, mlen, 0L, NULL);
             }
         }
         else
         {
-                                /* I THINK we might also be able to fix this
-                                   not to use append. */
-            MsgWriteMsg(mh, TRUE, NULL, (byte *)&cz, sizeof(char),
-              mlen, 0L, NULL);
+            /* I THINK we might also be able to fix this
+               not to use append. */
+            MsgWriteMsg(mh, TRUE, NULL, (byte *)&cz, sizeof(char), mlen, 0L, NULL);
         }
 
-        if (new)
+        if(new)
         {
             /*
              *  Message is a reply - save new number so next header
              *  written can use it for the uplink number.
              */
-
-            if (xmsg.replyto)
+            if(xmsg.replyto)
             {
                 replyto = MsgMsgnToUid(Ahandle, MsgGetNumMsg(Ahandle));
             }
-            if (num_msgs == MsgGetNumMsg(Ahandle))
+
+            if(num_msgs == MsgGetNumMsg(Ahandle))
             {
                 CurArea.messages--;
             }
         }
 
-        new = ready = FALSE;
+        new  = ready = FALSE;
         ctrl = TRUE;
         return TRUE;
     }
 
-    if (*text == '\01' && ctrl)
+    if(*text == '\01' && ctrl)
     {
         c = text;
-        while (*c != '\0')
+
+        while(*c != '\0')
         {
             /* store the control info */
             *tptr++ = *c++;
@@ -894,97 +929,110 @@ int SquishMsgWriteText(char *text, unsigned long msgn, unsigned long mlen)
     }
     else
     {
-        if (*text != '\01' && ctrl)
+        if(*text != '\01' && ctrl)
         {
             ctrl = FALSE;
             clen = strip_whitel();
-            if (!new)
+
+            if(!new)
             {
                 /* we are modifying a non-new message */
                 mh = MsgOpenMsg(Ahandle, MOPEN_RW, n);
-                if (mh == NULL)
+
+                if(mh == NULL)
                 {
                     ready = FALSE;
-                    ctrl = TRUE;
-                    new = FALSE;
+                    ctrl  = TRUE;
+                    new   = FALSE;
                     return FALSE;
                 }
 
-                if (MsgReadMsg(mh, &xmsg, 0L, 0L, NULL, 0L, NULL) == (dword) - 1)
+                if(MsgReadMsg(mh, &xmsg, 0L, 0L, NULL, 0L, NULL) == (dword) - 1)
                 {
-                    new = FALSE;
+                    new   = FALSE;
                     ready = FALSE;
-                    ctrl = TRUE;
+                    ctrl  = TRUE;
                     return FALSE;
                 }
 
                 MsgCloseMsg(mh);  /* copy xmsg information across */
-
                 mh = MsgOpenMsg(Ahandle, MOPEN_CREATE, n);
-                if (mh == NULL)
+
+                if(mh == NULL)
                 {
                     ready = FALSE;
-                    ctrl = TRUE;
-                    new = FALSE;
+                    ctrl  = TRUE;
+                    new   = FALSE;
                     return FALSE;
                 }
 
                 /* messy, but it works */
-                MsgWriteMsg(mh, FALSE, &xmsg, (byte *)text,
-                  strlen(text), mlen, clen, (byte *)cinfbuf);
+                MsgWriteMsg(mh,
+                            FALSE,
+                            &xmsg,
+                            (byte *)text,
+                            strlen(text),
+                            mlen,
+                            clen,
+                            (byte *)cinfbuf);
             }
             else
             {
-                                /* we'd need to intercept this call if we want
-                                   to make it work with JAM api */
-
-                MsgWriteMsg(mh, FALSE, &xmsg, (byte *)text,
-                  strlen(text), mlen, clen, (byte *)cinfbuf);
+                /* we'd need to intercept this call if we want
+                   to make it work with JAM api */
+                MsgWriteMsg(mh,
+                            FALSE,
+                            &xmsg,
+                            (byte *)text,
+                            strlen(text),
+                            mlen,
+                            clen,
+                            (byte *)cinfbuf);
             }
         }
         else
         {
-                                /* this does NOT work with JAM api */
-            MsgWriteMsg(mh, TRUE, NULL, (byte *)text, strlen(text),
-              mlen, 0L, NULL);
+            /* this does NOT work with JAM api */
+            MsgWriteMsg(mh, TRUE, NULL, (byte *)text, strlen(text), mlen, 0L, NULL);
         }
     }
 
     return TRUE;
-}
+} /* SquishMsgWriteText */
 
 int JamMsgClose(void)
 {
-    int rv = TRUE;
+    int rv  = TRUE;
     int srv = TRUE;
 
-    if (global_text != NULL)
+    if(global_text != NULL)
     {
-        if (SquishMsgWriteText(global_text, global_msgn, global_len) != TRUE)
+        if(SquishMsgWriteText(global_text, global_msgn, global_len) != TRUE)
+        {
             rv = ERR_CLOSE_MSG;
-        xfree(global_text);
+        }
 
-	global_ctrl = 1;            /* reset! */
-	global_text = NULL;
-	global_pos  = 0;
+        xfree(global_text);
+        global_ctrl = 1;        /* reset! */
+        global_text = NULL;
+        global_pos  = 0;
     }
 
     srv = SquishMsgClose();
-    return (rv != TRUE ? rv : srv);
+    return rv != TRUE ? rv : srv;
 }
 
 /*
  *  SquishMsgClose; Closes the message currently opened.
  */
-
 int SquishMsgClose(void)
 {
-    if (mh == NULL)
+    if(mh == NULL)
     {
         return TRUE;
     }
- 
-    if (MsgCloseMsg(mh) == -1)
+
+    if(MsgCloseMsg(mh) == -1)
     {
         printf("\n!SquishMsgClose(): Message didn't close, error %ud!\n", msgapierr);
         exit(-1);
@@ -992,20 +1040,19 @@ int SquishMsgClose(void)
     }
     else
     {
-        ready = FALSE; ctrl = TRUE;
-        mh = NULL;
+        ready = FALSE;
+        ctrl  = TRUE;
+        mh    = NULL;
         return TRUE;
     }
 }
 
-
 /*
  * Area locking functions
  */
-
 int SquishMsgLock(void)
 {
-    if (!SW->squish_lock)
+    if(!SW->squish_lock)
     {
         return MsgLock(Ahandle);
     }
@@ -1017,7 +1064,7 @@ int SquishMsgLock(void)
 
 int SquishMsgUnlock(void)
 {
-    if (!SW->squish_lock)
+    if(!SW->squish_lock)
     {
         return MsgUnlock(Ahandle);
     }
@@ -1027,24 +1074,22 @@ int SquishMsgUnlock(void)
     }
 }
 
-
 /*
  *  SquishMsgAreaClose; Closes the area currently opened.
  */
-
 int SquishMsgAreaClose(void)
 {
-    if (Ahandle == NULL)
+    if(Ahandle == NULL)
     {
         return TRUE;
     }
 
-    if (SW->squish_lock)
+    if(SW->squish_lock)
     {
         MsgUnlock(Ahandle);
     }
 
-    if (MsgCloseArea(Ahandle) == -1)
+    if(MsgCloseArea(Ahandle) == -1)
     {
         printf("\n!SquishMsgAreaClose(): Area didn't close, error %ud!\n", msgapierr);
         exit(-1);
@@ -1053,7 +1098,7 @@ int SquishMsgAreaClose(void)
     else
     {
         CurArea.status = 0;
-        Ahandle = NULL;
+        Ahandle        = NULL;
         return TRUE;
     }
 }
@@ -1061,7 +1106,6 @@ int SquishMsgAreaClose(void)
 /*
  *  SquishUidToMsgn; Returns the corresponding message number of a UID.
  */
-
 unsigned long SquishUidToMsgn(unsigned long n)
 {
     return MsgUidToMsgn(Ahandle, n, UID_EXACT);
@@ -1070,7 +1114,6 @@ unsigned long SquishUidToMsgn(unsigned long n)
 /*
  *  SquishMsgnToUid; Returns the corresponding UID of a message number.
  */
-
 unsigned long SquishMsgnToUid(unsigned long n)
 {
     return MsgMsgnToUid(Ahandle, n);
@@ -1080,33 +1123,32 @@ unsigned long SquishMsgnToUid(unsigned long n)
  *  SquishAreaSetLast; Sets the last message read in the .sql file and
  *  closes the message area.  If the .sql file doesn't exist, create it.
  */
-
 int SquishAreaSetLast(AREA * a)
 {
     char work[255];
-    long i = 1;
+    long i  = 1;
     int ret = TRUE;
     int fd;
     unsigned char buffer[4];
 
-    if (mh != NULL)
+    if(mh != NULL)
     {
         MsgCloseMsg(mh);
         mh = NULL;
     }
 
-    if (Ahandle != NULL)
+    if(Ahandle != NULL)
     {
         sprintf(work, "%s.sql", a->path);
-
         fd = sopen(work, O_BINARY | O_RDWR, SH_DENYNO, S_IMODE);
-        if (fd == -1)
+
+        if(fd == -1)
         {
-            if (errno != EACCES && errno != EMFILE)
+            if(errno != EACCES && errno != EMFILE)
             {
-	        fd = sopen(work, O_BINARY | O_WRONLY | O_CREAT, SH_DENYNO,
-			   S_IMODE);
-                if (fd == -1)
+                fd = sopen(work, O_BINARY | O_WRONLY | O_CREAT, SH_DENYNO, S_IMODE);
+
+                if(fd == -1)
                 {
                     ret = FALSE;
                 }
@@ -1114,17 +1156,16 @@ int SquishAreaSetLast(AREA * a)
                 {
                     buffer[0] = buffer[1] = buffer[2] = buffer[3] = '\0';
                     lseek(fd, 0L, SEEK_SET);
-                    for (i = 0; SW->useroffset > (int)i; i++)
+
+                    for(i = 0; SW->useroffset > (int)i; i++)
                     {
                         farwrite(fd, buffer, 4);
                     }
-
-                    i = MsgMsgnToUid(Ahandle, CurArea.lastread);
+                    i         = MsgMsgnToUid(Ahandle, CurArea.lastread);
                     buffer[0] = i & 0xFF;
                     buffer[1] = (i >> 8) & 0xFF;
                     buffer[2] = (i >> 16) & 0xFF;
                     buffer[3] = (i >> 24) & 0xFF;
-
                     farwrite(fd, buffer, 4);
                     close(fd);
                 }
@@ -1138,7 +1179,7 @@ int SquishAreaSetLast(AREA * a)
         {
             lseek(fd, SW->useroffset * 4, SEEK_SET);
 
-            if (SW->use_lastr)
+            if(SW->use_lastr)
             {
                 i = MsgMsgnToUid(Ahandle, CurArea.lastread);
             }
@@ -1151,50 +1192,54 @@ int SquishAreaSetLast(AREA * a)
             buffer[1] = (i >> 8) & 0xFF;
             buffer[2] = (i >> 16) & 0xFF;
             buffer[3] = (i >> 24) & 0xFF;
-
             farwrite(fd, buffer, 4);
             close(fd);
         }
     }
+
     return ret;
-}
+} /* SquishAreaSetLast */
 
 /*
  *  SquishMsgDelete; Erases a message in the current area, specified
  *  by the passed index.
  */
-
 int SquishMsgDelete(unsigned long n)
 {
     unsigned long msgn;
+
     msgn = MsgUidToMsgn(Ahandle, n, UID_EXACT);
-    if (MsgKillMsg(Ahandle, msgn) == -1)
+
+    if(MsgKillMsg(Ahandle, msgn) == -1)
     {
         return FALSE;
     }
+
     return TRUE;
 }
 
-static time_t stampToTimeT(struct _stamp *st)
+static time_t stampToTimeT(struct _stamp * st)
 {
     time_t tt;
     struct tm tms;
-    tms.tm_sec = st->time.ss << 1;
-    tms.tm_min = st->time.mm;
-    tms.tm_hour = st->time.hh;
-    tms.tm_mday = st->date.da;
-    tms.tm_mon = st->date.mo - 1;
-    tms.tm_year = st->date.yr + 80;
+
+    tms.tm_sec   = st->time.ss << 1;
+    tms.tm_min   = st->time.mm;
+    tms.tm_hour  = st->time.hh;
+    tms.tm_mday  = st->date.da;
+    tms.tm_mon   = st->date.mo - 1;
+    tms.tm_year  = st->date.yr + 80;
     tms.tm_isdst = -1;
-    tt = mktime(&tms);
+    tt           = mktime(&tms);
     return tt;
 }
 
-static struct _stamp *timeTToStamp(time_t tt)
+static struct _stamp * timeTToStamp(time_t tt)
 {
-    struct tm *tmsp;
+    struct tm * tmsp;
     static struct _stamp st;
-    tmsp = localtime(&tt);
+
+    tmsp       = localtime(&tt);
     st.time.ss = tmsp->tm_sec >> 1;
     st.time.mm = tmsp->tm_min;
     st.time.hh = tmsp->tm_hour;
@@ -1206,7 +1251,7 @@ static struct _stamp *timeTToStamp(time_t tt)
 
 void MsgApiInit(void)
 {
-    minf.def_zone = 0;          /* set default zone */
+    minf.def_zone    = 0;       /* set default zone */
     minf.req_version = 0;       /* level 0 of the MsgAPI */
     MsgOpenApi(&minf);          /* init the MsgAPI  */
 }

@@ -11,24 +11,18 @@
 
 typedef struct _hfilehdr
 {
-    char signature[3];          /* must be "cz<null>" */
+    char          signature[3]; /* must be "cz<null>" */
     unsigned char topics[2];    /* number of topics */
-}
-HFileHdr;
-
+} HFileHdr;
 typedef struct _topichdr
 {
     long offset;                /* offset to the topic */
-}
-HTopicHdr;
-
+} HTopicHdr;
 typedef struct _topic
 {
     long pages;
-}
-HTopic;
-
-void HelpInit(char *fileName);
+} HTopic;
+void HelpInit(char * fileName);
 void DoHelp(int topic);
 
 #endif

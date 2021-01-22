@@ -13,17 +13,18 @@
 #include "specch.h"
 #include "memextra.h"
 
-static char *text = NULL;
-
+static char * text = NULL;
 /*
  *  Makes up a button.
  */
-
-char *MakeButton(button * b, int sel)
+char * MakeButton(button * b, int sel)
 {
-    if (text == NULL) text = xmalloc(255);
+    if(text == NULL)
+    {
+        text = xmalloc(255);
+    }
 
-    if (sel)
+    if(sel)
     {
         sprintf(text, "%c %s %c", SC14, b->btext, SC15);
     }
@@ -31,25 +32,32 @@ char *MakeButton(button * b, int sel)
     {
         sprintf(text, "  %s  ", b->btext);
     }
+
     return text;
 }
 
 /*
  *  Puts a button onto the screen, handling all the states of the button.
  */
-
 void ShowButton(button * b)
 {
-    char *s;
-    static unsigned char ublock[2] = {'\0', '\0'};
+    char * s;
+    static unsigned char ublock[2] =
+    {
+        '\0', '\0'
+    };
     int len;
     unsigned char attr;
 
-    if (text == NULL) text = xmalloc(255);
+    if(text == NULL)
+    {
+        text = xmalloc(255);
+    }
 
-    s = MakeButton(b, b->select);
+    s   = MakeButton(b, b->select);
     len = strlen(s);
-    if (b->select)
+
+    if(b->select)
     {
         attr = (unsigned char)b->sattr;
     }
@@ -58,18 +66,16 @@ void ShowButton(button * b)
         attr = (unsigned char)b->fattr;
     }
 
-    if (!b->down)
+    if(!b->down)
     {
         WndPutsn(b->x, b->y, 1, attr | F_ALTERNATE, s);
         WndPutsn(b->x + 1, b->y, len - 2, attr, s + 1);
         WndPutsn(b->x + len - 1, b->y, 1, attr | F_ALTERNATE, s + len - 1);
         ublock[0] = SC16;
         WndWriteStr(b->x + len, b->y, b->battr | F_ALTERNATE, (char *)ublock);
-
         memset(text, SC17, 255);
         *(text + len) = '\0';
         WndPutsn(b->x + 1, b->y + 1, len, b->battr | F_ALTERNATE, text);
-
     }
     else
     {
@@ -77,27 +83,28 @@ void ShowButton(button * b)
         WndPutsn(b->x + 1, b->y, len - 2, attr, s + 1);
         WndPutsn(b->x + len - 1, b->y, 1, attr | F_ALTERNATE, s + len - 1);
         WndWriteStr(b->x, b->y, b->battr, " ");
-
         memset(text, ' ', 255);
         *(text + len) = '\0';
-
         WndPutsn(b->x + 1, b->y + 1, len, b->battr, text);
     }
+
     return;
-}
+} /* ShowButton */
 
 /*
  *  Puts a checkbox button onto the screen, handling all the states of
  *  the check box.
  */
-
 void ShowCkbutton(ckbutton * i)
 {
     int fa = (i->select) ? i->sattr : i->fattr;
 
-    if (text == NULL) text = xmalloc(255);
+    if(text == NULL)
+    {
+        text = xmalloc(255);
+    }
 
-    if (i->down)
+    if(i->down)
     {
         strcpy(text, " [x] ");
     }
@@ -105,6 +112,7 @@ void ShowCkbutton(ckbutton * i)
     {
         strcpy(text, " [ ] ");
     }
+
     WndWriteStr(i->x, i->y, fa, text);
     WndWriteStr(i->px, i->y, fa, i->prtext);
 }
@@ -112,10 +120,9 @@ void ShowCkbutton(ckbutton * i)
 /*
  *  Displays an editf control.
  */
-
 void ShowEditField(editf * i)
 {
-    if (!i->select)
+    if(!i->select)
     {
         WndPutsn(i->x, i->y, i->len, i->fattr, i->buf);
     }
@@ -127,7 +134,7 @@ void ShowEditField(editf * i)
 
 void D_ShowTxt(textl * i)
 {
-    if (i->text)
+    if(i->text)
     {
         WndWriteStr(i->x, i->y, i->fattr, i->text);
     }
@@ -136,7 +143,8 @@ void D_ShowTxt(textl * i)
 void D_ShowWBox(wbox * i)
 {
     WndBox(i->x1, i->y1, i->x2, i->y2, i->fattr, i->type);
-    if (i->title)
+
+    if(i->title)
     {
         int x;
         x = ((i->x2 - i->x1) / 2) - (strlen(i->title) / 2) + i->x1;

@@ -14,41 +14,44 @@
 #include "strextra.h"
 
 static char search_string[256];
-
-char *bmg_find(char *text, char *search)
+char * bmg_find(char * text, char * search)
 {
-    char *endText, *p;
+    char * endText, * p;
     int lent, lens, searchStart;
 
     lent = strlen(text);
     lens = strlen(search);
-    if (lens > lent)
+
+    if(lens > lent)
     {
         return NULL;
     }
+
     searchStart = toupper(*search);
-    p = text;
-    endText = p + (lent - lens) + 1;
-    while (p != endText)
+    p           = text;
+    endText     = p + (lent - lens) + 1;
+
+    while(p != endText)
     {
-        if (toupper(*p) == searchStart)
+        if(toupper(*p) == searchStart)
         {
-            if (strncmpi(p, search, lens) == 0)
+            if(strncmpi(p, search, lens) == 0)
             {
                 return p;
             }
         }
+
         p++;
     }
     return NULL;
-}
+} /* bmg_find */
 
-void bmg_setsearch(char *search)
+void bmg_setsearch(char * search)
 {
     strcpy(search_string, search);
 }
 
-char *bmg_search(char *text)
+char * bmg_search(char * text)
 {
     return bmg_find(text, search_string);
 }

@@ -11,40 +11,45 @@
 #define __STREXTRA_H__
 
 #ifndef __DIRUTE_C
-#include <huskylib/compiler.h> 
+#include <huskylib/compiler.h>
 #endif
 
 #ifdef __MINGW32
 #define strncmpi _strncmpi
 #endif
 
-int strncmpi(const char *s, const char *t, size_t n);
-void strdel(char *l, int x);
+int strncmpi(const char * s, const char * t, size_t n);
+void strdel(char * l, int x);
 
-#if !(defined(_MSC_VER) && (_MSC_VER >= 1200))
+#if !(defined (_MSC_VER) && (_MSC_VER >= 1200))
 
 #ifndef UNIX
-int stricmp(const char *s, const char *t);
+int stricmp(const char * s, const char * t);
+
 #endif
 #ifndef UNIX
-char *strdup(const char *s);
+char * strdup(const char * s);
+
 #endif
 
 
 #ifndef __IBMC__
-int memicmp(const void *s1, const void *s2, size_t n);
+int memicmp(const void * s1, const void * s2, size_t n);
+
 #else
-int memicmp(void *s1, void *s2, size_t n);
+int memicmp(void * s1, void * s2, size_t n);
+
 #endif
 
 
-char *strlwr(char *s);
-char *strupr(char *s);
+char * strlwr(char * s);
+char * strupr(char * s);
 
 #endif
 
 #ifndef PACIFIC
-const char *stristr(const char *s1, const char *s2);
+const char * stristr(const char * s1, const char * s2);
+
 #endif
 
 #define strend(str) ((str) + strlen(str) - 1)
@@ -54,4 +59,4 @@ const char *stristr(const char *s1, const char *s2);
 #define strnicmp strncasecmp
 #endif
 
-#endif
+#endif // ifndef __STREXTRA_H__

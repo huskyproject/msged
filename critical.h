@@ -9,7 +9,7 @@
 #ifndef __CRITICAL_H__
 #define __CRITICAL_H__
 
-#if defined(MSDOS) && defined(__WATCOMC__)
+#if defined (MSDOS) && defined (__WATCOMC__)
 #define DOSPREF cdecl
 #else
 #define DOSPREF

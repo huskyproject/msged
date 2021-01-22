@@ -8,7 +8,7 @@
 
 #ifndef __SCREEN_H__
 #define __SCREEN_H__
- 
+
 void cursor(char state);
 unsigned int GetKey(void);
 unsigned int KeyHit(void);

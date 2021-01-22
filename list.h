@@ -9,20 +9,18 @@
 
 typedef struct _mlhead
 {
-    int sel;
+    int           sel;
     unsigned long msgnum;
     unsigned long umsgid;
-    char to_name[37];
-    int to_net;
-    int to_node;
-    char fr_name[37];
-    int fr_net;
-    int fr_node;
-    char subj[73];
-    int times_read;
-}
-MLHEAD;
-
+    char          to_name[37];
+    int           to_net;
+    int           to_node;
+    char          fr_name[37];
+    int           fr_net;
+    int           fr_node;
+    char          subj[73];
+    int           times_read;
+} MLHEAD;
 int do_list(void);
 
 #endif

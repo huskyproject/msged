@@ -15,85 +15,93 @@
 #include "msged.h"
 #include "mctype.h"
 
-char *show_address(FIDO_ADDRESS * a)
+char * show_address(FIDO_ADDRESS * a)
 {
     static char s[80];
     char field[20];
-    char *truedomain=NULL;
+    char * truedomain = NULL;
 
     memset(s, 0, sizeof s);
     memset(field, 0, sizeof field);
 
-    if (a->notfound)
+    if(a->notfound)
     {
         strcpy(s, "0:0/0");
         return s;
     }
-    if (a->fidonet)
+
+    if(a->fidonet)
     {
-        if (a->zone)
+        if(a->zone)
         {
             sprintf(field, "%d", a->zone);
             strcat(s, field);
             strcat(s, ":");
         }
+
         sprintf(field, "%d", a->net);
         strcat(s, field);
         strcat(s, "/");
         sprintf(field, "%d", a->node);
         strcat(s, field);
-        if (a->point)
+
+        if(a->point)
         {
             strcat(s, ".");
             sprintf(field, "%d", a->point);
             strcat(s, field);
         }
-        if (a->domain != NULL)
+
+        if(a->domain != NULL)
         {
             strcat(s, "@");
             strcat(s, a->domain);
         }
     }
-    if (a->internet || a->bangpath)
+
+    if(a->internet || a->bangpath)
     {
-        parse_internet_address(a->domain,&truedomain,NULL);
+        parse_internet_address(a->domain, &truedomain, NULL);
         /* Note: Normally, truedomain should only contain the e-mail address.
                  However, during certain stages of header editing, it might
                  also contain the user name. Therefore, we parse the address
                  to make sure that really only the address is showed. */
-
     }
-    if (a->internet)
+
+    if(a->internet)
     {
         strncpy(s, truedomain, 60);
     }
-    if (a->bangpath)
-    {
-        char *t, *t1;
 
+    if(a->bangpath)
+    {
+        char * t, * t1;
         t1 = strrchr(truedomain, '!');
-        if (t1 == NULL)
+
+        if(t1 == NULL)
         {
             strcpy(s, truedomain);
         }
         else
         {
             *t1 = '\0';
-            t = strrchr(truedomain, '!');
-            if (!t)
+            t   = strrchr(truedomain, '!');
+
+            if(!t)
             {
                 t = truedomain;
             }
+
             *t1 = '!';
             strcat(strcpy(s, "..."), t);
         }
-
     }
+
     release(truedomain);
     return s;
-}
+} /* show_address */
 
-char *show_4d(FIDO_ADDRESS * a)
+char * show_4d(FIDO_ADDRESS * a)
 {
     static char s[80];
     char field[20];
@@ -101,71 +109,78 @@ char *show_4d(FIDO_ADDRESS * a)
     memset(s, 0, sizeof s);
     memset(field, 0, sizeof field);
 
-    if (a->notfound)
+    if(a->notfound)
     {
         strcpy(s, "0:0/0");
         return s;
     }
-    if (a->fidonet)
+
+    if(a->fidonet)
     {
-        if (a->zone)
+        if(a->zone)
         {
             sprintf(field, "%d", a->zone);
             strcat(s, field);
             strcat(s, ":");
         }
+
         sprintf(field, "%d", a->net);
         strcat(s, field);
         strcat(s, "/");
         sprintf(field, "%d", a->node);
         strcat(s, field);
-        if (a->point)
+
+        if(a->point)
         {
             strcat(s, ".");
             sprintf(field, "%d", a->point);
             strcat(s, field);
         }
     }
-    if (a->internet)
+
+    if(a->internet)
     {
         strncpy(s, a->domain, 60);
     }
-    if (a->bangpath)
-    {
-        char *t, *t1;
 
+    if(a->bangpath)
+    {
+        char * t, * t1;
         t1 = strrchr(a->domain, '!');
-        if (t1 == NULL)
+
+        if(t1 == NULL)
         {
             strcpy(s, a->domain);
         }
         else
         {
             *t1 = '\0';
-            t = strrchr(a->domain, '!');
-            if (!t)
+            t   = strrchr(a->domain, '!');
+
+            if(!t)
             {
                 t = a->domain;
             }
+
             *t1 = '!';
             strcat(strcpy(s, "..."), t);
         }
-
     }
-    return s;
-}
 
-FIDO_ADDRESS parsenode(char *t)
+    return s;
+} /* show_4d */
+
+FIDO_ADDRESS parsenode(char * t)
 {
     FIDO_ADDRESS tmp;
     int n, point = 0;
-    char *s, ch;
+    char * s, ch;
 
-    if (SW->areas)
+    if(SW->areas)
     {
         tmp = CurArea.addr;
     }
-    else if (SW->aliascount && alias != NULL)
+    else if(SW->aliascount && alias != NULL)
     {
         tmp = thisnode;
     }
@@ -174,46 +189,46 @@ FIDO_ADDRESS parsenode(char *t)
         memset(&tmp, 0, sizeof(tmp));
     }
 
-    tmp.point = tmp.notfound = 0;
-    tmp.fidonet = 1;
+    tmp.point    = tmp.notfound = 0;
+    tmp.fidonet  = 1;
     tmp.internet = 0;
     tmp.bangpath = 0;
-    tmp.domain = NULL;
+    tmp.domain   = NULL;
 
-    if (t == NULL)
+    if(t == NULL)
     {
         tmp.notfound = 1;
         return tmp;
     }
 
-    while (m_isspace(*t))
+    while(m_isspace(*t))
     {
         t++;
     }
 
-    if (!m_isdigit(*t) && (*t != '.'))
+    if(!m_isdigit(*t) && (*t != '.'))
     {
         tmp.notfound = 1;
-        tmp.fidonet = 0;
+        tmp.fidonet  = 0;
         tmp.internet = 0;
         tmp.bangpath = 0;
         return tmp;
     }
 
-    if (*t == '.')
+    if(*t == '.')
     {
         tmp.net = CurArea.addr.net;
-        point = 1;
+        point   = 1;
         t++;
     }
 
-    while (t)
+    while(t)
     {
         n = (int)strtol(t, &t, 10);
 
-        if (t == NULL)
+        if(t == NULL)
         {
-            if (point)
+            if(point)
             {
                 tmp.point = n;
             }
@@ -221,97 +236,103 @@ FIDO_ADDRESS parsenode(char *t)
             {
                 tmp.node = n;
             }
-            if (tmp.zone == 0)
+
+            if(tmp.zone == 0)
             {
                 tmp.zone = CurArea.addr.zone;
             }
+
             return tmp;
         }
 
-        switch (*t)
+        switch(*t)
         {
-        case ')':
-        case ' ':
-        case '\0':
-            if (point)
-            {
-                tmp.point = n;
-            }
-            else
-            {
+            case ')':
+            case ' ':
+            case '\0':
+
+                if(point)
+                {
+                    tmp.point = n;
+                }
+                else
+                {
+                    tmp.node = n;
+                }
+
+                if(tmp.zone == 0)
+                {
+                    tmp.zone = CurArea.addr.zone;
+                }
+
+                return tmp;
+
+            case ':':
+                tmp.zone = n;
+                break;
+
+            case '/':
+                tmp.net = n;
+                break;
+
+            case '.':
                 tmp.node = n;
-            }
-            if (tmp.zone == 0)
-            {
-                tmp.zone = CurArea.addr.zone;
-            }
-            return tmp;
+                point    = 1;
+                break;
 
-        case ':':
-            tmp.zone = n;
-            break;
+            case '@':
 
-        case '/':
-            tmp.net = n;
-            break;
+                if(point)
+                {
+                    tmp.point = n;
+                }
+                else
+                {
+                    tmp.node = n;
+                }
 
-        case '.':
-            tmp.node = n;
-            point = 1;
-            break;
+                release(tmp.domain);
+                s = t + 1;
 
-        case '@':
-            if (point)
-            {
-                tmp.point = n;
-            }
-            else
-            {
-                tmp.node = n;
-            }
+                while(*s && !m_isspace(*s) && *s != ')')
+                {
+                    s++;
+                }
 
-            release(tmp.domain);
+                if(*s)
+                {
+                    ch = *s;
+                    *s = '\0';
+                }
+                else
+                {
+                    ch = 0;
+                }
 
-            s = t + 1;
-            while (*s && !m_isspace(*s) && *s != ')')
-            {
-                s++;
-            }
+                tmp.domain = xstrdup(t + 1);
 
-            if (*s)
-            {
-                ch = *s;
-                *s = '\0';
-            }
-            else
-            {
-                ch = 0;
-            }
+                if(ch)
+                {
+                    *s = ch;
+                }
 
-            tmp.domain = xstrdup(t + 1);
+                if(tmp.zone == 0)
+                {
+                    tmp.zone = CurArea.addr.zone;
+                }
 
-            if (ch)
-            {
-                *s = ch;
-            }
-
-            if (tmp.zone == 0)
-            {
-                tmp.zone = CurArea.addr.zone;
-            }
-            return tmp;
-        }
+                return tmp;
+        } /* switch */
         t++;
     }
 
-    if (tmp.zone == 0)
+    if(tmp.zone == 0)
     {
         tmp.zone = CurArea.addr.zone;
     }
 
     return tmp;
-}
-
+} /* parsenode */
 
 /* Parses an Internet or Bangpath Address like in one of the following forms
    into domain/bangpath and user name. Recognised formats:
@@ -320,90 +341,109 @@ FIDO_ADDRESS parsenode(char *t)
    email@address
    User Name <email@address>
    "User Name" <email@address>
-*/
-
-void parse_internet_address (const char *string, char **cpdomain, char **cpname)
+ */
+void parse_internet_address(const char * string, char ** cpdomain, char ** cpname)
 {
-    enum { SIMPLESTYLE,  /*  From: user@host */
-           NORMALSTYLE,  /*  From: user@host (name) */
-           ALTSTYLE      /*  From: name <user@host> */
-         };
+    enum
+    {
+        SIMPLESTYLE,     /*  From: user@host */
+        NORMALSTYLE,     /*  From: user@host (name) */
+        ALTSTYLE         /*  From: name <user@host> */
+    };
+
     int style;
-    char *firststring, *bracestring, *worktext, *s, *t, *name, *domain;
+    char * firststring, * bracestring, * worktext, * s, * t, * name, * domain;
 
     bracestring = NULL;  /* make compiler happy */
 
-    if (string == NULL)
+    if(string == NULL)
     {
-       name = NULL;
-       domain = xstrdup("");
+        name   = NULL;
+        domain = xstrdup("");
     }
     else
     {
-        worktext=xstrdup(string);
-        s = strrchr(worktext, '(');
-        if (s == NULL)
+        worktext = xstrdup(string);
+        s        = strrchr(worktext, '(');
+
+        if(s == NULL)
         {
-            s=strrchr(worktext, '<');
-            if (s==NULL)
+            s = strrchr(worktext, '<');
+
+            if(s == NULL)
             {
-                style=SIMPLESTYLE;
+                style = SIMPLESTYLE;
             }
             else
             {
-                style=ALTSTYLE;
+                style = ALTSTYLE;
             }
         }
         else
         {
-            style=NORMALSTYLE;
+            style = NORMALSTYLE;
         }
-        if (s != NULL)
+
+        if(s != NULL)
         {
-            t = strrchr(s + 1, (*s == '(') ? ')' : '>' );
+            t  = strrchr(s + 1, (*s == '(') ? ')' : '>');
             *s = '\0';
-            if (t != NULL)
+
+            if(t != NULL)
             {
                 *t = '\0';
             }
+
             bracestring = xstrdup(s + 1);
         }
+
         s = worktext;
-        while (m_isspace(*s))
+
+        while(m_isspace(*s))
         {
             s++;
         }
         firststring = xstrdup(s);
-        switch (style)
+
+        switch(style)
         {
-            case SIMPLESTYLE: name=NULL;
-                              domain=firststring;
-                              break;
-            case NORMALSTYLE: name=bracestring;
-                              domain=firststring;
-                              break;
-            case ALTSTYLE:    name=firststring;
-                              domain=bracestring;
-                              break;
-            default: abort();
+            case SIMPLESTYLE:
+                name   = NULL;
+                domain = firststring;
+                break;
+
+            case NORMALSTYLE:
+                name   = bracestring;
+                domain = firststring;
+                break;
+
+            case ALTSTYLE:
+                name   = firststring;
+                domain = bracestring;
+                break;
+
+            default:
+                abort();
         }
         release(worktext);
     }
-    if (name==NULL)
+
+    if(name == NULL)
     {
-       if (strcmp(ST->uucpgate,"*") == 0)
-       {
-          name=xstrdup("UUCP");
-       }
-       else
-       {
-          name=xstrdup(ST->uucpgate);
-       }
+        if(strcmp(ST->uucpgate, "*") == 0)
+        {
+            name = xstrdup("UUCP");
+        }
+        else
+        {
+            name = xstrdup(ST->uucpgate);
+        }
     }
+
     striptwhite(domain);
     strip_geese_feet(name);
 
-    if (cpdomain != NULL)
+    if(cpdomain != NULL)
     {
         *cpdomain = domain;
     }
@@ -411,7 +451,8 @@ void parse_internet_address (const char *string, char **cpdomain, char **cpname)
     {
         release(domain);
     }
-    if (cpname != NULL)
+
+    if(cpname != NULL)
     {
         *cpname = name;
     }
@@ -419,17 +460,16 @@ void parse_internet_address (const char *string, char **cpdomain, char **cpname)
     {
         release(name);
     }
-}
-
+} /* parse_internet_address */
 
 /* compose_internet_address - counterpart to parse_internet_address */
-
-char *compose_internet_address (const char *domain, const char *name)
+char * compose_internet_address(const char * domain, const char * name)
 {
-    char *retval; const char *user;
-    char *realdomain, *domainname;
+    char * retval;
+    const char * user;
+    char * realdomain, * domainname;
 
-    if (domain == NULL)
+    if(domain == NULL)
     {
         return xstrdup("");
     }
@@ -437,13 +477,13 @@ char *compose_internet_address (const char *domain, const char *name)
     /* the domain string might contain a user name */
     parse_internet_address(domain, &realdomain, &domainname);
 
-    if (strcmp(domainname, "UUCP") && strcmp(domainname, ST->uucpgate))
+    if(strcmp(domainname, "UUCP") && strcmp(domainname, ST->uucpgate))
     {
-      user = domainname;
+        user = domainname;
     }
     else
     {
-        if (name == NULL)
+        if(name == NULL)
         {
             user = "";
         }
@@ -452,63 +492,96 @@ char *compose_internet_address (const char *domain, const char *name)
             user = name;
         }
     }
+
     retval = xmalloc(strlen(realdomain) + strlen(user) + 4);
-
     strcpy(retval, realdomain);
-    if (*user)
-    {
-       strcat(retval, " (");
-       strcat(retval, user);
-       strcat(retval, ")");
-    }
-    return retval;
-}
 
+    if(*user)
+    {
+        strcat(retval, " (");
+        strcat(retval, user);
+        strcat(retval, ")");
+    }
+
+    return retval;
+} /* compose_internet_address */
 
 /* routines for AKA matching */
-
-static int match_degree(FIDO_ADDRESS *pfrom, FIDO_ADDRESS *pto)
+static int match_degree(FIDO_ADDRESS * pfrom, FIDO_ADDRESS * pto)
 {
     int degree = 0;
-    if (pfrom->zone == pto->zone) degree++; else return degree;
-    if (pfrom->net == pto->net) degree++; else return degree;
-    if (pfrom->node == pto->node) degree++; else return degree;
-    if (pfrom->point == pto->point) degree++; else return degree;
-    return degree;
-}
 
-void copy_addr(FIDO_ADDRESS *pdest, FIDO_ADDRESS *psource)
+    if(pfrom->zone == pto->zone)
+    {
+        degree++;
+    }
+    else
+    {
+        return degree;
+    }
+
+    if(pfrom->net == pto->net)
+    {
+        degree++;
+    }
+    else
+    {
+        return degree;
+    }
+
+    if(pfrom->node == pto->node)
+    {
+        degree++;
+    }
+    else
+    {
+        return degree;
+    }
+
+    if(pfrom->point == pto->point)
+    {
+        degree++;
+    }
+    else
+    {
+        return degree;
+    }
+
+    return degree;
+} /* match_degree */
+
+void copy_addr(FIDO_ADDRESS * pdest, FIDO_ADDRESS * psource)
 {
     release(pdest->domain);
-
     *pdest = *psource;
-    if (psource->domain != NULL)
+
+    if(psource->domain != NULL)
     {
         pdest->domain = xstrdup(psource->domain);
     }
 }
 
-int akamatch(FIDO_ADDRESS *pfrom, FIDO_ADDRESS *pto)
+int akamatch(FIDO_ADDRESS * pfrom, FIDO_ADDRESS * pto)
 {
     int changed = 0, degree, newdegree, i;
 
     degree = match_degree(pfrom, pto);
 
-    if (pfrom->dontmatch)
+    if(pfrom->dontmatch)
     {
         return 0;
     }
 
-    for (i = 0; i < SW->aliascount; i++)
+    for(i = 0; i < SW->aliascount; i++)
     {
         newdegree = match_degree(alias + i, pto);
-        if (newdegree > degree)
+
+        if(newdegree > degree)
         {
             copy_addr(pfrom, alias + i);
-            degree = newdegree;
+            degree  = newdegree;
             changed = 1;
         }
     }
-    
     return changed;
 }

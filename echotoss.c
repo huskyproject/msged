@@ -15,30 +15,33 @@
 #include "echotoss.h"
 #include "strextra.h"
 
-void echotoss_add(AREA *a)
+void echotoss_add(AREA * a)
 {
-    FILE *fp;
+    FILE * fp;
     char str[80];
 
-    if (a == NULL || a->tag == NULL)
+    if(a == NULL || a->tag == NULL)
     {
         return;
     }
-    if ((a->local == 1) || (a->netmail == 1))
+
+    if((a->local == 1) || (a->netmail == 1))
     {
-       return;
+        return;
     }
 
     fp = fopen(ST->echotoss, "r");
-    if (fp != NULL)
+
+    if(fp != NULL)
     {
-        while (fgets(str, sizeof str, fp) != NULL)
+        while(fgets(str, sizeof str, fp) != NULL)
         {
-            if (*str != '\0')
+            if(*str != '\0')
             {
                 *(str + strlen(str) - 1) = '\0';
             }
-            if (stricmp(str, a->tag) == 0)
+
+            if(stricmp(str, a->tag) == 0)
             {
                 fclose(fp);
                 return;
@@ -48,10 +51,10 @@ void echotoss_add(AREA *a)
     }
 
     fp = fopen(ST->echotoss, "a");
-    if (fp != NULL)
+
+    if(fp != NULL)
     {
         fprintf(fp, "%s\n", a->tag);
         fclose(fp);
     }
-}
-
+} /* echotoss_add */

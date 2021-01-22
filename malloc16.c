@@ -34,41 +34,39 @@
 
 #ifdef __EMX__
 
-void *malloc16(size_t size)
+void * malloc16(size_t size)
 {
-   if (size >= 65530L)
-   {
-       return NULL;
-   }
-   return _tmalloc(size);
+    if(size >= 65530L)
+    {
+        return NULL;
+    }
+
+    return _tmalloc(size);
 }
 
-void free16(void *ptr)
+void free16(void * ptr)
 {
-   _tfree(ptr);
+    _tfree(ptr);
 }
 
 #else
-
 /* Note: the non-EMX implementation is to the utmost inefficient. It is
    a quick hack. A better way would be to allocate a non-commited
    large block at program startup and then use DosSubAllocMem as needed.
    I'll implement that in the future. */
-
-
-void *malloc16(size_t size)
+void * malloc16(size_t size)
 {
-    void *ptr;
+    void * ptr;
     APIRET rc;
 
-    if (size >= 65536L)       /* this is impossible */
+    if(size >= 65536L)        /* this is impossible */
     {
         return NULL;
     }
 
     rc = DosAllocMem(&ptr, size, PAG_COMMIT | OBJ_TILE | PAG_READ | PAG_WRITE);
 
-    if (rc != NO_ERROR)
+    if(rc != NO_ERROR)
     {
         return NULL;
     }
@@ -76,19 +74,20 @@ void *malloc16(size_t size)
     return ptr;
 }
 
-void free16(void *ptr)
+void free16(void * ptr)
 {
     APIRET rc;
 
-    rc = DosFreeMem (ptr);
+    rc = DosFreeMem(ptr);
 
-    if (rc != NO_ERROR)
+    if(rc != NO_ERROR)
     {
         abort();
     }
 }
+
 #endif /* not EMX */
 
 #else /* defined OS2 */
 #error malloc16.c is only applicaple to the OS/2 version
-#endif
+#endif /* ifdef OS2 */

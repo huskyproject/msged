@@ -12,74 +12,80 @@
 #include "memextra.h"
 
 static char msg_alloc_fail[] =
-  "*** Memory allocation failure (out of memory)\n"
-  "*** Needed %u (%Xh) bytes.\n";
-
+    "*** Memory allocation failure (out of memory)\n" "*** Needed %u (%Xh) bytes.\n";
 static char msg_realloc_fail[] =
-  "*** Memory reallocation failure (out of memory)\n"
-  "*** Needed %u (%Xh) bytes.\n";
-
+    "*** Memory reallocation failure (out of memory)\n" "*** Needed %u (%Xh) bytes.\n";
 static char msg_free_fail[] =
-"*** Memory deallocation failure (attempted to free null pointer)\n";
-
+    "*** Memory deallocation failure (attempted to free null pointer)\n";
 extern void cleanup(char *, ...);
 
-void *xmalloc(size_t size)
+void * xmalloc(size_t size)
 {
-    void *ptr;
+    void * ptr;
+
     ptr = malloc(size);
-    if (ptr == NULL)
+
+    if(ptr == NULL)
     {
         cleanup(msg_alloc_fail, (unsigned)size, (unsigned)size);
         exit(0);
     }
+
     return ptr;
 }
 
-void *xcalloc(size_t nmemb, size_t size)
+void * xcalloc(size_t nmemb, size_t size)
 {
-    void *ptr;
+    void * ptr;
+
     ptr = calloc(nmemb, size);
-    if (ptr == NULL)
+
+    if(ptr == NULL)
     {
         cleanup(msg_alloc_fail, (unsigned)(nmemb * size), (unsigned)(nmemb * size));
         exit(0);
     }
+
     return ptr;
 }
 
-void *xrealloc(void *ptr, size_t size)
+void * xrealloc(void * ptr, size_t size)
 {
-    if (ptr == NULL)
+    if(ptr == NULL)
     {
         return xmalloc(size);
     }
-    if (size == (size_t) 0)
+
+    if(size == (size_t)0)
     {
         xfree(ptr);
         return NULL;
     }
+
     ptr = realloc(ptr, size);
-    if (ptr == NULL)
+
+    if(ptr == NULL)
     {
         cleanup(msg_realloc_fail, (unsigned)size, (unsigned)size);
         exit(0);
     }
+
     return ptr;
 }
 
-char *xstrdup(const char *str)
+char * xstrdup(const char * str)
 {
-    if (str == NULL)
+    if(str == NULL)
     {
         return NULL;
     }
+
     return strcpy(xmalloc(strlen(str) + 1), str);
 }
 
-void xfree(void *ptr)
+void xfree(void * ptr)
 {
-    if (ptr == NULL)
+    if(ptr == NULL)
     {
         cleanup(msg_free_fail);
         exit(0);
@@ -93,9 +99,9 @@ void xfree(void *ptr)
 #ifdef OS2
 #include "malloc16.h"
 
-void xfree16(void *ptr)
+void xfree16(void * ptr)
 {
-    if (ptr == NULL)
+    if(ptr == NULL)
     {
         cleanup(msg_free_fail);
         exit(0);
@@ -106,15 +112,19 @@ void xfree16(void *ptr)
     }
 }
 
-void *xmalloc16(size_t size)
+void * xmalloc16(size_t size)
 {
-    void *ptr;
+    void * ptr;
+
     ptr = malloc16(size);
-    if (ptr == NULL)
+
+    if(ptr == NULL)
     {
         cleanup(msg_alloc_fail, (unsigned)size, (unsigned)size);
         exit(0);
     }
+
     return ptr;
 }
-#endif
+
+#endif /* ifdef OS2 */

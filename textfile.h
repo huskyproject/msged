@@ -10,10 +10,11 @@
 #define __TEXTFILE_H__
 
 void import(LINE * l);
-char *getfilename(char *buf);
+char * getfilename(char * buf);
 void export_text(msg *, LINE *);
-void export(LINE * f); /* wrapper for export_text(f, NULL) */
+
+void export (LINE * f); /* wrapper for export_text(f, NULL) */
 void writetxt(void);   /* wrapper for export_text(message, NULL) */
-void filter_buffer(char *buf, int size);
+void filter_buffer(char * buf, int size);
 
 #endif

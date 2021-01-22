@@ -13,25 +13,22 @@
 #include "keys.h"
 #include "menu.h"
 
-int PullDown = 0;
-int ExitType = 0;
-
+int PullDown  = 0;
+int ExitType  = 0;
 static int bc = WHITE | _CYAN;
 static int nc = BLACK | _CYAN;
 static int sc = WHITE | _BLACK;
-
 static int GetFocus(cmd * cmdtab, int num, int id)
 {
     int i;
 
-    for (i = 0; i < num; i++)
+    for(i = 0; i < num; i++)
     {
-        if (cmdtab[i].id == id)
+        if(cmdtab[i].id == id)
         {
             return i;
         }
     }
-
     return -1;
 }
 
@@ -40,7 +37,7 @@ static void DispItem(cmd * c, unsigned char attr, int indent, int slen, int type
     char text[255];
     int len;
 
-    if (!c || !c->itmtxt)
+    if(!c || !c->itmtxt)
     {
         return;
     }
@@ -49,7 +46,8 @@ static void DispItem(cmd * c, unsigned char attr, int indent, int slen, int type
     memset(text, ' ', slen + 2);
     strncpy(text + indent, c->itmtxt, len);
     *(text + slen) = '\0';
-    if (type == CMD_VER)
+
+    if(type == CMD_VER)
     {
         WndPutsn(0, c->row, slen, attr, text);
     }
@@ -62,20 +60,24 @@ static void DispItem(cmd * c, unsigned char attr, int indent, int slen, int type
 static int NextItem(int num, int cur)
 {
     cur++;
-    if (cur == num)
+
+    if(cur == num)
     {
         cur = 0;
     }
+
     return cur;
 }
 
 static int PrevItem(int num, int cur)
 {
     cur--;
-    if (cur < 0)
+
+    if(cur < 0)
     {
         cur = num - 1;
     }
+
     return cur;
 }
 
@@ -86,41 +88,42 @@ static int PrevItem(int num, int cur)
  *  The current mouse position is passed to the function to pinpoint
  *  the item where the mouse hit before calling this function.
  */
-
 int ProcessMenu(MC * m, EVT * event, int show)
 {
     HotGroup Hot;
-    WND *hCurr, *hWnd = NULL;
-    cmd *cmdtab = m->cmdtab;
-    int num = m->num;
-    int Focus = m->cur;
-    int mnu = m->mode;
-    int len = m->len;
+    WND * hCurr, * hWnd = NULL;
+    cmd * cmdtab = m->cmdtab;
+    int num      = m->num;
+    int Focus    = m->cur;
+    int mnu      = m->mode;
+    int len      = m->len;
     int OldFoc;
-    int done = 0;
+    int done   = 0;
     int select = 0;
     int Msg;         /* Msg is used unitialised here. I did not yet
                         investigate it. FIXME! */
     int NewFoc;
     int i, j;
 
-    if (m->btype & INSBDR)
+    if(m->btype & INSBDR)
     {
         m->btype = SBDR;
     }
 
     hCurr = WndTop();
-    if (!show && !(m->mode & CMD_PRT))
+
+    if(!show && !(m->mode & CMD_PRT))
     {
         hWnd = WndOpen(m->x1, m->y1, m->x2, m->y2, m->btype, bc, nc);
-        if (hWnd == NULL)
+
+        if(hWnd == NULL)
         {
             WndCurr(hCurr);
             return WND_ERROR;
         }
     }
 
-    if (m->btype & NBDR)
+    if(m->btype & NBDR)
     {
         j = 0;
     }
@@ -129,7 +132,7 @@ int ProcessMenu(MC * m, EVT * event, int show)
         j = 1;
     }
 
-    for (i = 0; i < num; i++)
+    for(i = 0; i < num; i++)
     {
         Hot.harr[i].id = cmdtab[i].id;
         Hot.harr[i].x1 = m->x1 + j + cmdtab[i].col;
@@ -139,34 +142,35 @@ int ProcessMenu(MC * m, EVT * event, int show)
         DispItem(&cmdtab[i], (unsigned char)nc, m->indent, m->len, mnu);
     }
 
-    if (show)
+    if(show)
     {
         return 0;
     }
 
     Hot.num = num;
     Hot.wid = WND_WN_MENU;
-
     PushHotGroup(&Hot);
 
-    if (event->msg)
+    if(event->msg)
     {
-        if (event->msgtype == WND_WM_COMMAND)
+        if(event->msgtype == WND_WM_COMMAND)
         {
             Focus = GetFocus(cmdtab, m->num, event->id);
         }
         else
         {
-            if (event->msgtype == WND_WM_MOUSE)
+            if(event->msgtype == WND_WM_MOUSE)
             {
                 Focus = LocateHotItem(event->x, event->y, WND_WN_MENU);
-                if (Focus)
+
+                if(Focus)
                 {
                     Focus = GetFocus(cmdtab, m->num, Focus);
                 }
             }
         }
-        if (Focus == -1)
+
+        if(Focus == -1)
         {
             Focus = 0;
         }
@@ -174,31 +178,33 @@ int ProcessMenu(MC * m, EVT * event, int show)
 
     DispItem(&cmdtab[Focus], (unsigned char)sc, m->indent, m->len, mnu);
 
-    while (!done)
+    while(!done)
     {
-        if (select)
+        if(select)
         {
-            if (cmdtab[Focus].m_sub)
+            if(cmdtab[Focus].m_sub)
             {
                 ProcessMenu(cmdtab[Focus].m_sub, event, 0);
             }
             else
             {
-                if (cmdtab[Focus].flags & CMD_EXIT)
+                if(cmdtab[Focus].flags & CMD_EXIT)
                 {
                     done = TRUE;
                     continue;
                 }
                 else
                 {
-                    if (cmdtab[Focus].itmfunc != NULL)
+                    if(cmdtab[Focus].itmfunc != NULL)
                     {
-                        (*cmdtab[Focus].itmfunc) ();
+                        (*cmdtab[Focus].itmfunc)();
                     }
+
                     done = TRUE;  /* should we exit here? */
                     continue;
                 }
             }
+
             select = 0;
         }
         else
@@ -208,116 +214,132 @@ int ProcessMenu(MC * m, EVT * event, int show)
 
         OldFoc = Focus;
 
-        switch (event->msgtype)
+        switch(event->msgtype)
         {
-        case WND_WM_COMMAND:
-            NewFoc = GetFocus(cmdtab, m->num, event->id);
-            if (NewFoc != -1)
-            {
-                switch (Msg)
-                {
-                case MOU_LBTUP:
-                case LMOU_CLCK:
-                    Focus = NewFoc;
-                    select = TRUE;
-                    break;
+            case WND_WM_COMMAND:
+                NewFoc = GetFocus(cmdtab, m->num, event->id);
 
-                case MOU_LBTDN:
-                case LMOU_RPT:
-                case MOUSE_EVT:
-                    Focus = NewFoc;
-                    if (cmdtab[Focus].m_sub)
+                if(NewFoc != -1)
+                {
+                    switch(Msg)
                     {
-                        select = TRUE;
+                        case MOU_LBTUP:
+                        case LMOU_CLCK:
+                            Focus  = NewFoc;
+                            select = TRUE;
+                            break;
+
+                        case MOU_LBTDN:
+                        case LMOU_RPT:
+                        case MOUSE_EVT:
+                            Focus = NewFoc;
+
+                            if(cmdtab[Focus].m_sub)
+                            {
+                                select = TRUE;
+                            }
+
+                            break;
+
+                        default:
+                            break;
                     }
-                    break;
-
-                default:
-                    break;
                 }
-            }
-            else
-            {
-                if (mnu == CMD_VER && event->msg != m->parent)
+                else
                 {
-                    done = TRUE;
+                    if(mnu == CMD_VER && event->msg != m->parent)
+                    {
+                        done = TRUE;
+                    }
                 }
-            }
-            break;
 
-        case WND_WM_MOUSE:
-            switch (Msg)
-            {
-            case LMOU_CLCK:
-            case MOU_LBTUP:
-                done = TRUE;
+                break;
+
+            case WND_WM_MOUSE:
+
+                switch(Msg)
+                {
+                    case LMOU_CLCK:
+                    case MOU_LBTUP:
+                        done = TRUE;
+                        break;
+
+                    default:
+                        break;
+                }
+                break;
+
+            case WND_WM_CHAR:
+
+                switch(Msg)
+                {
+                    case Key_Up:
+
+                        if(mnu == CMD_VER)
+                        {
+                            Focus = PrevItem(m->num, Focus);
+                        }
+
+                        break;
+
+                    case Key_Dwn:
+
+                        if(cmdtab[Focus].m_sub)
+                        {
+                            select = TRUE;
+                        }
+
+                        if(mnu == CMD_VER)
+                        {
+                            Focus = NextItem(m->num, Focus);
+                        }
+
+                        break;
+
+                    case Key_Lft:
+
+                        if(mnu == CMD_HOR)
+                        {
+                            Focus = PrevItem(m->num, Focus);
+                        }
+                        else
+                        {
+                            done = TRUE;
+                        }
+
+                        break;
+
+                    case Key_Rgt:
+
+                        if(mnu == CMD_HOR)
+                        {
+                            Focus = NextItem(m->num, Focus);
+                        }
+                        else
+                        {
+                            done = TRUE;
+                        }
+
+                        break;
+
+                    case Key_Esc:
+                        done = TRUE;
+                        break;
+
+                    case Key_Ent:
+                        select = TRUE;
+                        break;
+
+                    default:
+                        break;
+                } /* switch */
                 break;
 
             default:
                 break;
-            }
-            break;
+        } /* switch */
 
-        case WND_WM_CHAR:
-            switch (Msg)
-            {
-            case Key_Up:
-                if (mnu == CMD_VER)
-                {
-                    Focus = PrevItem(m->num, Focus);
-                }
-                break;
-
-            case Key_Dwn:
-                if (cmdtab[Focus].m_sub)
-                {
-                    select = TRUE;
-                }
-                if (mnu == CMD_VER)
-                {
-                    Focus = NextItem(m->num, Focus);
-                }
-                break;
-
-            case Key_Lft:
-                if (mnu == CMD_HOR)
-                {
-                    Focus = PrevItem(m->num, Focus);
-                }
-                else
-                {
-                    done = TRUE;
-                }
-                break;
-
-            case Key_Rgt:
-                if (mnu == CMD_HOR)
-                {
-                    Focus = NextItem(m->num, Focus);
-                }
-                else
-                {
-                    done = TRUE;
-                }
-                break;
-
-            case Key_Esc:
-                done = TRUE;
-                break;
-
-            case Key_Ent:
-                select = TRUE;
-                break;
-
-            default:
-                break;
-            }
-            break;
-
-        default:
-            break;
-        }
-        if (Focus != OldFoc)
+        if(Focus != OldFoc)
         {
             DispItem(&cmdtab[OldFoc], (unsigned char)nc, m->indent, m->len, mnu);
             DispItem(&cmdtab[Focus], (unsigned char)sc, m->indent, m->len, mnu);
@@ -325,25 +347,25 @@ int ProcessMenu(MC * m, EVT * event, int show)
     }
     DispItem(&cmdtab[Focus], (unsigned char)nc, m->indent, m->len, mnu);
     PopHotGroup();
-    if (!(m->mode & CMD_PRT))
+
+    if(!(m->mode & CMD_PRT))
     {
         WndClose(hWnd);
         WndCurr(hCurr);
     }
-    if (cmdtab[Focus].flags & CMD_EXIT && select)
+
+    if(cmdtab[Focus].flags & CMD_EXIT && select)
     {
         /* then return the ID of ret item */
-
         event->msgtype = WND_WM_CHAR;
-        event->msg = 0;
-
+        event->msg     = 0;
         return cmdtab[Focus].id;
     }
     else
     {
         return 0;
     }
-}
+} /* ProcessMenu */
 
 void MnuSetColours(int nbc, int nnc, int nsc)
 {

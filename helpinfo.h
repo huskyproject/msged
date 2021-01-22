@@ -9,6 +9,6 @@
 #ifndef __HELPINFO_H__
 #define __HELPINFO_H__
 
-void helpinfo(int argc, char *argv[]);
+void helpinfo(int argc, char * argv[]);
 
 #endif

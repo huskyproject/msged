@@ -13,6 +13,6 @@ void PushHotGroup(HotGroup * New);
 void PopHotGroup(void);
 int LocateHotItem(int x, int y, unsigned long wid);
 unsigned int MnuGetMsg(EVT * event, unsigned long wid);
-void RegisterKeyProc(int (*fnc) (int ch));
+void RegisterKeyProc(int (* fnc)(int ch));
 
 #endif

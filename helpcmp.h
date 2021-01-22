@@ -9,6 +9,6 @@
 #ifndef __HELPCMP_H__
 #define __HELPCMP_H__
 
-void helpcmp(int argc, char *argv[]);
+void helpcmp(int argc, char * argv[]);
 
 #endif

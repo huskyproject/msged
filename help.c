@@ -15,10 +15,10 @@
 #include "keys.h"
 #include "help.h"
 
-static FILE *help;
+static FILE * help;
 static HFileHdr Fheader;
-static HTopicHdr *topics;
-static char *line;
+static HTopicHdr * topics;
+static char * line;
 static int setup;
 static int CurrTopic;
 static int numTopics;
@@ -32,81 +32,87 @@ static int numTopics;
 #include <share.h>
 #endif
 
-void HelpInit(char *fileName)
+void HelpInit(char * fileName)
 {
     int i;
 
 #ifdef __TURBOC__
     help = _fsopen(fileName, "rb", SH_DENYNONE);
-#elif defined(__DJGPP__)
-    int handle = sopen(fileName, O_RDONLY|O_BINARY, SH_DENYNO, 0);
-    if (handle == -1)
+#elif defined (__DJGPP__)
+    int handle = sopen(fileName, O_RDONLY | O_BINARY, SH_DENYNO, 0);
+
+    if(handle == -1)
     {
         return;
     }
+
     help = fdopen(handle, "rb");
 #else
     help = fopen(fileName, "rb");
 #endif
-    if (help == NULL)
+
+    if(help == NULL)
     {
         return;
     }
 
     setup = 0;
-
     fread(&Fheader, sizeof(HFileHdr), 1, help);
     numTopics = (Fheader.topics[1] << 8) | Fheader.topics[0];
-    topics = xcalloc(numTopics, sizeof *topics);
-    for (i = 0; i < numTopics; i++)
+    topics    = xcalloc(numTopics, sizeof *topics);
+
+    for(i = 0; i < numTopics; i++)
     {
-        fread(&topics[i], sizeof (HTopicHdr), 1, help);
+        fread(&topics[i], sizeof(HTopicHdr), 1, help);
     }
-    setup = 1;
+    setup     = 1;
     CurrTopic = 0;
-}
+} /* HelpInit */
 
 void DisplayPage(long offset, int max)
 {
-    char *s;
+    char * s;
     int done;
     int line_num;
 
-    done = 0;
+    done     = 0;
     line_num = 0;
-
     fseek(help, offset, SEEK_SET);
 
-    if (line == NULL) line = xmalloc(255);
+    if(line == NULL)
+    {
+        line = xmalloc(255);
+    }
 
     WndClear(0, 0, 54, 14, cm[HP_NTXT]);
 
-    while (!done)
+    while(!done)
     {
-        if (line_num == max)
+        if(line_num == max)
         {
             break;
         }
 
-        if (fgets(line, 254, help) == NULL)
+        if(fgets(line, 254, help) == NULL)
         {
             break;
         }
 
-        if (!strncmp(line, "*Page", 5) || !strncmp(line, "*End", 4))
+        if(!strncmp(line, "*Page", 5) || !strncmp(line, "*End", 4))
         {
             break;
         }
 
-        if (*line != '\n')
+        if(*line != '\n')
         {
             s = strchr(line, '\n');
-            if (s != NULL)
+
+            if(s != NULL)
             {
                 *s = '\0';
             }
 
-            if (!strncmp(line, "*High", 5))
+            if(!strncmp(line, "*High", 5))
             {
                 s = line + 5;
                 WndWriteStr(0, line_num, cm[HP_TTXT], s);
@@ -116,107 +122,111 @@ void DisplayPage(long offset, int max)
                 WndWriteStr(0, line_num, cm[HP_NTXT], line);
             }
         }
+
         line_num++;
     }
-}
+} /* DisplayPage */
 
 void DoHelp(int topic)
 {
-    WND *hWnd, *hCurr;
+    WND * hWnd, * hCurr;
     long offset[20];
     int depth, page, pages, ch, done;
 
-    if (help == NULL)
+    if(help == NULL)
     {
         return;
     }
 
-    if (topic < 0 || topic > numTopics)
+    if(topic < 0 || topic > numTopics)
     {
         return;
     }
 
-    if (line == NULL) line = xmalloc(255);
+    if(line == NULL)
+    {
+        line = xmalloc(255);
+    }
 
     fseek(help, topics[topic].offset, SEEK_SET);
 
-    if (fgets(line, 254, help) == NULL)
+    if(fgets(line, 254, help) == NULL)
     {
         return;
     }
 
-    if (strncmp(line, "*Begin", 6))
+    if(strncmp(line, "*Begin", 6))
     {
         return;
     }
 
-    done = 0;
-    pages = 1;
+    done              = 0;
+    pages             = 1;
     offset[pages - 1] = ftell(help);
 
-    while (!done)
+    while(!done)
     {
-        if (fgets(line, 254, help) == NULL)
+        if(fgets(line, 254, help) == NULL)
         {
             return;
         }
 
-        if (!strncmp(line, "*End", 4))
+        if(!strncmp(line, "*End", 4))
         {
             break;
         }
 
-        if (!strncmp(line, "*Page", 5))
+        if(!strncmp(line, "*Page", 5))
         {
             pages++;
             offset[pages - 1] = ftell(help);
         }
     }
-
     fseek(help, offset[0], SEEK_SET);
-
     hCurr = WndTop();
-    hWnd = WndPopUp(60, 18, INSBDR | SHADOW, cm[HP_BTXT], cm[HP_NTXT]);
-
+    hWnd  = WndPopUp(60, 18, INSBDR | SHADOW, cm[HP_BTXT], cm[HP_NTXT]);
     WndTitle(" Help ", cm[HP_TTXT]);
-
-    done = 0;
-    page = 0;
+    done  = 0;
+    page  = 0;
     depth = 14;
-
     DisplayPage(offset[page], depth);
 
-    while (!done)
+    while(!done)
     {
         ch = TTGetChr();
-        switch (ch)
+
+        switch(ch)
         {
-        case Key_PgDn:
-        case Key_Dwn:
-            if (page + 1 < pages)
-            {
-                page++;
-                DisplayPage(offset[page], depth);
-            }
-            break;
+            case Key_PgDn:
+            case Key_Dwn:
 
-        case Key_PgUp:
-        case Key_Up:
-            if (page > 0)
-            {
-                page--;
-                DisplayPage(offset[page], depth);
-            }
-            break;
+                if(page + 1 < pages)
+                {
+                    page++;
+                    DisplayPage(offset[page], depth);
+                }
 
-        case Key_Esc:
-            done = TRUE;
-            break;
+                break;
 
-        default:
-            break;
-        }
+            case Key_PgUp:
+            case Key_Up:
+
+                if(page > 0)
+                {
+                    page--;
+                    DisplayPage(offset[page], depth);
+                }
+
+                break;
+
+            case Key_Esc:
+                done = TRUE;
+                break;
+
+            default:
+                break;
+        } /* switch */
     }
     WndClose(hWnd);
     WndCurr(hCurr);
-}
+} /* DoHelp */

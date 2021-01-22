@@ -1,6 +1,5 @@
 #ifndef __ENVIRON_H
 #define __ENVIRON_H
-
 /*
  * ENVIRON.H
  *
@@ -8,8 +7,6 @@
  *
  * Environment variable (%MAILBOXDRIVE% -> E: and so on) expander.
  */
-
-
-char *env_expand(char *line);
+char * env_expand(char * line);
 
 #endif

@@ -20,7 +20,7 @@
 
 #include <stdlib.h>
 
-void *malloc16(size_t);
+void * malloc16(size_t);
 void free16(void *);
 
 #endif

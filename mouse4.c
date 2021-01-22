@@ -8,16 +8,15 @@
  */
 
 #include <dos.h>
-#if defined(__DJGPP__)
+#if defined (__DJGPP__)
 #include <dpmi.h>
-#elif defined(__FLAT__)
+#elif defined (__FLAT__)
 #include "rmi.h"
 extern struct rminfo RMINF;
 #endif
 #define MSMOUSE 0x33
 
 int mouse_present = 0;  /* globally visible */
-
 /*
  *  Uses driver function 0 to initialize the mouse software to its
  *  default settings.  If no mouse is present it returns 0.  If a
@@ -25,25 +24,24 @@ int mouse_present = 0;  /* globally visible */
  *  buttons in *mousetype.  Also initializes the global variable
  *  mouse_present (0 = no mouse, else a mouse is present).
  */
-
-int ms_reset(int *mousetype)
+int ms_reset(int * mousetype)
 {
-#if defined(__DJGPP__)
+#if defined (__DJGPP__)
     __dpmi_regs workregs;
     workregs.x.ax = 0;
     __dpmi_int(MSMOUSE, &workregs);
-    *mousetype = workregs.x.bx;
+    *mousetype    = workregs.x.bx;
     mouse_present = workregs.x.ax;
-#elif defined(__FLAT__)
+#elif defined (__FLAT__)
     RMINF.EAX = 0;
     int86x(MSMOUSE);
-    *mousetype = RMINF.EBX & 0xffff;
+    *mousetype    = RMINF.EBX & 0xffff;
     mouse_present = RMINF.EAX & 0xffff;
 #else
     union REGS workregs;
     workregs.x.ax = 0;
     int86(MSMOUSE, &workregs, &workregs);
-    *mousetype = workregs.x.bx;
+    *mousetype    = workregs.x.bx;
     mouse_present = workregs.x.ax;
 #endif
     return mouse_present;
@@ -52,14 +50,13 @@ int ms_reset(int *mousetype)
 /*
  *  Makes the mouse cursor visible.
  */
-
 int ms_show_cursor(void)
 {
-#if defined(__DJGPP__)
+#if defined (__DJGPP__)
     __dpmi_regs workregs;
     workregs.x.ax = 1;
     __dpmi_int(MSMOUSE, &workregs);
-#elif defined(__FLAT__)
+#elif defined (__FLAT__)
     RMINF.EAX = 1;
     int86x(MSMOUSE);
 #else
@@ -74,14 +71,13 @@ int ms_show_cursor(void)
  *  Hides the mouse cursor.  Should be called before changing any
  *  portion of the screen under the mouse cursor.
  */
-
 int ms_hide_cursor(void)
 {
-#if defined(__DJGPP__)
+#if defined (__DJGPP__)
     __dpmi_regs workregs;
     workregs.x.ax = 2;
     __dpmi_int(MSMOUSE, &workregs);
-#elif defined(__FLAT__)
+#elif defined (__FLAT__)
     RMINF.EAX = 2;
     int86x(MSMOUSE);
 #else
@@ -104,28 +100,30 @@ int ms_hide_cursor(void)
  *
  *  (0 = button up, 1 = button down)
  */
-
-int ms_get_mouse_pos(int *horizpos, int *vertpos)
+int ms_get_mouse_pos(int * horizpos, int * vertpos)
 {
-#if defined(__DJGPP__)
+#if defined (__DJGPP__)
     __dpmi_regs workregs;
     workregs.x.ax = 3;
     __dpmi_int(MSMOUSE, &workregs);
     *horizpos = workregs.x.cx / 8;
-    *vertpos = workregs.x.dx / 8;
+    *vertpos  = workregs.x.dx / 8;
     return workregs.x.bx;
-#elif defined(__FLAT__)
+
+#elif defined (__FLAT__)
     RMINF.EAX = 3;
     int86x(MSMOUSE);
     *horizpos = (RMINF.ECX & 0xffff) / 8;
-    *vertpos = (RMINF.EDX & 0xffff) / 8;
+    *vertpos  = (RMINF.EDX & 0xffff) / 8;
     return RMINF.EBX & 0xffff;
+
 #else
     union REGS workregs;
     workregs.x.ax = 3;
     int86(MSMOUSE, &workregs, &workregs);
     *horizpos = workregs.x.cx / 8;
-    *vertpos = workregs.x.dx / 8;
+    *vertpos  = workregs.x.dx / 8;
     return workregs.x.bx;
+
 #endif
-}
+} /* ms_get_mouse_pos */

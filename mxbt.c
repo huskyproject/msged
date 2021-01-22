@@ -47,7 +47,6 @@
  *  leaf node.
  *
  */
-
 /*
  *  The algorithm we employ is:
  *
@@ -63,39 +62,48 @@
 #include "mxbt.h"
 
 static void mxbtInit(MXBT * mxbt);
-static void mxbtOpen(MXBT * mxbt, char *indexFile);
+static void mxbtOpen(MXBT * mxbt, char * indexFile);
 static void mxbtClose(MXBT * mxbt);
 static void mxbtFetchControl(MXBT * mxbt);
-static void mxbtSetKey(MXBT * mxbt, void *searchKey);
-static void mxbtSetCompare(MXBT * mxbt, int (*compare) (void *testKey, void *searchKey, int len));
+static void mxbtSetKey(MXBT * mxbt, void * searchKey);
+static void mxbtSetCompare(MXBT * mxbt, int (* compare)(void * testKey, void * searchKey,
+                                                        int len));
 static void mxbtReadRec(MXBT * mxbt);
 static void mxbtFindLeaf(MXBT * mxbt);
 static void mxbtSearchLeaf(MXBT * mxbt);
 
-long mxbtOneSearch(MXBT * mxbt, char *indexFile, void *searchKey, int (*compare) (void *testKey, void *searchKey, int len))
+long mxbtOneSearch(MXBT * mxbt, char * indexFile, void * searchKey, int (* compare)(void * testKey,
+                                                                                    void * searchKey,
+                                                                                    int len))
 {
     mxbt->error = 0;
     mxbtInit(mxbt);
-    if (!mxbt->error)
+
+    if(!mxbt->error)
     {
         mxbtOpen(mxbt, indexFile);
-        if (!mxbt->error)
+
+        if(!mxbt->error)
         {
             mxbtFetchControl(mxbt);
-            if (!mxbt->error)
+
+            if(!mxbt->error)
             {
                 mxbtSetKey(mxbt, searchKey);
                 mxbtSetCompare(mxbt, compare);
                 mxbtFindLeaf(mxbt);
-                if (!mxbt->error)
+
+                if(!mxbt->error)
                 {
                     mxbtSearchLeaf(mxbt);
                 }
             }
+
             mxbtClose(mxbt);
         }
     }
-    if (mxbt->error)
+
+    if(mxbt->error)
     {
         return -1L;
     }
@@ -103,19 +111,20 @@ long mxbtOneSearch(MXBT * mxbt, char *indexFile, void *searchKey, int (*compare)
     {
         return mxbt->value;
     }
-}
+} /* mxbtOneSearch */
 
 static void mxbtInit(MXBT * mxbt)
 {
-    mxbt->buf = mxbt->myunion.intbuf;
+    mxbt->buf   = mxbt->myunion.intbuf;
     mxbt->index = (struct mxbt_indexrec *)mxbt->buf;
-    mxbt->leaf = (struct mxbt_leafrec *)mxbt->buf;
+    mxbt->leaf  = (struct mxbt_leafrec *)mxbt->buf;
 }
 
-static void mxbtOpen(MXBT * mxbt, char *indexFile)
+static void mxbtOpen(MXBT * mxbt, char * indexFile)
 {
     mxbt->fp = fopen(indexFile, "rb");
-    if (mxbt->fp == NULL)
+
+    if(mxbt->fp == NULL)
     {
         mxbt->error = 1;
     }
@@ -123,7 +132,7 @@ static void mxbtOpen(MXBT * mxbt, char *indexFile)
 
 static void mxbtClose(MXBT * mxbt)
 {
-    if (fclose(mxbt->fp) != 0)
+    if(fclose(mxbt->fp) != 0)
     {
         mxbt->error = 1;
     }
@@ -131,22 +140,22 @@ static void mxbtClose(MXBT * mxbt)
 
 static void mxbtFetchControl(MXBT * mxbt)
 {
-    if (fread(&mxbt->recSize, sizeof(unsigned short), 1, mxbt->fp) != 1)
+    if(fread(&mxbt->recSize, sizeof(unsigned short), 1, mxbt->fp) != 1)
     {
         mxbt->error = 1;
     }
-    else if (fread(&mxbt->control, sizeof mxbt->control, 1, mxbt->fp) != 1)
+    else if(fread(&mxbt->control, sizeof mxbt->control, 1, mxbt->fp) != 1)
     {
         mxbt->error = 1;
     }
 }
 
-static void mxbtSetKey(MXBT * mxbt, void *searchKey)
+static void mxbtSetKey(MXBT * mxbt, void * searchKey)
 {
     mxbt->searchK = searchKey;
 }
 
-static void mxbtSetCompare(MXBT * mxbt, int (*compare) (void *testKey, void *searchKey, int len))
+static void mxbtSetCompare(MXBT * mxbt, int (* compare)(void * testKey, void * searchKey, int len))
 {
     mxbt->compareF = compare;
 }
@@ -155,15 +164,18 @@ static void mxbtReadRec(MXBT * mxbt)
 {
     size_t x;
     int y;
+
     y = fseek(mxbt->fp, mxbt->recordNum * mxbt->recSize, SEEK_SET);
-    if (y != 0)
+
+    if(y != 0)
     {
         mxbt->error = 1;
     }
     else
     {
         x = fread(mxbt->buf, mxbt->recSize, 1, mxbt->fp);
-        if (x != 1)
+
+        if(x != 1)
         {
             mxbt->error = 1;
         }
@@ -176,25 +188,27 @@ static void mxbtFindLeaf(MXBT * mxbt)
 
     mxbt->recordNum = mxbt->control.indexStart;
     mxbtReadRec(mxbt);
-    while (!mxbt->error && (mxbt->index->recType != -1))
+
+    while(!mxbt->error && (mxbt->index->recType != -1))
     {
         cnt = mxbt->index->keyCount;
-        if (cnt < 0)
+
+        if(cnt < 0)
         {
             mxbt->error = 1;
         }
         else
         {
-            for (x = 0; x < cnt; x++)
+            for(x = 0; x < cnt; x++)
             {
-                if (mxbt->compareF((char *)mxbt->index +
-                  mxbt->index->keys[x].offset, mxbt->searchK,
-                  mxbt->index->keys[x].len) > 0)
+                if(mxbt->compareF((char *)mxbt->index + mxbt->index->keys[x].offset, mxbt->searchK,
+                                  mxbt->index->keys[x].len) > 0)
                 {
                     break;
                 }
             }
-            if (x == 0)
+
+            if(x == 0)
             {
                 mxbt->recordNum = mxbt->index->recType;
             }
@@ -202,41 +216,45 @@ static void mxbtFindLeaf(MXBT * mxbt)
             {
                 mxbt->recordNum = mxbt->index->keys[x - 1].lower;
             }
+
             mxbtReadRec(mxbt);
         }
     }
-}
+} /* mxbtFindLeaf */
 
 static void mxbtSearchLeaf(MXBT * mxbt)
 {
     int cnt, x, ret;
 
     cnt = mxbt->leaf->keyCount;
-    if (cnt <= 0)
+
+    if(cnt <= 0)
     {
         mxbt->error = 1;
     }
     else
     {
-        for (x = 0; x < cnt; x++)
+        for(x = 0; x < cnt; x++)
         {
-            ret = mxbt->compareF((char *)mxbt->leaf +
-              mxbt->leaf->keys[x].offset, mxbt->searchK,
-              mxbt->leaf->keys[x].len);
-            if (ret > 0)
+            ret = mxbt->compareF((char *)mxbt->leaf + mxbt->leaf->keys[x].offset,
+                                 mxbt->searchK,
+                                 mxbt->leaf->keys[x].len);
+
+            if(ret > 0)
             {
                 mxbt->error = 1;
                 break;
             }
-            else if (ret == 0)
+            else if(ret == 0)
             {
                 mxbt->value = mxbt->leaf->keys[x].value;
                 break;
             }
         }
-        if (x == cnt)
+
+        if(x == cnt)
         {
             mxbt->error = 1;
         }
     }
-}
+} /* mxbtSearchLeaf */

@@ -13,11 +13,10 @@
 #include <errno.h>
 #include "help.h"
 
-static FILE *ifp, *ofp;
+static FILE * ifp, * ofp;
 static HFileHdr Fheader;
-static HTopicHdr *topichdrs;
-
-void helpcmp(int argc, char *argv[])
+static HTopicHdr * topichdrs;
+void helpcmp(int argc, char * argv[])
 {
     long last;
     char line[255];
@@ -25,53 +24,54 @@ void helpcmp(int argc, char *argv[])
 
     puts("Msged help file compiler");
 
-    if (argc < 3)
+    if(argc < 3)
     {
         printf("\nUsage: MSGED -hc <source> <target>\n");
         return;
     }
 
     ifp = fopen(argv[1], "r");
-    if (ifp == NULL)
+
+    if(ifp == NULL)
     {
-        fprintf(stderr, "HELPCMP: Error opening help source file, '%s' : %s\n",
-          argv[1], strerror(errno));
+        fprintf(stderr, "HELPCMP: Error opening help source file, '%s' : %s\n", argv[1],
+                strerror(errno));
         return;
     }
 
     ofp = fopen(argv[2], "wb");
-    if (ofp == NULL)
+
+    if(ofp == NULL)
     {
-        fprintf(stderr, "HELPCMP: Error opening help target file, '%s' : %s\n",
-          argv[2], strerror(errno));
+        fprintf(stderr, "HELPCMP: Error opening help target file, '%s' : %s\n", argv[2],
+                strerror(errno));
         return;
     }
 
-    done = 0;
+    done   = 0;
     topics = 0;
-
     printf("\nHELPCMP: Compiling, pass one (reading)...");
 
-    while (!done)
+    while(!done)
     {
-        if (fgets(line, 254, ifp) == NULL)
+        if(fgets(line, 254, ifp) == NULL)
         {
             break;
         }
-        if (!strncmp(line, "*Begin", 6))
+
+        if(!strncmp(line, "*Begin", 6))
         {
             topics++;
         }
     }
-
     printf(" done.\n");
 
-    if (topics >= 1)
+    if(topics >= 1)
     {
         printf("HELPCMP: Compiling %d topics, pass two (writing)...", topics);
-
         topichdrs = calloc(topics, sizeof(HTopicHdr));
-        if (topichdrs == NULL)
+
+        if(topichdrs == NULL)
         {
             printf(" error!\n");
             fprintf(stderr, "HELPCMP: Memory allocation failure!\n");
@@ -83,35 +83,31 @@ void helpcmp(int argc, char *argv[])
         Fheader.topics[1] = (unsigned char)((topics >> 8) & 0xff);
         curr = 0;
         done = 0;
-
         fseek(ifp, 0L, SEEK_SET);
-
         fwrite(&Fheader, sizeof(HFileHdr), 1, ofp);
         fwrite(topichdrs, sizeof(HTopicHdr), topics, ofp);
 
-        while (!done)
+        while(!done)
         {
             last = ftell(ofp);
 
-            if (fgets(line, 254, ifp) == NULL)
+            if(fgets(line, 254, ifp) == NULL)
             {
                 break;
             }
 
-            if (!strncmp(line, "*Begin", 6))
+            if(!strncmp(line, "*Begin", 6))
             {
                 topichdrs[curr++].offset = last;
             }
 
             fprintf(ofp, "%s", line);
         }
-
         fseek(ofp, (long)sizeof(HFileHdr), SEEK_SET);
         fwrite(topichdrs, sizeof(HTopicHdr), topics, ofp);
-
         printf(" done.\n");
     }
 
     fclose(ofp);
     fclose(ifp);
-}
+} /* helpcmp */

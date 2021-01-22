@@ -37,55 +37,57 @@
 #include "wrap.h"
 #include "mctype.h"
 
-static LINE *current;           /* current line */
-static LINE *pagetop;           /* top line of page */
-static LINE *msgtop;            /* top line of file */
-static LINE *udel;              /* deleted line buffer */
-static LINE *clip;              /* for blocks of text */
+static LINE * current;          /* current line */
+static LINE * pagetop;          /* top line of page */
+static LINE * msgtop;           /* top line of file */
+static LINE * udel;             /* deleted line buffer */
+static LINE * clip;             /* for blocks of text */
 static char line_buf[255];      /* buffer for the current line */
-static int x = 1;               /* x coordinate, 1 based */
-static int y = 1;               /* y coordinate, 1 based */
+static int x        = 1;        /* x coordinate, 1 based */
+static int y        = 1;        /* y coordinate, 1 based */
 static int currline = 1;        /* current line of msg, 1 based */
-static int ed_miny = 1;         /* logical min y value */
-static int ed_maxy = 1;         /* logical max y value */
+static int ed_miny  = 1;        /* logical min y value */
+static int ed_maxy  = 1;        /* logical max y value */
 static int edmaxy;              /* real max y value */
 static int edminy;              /* real min y value */
 static int quote_len = 14;      /* length to look for quote */
 static int done;                /* finished editing? */
 static int insert = 1;          /* insert = on ? */
 static int blocking;            /* block on? */
-static msg *messg;              /* message being edited */
-
+static msg * messg;             /* message being edited */
 /* This function sets the current right and quote margins, taking
    into account both the actual window size and the settings that the
    user has desired. */
-
 void adapt_margins(void)
 {
     SW->rm = maxx - 1;
-    if (SW->rm > SW->orgrm)
+
+    if(SW->rm > SW->orgrm)
     {
         SW->rm = SW->orgrm;
     }
-    
+
     SW->qm = SW->rm - strlen(ST->quotestr);
-    if (SW->qm > SW->orgqm)
+
+    if(SW->qm > SW->orgqm)
     {
         SW->qm = SW->orgqm;
     }
-    if (SW->rm < 1)
+
+    if(SW->rm < 1)
     {
         SW->rm = 1;
     }
-    if (SW->qm < 1)
+
+    if(SW->qm < 1)
     {
         SW->qm = 1;
     }
-}        
+}
 
 static void zap_quotes(void)
 {
-    while (current->next != NULL && (current->quote || current->text[0] == 10))
+    while(current->next != NULL && (current->quote || current->text[0] == 10))
     {
         delete_line();
     }
@@ -97,15 +99,15 @@ static void rotate(void)
 }
 
 static void nada(void)
-{
-}
+{}
 
-char *e_getbind(unsigned int key)
+char * e_getbind(unsigned int key)
 {
     unsigned int i = 0;
-    void (*action) (void);
 
-    if (key & 0xff)
+    void (* action)(void);
+
+    if(key & 0xff)
     {
         action = editckeys[key & 0xff];
     }
@@ -114,31 +116,31 @@ char *e_getbind(unsigned int key)
         action = editakeys[(key >> 8) & 0xff];
     }
 
-    while ((editcmds[i].label != NULL) && (action != editcmds[i].action))
+    while((editcmds[i].label != NULL) && (action != editcmds[i].action))
     {
         i++;
     }
-
     return editcmds[i].label;
 }
 
-char *e_getlabels(int i)
+char * e_getlabels(int i)
 {
     return editcmds[i].label;
 }
 
-void e_assignkey(unsigned int key, char *label)
+void e_assignkey(unsigned int key, char * label)
 {
     unsigned int i = 0;
 
-    while ((editcmds[i].label != NULL) && (strncmp(editcmds[i].label, label, strlen(editcmds[i].label)) != 0))
+    while((editcmds[i].label != NULL) &&
+          (strncmp(editcmds[i].label, label, strlen(editcmds[i].label)) != 0))
     {
         i++;
     }
 
-    if (editcmds[i].label != NULL)
+    if(editcmds[i].label != NULL)
     {
-        if (key & 0xff)
+        if(key & 0xff)
         {
             editckeys[key & 0xff] = editcmds[i].action;
         }
@@ -149,13 +151,13 @@ void e_assignkey(unsigned int key, char *label)
     }
 }
 
-LINE *lineins(LINE * cl)
+LINE * lineins(LINE * cl)
 {
-    LINE *nl;
+    LINE * nl;
 
     nl = xcalloc(1, sizeof *nl);
 
-    if (cl == NULL)
+    if(cl == NULL)
     {
         return nl;
     }
@@ -164,7 +166,7 @@ LINE *lineins(LINE * cl)
     nl->prev = cl->prev;
     cl->prev = nl;
 
-    if (nl->prev != NULL)
+    if(nl->prev != NULL)
     {
         nl->prev->next = nl;
     }
@@ -175,17 +177,15 @@ LINE *lineins(LINE * cl)
 /*
  *  Functions that are local to this file (excepting wrap and editmsg).
  */
-
 /*
  *  EdPutLine(); Displays a line, translating the display type.
  */
-
 static void EdPutLine(LINE * line, int y)
 {
     line->quote = isquote(line->text);
 
     /* check line coords! */
-    if (y <= ed_maxy)
+    if(y <= ed_maxy)
     {
         PutLine(line, y + edminy);
     }
@@ -198,10 +198,9 @@ static void EdPutLine(LINE * line, int y)
 /*
  *  ScrollDown(); Scrolls down one line.
  */
-
 void ScrollDown(int y1, int y2)
 {
-    if (y1 <= ed_maxy && y2 <= ed_maxy)
+    if(y1 <= ed_maxy && y2 <= ed_maxy)
     {
         WndScroll(0, y1 + edminy, maxx - 1, y2 + edminy, 0);
     }
@@ -214,10 +213,9 @@ void ScrollDown(int y1, int y2)
 /*
  *  ScrollUp(); Scrolls up one line.
  */
-
 void ScrollUp(int y1, int y2)
 {
-    if (y1 <= ed_maxy && y2 <= ed_maxy)
+    if(y1 <= ed_maxy && y2 <= ed_maxy)
     {
         WndScroll(0, y1 + edminy, maxx - 1, y2 + edminy, 1);
     }
@@ -230,10 +228,9 @@ void ScrollUp(int y1, int y2)
 /*
  *  GotoXY(); Goes to a position on the screen.
  */
-
 static void GotoXY(int x, int y)
 {
-    if (x >= 1 && x <= maxx && y <= ed_maxy && y >= ed_miny)
+    if(x >= 1 && x <= maxx && y <= ed_maxy && y >= ed_miny)
     {
         WndGotoXY(x - 1, y + edminy);
     }
@@ -243,18 +240,20 @@ static void GotoXY(int x, int y)
  *  RedrawPage(); Redraws the page, starting from the line passed and
  *  the y coord.
  */
-
 void RedrawPage(LINE * start, int wherey)
 {
-    LINE *cur = start;
-    static LINE blank = {"", 0, 0, 0, 0, 0, NULL, NULL};
+    LINE * cur        = start;
+    static LINE blank =
+    {
+        "", 0, 0, 0, 0, 0, NULL, NULL
+    };
     int cury = wherey;
 
-    if (start != NULL && wherey <= ed_maxy)
+    if(start != NULL && wherey <= ed_maxy)
     {
         TTBeginOutput();
 
-        while (cur != NULL && cury <= ed_maxy)
+        while(cur != NULL && cury <= ed_maxy)
         {
             EdPutLine(cur, cury);
             cur = cur->next;
@@ -265,10 +264,9 @@ void RedrawPage(LINE * start, int wherey)
          *  If we have lines left on the screen, clear them - simple to
          *  just write over them with blank lines.
          */
-
-        if (cury <= ed_maxy)
+        if(cury <= ed_maxy)
         {
-            while (cury <= ed_maxy)
+            while(cury <= ed_maxy)
             {
                 EdPutLine(&blank, cury);
                 cury++;
@@ -277,23 +275,21 @@ void RedrawPage(LINE * start, int wherey)
 
         TTEndOutput();
     }
-}
+} /* RedrawPage */
 
 /*
  *  InsertLine(); Inserts a line AFTER the current line.
  */
-
-LINE *InsertLine(LINE * current)
+LINE * InsertLine(LINE * current)
 {
-    LINE *nl;
+    LINE * nl;
 
-    nl = xcalloc(1, sizeof *nl);
-
-    nl->next = current->next;
-    nl->prev = current;
+    nl            = xcalloc(1, sizeof *nl);
+    nl->next      = current->next;
+    nl->prev      = current;
     current->next = nl;
 
-    if (nl->next)
+    if(nl->next)
     {
         nl->next->prev = nl;
     }
@@ -304,7 +300,6 @@ LINE *InsertLine(LINE * current)
 /*
  *  UnmarkLineBuf(); Copies the line_buf to the current line structure,
  */
-
 void UnmarkLineBuf(void)
 {
     release(current->text);
@@ -314,11 +309,11 @@ void UnmarkLineBuf(void)
 /*
  *  SetLineBuf(); Copies the current line text to the line_buf.
  */
-
 void SetLineBuf(void)
 {
     memset(line_buf, 0, sizeof line_buf);
-    if (current->text)
+
+    if(current->text)
     {
         strncpy(line_buf, current->text, sizeof line_buf);
         line_buf[(sizeof line_buf) - 1] = '\0';
@@ -328,28 +323,27 @@ void SetLineBuf(void)
 /*
  *  iswhspace(); Determines if this is a white space.
  */
-
 int iswhspace(char c)
 {
-    if (c == ' ' || c == '\t')
+    if(c == ' ' || c == '\t')
     {
         return 1;
     }
+
     return 0;
 }
 
 /*
  *  trailspace(); Determines if the eol has a trailing space.
  */
-
-int trailspace(char *text)
+int trailspace(char * text)
 {
-    if (text == NULL || strlen(text) == 0)
+    if(text == NULL || strlen(text) == 0)
     {
         return 1;
     }
 
-    if (*(text + strlen(text) - 1) == ' ' || *(text + strlen(text) - 1) == '\n')
+    if(*(text + strlen(text) - 1) == ' ' || *(text + strlen(text) - 1) == '\n')
     {
         return 1;
     }
@@ -360,49 +354,48 @@ int trailspace(char *text)
 /*
  *  isquote(); Determines if the line is a quote.
  */
-
-int isquote(char *text)
+int isquote(char * text)
 {
-    char *s;
+    char * s;
 
-    if (text == NULL || strlen(text) == 0)
+    if(text == NULL || strlen(text) == 0)
     {
         return 0;
     }
 
     s = text;
-    while (*s && (s - text) < quote_len)
+
+    while(*s && (s - text) < quote_len)
     {
-        if (*s == '>')
+        if(*s == '>')
         {
             return 1;
         }
 
-        if (*s == '<' || *s == '-' || *s == '=')
+        if(*s == '<' || *s == '-' || *s == '=')
         {
             return 0;
         }
+
         s++;
     }
-
     return 0;
-}
+} /* isquote */
 
 /*
  *  FindQuoteEnd(); Finds and returns the end of the quote_string on
  *  the past line of text.
  */
-
-char *FindQuoteEnd(char *txt)
+char * FindQuoteEnd(char * txt)
 {
-    char *s, *c;
+    char * s, * c;
 
-    if (txt == NULL || strlen(txt) == 0)
+    if(txt == NULL || strlen(txt) == 0)
     {
         return txt;
     }
 
-    if (strlen(txt) <= quote_len)
+    if(strlen(txt) <= quote_len)
     {
         s = txt + strlen(txt) - 1;
     }
@@ -411,76 +404,72 @@ char *FindQuoteEnd(char *txt)
         s = txt + quote_len;
     }
 
-    if ((c = strchr(txt, '<')) != NULL)
+    if((c = strchr(txt, '<')) != NULL)
     {
         /*
          *  Check for the special case of '<sigh>' or some such similar
          *  text stuffing up the quoting process.
          */
-
         /* mods by PE 1995-04-26 */
-        if (c < s)
+        if(c < s)
         {
-            if (c > txt)
+            if(c > txt)
             {
                 s = c - 1;
             }
-            else if (c == txt)
+            else if(c == txt)
             {
-                return (txt);
+                return txt;
             }
         }
     }
 
-    while (s > txt && *s != '>')
+    while(s > txt && *s != '>')
     {
         s--;
     }
 
-    if (s == txt && *s != '>')
+    if(s == txt && *s != '>')
     {
         return txt;
     }
 
-    if (*s == '>' && *(s + 1))
+    if(*s == '>' && *(s + 1))
     {
         /* go past the '>' character */
-
         /*
          *  We only want to increment two characters - this saves trouble
          *  when we encounter indents in the quotes.  We could strip
          *  spaces when finding indents, but why bother?
          */
-
         s++;
-        if (*s == ' ' && *(s + 1))
+
+        if(*s == ' ' && *(s + 1))
         {
             s++;
         }
     }
 
     return s;
-}
+} /* FindQuoteEnd */
 
 /*
  *  GetWrapPoint(); Finds the best point to break a line.
  */
-
-char *GetWrapPoint(char *text, int rm)
+char * GetWrapPoint(char * text, int rm)
 {
-    char *s, *sp;
+    char * s, * sp;
     int slen;
 
-    if (text == NULL || strlen(text) == 0)
+    if(text == NULL || strlen(text) == 0)
     {
         return NULL;
     }
 
     /* find the point to look for a wrap and save the spot */
-
     slen = strlen(text);
 
-    if (slen > rm)
+    if(slen > rm)
     {
         sp = text + (rm - 1);
     }
@@ -491,22 +480,20 @@ char *GetWrapPoint(char *text, int rm)
 
     s = sp;
 
-    if (*s == '\0' || *s == '\n' || *s == '\r')
+    if(*s == '\0' || *s == '\n' || *s == '\r')
     {
         return NULL;
     }
 
-    if (!iswhspace(*s))
+    if(!iswhspace(*s))
     {
         /* search backward for beginning of word */
-
-        while (*s && !iswhspace(*s))
+        while(*s && !iswhspace(*s))
         {
-            if (s - text < 2)
+            if(s - text < 2)
             {
                 /* Can't wrap any further, so split at EOL. */
-
-                if (sp > text)
+                if(sp > text)
                 {
                     s = sp - 1;
                 }
@@ -514,8 +501,10 @@ char *GetWrapPoint(char *text, int rm)
                 {
                     s = sp;
                 }
+
                 break;
             }
+
             s--;
         }
         s++;
@@ -523,14 +512,14 @@ char *GetWrapPoint(char *text, int rm)
     else
     {
         /* search forward for the beginning of next word */
-
-        while (*s && iswhspace(*s))
+        while(*s && iswhspace(*s))
         {
-            if (s - text < rm / 2)
+            if(s - text < rm / 2)
             {
                 break;
             }
-            if (s - text < rm)  /* prevent a line with too much whitespaces */
+
+            if(s - text < rm)   /* prevent a line with too much whitespaces */
             {
                 s++;
             }
@@ -539,23 +528,23 @@ char *GetWrapPoint(char *text, int rm)
                 break;
             }
         }
-        if (*s == '\0' || *s == '\n' || *s == '\r')
+
+        if(*s == '\0' || *s == '\n' || *s == '\r')
         {
             return NULL;
         }
     }
 
     return s;
-}
+} /* GetWrapPoint */
 
 /*
  *  wrap(); this is a very big procedure; wraps a line and following ones.
  */
-
 int wrap(LINE * cl, int x, int y, int rm)
 {
-    LINE *l, *nl;
-    char *s, *t, *tl, ch;
+    LINE * l, * nl;
+    char * s, * t, * tl, ch;
     int wrapped_line = 0;
     int slen, space;
 
@@ -564,18 +553,16 @@ int wrap(LINE * cl, int x, int y, int rm)
     l = cl;
 
     /* stop when no more lines to process */
-    while (l != NULL)
+    while(l != NULL)
     {
         /* get the next line for later use */
-
         nl = l->next;
 
-        if (l->text == NULL || strlen(l->text) < rm)
+        if(l->text == NULL || strlen(l->text) < rm)
         {
             /* we may want to copy stuff from the next line to this
                one */
-
-            if (nl == NULL || nl->text == NULL)
+            if(nl == NULL || nl->text == NULL)
             {
                 /* nothing we can do */
                 return wrapped_line;
@@ -585,17 +572,15 @@ int wrap(LINE * cl, int x, int y, int rm)
              *  A '\n' terminates a para, so if we have one on this
              *  line, we want to stop wrapping and return.
              */
-
-            if (l->text != NULL && strchr(l->text, '\n') != NULL)
+            if(l->text != NULL && strchr(l->text, '\n') != NULL)
             {
                 return wrapped_line;
             }
 
             /* Get the length of the current line. */
-
             s = FindQuoteEnd(nl->text);
 
-            if (l->text != NULL)
+            if(l->text != NULL)
             {
                 slen = strlen(l->text);
             }
@@ -610,20 +595,17 @@ int wrap(LINE * cl, int x, int y, int rm)
              *  next line, otherwise we copy only what we have space
              *  for.
              */
-
             space = rm - slen;
-            if (space > strlen(s) ||  
-                (space == strlen(s) &&
-                 ((l->text != NULL && trailspace(l->text) != 0) ||
-                  iswhspace(*s))))
+
+            if(space > strlen(s) ||
+               (space == strlen(s) &&
+                ((l->text != NULL && trailspace(l->text) != 0) || iswhspace(*s))))
             {
                 /* then we move the entire line up */
-
                 tl = xcalloc(1, strlen(s) + slen + 2);
 
                 /* Copy the text to the new memory. */
-
-                if (l->text)
+                if(l->text)
                 {
                     strcpy(tl, l->text);
                 }
@@ -632,9 +614,9 @@ int wrap(LINE * cl, int x, int y, int rm)
                     strcpy(tl, "");
                 }
 
-                if (trailspace(tl) == 0 && !iswhspace(*s))
+                if(trailspace(tl) == 0 && !iswhspace(*s))
                 {
-                    if (*s != '\0' && *s != '\n')
+                    if(*s != '\0' && *s != '\n')
                     {
                         strcat(tl, " ");
                     }
@@ -643,13 +625,11 @@ int wrap(LINE * cl, int x, int y, int rm)
                 /* If the line that will be deleted had the cursor,
                    mark the line that it has been merged with as
                    having the cursor. */
-
-                if (nl->cursor_position)
+                if(nl->cursor_position)
                 {
-                    if (nl->cursor_position > (s - nl->text))
+                    if(nl->cursor_position > (s - nl->text))
                     {
-                        l->cursor_position = strlen(tl) +
-                            nl->cursor_position - (s - nl->text);
+                        l->cursor_position = strlen(tl) + nl->cursor_position - (s - nl->text);
                     }
                     else
                     {
@@ -658,12 +638,10 @@ int wrap(LINE * cl, int x, int y, int rm)
                 }
 
                 strcat(tl, s);
-
                 /* Delete the old line. */
-
                 l->next = nl->next;
 
-                if (l->next)
+                if(l->next)
                 {
                     l->next->prev = l;
                 }
@@ -671,20 +649,18 @@ int wrap(LINE * cl, int x, int y, int rm)
                 release(nl->text);
                 release(nl);
                 release(l->text);
-
-                l->text = tl;
+                l->text      = tl;
                 wrapped_line = 1;
             }
             else
             {
-                if (space == 0)
+                if(space == 0)
                 {
                     return wrapped_line;
                 }
 
                 /* We want to copy some words up to this line; */
-
-                t = s + space - 1;
+                t  = s + space - 1;
                 tl = t;
 
                 /*
@@ -695,14 +671,14 @@ int wrap(LINE * cl, int x, int y, int rm)
                  *  line, then it is too big to wrap (we only wrap whole
                  *  words).
                  */
-
-                if (!iswhspace(*t))
+                if(!iswhspace(*t))
                 {
-                    while (t > s && !iswhspace(*t))
+                    while(t > s && !iswhspace(*t))
                     {
                         t--;
                     }
-                    if (t == s)
+
+                    if(t == s)
                     {
                         /* word too big */
                         return wrapped_line;
@@ -714,27 +690,24 @@ int wrap(LINE * cl, int x, int y, int rm)
                 }
                 else
                 {
-                    while (*t && iswhspace(*t))
+                    while(*t && iswhspace(*t))
                     {
                         t++;
                     }
 
-                    if (*t == '\0' || *t == '\n')
+                    if(*t == '\0' || *t == '\n')
                     {
                         t = tl;
                     }
                 }
 
                 /* Save current position. */
-
                 ch = *t;
                 *t = '\0';
-
                 tl = xcalloc(1, strlen(s) + slen + 2);
 
                 /* Copy stuff to be wrapped to the new memory. */
-
-                if (l->text)
+                if(l->text)
                 {
                     strcpy(tl, l->text);
                 }
@@ -743,22 +716,20 @@ int wrap(LINE * cl, int x, int y, int rm)
                     strcpy(tl, "");
                 }
 
-                if (trailspace(tl) == 0 && !iswhspace(*s))
+                if(trailspace(tl) == 0 && !iswhspace(*s))
                 {
                     strcat(tl, " ");
                 }
 
                 /* Adapt the cursor position */
-
-                if (nl->cursor_position)
+                if(nl->cursor_position)
                 {
-                    if (nl->cursor_position > (s - nl->text))
+                    if(nl->cursor_position > (s - nl->text))
                     {
-                        if (nl->cursor_position - (s - nl->text) <=
-                            strlen(s))
+                        if(nl->cursor_position - (s - nl->text) <= strlen(s))
                         {
-                            l->cursor_position = strlen(tl) +
-                                nl->cursor_position - (s - nl->text);
+                            l->cursor_position = strlen(tl) + nl->cursor_position -
+                                                 (s - nl->text);
                             nl->cursor_position = 0;
                         }
                         else
@@ -768,25 +739,24 @@ int wrap(LINE * cl, int x, int y, int rm)
                     }
                     else
                     {
-                        l->cursor_position = strlen(tl) + 1;
+                        l->cursor_position  = strlen(tl) + 1;
                         nl->cursor_position = 0;
                     }
                 }
-                
-                strcat(tl, s);
 
+                strcat(tl, s);
                 /*
                  *  Assign new memory and move what is left on next line
                  *  to beginning of that line (we don't bother to
                  *  reallocate it).
                  */
-
                 release(l->text);
-                l->text = tl;
+                l->text      = tl;
                 wrapped_line = 1;
-                *t = ch;
+                *t           = ch;
                 memmove(s, t, strlen(t) + 1);
             }
+
             l = l->next;
         }
         else
@@ -795,49 +765,48 @@ int wrap(LINE * cl, int x, int y, int rm)
              *  We want to wrap stuff on current line to the next line
              *  because current line is overflowing.
              */
-
             t = GetWrapPoint(l->text, rm);
-            if (t == NULL)
+
+            if(t == NULL)
             {
                 return wrapped_line;
             }
 
-            if (nl != NULL && nl->text != NULL && strchr(l->text, '\n') == NULL && l->quote == nl->quote)
+            if(nl != NULL && nl->text != NULL &&
+               strchr(l->text, '\n') == NULL && l->quote == nl->quote)
             {
-                s = xcalloc(1, strlen(t) + strlen(nl->text) + 2);
-
+                s  = xcalloc(1, strlen(t) + strlen(nl->text) + 2);
                 tl = FindQuoteEnd(nl->text);
 
-                if (t == NULL)
+                if(t == NULL)
                 {
                     ed_error("wrap()", "Logic error wrapping to next line!");
                 }
 
-                ch = *tl;
+                ch  = *tl;
                 *tl = '\0';
-
                 strcpy(s, nl->text);
                 strcat(s, t);
 
                 /* adapt the cursor position */
-                if (l->cursor_position)
+                if(l->cursor_position)
                 {
-                    if (l->cursor_position > (t - l->text))
+                    if(l->cursor_position > (t - l->text))
                     {
-                        nl->cursor_position = l->cursor_position -
-                            (t-l->text) + strlen(nl->text);
+                        nl->cursor_position = l->cursor_position - (t - l->text) +
+                                              strlen(nl->text);
                         l->cursor_position = 0;
                     }
                 }
-                else if (nl->cursor_position)
+                else if(nl->cursor_position)
                 {
-                    if (nl->cursor_position > strlen(nl->text))
+                    if(nl->cursor_position > strlen(nl->text))
                     {
                         nl->cursor_position += strlen(t);
                     }
                 }
 
-                if (trailspace(s) == 0)
+                if(trailspace(s) == 0)
                 {
                     strcat(s, " ");
                 }
@@ -845,67 +814,63 @@ int wrap(LINE * cl, int x, int y, int rm)
                 *tl = ch;
                 strcat(s, tl);
                 release(nl->text);
-                nl->text = s;
-                *t = '\0';
+                nl->text     = s;
+                *t           = '\0';
                 wrapped_line = 1;
-
             }
             else
             {
                 nl = InsertLine(l);
-                if (cl->quote)
+
+                if(cl->quote)
                 {
                     nl->quote = 1;
-                    s = FindQuoteEnd(l->text);
-                    ch = *s;
-                    *s = '\0';
-
-                    tl = xcalloc(1, strlen(t) + strlen(l->text) + 2);
-
+                    s         = FindQuoteEnd(l->text);
+                    ch        = *s;
+                    *s        = '\0';
+                    tl        = xcalloc(1, strlen(t) + strlen(l->text) + 2);
                     strcpy(tl, l->text);
                     strcat(tl, t);
-                    *s = ch;
+                    *s       = ch;
                     nl->text = tl;
                 }
                 else
                 {
                     nl->text = xstrdup(t);
-                    s = l->text;
+                    s        = l->text;
                 }
 
                 /* adapt the cursor position */
-                if (l->cursor_position)
+                if(l->cursor_position)
                 {
-                    if (l->cursor_position > (t - l->text))
+                    if(l->cursor_position > (t - l->text))
                     {
-                        nl->cursor_position = l->cursor_position -
-                            (t-l->text) + (s - l->text);
-                        l->cursor_position = 0;
+                        nl->cursor_position = l->cursor_position - (t - l->text) + (s - l->text);
+                        l->cursor_position  = 0;
                     }
                 }
 
-
-                *t = '\0';
+                *t           = '\0';
                 wrapped_line = 1;
             }
+
             l = l->next;
         }
     }
     return wrapped_line;
-}
+} /* wrap */
 
 /*
  *  toggle_quote(); Toggles the quote status of the current line.
  */
-
 static void toggle_quote(void)
 {
-    if (current == NULL)
+    if(current == NULL)
     {
         return;
     }
 
-    if (current->quote)
+    if(current->quote)
     {
         current->quote = 0;
     }
@@ -921,11 +886,11 @@ static void toggle_quote(void)
  *  CheckXvalid(); Checks to see that the current X position is still
  *  on the line (ie. X is not past EOL).
  */
-
 void CheckXvalid(void)
 {
     SetLineBuf();
-    if (current->text == NULL || strlen(current->text) < x)
+
+    if(current->text == NULL || strlen(current->text) < x)
     {
         go_eol();
     }
@@ -936,12 +901,11 @@ void CheckXvalid(void)
  *  position, and then returns the difference between that position and
  *  the current X position.
  */
-
 int WordStart(void)
 {
-    char *s, *b;
+    char * s, * b;
 
-    if (*line_buf == 0)
+    if(*line_buf == 0)
     {
         return 0;
     }
@@ -949,36 +913,35 @@ int WordStart(void)
     s = line_buf + x - 1;
     b = s;
 
-    if (iswhspace(*s))
+    if(iswhspace(*s))
     {
         return 0;
     }
 
-    while (s > line_buf && !iswhspace(*s))
+    while(s > line_buf && !iswhspace(*s))
     {
         s--;
     }
-
-    return (int) (b - s);
+    return (int)(b - s);
 }
 
 /*
  *  insert_char(); Inserts a char at the current position.
  */
-
 static void insert_char(char ch)
 {
     int slen, wlen;
 
     /* entering these characters would cause problems on Unix */
 
-#if defined(UNIX) && !defined(USE_CURSES)
-    if ((unsigned char)ch < 32 ||
-        ((unsigned char)ch >= 128 && (unsigned char)ch < (128 + 32)))
+#if defined (UNIX) && !defined (USE_CURSES)
+
+    if((unsigned char)ch < 32 || ((unsigned char)ch >= 128 && (unsigned char)ch < (128 + 32)))
     {
         return;
     }
-#endif    
+
+#endif
 
 
     TTBeginOutput();
@@ -986,8 +949,7 @@ static void insert_char(char ch)
     /* softcrxlat functionality moved to readmail.c, because it should take
        place in the transport charset layer, not in the local charset
        layer */
-
-    if (insert == 0 && line_buf[x - 1] != '\n')
+    if(insert == 0 && line_buf[x - 1] != '\n')
     {
         line_buf[x - 1] = ch;
     }
@@ -998,31 +960,33 @@ static void insert_char(char ch)
     }
 
     UnmarkLineBuf();
-
     current->templt = 0;
-    wlen = WordStart();
-    slen = strlen(current->text);
+    wlen            = WordStart();
+    slen            = strlen(current->text);
 
-    if (wrap(current, 0, 0, SW->rm) == 1)
+    if(wrap(current, 0, 0, SW->rm) == 1)
     {
         SetLineBuf();
         RedrawPage(current, y);
-        if (strlen(current->text) < x)
+
+        if(strlen(current->text) < x)
         {
-            if (wlen)
+            if(wlen)
             {
                 x = wlen;
-                if (current->quote)
-                {
-                    char *s;
 
+                if(current->quote)
+                {
+                    char * s;
                     s = FindQuoteEnd(current->text);
-                    if (s && s > current->text)
+
+                    if(s && s > current->text)
                     {
                         x += (int)(s - current->text);
                     }
                 }
-                if (x > strlen(current->next->text))
+
+                if(x > strlen(current->next->text))
                 {
                     x = strlen(current->next->text) - 1;
                 }
@@ -1042,50 +1006,46 @@ static void insert_char(char ch)
 
     x++;
     SetLineBuf();
-
     TTEndOutput();
-}
+} /* insert_char */
 
 /*
  *  delete_character(); Deletes the character at the current X position.
  */
-
 static void delete_character(void)
 {
-    LINE *nl;
+    LINE * nl;
 
     current->templt = 0;
-
     TTBeginOutput();
 
-    if (*line_buf == 0 || line_buf[0] == '\n')
+    if(*line_buf == 0 || line_buf[0] == '\n')
     {
         /* Current line is blank, so we delete it. */
-
-        if (current->next == NULL)
+        if(current->next == NULL)
         {
             return;
         }
 
         current->next->prev = current->prev;
-        if (current->prev)
+
+        if(current->prev)
         {
             current->prev->next = current->next;
         }
 
-        if (msgtop == current)
+        if(msgtop == current)
         {
             msgtop = current->next;
         }
 
-        if (pagetop == current)
+        if(pagetop == current)
         {
             msgtop = current->next;
         }
 
-        nl = current;
+        nl      = current;
         current = nl->next;
-
         release(nl->text);
         release(nl);
         RedrawPage(current, y);
@@ -1093,12 +1053,10 @@ static void delete_character(void)
     else
     {
         /* Else we just want to kill the char at x. */
-
         memmove(line_buf + x - 1, line_buf + x, strlen(line_buf + x) + 1);
-
         UnmarkLineBuf();
 
-        if (wrap(current, 0, 0, SW->rm) == 1)
+        if(wrap(current, 0, 0, SW->rm) == 1)
         {
             RedrawPage(current, y);
         }
@@ -1107,26 +1065,26 @@ static void delete_character(void)
             EdPutLine(current, y);
         }
     }
-    SetLineBuf();
 
+    SetLineBuf();
     TTEndOutput();
-}
+} /* delete_character */
 
 /*
  *  backspace; Deletes the char behind the current X pos and moves
  *  the cursor back one char.
  */
-
 static void backspace(void)
 {
-
     TTBeginOutput();
-    if (x == 1)
+
+    if(x == 1)
     {
-        if (current->prev == NULL)
+        if(current->prev == NULL)
         {
             return;
         }
+
         UnmarkLineBuf();
         go_up();
         go_eol();
@@ -1137,41 +1095,38 @@ static void backspace(void)
         x--;
         delete_character();
     }
+
     EdPutLine(current, y);
     TTEndOutput();
 }
 
 static void delword(void)
 {
-    char *s;
+    char * s;
 
     s = line_buf + x - 1;
 
-    while (*s && !m_isspace(*s))
+    while(*s && !m_isspace(*s))
     {
         s++;
     }
 
-    while (*s && m_isspace(*s))
+    while(*s && m_isspace(*s))
     {
         s++;
     }
-
     strcpy(line_buf + x - 1, s);
-
     UnmarkLineBuf();
-
     wrap(current, x, y, SW->rm);
     RedrawPage(current, y);
-
     SetLineBuf();
 }
 
 static void go_left(void)
 {
-    if (x == 1)
+    if(x == 1)
     {
-        if (current->prev)
+        if(current->prev)
         {
             go_up();
             go_eol();
@@ -1185,9 +1140,9 @@ static void go_left(void)
 
 static void go_right(void)
 {
-    if (line_buf[x - 1] == '\0' || line_buf[x - 1] == '\n')
+    if(line_buf[x - 1] == '\0' || line_buf[x - 1] == '\n')
     {
-        if (current->next)
+        if(current->next)
         {
             go_down();
             go_bol();
@@ -1202,11 +1157,13 @@ static void go_right(void)
 static void go_up(void)
 {
     UnmarkLineBuf();
-    if (current->prev)
+
+    if(current->prev)
     {
         current = current->prev;
         currline--;
-        if (y == ed_miny)
+
+        if(y == ed_miny)
         {
             TTBeginOutput();
             pagetop = current;
@@ -1219,17 +1176,20 @@ static void go_up(void)
             y--;
         }
     }
+
     CheckXvalid();
 }
 
 static void go_down(void)
 {
     UnmarkLineBuf();
-    if (current->next)
+
+    if(current->next)
     {
         current = current->next;
         currline++;
-        if (y == ed_maxy)
+
+        if(y == ed_maxy)
         {
             TTBeginOutput();
             ScrollUp(1, ed_maxy);
@@ -1241,6 +1201,7 @@ static void go_down(void)
             y++;
         }
     }
+
     CheckXvalid();
 }
 
@@ -1253,9 +1214,9 @@ static void go_eol(void)
 {
     x = strlen(line_buf);
 
-    if (x > 0)
+    if(x > 0)
     {
-        if (line_buf[x - 1] != '\n')
+        if(line_buf[x - 1] != '\n')
         {
             x++;
         }
@@ -1268,9 +1229,9 @@ static void go_word_right(void)
 {
     int fsm = 0, c;
 
-    if (x >= strlen(line_buf))
+    if(x >= strlen(line_buf))
     {
-        if (current->next != NULL)
+        if(current->next != NULL)
         {
             go_down();
             go_bol();
@@ -1281,45 +1242,52 @@ static void go_word_right(void)
         }
     }
 
-    while (fsm < 3)
+    while(fsm < 3)
     {
         c = m_isspace(*(line_buf + x - 1));
-        switch (fsm)
+
+        switch(fsm)
         {
-        case 0:
-            if (!c)
-            {
-                fsm = 1;
-            }
-            else
-            {
-                fsm = 2;
-            }
-            break;
+            case 0:
 
-        case 1:
-            if (c)
-            {
-                fsm = 2;
-            }
-            break;
+                if(!c)
+                {
+                    fsm = 1;
+                }
+                else
+                {
+                    fsm = 2;
+                }
 
-        case 2:
-            if (!c)
-            {
-                fsm = 3;
-            }
-            break;
+                break;
 
-        default:
-            break;
-        }
+            case 1:
 
-        if (fsm != 3)
+                if(c)
+                {
+                    fsm = 2;
+                }
+
+                break;
+
+            case 2:
+
+                if(!c)
+                {
+                    fsm = 3;
+                }
+
+                break;
+
+            default:
+                break;
+        } /* switch */
+
+        if(fsm != 3)
         {
-            if (x == strlen(line_buf))
+            if(x == strlen(line_buf))
             {
-                if (current->next != NULL)
+                if(current->next != NULL)
                 {
                     go_down();
                     go_bol();
@@ -1335,15 +1303,15 @@ static void go_word_right(void)
             }
         }
     }
-}
+} /* go_word_right */
 
 static void go_word_left(void)
 {
     int fsm = 0, c;
 
-    if (x == 1)
+    if(x == 1)
     {
-        if (current->prev != NULL)
+        if(current->prev != NULL)
         {
             go_up();
             go_eol();
@@ -1354,57 +1322,66 @@ static void go_word_left(void)
         }
     }
 
-    while (fsm < 4)
+    while(fsm < 4)
     {
         c = m_isspace(*(line_buf + x - 1));
-        switch (fsm)
+
+        switch(fsm)
         {
-        case 0:
-            if (!c)
-            {
-                fsm = 1;
-            }
-            else
-            {
-                fsm = 3;
-            }
-            break;
+            case 0:
 
-        case 1:
-            if (!c)
-            {
-                fsm = 2;
-            }
-            else
-            {
-                fsm = 3;
-            }
-            break;
+                if(!c)
+                {
+                    fsm = 1;
+                }
+                else
+                {
+                    fsm = 3;
+                }
 
-        case 2:
-            if (c)
-            {
-                fsm = 4;
-                x++;
-            }
-            break;
+                break;
 
-        case 3:
-            if (!c)
-            {
-                fsm = 2;
-            }
-            break;
+            case 1:
 
-        default:
-            break;
-        }
+                if(!c)
+                {
+                    fsm = 2;
+                }
+                else
+                {
+                    fsm = 3;
+                }
 
-        if (fsm != 4)
+                break;
+
+            case 2:
+
+                if(c)
+                {
+                    fsm = 4;
+                    x++;
+                }
+
+                break;
+
+            case 3:
+
+                if(!c)
+                {
+                    fsm = 2;
+                }
+
+                break;
+
+            default:
+                break;
+        } /* switch */
+
+        if(fsm != 4)
         {
-            if (x == 1)
+            if(x == 1)
             {
-                if (current->prev != NULL)
+                if(current->prev != NULL)
                 {
                     go_up();
                     go_eol();
@@ -1419,9 +1396,9 @@ static void go_word_left(void)
                 x--;
             }
         }
-        else if (x > strlen(line_buf))
+        else if(x > strlen(line_buf))
         {
-            if (current->next != NULL)
+            if(current->next != NULL)
             {
                 go_down();
                 go_bol();
@@ -1432,15 +1409,16 @@ static void go_word_left(void)
             }
         }
     }
-}
+} /* go_word_left */
 
 static void go_pgup(void)
 {
-    LINE *l = current;
+    LINE * l  = current;
     int count = 1;
 
     UnmarkLineBuf();
-    while (count < ed_maxy && current->prev)
+
+    while(count < ed_maxy && current->prev)
     {
         count++;
         current = current->prev;
@@ -1448,22 +1426,23 @@ static void go_pgup(void)
     }
 
     /* If we actually moved, redraw the page. */
-
-    if (l != current)
+    if(l != current)
     {
         y = 1;
         RedrawPage(current, 1);
     }
+
     CheckXvalid();
 }
 
 static void go_pgdown(void)
 {
-    LINE *l = current;
+    LINE * l  = current;
     int count = 1;
 
     UnmarkLineBuf();
-    while (count < ed_maxy && current->next)
+
+    while(count < ed_maxy && current->next)
     {
         count++;
         current = current->next;
@@ -1471,21 +1450,22 @@ static void go_pgdown(void)
     }
 
     /* If we actually moved, redraw the page. */
-
-    if (l != current)
+    if(l != current)
     {
         y = 1;
         RedrawPage(current, 1);
     }
+
     CheckXvalid();
 }
 
 static void newline(void)
 {
-    LINE *nl;
+    LINE * nl;
 
     nl = InsertLine(current);
-    if (nl == NULL)
+
+    if(nl == NULL)
     {
         return;
     }
@@ -1495,27 +1475,25 @@ static void newline(void)
      *  wrap from the previous line.  This is prevented by a hard CR
      *  (which the user can then kill if wanted).
      */
-
-    if (current->quote && !strchr(line_buf, '\n'))
+    if(current->quote && !strchr(line_buf, '\n'))
     {
         strcat(line_buf, "\n");
     }
 
-    nl->text = xstrdup(line_buf + x - 1);
+    nl->text        = xstrdup(line_buf + x - 1);
     line_buf[x - 1] = '\0';
-
     strcat(line_buf, "\n");
 
-    if (current->block)
+    if(current->block)
     {
         nl->block = 1;
     }
 
-    if (current->templt)
+    if(current->templt)
     {
-        if (x == 1)
+        if(x == 1)
         {
-            nl->templt = 1;
+            nl->templt      = 1;
             current->templt = 0;
         }
         else
@@ -1525,37 +1503,32 @@ static void newline(void)
     }
 
     TTBeginOutput();
-
     go_down();
     go_bol();
-
     wrap(current, 0, 0, SW->rm);
     RedrawPage(current->prev, y - 1);
     SetLineBuf();
-
     TTEndOutput();
-}
+} /* newline */
 
 /*
  *  udel_add_q(); Adds l to the deleted line queue.
  */
-
 static void udel_add_q(LINE * l)
 {
-    LINE *nl = udel;
-    int num = 0;
+    LINE * nl = udel;
+    int num   = 0;
 
-    if (udel == NULL)
+    if(udel == NULL)
     {
-        udel = l;
+        udel    = l;
         l->next = NULL;
         l->prev = NULL;
         return;
     }
 
     /* find the last line, keeping count of lines * in the process. */
-
-    while (nl->next != NULL)
+    while(nl->next != NULL)
     {
         nl = nl->next;
         num++;
@@ -1565,8 +1538,7 @@ static void udel_add_q(LINE * l)
      *  If there are more than max num of lines, then we delete the
      *  oldest one (on the end of queue).
      */
-
-    if (num >= 50)
+    if(num >= 50)
     {
         nl->prev->next = NULL;
         release(nl->text);
@@ -1574,93 +1546,92 @@ static void udel_add_q(LINE * l)
     }
 
     /* Add the latest deleted line to the beginning of the queue. */
-
     udel->prev = l;
-    l->next = udel;
-    l->prev = NULL;
-    udel = l;
-}
+    l->next    = udel;
+    l->prev    = NULL;
+    udel       = l;
+} /* udel_add_q */
 
 static void delete_line(void)
 {
-    LINE *nl;
+    LINE * nl;
 
-    if (current->next == NULL)
+    if(current->next == NULL)
     {
-        if (current->prev != NULL)
+        if(current->prev != NULL)
         {
-            if (!SW->carthy)
+            if(!SW->carthy)
             {
                 current->prev->next = NULL;
-                nl = current;
+                nl      = current;
                 current = current->prev;
-                if (y > 1)
+
+                if(y > 1)
                 {
                     y--;
                 }
             }
             else
             {
-                    nl = current;
-                    current = xmalloc(sizeof(LINE));
-                    memcpy(current, nl, sizeof(LINE));
-                    current->text = xstrdup("\n");
-                    current->prev->next = current;
+                nl      = current;
+                current = xmalloc(sizeof(LINE));
+                memcpy(current, nl, sizeof(LINE));
+                current->text       = xstrdup("\n");
+                current->prev->next = current;
             }
         }
-        else 
+        else
         {
-            nl = current;
+            nl      = current;
             current = xmalloc(sizeof(LINE));
             memcpy(current, nl, sizeof(LINE));
             current->text = xstrdup("\n");
         }
+
         GotoXY(x, y);
     }
     else
     {
         current->next->prev = current->prev;
-        if (current->prev)
+
+        if(current->prev)
         {
             current->prev->next = current->next;
         }
-        nl = current;
+
+        nl      = current;
         current = (nl->next != NULL) ? nl->next : nl->prev;
     }
 
-    if (msgtop == nl)
+    if(msgtop == nl)
     {
         msgtop = current;
     }
 
     /* Save the deleted line in a buffer. */
-
     udel_add_q(nl);
-
     /* Redraw the screen to reflect missing line. */
-
     RedrawPage(current, y);
     CheckXvalid();
-}
+} /* delete_line */
 
 /*
  *  udel_delete_q(); Removes and returns the first line in the
  *  undelete buffer.
  */
-
-static LINE *udel_delete_q(void)
+static LINE * udel_delete_q(void)
 {
-    LINE *nl = udel;
+    LINE * nl = udel;
 
-    if (udel == NULL)
+    if(udel == NULL)
     {
         return NULL;
     }
 
-    if (udel->next)
+    if(udel->next)
     {
         udel->next->prev = NULL;
-        udel = udel->next;
+        udel             = udel->next;
     }
     else
     {
@@ -1674,69 +1645,65 @@ static LINE *udel_delete_q(void)
  *  do_undelete(); If there is a line to undelete, undeletes the last line
  *  deleted and inserts it before the current line.
  */
-
 static void do_undelete(void)
 {
-    LINE *nl;
+    LINE * nl;
 
     /* Get last line deleted. */
-
     nl = udel_delete_q();
 
-    if (nl == NULL)
+    if(nl == NULL)
     {
         return;
     }
 
     /* Make sure we don't split it (the current block) in half :-) */
-
     nl->templt = 0;
 
-    if (blocking && current->block)
+    if(blocking && current->block)
     {
         nl->block = 1;
     }
     else
     {
-        if (current->block == 0)
+        if(current->block == 0)
         {
             nl->block = 0;
         }
     }
 
     /* Insert it ABOVE current line. */
-
-    nl->prev = current->prev;
+    nl->prev      = current->prev;
     current->prev = nl;
-    nl->next = current;
-    if (nl->prev)
+    nl->next      = current;
+
+    if(nl->prev)
     {
         nl->prev->next = nl;
     }
-    if (msgtop == current)
+
+    if(msgtop == current)
     {
         msgtop = nl;
     }
 
     /* Make it the current line && redraw page to reflect new line. */
-
     UnmarkLineBuf();
     current = nl;
     RedrawPage(current, y);
     CheckXvalid();
-}
+} /* do_undelete */
 
 /*
  *  ClearBlocks(); Clears all blocked lines in the message.
  */
-
 static void ClearBlocks(void)
 {
-    LINE *nl = msgtop;
+    LINE * nl = msgtop;
 
-    while (nl != NULL)
+    while(nl != NULL)
     {
-        if (nl->block)
+        if(nl->block)
         {
             nl->block = 0;
         }
@@ -1750,48 +1717,45 @@ static void ClearBlocks(void)
  *  CalculateBlocks(); Provides QEdit style blocking. Called everytime
  *  anchor is called (a new anchor has been laid).
  */
-
 static void CalculateBlocks(void)
 {
-    LINE *nl = msgtop;
-    int bl = 0;                 /* hit a block yet? */
-    int cp = 0;                 /* gone past current line? */
+    LINE * nl = msgtop;
+    int bl    = 0;              /* hit a block yet? */
+    int cp    = 0;              /* gone past current line? */
 
-    while (nl != NULL)
+    while(nl != NULL)
     {
         /*
          *  If we've passed the current line and hit the block and come
          *  out the other side, we want to stop.
          */
-
-        if (cp && bl && !nl->block)
+        if(cp && bl && !nl->block)
         {
             break;
         }
 
         /* If bl = FALSE and we get blocked line, turn ON. */
-
-        if (!bl && nl->block)
+        if(!bl && nl->block)
         {
             bl = 1;
         }
 
         /* If we hit current line. */
-
-        if (nl == current)
+        if(nl == current)
         {
             /*
              *  If anchor is hit in the middle of a block, then we want
              *  to recreate the block on that line.
              */
-
-            if (nl->block)
+            if(nl->block)
             {
                 ClearBlocks();
                 bl = 0;
             }
+
             nl->block = 1;
-            if (bl)
+
+            if(bl)
             {
                 /*
                  *  If we're already blocking, then we want to stop at
@@ -1801,7 +1765,7 @@ static void CalculateBlocks(void)
             }
             else
             {
-                if (blocking == 0)
+                if(blocking == 0)
                 {
                     /*
                      *  If we aren't blocking and global blocking hasn't
@@ -1811,6 +1775,7 @@ static void CalculateBlocks(void)
                     break;
                 }
             }
+
             cp = 1;
         }
 
@@ -1818,8 +1783,7 @@ static void CalculateBlocks(void)
          *  If we've passed the current line and haven't hit a block yet,
          *  then we want to block all lines between.
          */
-
-        if (cp && !bl)
+        if(cp && !bl)
         {
             nl->block = 1;
         }
@@ -1828,8 +1792,7 @@ static void CalculateBlocks(void)
          *  If we haven't hit the current line, but have hit the block,
          *  we want to mark stuff in between.
          */
-
-        if (!cp && bl)
+        if(!cp && bl)
         {
             nl->block = 1;
         }
@@ -1837,22 +1800,20 @@ static void CalculateBlocks(void)
         nl = nl->next;
     }
     blocking = 1;
-}
+} /* CalculateBlocks */
 
 /*
  *  unblock(); Kills the current block.
  */
-
 static void unblock(void)
 {
-    LINE *nl = current;
-    int y2 = y;
+    LINE * nl = current;
+    int y2    = y;
 
     ClearBlocks();
 
     /* Find the top of the page and redraw it. */
-
-    while (y2 != ed_miny)
+    while(y2 != ed_miny)
     {
         nl = nl->prev;
         y2--;
@@ -1863,19 +1824,16 @@ static void unblock(void)
 /*
  *  anchor(); Lays a block anchor at the current position.
  */
-
 static void anchor(void)
 {
-    LINE *nl = current;
-    int y2 = y;
+    LINE * nl = current;
+    int y2    = y;
 
     /* Calculate the new block configuration. */
-
     CalculateBlocks();
 
     /* Find the top of the page and redraw it. */
-
-    while (y2 != ed_miny)
+    while(y2 != ed_miny)
     {
         nl = nl->prev;
         y2--;
@@ -1886,71 +1844,67 @@ static void anchor(void)
 /*
  *  cut(); Cuts the current block from the message and saves it.
  */
-
 static void cut(void)
 {
-    LINE *nl, *begin, *end;
+    LINE * nl, * begin, * end;
     int y1;
 
-    if (!blocking)
+    if(!blocking)
     {
         return;
     }
 
     UnmarkLineBuf();
 
-    if (clip != NULL)
+    if(clip != NULL)
     {
         /* Discard whatever was in there before. */
         clip = clearbuffer(clip);
     }
 
-    nl = msgtop;
+    nl    = msgtop;
     begin = NULL;
-    end = NULL;
+    end   = NULL;
 
     /* Find the begin and end of the block. */
-
-    while (nl)
+    while(nl)
     {
         /* If we haven't hit a block yet, then this must be it. */
-
-        if (nl->block && !begin)
+        if(nl->block && !begin)
         {
             begin = nl;
         }
 
         /* If we've hit a block & come out the other side, break. */
-
-        if (begin && !nl->block && !end)
+        if(begin && !nl->block && !end)
         {
             end = nl;
             break;
         }
+
         nl = nl->next;
     }
 
-    if (!begin->prev)
+    if(!begin->prev)
     {
-        if (!end)
+        if(!end)
         {
             /*
              *  Whole message has been selected - create a line to put the
              *  cursor on.
              */
-
-            nl = xcalloc(1, sizeof *nl);
+            nl       = xcalloc(1, sizeof *nl);
             nl->text = xstrdup("\n");
-            msgtop = nl;
-            current = nl;
+            msgtop   = nl;
+            current  = nl;
         }
         else
         {
             /* There is some message left. */
-
-            msgtop = end;
+            msgtop  = end;
             current = end;
-            if (end->prev)
+
+            if(end->prev)
             {
                 end->prev->next = NULL;
             }
@@ -1961,106 +1915,97 @@ static void cut(void)
     else
     {
         /* Join up the gap where the cut will be. */
-
-        if (end)
+        if(end)
         {
             begin->prev->next = end;
-            end->prev->next = NULL;
-            end->prev = begin->prev;
+            end->prev->next   = NULL;
+            end->prev         = begin->prev;
         }
         else
         {
             begin->prev->next = NULL;
         }
 
-        current = begin->prev;
+        current     = begin->prev;
         begin->prev = NULL;
     }
 
     /* Save the cut text and redraw the page. */
-
     blocking = 0;
-    clip = begin;
-
+    clip     = begin;
     /* Find beginning of screen & corresponding line. */
-
     y1 = y;
     nl = current;
-    while (y1 > ed_miny && nl->prev != NULL)
+
+    while(y1 > ed_miny && nl->prev != NULL)
     {
         nl = nl->prev;
         y1--;
     }
 
     /* Handle case where lines have to be moved up on screen. */
-
-    if (y1 != ed_miny)
+    if(y1 != ed_miny)
     {
         y -= (y1 - ed_miny);
     }
+
     RedrawPage(nl, 1);
     CheckXvalid();
-}
+} /* cut */
 
 /*
  *  paste(); Pastes the block on the clipboard into the page at the
  *  current cursor position.
  */
-
 static void paste(void)
 {
-    LINE *nl = current;
-    LINE *t = clip;
-    LINE *t1;
+    LINE * nl = current;
+    LINE * t  = clip;
+    LINE * t1;
 
-    if (t == NULL)
+    if(t == NULL)
     {
         return;
     }
 
     /* If a block was there, kill it. */
-
     ClearBlocks();
 
     /* Copy from the clipboard to AFTER the current position. */
-
-    while (t != NULL)
+    while(t != NULL)
     {
-        t1 = InsertLine(nl);
+        t1        = InsertLine(nl);
         t1->quote = t->quote;
-        t1->text = xstrdup(t->text);
-        nl = t1;
-        t = t->next;
+        t1->text  = xstrdup(t->text);
+        nl        = t1;
+        t         = t->next;
     }
-
     /* Redraw the page. */
-
     RedrawPage(current, y);
 }
 
 static void tabit(void)
 {
     TTBeginOutput();
-    
-    if (!(x % SW->tabsize))
+
+    if(!(x % SW->tabsize))
     {
         insert_char(' ');
     }
 
-    while (x % SW->tabsize)
+    while(x % SW->tabsize)
     {
         insert_char(' ');
     }
-
     insert_char(' ');
-
     TTEndOutput();
 }
 
 static void go_tos(void)
 {
     UnmarkLineBuf();
-    while (y > ed_miny && current->prev != NULL)
+
+    while(y > ed_miny && current->prev != NULL)
     {
         current = current->prev;
         currline--;
@@ -2072,7 +2017,8 @@ static void go_tos(void)
 static void go_bos(void)
 {
     UnmarkLineBuf();
-    while (y < ed_maxy && current->next != NULL)
+
+    while(y < ed_maxy && current->next != NULL)
     {
         current = current->next;
         currline++;
@@ -2083,44 +2029,41 @@ static void go_bos(void)
 
 static void go_tom()
 {
-    if (current == msgtop)
+    if(current == msgtop)
     {
         return;
     }
 
     UnmarkLineBuf();
-
-    current = msgtop;
+    current  = msgtop;
     currline = 1;
-    y = 1;
-
+    y        = 1;
     CheckXvalid();
     RedrawPage(current, y);
 }
 
 static void go_bom(void)
 {
-    if (current->next == NULL)
+    if(current->next == NULL)
     {
         return;
     }
 
     UnmarkLineBuf();
-    while (current->next)
+
+    while(current->next)
     {
         current = current->next;
         currline++;
     }
-
     y = 1;
-
     CheckXvalid();
     RedrawPage(current, y);
 }
 
 static void emacskill(void)
 {
-    if (x == 1 && line_buf[x] == 0)
+    if(x == 1 && line_buf[x] == 0)
     {
         delete_line();
     }
@@ -2134,7 +2077,7 @@ static void killeol(void)
 {
     memset(line_buf + x - 1, 0, strlen(line_buf + x - 1));
     line_buf[x - 1] = '\n';
-    line_buf[x] = '\0';
+    line_buf[x]     = '\0';
     UnmarkLineBuf();
     EdPutLine(current, y);
 }
@@ -2149,177 +2092,194 @@ static void imptxt(void)
 
 static void ExportBlock(void)
 {
-    LINE *l, *nl;
+    LINE * l, * nl;
 
-    if (!blocking)
+    if(!blocking)
     {
         return;
     }
 
     l = msgtop;
-    while (l->next && !l->block)
+
+    while(l->next && !l->block)
     {
         l = l->next;
     }
 
-    if (!l->block)
+    if(!l->block)
     {
         return;
     }
 
     nl = l;
-    while (nl->next && nl->block)
+
+    while(nl->next && nl->block)
     {
         nl = nl->next;
     }
-    if (!nl->block)
+
+    if(!nl->block)
     {
-        if (nl->prev)
+        if(nl->prev)
         {
             nl->prev->next = NULL;
         }
     }
+
     export(l);
-    if (!nl->block)
+
+    if(!nl->block)
     {
-        if (nl->prev)
+        if(nl->prev)
         {
             nl->prev->next = nl;
         }
     }
-}
+} /* ExportBlock */
 
 static void outtext(void)
 {
-    static char title[] = " Export ";
+    static char title[]  = " Export ";
     static char msgtxt[] = "Export what?";
     int res;
 
-    if (clip && blocking == 0)
+    if(clip && blocking == 0)
     {
         res = ChoiceBox(title, msgtxt, "Clipboard", "Message", NULL);
         cursor(1);
-        switch (res)
+
+        switch(res)
         {
-        case ID_ONE:
-            export(clip);
-            break;
+            case ID_ONE:
+                export(clip);
+                break;
 
-        case ID_TWO:
-            export_text(messg, NULL);
-            break;
+            case ID_TWO:
+                export_text(messg, NULL);
+                break;
 
-        default:
-            break;
+            default:
+                break;
         }
         return;
     }
-    else if (clip == NULL && blocking)
+    else if(clip == NULL && blocking)
     {
         res = ChoiceBox(title, msgtxt, "Block", "Message", NULL);
         cursor(1);
-        switch (res)
+
+        switch(res)
         {
-        case ID_ONE:
-            ExportBlock();
-            break;
+            case ID_ONE:
+                ExportBlock();
+                break;
 
-        case ID_TWO:
-            export_text(messg, NULL);
-            break;
+            case ID_TWO:
+                export_text(messg, NULL);
+                break;
 
-        default:
-            break;
+            default:
+                break;
         }
         return;
     }
-    else if (clip && blocking)
+    else if(clip && blocking)
     {
         res = ChoiceBox(title, msgtxt, "Clipboard", "Block", "Message");
         cursor(1);
-        switch (res)
+
+        switch(res)
         {
-        case ID_ONE:
-            export(clip);
-            break;
+            case ID_ONE:
+                export(clip);
+                break;
 
-        case ID_TWO:
-            ExportBlock();
-            break;
+            case ID_TWO:
+                ExportBlock();
+                break;
 
-        case ID_THREE:
-            export_text(messg, NULL);
-            break;
+            case ID_THREE:
+                export_text(messg, NULL);
+                break;
 
-        default:
-            break;
+            default:
+                break;
         }
         return;
     }
+
     export_text(messg, NULL);
     cursor(1);
-}
+} /* outtext */
 
 static void quit(void)
 {
     release(current->text);
     current->text = strdup(line_buf);
-    if (current->text == NULL)
+
+    if(current->text == NULL)
     {
-        WndWriteStr(0, 0, cm[CM_WTXT], "WARNING: Memory allocation failure - attempting to save...");
+        WndWriteStr(0, 0, cm[CM_WTXT],
+                    "WARNING: Memory allocation failure - attempting to save...");
     }
+
     done = SAVE;
 }
 
 static void die(void)
 {
-    if (confirm("Cancel?"))
+    if(confirm("Cancel?"))
     {
         done = ABORT;
     }
+
     cursor(1);
 }
 
-void count_bytes(LINE *l, long *bytes, long *quotes)
+void count_bytes(LINE * l, long * bytes, long * quotes)
 {
-    long count = 0;
+    long count       = 0;
     long quote_count = 0;
     size_t len;
 
-    while (l != NULL)
+    while(l != NULL)
     {
-        if (l->text)
+        if(l->text)
         {
-            len = strlen(l->text);
+            len    = strlen(l->text);
             count += len;
-            if (isquote(l->text))
+
+            if(isquote(l->text))
             {
                 quote_count += len;
             }
         }
+
         l = l->next;
     }
 
-    if (bytes != NULL)
+    if(bytes != NULL)
     {
         *bytes = count;
     }
-    if (quotes != NULL)
+
+    if(quotes != NULL)
     {
         *quotes = quote_count;
     }
-}
+} /* count_bytes */
 
 static void bytecount(void)
 {
-    long count = 0;
+    long count       = 0;
     long quote_count = 0;
     char text[80];
 
     count_bytes(msgtop, &count, &quote_count);
-
-    sprintf(text, "Message size is %ld characters (quote ratio: %ld%%)",
-                  count, (quote_count * 100) / count);
+    sprintf(text,
+            "Message size is %ld characters (quote ratio: %ld%%)",
+            count,
+            (quote_count * 100) / count);
     ChoiceBox(" Message Size ", text, "  Ok  ", NULL, NULL);
     cursor(1);
 }
@@ -2327,15 +2287,18 @@ static void bytecount(void)
 static void toggle_ins(void)
 {
     insert = !insert;
-    if (insert)
+
+    if(insert)
     {
         WndWriteStr(maxx - 5, 5, cm[CM_DTXT], "ins");
     }
     else
     {
         unsigned char buf[4];
-
-        buf[0]=SC8; buf[1]=SC8; buf[2]=SC8; buf[3]='\0';
+        buf[0] = SC8;
+        buf[1] = SC8;
+        buf[2] = SC8;
+        buf[3] = '\0';
         WndWriteStr(maxx - 5, 5, cm[CM_DTXT] | F_ALTERNATE, (char *)buf);
     }
 }
@@ -2351,32 +2314,30 @@ static void close_screen(void) /* used by shellos, and on WND_WM_RESIZE) */
 
 static void reopen_screen(void) /* used by shellos, and on WND_WM_RESIZE */
 {
-    LINE *curr;
+    LINE * curr;
     int y2;
     int oldmaxx = maxx;
 
     /* Redraw the screen. */
-
     cursor(0);
     InitScreen();
     BuildHotSpots();
     DrawHeader();
     ShowNewArea();
     ShowMsgHeader(messg);
-
-    edminy = 5;
-    edmaxy = maxy - ((SW->statbar) ? 1 : 0);
+    edminy  = 5;
+    edmaxy  = maxy - ((SW->statbar) ? 1 : 0);
     ed_miny = 1;
     ed_maxy = edmaxy - edminy - 1;
 
-    if (oldmaxx != maxx) /* terminal size has changed - rewrap! */
+    if(oldmaxx != maxx)  /* terminal size has changed - rewrap! */
     {
         adapt_margins();
 
-                                /* mark the cursor position */
-        for (curr = msgtop; curr != NULL; curr = curr->next)
+        /* mark the cursor position */
+        for(curr = msgtop; curr != NULL; curr = curr->next)
         {
-            if (curr == current)
+            if(curr == current)
             {
                 curr->cursor_position = x;
             }
@@ -2386,51 +2347,51 @@ static void reopen_screen(void) /* used by shellos, and on WND_WM_RESIZE */
             }
         }
 
-                                /* rewrap the message */
-        for (curr = msgtop; curr != NULL; curr = curr->next)
+        /* rewrap the message */
+        for(curr = msgtop; curr != NULL; curr = curr->next)
         {
-            wrap (curr, 0, 0, SW->rm);
+            wrap(curr, 0, 0, SW->rm);
         }
-
-                                /* search the cursor position */
+        /* search the cursor position */
         current = NULL;
-        for (curr = msgtop, currline = 1; curr != NULL; curr =
-                 curr->next, currline++)
+
+        for(curr = msgtop, currline = 1; curr != NULL; curr = curr->next, currline++)
         {
-            if (curr->cursor_position)
+            if(curr->cursor_position)
             {
                 current = curr;
-                x = curr->cursor_position;
+                x       = curr->cursor_position;
                 break;
             }
         }
-        if (current == NULL)
+
+        if(current == NULL)
         {
             ed_error("reopen_screen", "lost track of cursor!");
         }
-            
+
         SetLineBuf();
     }
 
     /* redraw the screen */
-
-    if (y > ed_maxy)
+    if(y > ed_maxy)
     {
         y = ed_maxy;
     }
-    y2 = y;
+
+    y2   = y;
     curr = current;
-    while (y2 > ed_miny && curr->prev)
+
+    while(y2 > ed_miny && curr->prev)
     {
         curr = curr->prev;
-            y2--;
+        y2--;
     }
     y -= (y2 - ed_miny);
     RedrawPage(curr, ed_miny);
-
     cursor(1);
-    GotoXY(x,y);
-}
+    GotoXY(x, y);
+} /* reopen_screen */
 
 static void shellos(void)
 {
@@ -2438,20 +2399,16 @@ static void shellos(void)
 
     mygetcwd(tmp, PATHLEN);
     setcwd(ST->home);
-
     close_screen();
-
     fputs("\nEnter the command \"EXIT\" to return to " PROG ".\n", stderr);
     shell_to_dos();
-
     reopen_screen();
-
     setcwd(tmp);
 }
 
 static void doscmd(void)
 {
-    WND *hCurr, *hWnd;
+    WND * hCurr, * hWnd;
     static char curdir[PATHLEN];
     char cmd[64], tmp[40];
     int ret;
@@ -2459,61 +2416,65 @@ static void doscmd(void)
     mygetcwd(curdir, PATHLEN);
     memset(cmd, 0, sizeof cmd);
 
-#if defined(MSDOS)
-    if (!GetString(" System Command ", "Enter DOS command to execute:", cmd, 64))
+#if defined (MSDOS)
+
+    if(!GetString(" System Command ", "Enter DOS command to execute:", cmd, 64))
     {
         return;
     }
-#elif defined(OS2)
-    if (!GetString(" System Command ", "Enter OS/2 command to execute:", cmd, 64))
+
+#elif defined (OS2)
+
+    if(!GetString(" System Command ", "Enter OS/2 command to execute:", cmd, 64))
     {
         return;
     }
+
 #else
-    if (!GetString(" System Command ", "Enter system command to execute:", cmd, 64))
+
+    if(!GetString(" System Command ", "Enter system command to execute:", cmd, 64))
     {
         return;
     }
+
 #endif
 
     hCurr = WndTop();
-    hWnd = WndOpen(0, 0, maxx - 1, maxy - 1, NBDR, 0, cm[CM_NTXT]);
-
+    hWnd  = WndOpen(0, 0, maxx - 1, maxy - 1, NBDR, 0, cm[CM_NTXT]);
     cursor(1);
     ret = system(cmd);
     cursor(0);
 
-#if defined(MSDOS)
+#if defined (MSDOS)
     sprintf(tmp, "DOS command returned %d", ret);
-#elif defined(OS2)
+#elif defined (OS2)
     sprintf(tmp, "OS/2 command returned %d", ret);
 #else
     sprintf(tmp, "System command returned %d", ret);
 #endif
     ChoiceBox(" Info ", tmp, "  Ok  ", NULL, NULL);
-
     WndClose(hWnd);
     WndCurr(hCurr);
     setcwd(curdir);
     cursor(1);
-}
+} /* doscmd */
 
 /*
  *  editheader(); Lets the user edit the header.
  */
-
 static void editheader(void)
 {
-    msg *save;
+    msg * save;
     int q;
 
-    q = 0;
+    q    = 0;
     save = duplicatemsg(messg);
-    while (!q)
+
+    while(!q)
     {
-        if (EditHeader(save) == Key_Esc)
+        if(EditHeader(save) == Key_Esc)
         {
-            if (confirm("Cancel?..."))
+            if(confirm("Cancel?..."))
             {
                 dispose(save);
                 cursor(1);
@@ -2530,7 +2491,6 @@ static void editheader(void)
      *  We want to save the changes: release all allocated memory and
      *  make *messg = *save.
      */
-
     release(messg->isfrom);
     release(messg->isto);
     release(messg->subj);
@@ -2538,24 +2498,22 @@ static void editheader(void)
     release(messg->reply);
     release(messg->to.domain);
     release(messg->from.domain);
-
     *messg = *save;
-
     cursor(1);
-}
+} /* editheader */
 
 /*
  *  setup(); Calls the setup dialog box and allows user to play with
  *  switches.
  */
-
 static void setup(void)
 {
-    LINE *nl = current;
-    int y2 = y;
+    LINE * nl = current;
+    int y2    = y;
 
     set_switch();
-    while (y2 != ed_miny && nl->prev != NULL)
+
+    while(y2 != ed_miny && nl->prev != NULL)
     {
         nl = nl->prev;
         y2--;
@@ -2566,7 +2524,7 @@ static void setup(void)
 
 static void do_help(void)
 {
-    if (ST->helpfile)
+    if(ST->helpfile)
     {
         DoHelp(1);
     }
@@ -2576,10 +2534,10 @@ static void UpdateXY(void)
 {
     static char line[50];
 
-    if (SW->statbar)
+    if(SW->statbar)
     {
         sprintf(line, "%c X: %03d  Y: %03d", SC7, x, currline);
-#if defined(MSDOS)
+#if defined (MSDOS)
         WndPutsn(maxx - (17 + 16), maxy - 1, 1, cm[CM_ITXT] | F_ALTERNATE, line);
         WndPutsn(maxx - (16 + 16), maxy - 1, 15, cm[CM_ITXT], line + 1);
 #else
@@ -2591,19 +2549,21 @@ static void UpdateXY(void)
 
 static void UpdateMem(void)
 {
-    if (SW->statbar)
+    if(SW->statbar)
     {
-#if defined(MSDOS) && !defined(__FLAT__)
+#if defined (MSDOS) && !defined (__FLAT__)
         long mem, oldmem = 0;
         char line[15];
         mem = corerem();
-        if (mem != oldmem)
+
+        if(mem != oldmem)
         {
             oldmem = mem;
             sprintf(line, "%c %3ldK ", SC7, (long)(corerem() / 1024));
             WndPutsn(maxx - 7, maxy - 1, 1, cm[CM_ITXT] | F_ALTERNATE, line);
             WndPutsn(maxx - 6, maxy - 1, 6, cm[CM_ITXT], line + 1);
         }
+
 #endif
     }
 }
@@ -2614,102 +2574,102 @@ int editmsg(msg * m, int quote)
     int editcrstate = 0;
     unsigned int ch;
 
-    x = 1;
-    y = 1;
+    x        = 1;
+    y        = 1;
     currline = 1;
-    edminy = 5;
-    edmaxy = maxy - ((SW->statbar) ? 1 : 0);
-    ed_miny = 1;
-    ed_maxy = edmaxy - edminy - 1;
-    messg = m;
-    current = messg->text;
-    msgtop = messg->text;
+    edminy   = 5;
+    edmaxy   = maxy - ((SW->statbar) ? 1 : 0);
+    ed_miny  = 1;
+    ed_maxy  = edmaxy - edminy - 1;
+    messg    = m;
+    current  = messg->text;
+    msgtop   = messg->text;
 
-    if (insert)
+    if(insert)
     {
         WndWriteStr(maxx - 5, 5, cm[CM_DTXT], "ins");
     }
 
-    if (msgtop == NULL)
+    if(msgtop == NULL)
     {
         current = calloc(1, sizeof *current);
-        if (current == NULL)
+
+        if(current == NULL)
         {
             WndWriteStr(0, 0, cm[CM_WTXT], "WARNING: Memory allocation error - aborting!");
             return ABORT;
         }
-        msgtop = current;
+
+        msgtop       = current;
         msgtop->text = xstrdup("\n");
         msgtop->prev = NULL;
     }
-    if (SW->editcronly)
+
+    if(SW->editcronly)
     {
         editcrstate = SW->showcr;
-        SW->showcr = 1;
+        SW->showcr  = 1;
     }
+
     SetLineBuf();
-
-
     TTBeginOutput();
-
     RedrawPage(current, y);
-
     done = FALSE;
     cursor(1);
     GotoXY(x, y);
-
     TTEndOutput();
 
-    while (!done)
+    while(!done)
     {
-        if (window_resized)
+        if(window_resized)
         {
             close_screen();
             reopen_screen();
             window_resized = 0; /* ack! */
         }
+
         UpdateMem();
         UpdateXY();
         GotoXY(x, y);
         ch = MnuGetMsg(&event, hMnScr->wid);
-        switch (event.msgtype)
-        {
-        case WND_WM_CHAR:
-            if (ch & 0xff)
-            {
-                if (editckeys[(ch & 0xff)] == NULL)
-                {
-                    insert_char((char)DOROT13((char)(ch & 0xff)));
-                }
-                else
-                {
-                    (*editckeys[(ch & 0xff)]) ();
-                }
-            }
-            else if (editakeys[(ch >> 8)] != NULL)
-            {
-                (*editakeys[(ch >> 8)]) ();
-            }
-            break;
 
-        default:
-            break;
+        switch(event.msgtype)
+        {
+            case WND_WM_CHAR:
+
+                if(ch & 0xff)
+                {
+                    if(editckeys[(ch & 0xff)] == NULL)
+                    {
+                        insert_char((char)DOROT13((char)(ch & 0xff)));
+                    }
+                    else
+                    {
+                        (*editckeys[(ch & 0xff)])();
+                    }
+                }
+                else if(editakeys[(ch >> 8)] != NULL)
+                {
+                    (*editakeys[(ch >> 8)])();
+                }
+
+                break;
+
+            default:
+                break;
         }
     }
-
     messg->text = msgtop;
 
-    if (SW->chopquote && quote)
+    if(SW->chopquote && quote)
     {
-        LINE *ff, *lowest;
-
+        LINE * ff, * lowest;
         ff = lowest = msgtop;
 
         /* Find the lowest line of text that isn't a template line. */
-
-        while (ff->next)
+        while(ff->next)
         {
-            if (!ff->quote && strlen(ff->text) != 0 && *(ff->text) != '\n' && !ff->templt)
+            if(!ff->quote && strlen(ff->text) != 0 && *(ff->text) != '\n' && !ff->templt)
             {
                 lowest = ff;
             }
@@ -2717,7 +2677,7 @@ int editmsg(msg * m, int quote)
             ff = ff->next;
         }
 
-        if (lowest && lowest != msgtop && lowest->next)
+        if(lowest && lowest != msgtop && lowest->next)
         {
             ff = lowest;
 
@@ -2725,10 +2685,9 @@ int editmsg(msg * m, int quote)
              *  We got a lowest line, now we find the template line that
              *  is next underneath it.
              */
-
-            while (ff)
+            while(ff)
             {
-                if (ff->templt)
+                if(ff->templt)
                 {
                     break;
                 }
@@ -2736,34 +2695,35 @@ int editmsg(msg * m, int quote)
                 ff = ff->next;
             }
 
-            if (ff == NULL)
+            if(ff == NULL)
             {
                 /* didn't find one */
                 lowest->next = clearbuffer(lowest->next);
             }
             else
             {
-                LINE *d;
-
+                LINE * d;
                 /*
                  *  We've found one, so delete all lines of text between
                  *  the lowest and the template line.
                  */
-
                 ff = lowest->next;
 
-                while (!ff->templt)
+                while(!ff->templt)
                 {
-                    d = ff;
+                    d  = ff;
                     ff = ff->next;
-                    if (d->prev)
+
+                    if(d->prev)
                     {
                         d->prev->next = ff;
                     }
-                    if (d->next)
+
+                    if(d->next)
                     {
                         d->next->prev = d->prev;
                     }
+
                     release(d->text);
                     xfree(d);
                 }
@@ -2772,30 +2732,31 @@ int editmsg(msg * m, int quote)
     }
 
     /* Clean up everything. */
-
-    if (insert)
+    if(insert)
     {
         unsigned char buf[4];
-        
-        buf[0]=SC8; buf[1]=SC8; buf[2]=SC8; buf[3]='\0';
+        buf[0] = SC8;
+        buf[1] = SC8;
+        buf[2] = SC8;
+        buf[3] = '\0';
         WndWriteStr(maxx - 5, 5, cm[CM_DTXT] | F_ALTERNATE, (char *)buf);
     }
 
-    if (SW->editcronly)
+    if(SW->editcronly)
     {
         SW->showcr = editcrstate;
     }
 
     blocking = 0;
     cursor(0);
-
     return done;
-}
+} /* editmsg */
 
-int ed_error(char *fc, char *fmt,...)
+int ed_error(char * fc, char * fmt, ...)
 {
     va_list params;
     static char line[255];
+
     va_start(params, fmt);
     vsprintf(line, fmt, params);
     fprintf(stderr, "\nError! function %s: %s", fc, line);

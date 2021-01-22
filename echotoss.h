@@ -9,6 +9,6 @@
 #ifndef __ECHOTOSS_H__
 #define __ECHOTOSS_H__
 
-void echotoss_add(AREA *a);
+void echotoss_add(AREA * a);
 
 #endif

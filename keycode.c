@@ -16,7 +16,6 @@ void keycode(void)
 
     TTopen();
     MouseOFF();
-
     printf("Displaying keyboard scan codes in hexadecimal form.\n\n");
     printf("Press any key or key combination, or 'q' (lowercase 'Q') to exit.\n");
     fflush(stdout);
@@ -25,7 +24,8 @@ void keycode(void)
     {
         ch = TTGetKey();
         printf("Key: ");
-        if ((ch >> 8) == 0)
+
+        if((ch >> 8) == 0)
         {
             printf("0x%04x (%c)", ch, ch);
         }
@@ -33,9 +33,10 @@ void keycode(void)
         {
             printf("0x%04x", ch);
         }
+
         printf("\n");
         fflush(stdout);
     }
-    while (ch != 'q');
+    while(ch != 'q');
     TTclose();
-}
+} /* keycode */
