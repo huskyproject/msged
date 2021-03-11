@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include "dlist.h"
 #include "unused.h"
+#include <huskylib/huskylib.h>
 
 DLIST * dlistInit(void)
 {
@@ -37,12 +38,12 @@ void dlistTerm(DLIST * p_list)
             while(p_node != NULL)
             {
                 p_list->L_first = p_node->L_next;
-                free(p_node);
+                nfree(p_node);
                 p_node = p_list->L_first;
             }
         }
 
-        free(p_list);
+        nfree(p_list);
     }
 }
 
@@ -86,7 +87,7 @@ void dlistDeleteNode(DLISTNODE * p_node)
 {
     if(p_node != NULL)
     {
-        free(p_node);
+        nfree(p_node);
     }
 }
 

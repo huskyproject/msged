@@ -72,6 +72,7 @@ void block_console(int min, int time)
 
 #include "winsys.h"
 #include "unused.h"
+#include "free.h"
 
 #if defined (UNIX) || defined (Cygwin)
 static int waiting = -1;
@@ -432,7 +433,7 @@ int TTScroll(int x1, int y1, int x2, int y2, int lines, int Dir)
 
     if(x1 < 0 || y1 < 0 || x2 >= term.NCol || y2 >= term.NRow || lines < 1)
     {
-        free(buffer);
+        nfree(buffer);
         abort();
         return 0;
     }
@@ -513,7 +514,7 @@ int TTScroll(int x1, int y1, int x2, int y2, int lines, int Dir)
     }
     TTScolor(orgcolor);
     TTgotoxy_noflush(y1, x1);
-    free(buffer);
+    nfree(buffer);
     fflush(stdout);
     return 1;
 } /* TTScroll */
@@ -1682,12 +1683,12 @@ void sigwinch_handler(int sig)
 
         if(i)
         {
-            free(scrnbuf);
+            nfree(scrnbuf);
             scrnbuf = newbuf;
         }
         else
         {
-            free(colbuf);
+            nfree(colbuf);
             colbuf = newbuf;
         }
     }
@@ -1845,19 +1846,19 @@ int TTkclose(void)
 
     if(scrnbuf != NULL)
     {
-        free(scrnbuf);
+        nfree(scrnbuf);
         scrnbuf = NULL;
     }
 
     if(colbuf != NULL)
     {
-        free(colbuf);
+        nfree(colbuf);
         colbuf = NULL;
     }
 
 /*  if (allowed_special_characters != NULL)
     {
-        free(allowed_special_characters);
+        nfree(allowed_special_characters);
         allowed_special_characters = NULL;
     }
     we don't free this list, so that it is available in case the
@@ -1958,7 +1959,7 @@ int TTconfigure(const char * keyword, const char * value)
     {
         if(allowed_special_characters != NULL)
         {
-            free(allowed_special_characters);
+            nfree(allowed_special_characters);
         }
 
         allowed_special_characters = (unsigned char *)malloc(l = (strlen(value) + 1));

@@ -562,8 +562,8 @@ static int match(const char * name, const char * pattern, int attribute, int mod
         }
 
         rc = patmat(matname, matpattern);
-        free(matname);
-        free(matpattern);
+        nfree(matname);
+        nfree(matpattern);
     }
     else
     {
@@ -1130,19 +1130,19 @@ add_to_cache:
 
         if(adaptcase_cache[l].query != NULL)
         {
-            free(adaptcase_cache[l].query);
+            nfree(adaptcase_cache[l].query);
             adaptcase_cache[l].query = NULL;
         }
 
         if(adaptcase_cache[l].result != NULL)
         {
-            free(adaptcase_cache[l].result);
+            nfree(adaptcase_cache[l].result);
             adaptcase_cache[l].result = NULL;
         }
 
         if(adaptcase_cache[l].raw_cache != NULL)
         {
-            free(adaptcase_cache[l].raw_cache);
+            nfree(adaptcase_cache[l].raw_cache);
             adaptcase_cache[l].raw_cache = NULL;
         }
 
@@ -1213,25 +1213,25 @@ add_to_cache:
 
         if(adaptcase_cache[l].query != NULL)
         {
-            free(adaptcase_cache[l].query);
+            nfree(adaptcase_cache[l].query);
             adaptcase_cache[l].query = NULL;
         }
 
         if(adaptcase_cache[l].result != NULL)
         {
-            free(adaptcase_cache[l].result);
+            nfree(adaptcase_cache[l].result);
             adaptcase_cache[l].result = NULL;
         }
 
         if(adaptcase_cache[l].raw_cache != NULL)
         {
-            free(adaptcase_cache[l].raw_cache);
+            nfree(adaptcase_cache[l].raw_cache);
             adaptcase_cache[l].raw_cache = NULL;
         }
 
         if(adaptcase_cache[l].cache_index != NULL)
         {
-            free(adaptcase_cache[l].cache_index);
+            nfree(adaptcase_cache[l].cache_index);
             adaptcase_cache[l].cache_index = NULL;
         }
 

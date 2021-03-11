@@ -10,6 +10,7 @@
 #include <string.h>
 #include <time.h>
 #include "memextra.h"
+#include <huskylib/huskylib.h>
 
 static char msg_alloc_fail[] =
     "*** Memory allocation failure (out of memory)\n" "*** Needed %u (%Xh) bytes.\n";
@@ -92,7 +93,7 @@ void xfree(void * ptr)
     }
     else
     {
-        free(ptr);
+        nfree(ptr);
     }
 }
 

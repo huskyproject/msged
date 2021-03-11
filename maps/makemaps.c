@@ -15,6 +15,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
+#include <huskylib/huskylib.h>
 
 extern int unlink(const char *);
 
@@ -200,7 +201,7 @@ void parse_line (char *string, char **word1, char **word2)
     {
         *word2 = xstrdup(*word2);
     }
-    free(dup);
+    nfree(dup);
 }
 
 
@@ -419,10 +420,10 @@ int process(char *filename)
                 break;
             }
             pos++;
-            free(word1);
+            nfree(word1);
             if (word2 != NULL)
             {
-                free(word2);
+                nfree(word2);
             }
         }
     }
@@ -628,11 +629,11 @@ int main(int argc, char **argv)
 
     if (readmaps.tables != NULL)
     {
-        free(readmaps.tables);
+        nfree(readmaps.tables);
     }
     if (writmaps.tables != NULL)
     {
-        free(writmaps.tables);
+        nfree(writmaps.tables);
     }
     return (!i) ? 8 : 0;
 }

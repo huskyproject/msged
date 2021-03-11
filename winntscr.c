@@ -12,6 +12,7 @@
 #include "winsys.h"
 #include "unused.h"
 #include "specch.h"
+#include <huskylib/huskylib.h>
 
 #define TERMDEF 1
 
@@ -512,7 +513,7 @@ int TTStrWr(unsigned char * s, int row, int col, int len)
     }
     WriteConsoleOutputCharacterA(HOutput, s, (DWORD)len, coord, &ntlen);
     WriteConsoleOutputAttribute(HOutput, pwattr, (DWORD)len, coord, &ntlen);
-    free(pwattr);
+    nfree(pwattr);
     TTgotoxy(row, col + ntlen);
     return 1;
 } /* TTStrWr */
@@ -536,7 +537,7 @@ static void clearbox(int x1, int y1, int x2, int y2)
 
     if(pstr == NULL)
     {
-        free(pwattr);
+        nfree(pwattr);
         return;
     }
 
@@ -553,8 +554,8 @@ static void clearbox(int x1, int y1, int x2, int y2)
         WriteConsoleOutputCharacterA(HOutput, pstr, width, coord, &len);
         WriteConsoleOutputAttribute(HOutput, pwattr, width, coord, &len);
     }
-    free(pwattr);
-    free(pstr);
+    nfree(pwattr);
+    nfree(pstr);
 } /* clearbox */
 
 int TTClear(int x1, int y1, int x2, int y2)
@@ -589,7 +590,7 @@ int TTWriteStr(unsigned long * b, int len, int row, int col)
 
     if(pstr == NULL)
     {
-        free(pwattr);
+        nfree(pwattr);
         return 0;
     }
 
@@ -603,8 +604,8 @@ int TTWriteStr(unsigned long * b, int len, int row, int col)
     coord.Y = (SHORT)row;
     WriteConsoleOutputCharacterA(HOutput, pstr, len, coord, &wlen);
     WriteConsoleOutputAttribute(HOutput, pwattr, len, coord, &wlen);
-    free(pwattr);
-    free(pstr);
+    nfree(pwattr);
+    nfree(pstr);
     TTgotoxy(row, col + len);
     return 1;
 } /* TTWriteStr */
@@ -627,7 +628,7 @@ int TTReadStr(unsigned long * b, int len, int row, int col)
 
     if(pstr == NULL)
     {
-        free(pwattr);
+        nfree(pwattr);
         return 0;
     }
 
@@ -640,8 +641,8 @@ int TTReadStr(unsigned long * b, int len, int row, int col)
     {
         b[i] = MAKECELL(pstr[i] & 0xFF, pwattr[i] & 0xFF);
     }
-    free(pwattr);
-    free(pstr);
+    nfree(pwattr);
+    nfree(pstr);
     return 1;
 } /* TTReadStr */
 
@@ -664,7 +665,7 @@ static void gettext(int x1, int y1, int x2, int y2, char * dest)
 
     if(pstr == NULL)
     {
-        free(pwattr);
+        nfree(pwattr);
         return;
     }
 
@@ -683,8 +684,8 @@ static void gettext(int x1, int y1, int x2, int y2, char * dest)
             dest++;
         }
     }
-    free(pwattr);
-    free(pstr);
+    nfree(pwattr);
+    nfree(pstr);
 } /* gettext */
 
 static void puttext(int x1, int y1, int x2, int y2, char * srce)
@@ -706,7 +707,7 @@ static void puttext(int x1, int y1, int x2, int y2, char * srce)
 
     if(pstr == NULL)
     {
-        free(pwattr);
+        nfree(pwattr);
         return;
     }
 
@@ -724,8 +725,8 @@ static void puttext(int x1, int y1, int x2, int y2, char * srce)
         WriteConsoleOutputCharacterA(HOutput, pstr, width, coord, &len);
         WriteConsoleOutputAttribute(HOutput, pwattr, width, coord, &len);
     }
-    free(pwattr);
-    free(pstr);
+    nfree(pwattr);
+    nfree(pstr);
 } /* puttext */
 
 int TTScroll(int x1, int y1, int x2, int y2, int lines, int Dir)
@@ -753,6 +754,6 @@ int TTScroll(int x1, int y1, int x2, int y2, int lines, int Dir)
         puttext(x1, y1 + lines, x2, y2, buf);
     }
 
-    free(buf);
+    nfree(buf);
     return 1;
 } /* TTScroll */

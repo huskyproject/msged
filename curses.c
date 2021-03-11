@@ -23,6 +23,7 @@
 #include "keys.h"
 #include "readtc.h"
 #include "specch.h"
+#include "free.h"
 
 int color;
 int vrow, vcol;
@@ -417,7 +418,7 @@ int TTScroll(int x1, int y1, int x2, int y2, int lines, int dir)
         TTClear(x1, y1, x2, y1 + lines - 1);
     }
 
-    free(buf);
+    nfree(buf);
     move(vrow, vcol);
     ttrefresh();
 #endif /* if 0 */
@@ -878,7 +879,7 @@ int TTconfigure(const char * keyword, const char * value)
     {
         if(allowed_special_characters != NULL)
         {
-            free(allowed_special_characters);
+            nfree(allowed_special_characters);
         }
 
         allowed_special_characters = (unsigned char *)malloc(l = (strlen(value) + 1));

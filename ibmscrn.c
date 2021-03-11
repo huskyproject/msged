@@ -36,7 +36,8 @@
 #include "dosasm.h"
 #include "unused.h"
 #include "specch.h"
-/* codepage 437 / 850 block graphics */
+#include <huskylib/huskylib.h>
+ /* codepage 437 / 850 block graphics */
 char * tt_specials =
     "\272\315\311\273\310\274\263\304\332\277\300\331\261\020\021\334\337\030\031\024\035\000";
 
@@ -157,7 +158,7 @@ int TTWriteStr(unsigned long * b, int len, int row, int col)
             buf[i] = (unsigned short)((b[i] & 0xFFUL) | ((b[i] >> 8) & 0xFF00UL));
         }
         VIOputr(col, row, len, 1, buf);
-        free(buf);
+        nfree(buf);
     }
 
     return 0;

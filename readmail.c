@@ -77,6 +77,7 @@ int bdos(int func, unsigned reg_dx, unsigned char reg_al);
 #include "mctype.h"
 #include "help.h"
 #include "template.h"
+#include <huskylib/huskylib.h>
 
 #define rand_number(num) ((int)(((long)rand()) % (num)))
 
@@ -230,7 +231,7 @@ msg * readmsg(unsigned long n)
 
         m->charset_name = xstrdup(tokens[0]);
         ltable          = get_readtable(m->charset_name, m->charset_level);
-        free(text);
+        nfree(text);
     }
     else
     {

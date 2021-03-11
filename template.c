@@ -19,6 +19,7 @@
 #include "readmail.h"  /* GetOrigin */
 #include "template.h"
 #include "version.h"
+#include <huskylib/huskylib.h>
 
 #if defined (UNIX)
 #include <sys/utsname.h>
@@ -44,7 +45,7 @@ static char ** parse_words_to_array(char * string, int nmembers)
 
     if(n < nmembers)
     {
-        free(whereto);
+        nfree(whereto);
         return NULL;
     }
 

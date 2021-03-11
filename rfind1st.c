@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "rdirent.h"
+#include <huskylib/huskylib.h>
 
 #ifdef PACIFIC
 int _doserrno;
@@ -68,7 +69,7 @@ struct DSTRUCT * rfind_1st(char * name, unsigned attr, struct DSTRUCT * dta)
 
         if(dta == NULL && my_dta != NULL)
         {
-            free(my_dta);
+            nfree(my_dta);
         }
 
         return NULL;
