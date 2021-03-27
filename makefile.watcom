@@ -1,0 +1,111 @@
+#
+#  Makefile for Open Watcom 2.0
+#
+#
+#  Use Watcom Make:
+#
+#  wmake -f makefile.watcom NT=1
+#
+#    or
+#
+#  wmake -f makefile.watcom OS2=1
+#
+#  Set DEBUG=1 to enable debugging.
+#
+
+CC=wcl386
+COPT=-oneatx
+
+#  wcl386 in Windows & OS/2 will not accept forward slashes as path
+#  separators with the -I parameter unless you put the path in
+#  double quotes:
+
+INC=-I".." -I"../huskylib" -I"../smapi" -I"../fidoconf"
+
+#  default to Windows NT target
+
+TARGET=msgednt.exe
+CFLAGS=-zq -wx $(INC) -bt=nt -l=nt
+CDEFS=-DUSE_MSGAPI -DWINNT
+LIBS=../huskylib/make/huskywcw.lib ../smapi/make/smapiwcw.lib
+OBJS=winntscr.obj
+
+!ifdef OS2
+TARGET=msgedp.exe
+CFLAGS=-zq -wx $(INC) -bt=os2v2 -l=os2v2
+CDEFS=-DUSE_MSGAPI -DOS2
+LIBS=../huskylib/make/huskywco.lib ../smapi/make/smapiwco.lib
+OBJS=malloc16.obj os2scr.obj
+!endif
+
+!ifdef DEBUG
+CFLAGS+=-d2
+!endif
+
+OBJS+= addr.obj     &
+	areas.obj    &
+	bmg.obj      &
+	charset.obj  &
+	config.obj   &
+	control.obj  &
+	date.obj     &
+	dialogs.obj  &
+	dirute.obj   &
+	dlgbox.obj   &
+	dlist.obj    &
+	echotoss.obj &
+	environ.obj  &
+	fconf.obj    &
+	fecfg145.obj &
+	fido.obj     &
+	filedlg.obj  &
+	flags.obj    &
+	freq.obj     &
+	gestr120.obj &
+	getopts.obj  &
+	group.obj    &
+	help.obj     &
+	helpcmp.obj  &
+	helpinfo.obj &
+	init.obj     &
+	keycode.obj  &
+	list.obj     &
+	maintmsg.obj &
+	makemsgn.obj &
+	memextra.obj &
+	menu.obj     &
+	misc.obj     &
+	mnu.obj      &
+	msg.obj      &
+	msged.obj    &
+	mxbt.obj     &
+	normalc.obj  &
+	nshow.obj    &
+	quick.obj    &
+	quote.obj    &
+	readmail.obj &
+	screen.obj   &
+	strextra.obj &
+	system.obj   &
+	template.obj &
+	textfile.obj &
+	timezone.obj &
+	userlist.obj &
+	vsev.obj     &
+	vsevops.obj  &
+	win.obj      &
+	wrap.obj
+
+all: $(TARGET)
+
+.c.obj:
+	$(CC) $(CFLAGS) $(CDEFS) $(COPT) -fo=$@ -c $<
+
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) $(COPT) $(LFLAGS) -fe=$(TARGET) $(OBJS) $(LIBS)
+
+.IGNORE
+clean: .SYMBOLIC
+	rm *.obj
+	rm *.err
+	rm $(TARGET)

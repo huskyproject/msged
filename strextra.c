@@ -94,7 +94,7 @@ int stricmp(const char * s, const char * t)
 
 #ifndef __IBMC__
 
-#if !(defined (_MSC_VER) && (_MSC_VER >= 1200)) && !defined (UNIX)
+#if !(defined (_MSC_VER) && (_MSC_VER >= 1200)) && !defined (UNIX) && !defined(__WATCOMC__)
 char * strdup(const char * s)
 {
     char * p;
