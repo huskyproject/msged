@@ -1355,7 +1355,7 @@ static char * GetFastEchoOrigin(int board)
     }
     fclose(fp);
 
-    if(feorigin.line && *feorigin.line != '\0')
+    if(*feorigin.line != '\0')
     {
         return feorigin.line;
     }
