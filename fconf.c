@@ -667,18 +667,18 @@ static void parse_fc_line(char * line, int check_type)
         return;
     }
 
-    if((check_type & 2) && ((!stricmp(token, "netmailarea")) || (!stricmp(token, "netarea"))))
+    if((check_type == 2) && ((!stricmp(token, "netmailarea")) || (!stricmp(token, "netarea"))))
     {
         parse_fc_area(1); /* netmail folders */
     }
-    else if((check_type && 2) &&
+    else if((check_type == 2) &&
             ((!stricmp(token,
                        "dupearea")) ||
              (!stricmp(token, "badarea")) || (!stricmp(token, "localarea"))))
     {
         parse_fc_area(2); /* local folders */
     }
-    else if((check_type && 2) && (!stricmp(token, "echoarea")))
+    else if((check_type == 2) && (!stricmp(token, "echoarea")))
     {
         parse_fc_area(3); /* echomail folders */
     }
@@ -690,19 +690,19 @@ static void parse_fc_line(char * line, int check_type)
     {
         parse_fc_address(check_type);
     }
-    else if((check_type && 1) && (!stricmp(token, "sysop")))
+    else if((check_type == 1) && (!stricmp(token, "sysop")))
     {
         parse_fc_sysop();
     }
-    else if((check_type && 1) && (!stricmp(token, "echotosslog")))
+    else if((check_type == 1) && (!stricmp(token, "echotosslog")))
     {
         parse_fc_tosslog();
     }
-    else if((check_type && 1) && (!stricmp(token, "fidouserlist")))
+    else if((check_type == 1) && (!stricmp(token, "fidouserlist")))
     {
         parse_fc_fidouserlist();
     }
-    else if((check_type && 1) && (!stricmp(token, "nodelistdir")))
+    else if((check_type == 1) && (!stricmp(token, "nodelistdir")))
     {
         parse_fc_nodelistdir();
     }

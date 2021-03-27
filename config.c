@@ -1660,12 +1660,9 @@ static void check_fastecho(char * areafile)
     a.addr.node     = feakas[0].main.node;
     a.addr.point    = feakas[0].main.point;
 
-    if(feakas[0].domain)
+    if(*feakas[0].domain != '\0')
     {
-        if(*feakas[0].domain)
-        {
-            a.addr.domain = xstrdup(feakas[0].domain);
-        }
+        a.addr.domain = xstrdup(feakas[0].domain);
     }
 
     a.path        = env_expand(feconfig.NetMPath);
@@ -1733,12 +1730,9 @@ static void check_fastecho(char * areafile)
         a.addr.node     = feakas[fearea.info.aka].main.node;
         a.addr.point    = feakas[fearea.info.aka].main.point;
 
-        if(feakas[fearea.info.aka].domain)
+        if(*feakas[fearea.info.aka].domain != '\0')
         {
-            if(*feakas[fearea.info.aka].domain)
-            {
-                a.addr.domain = xstrdup(feakas[fearea.info.aka].domain);
-            }
+            a.addr.domain = xstrdup(feakas[fearea.info.aka].domain);
         }
 
         /* storage type: QBBS, etc... */
@@ -3724,7 +3718,7 @@ static void parseconfig(FILE * fp)
                     }
                     buffer[i] = '\0';
 
-                    TTconfigure("highascii", buffer);
+                    TTconfigure("highascii", (char *)buffer);
                 }
 
                 break;

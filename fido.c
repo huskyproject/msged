@@ -399,7 +399,7 @@ msg * FidoMsgReadHeader(unsigned long n, int type)
     m->from.node = (msghead.orig[1] << 8) | msghead.orig[0];
     m->to.net    = (msghead.dest_net[1] << 8) | msghead.dest_net[0];
     m->to.node   = (msghead.dest[1] << 8) | msghead.dest[0];
-    memset(path, 0, sizeof path);
+    memset(path, '\0', PATHLEN);
     memcpy(path, msghead.date, sizeof msghead.date);
     m->timestamp = parsedate(path);
 

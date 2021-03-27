@@ -350,7 +350,7 @@ int GetFiles(char * curdir)
 
     strcpy(sdir, curdir);
 
-    if(NULL == FileFilter || !*FileFilter) /* let's not search for nothing. */
+    if(*FileFilter == '\0') /* let's not search for nothing. */
     {
 #ifdef MSDOS
         strcpy(FileFilter, "*.*");
