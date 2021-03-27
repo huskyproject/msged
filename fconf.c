@@ -52,7 +52,17 @@
 #include "group.h"
 #include "environ.h"
 
+/*
+ *  CHECK_TYPE_xxx: used by check_type variable in
+ *  check_fidoconfig(), read_fidoconfig_file() and parse_fc_line()
+ */
+
+#define CHECK_TYPE_SETTINGS 1
+#define CHECK_TYPE_AREAS    2
+#define CHECK_TYPE_BOTH     CHECK_TYPE_SETTINGS + CHECK_TYPE_AREAS
+
 #ifdef USE_FIDOCONFIG
+
 /* ===================================================================== */
 /* Part 1: Fidoconfig routines that use the Fidoconfig library           */
 /* ===================================================================== */
@@ -157,20 +167,20 @@ void check_fidoconfig(char * option_string)
 
     if(option_string != NULL && !stricmp(option_string, "settings"))
     {
-        check_type = 1;
+        check_type = CHECK_TYPE_SETTINGS;
     }
     else if(option_string != NULL && !stricmp(option_string, "both"))
     {
-        check_type = 3;
+        check_type = CHECK_TYPE_BOTH;
     }
     else /* Default: Load areas only */
     {
-        check_type = 2;
+        check_type = CHECK_TYPE_AREAS;
     }
 
     if(fc_config != NULL)
     {
-        if(check_type & 1)      /* load settings */
+        if(check_type & CHECK_TYPE_SETTINGS)      /* load settings */
         {
             /* sysop name */
             for(i = 0; i < MAXUSERS; i++)
@@ -232,7 +242,7 @@ void check_fidoconfig(char * option_string)
             }
         }
 
-        if(check_type & 2)      /* load areas */
+        if(check_type & CHECK_TYPE_AREAS)      /* load areas */
         {
             /* netmail, dupe, bad */
             fc_add_area(&(fc_config->dupeArea), 0, 1);
@@ -300,15 +310,15 @@ void check_fidoconfig(char * option_string)
 
     if(option_string != NULL && !stricmp(option_string, "settings"))
     {
-        check_type = 1;
+        check_type = CHECK_TYPE_SETTINGS;
     }
     else if(option_string != NULL && !stricmp(option_string, "both"))
     {
-        check_type = 3;
+        check_type = CHECK_TYPE_BOTH;
     }
     else /* Default: Load areas only */
     {
-        check_type = 2;
+        check_type = CHECK_TYPE_AREAS;
     }
 
     filename = getenv("FIDOCONFIG");
@@ -415,7 +425,7 @@ static void parse_fc_address(int check_type)
         copy_addr(&fc_default_address, &tmp);
     }
 
-    if(check_type & 1)  /* load settings */
+    if(check_type & CHECK_TYPE_SETTINGS)  /* load settings */
     {
         alias = xrealloc(alias, (++SW->aliascount) * sizeof(FIDO_ADDRESS));
         memset(alias + SW->aliascount - 1, 0, sizeof(FIDO_ADDRESS));
@@ -667,18 +677,18 @@ static void parse_fc_line(char * line, int check_type)
         return;
     }
 
-    if((check_type == 2) && ((!stricmp(token, "netmailarea")) || (!stricmp(token, "netarea"))))
+    if((check_type & CHECK_TYPE_AREAS) && ((!stricmp(token, "netmailarea")) || (!stricmp(token, "netarea"))))
     {
         parse_fc_area(1); /* netmail folders */
     }
-    else if((check_type == 2) &&
+    else if((check_type & CHECK_TYPE_AREAS) &&
             ((!stricmp(token,
                        "dupearea")) ||
              (!stricmp(token, "badarea")) || (!stricmp(token, "localarea"))))
     {
         parse_fc_area(2); /* local folders */
     }
-    else if((check_type == 2) && (!stricmp(token, "echoarea")))
+    else if((check_type & CHECK_TYPE_AREAS) && (!stricmp(token, "echoarea")))
     {
         parse_fc_area(3); /* echomail folders */
     }
@@ -690,19 +700,19 @@ static void parse_fc_line(char * line, int check_type)
     {
         parse_fc_address(check_type);
     }
-    else if((check_type == 1) && (!stricmp(token, "sysop")))
+    else if((check_type & CHECK_TYPE_SETTINGS) && (!stricmp(token, "sysop")))
     {
         parse_fc_sysop();
     }
-    else if((check_type == 1) && (!stricmp(token, "echotosslog")))
+    else if((check_type & CHECK_TYPE_SETTINGS) && (!stricmp(token, "echotosslog")))
     {
         parse_fc_tosslog();
     }
-    else if((check_type == 1) && (!stricmp(token, "fidouserlist")))
+    else if((check_type & CHECK_TYPE_SETTINGS) && (!stricmp(token, "fidouserlist")))
     {
         parse_fc_fidouserlist();
     }
-    else if((check_type == 1) && (!stricmp(token, "nodelistdir")))
+    else if((check_type & CHECK_TYPE_SETTINGS) && (!stricmp(token, "nodelistdir")))
     {
         parse_fc_nodelistdir();
     }
