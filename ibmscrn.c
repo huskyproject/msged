@@ -265,6 +265,8 @@ int ms_get_mouse_pos(int * horizpos, int * vertpos);
 static unsigned long rtimer = -1;
 static unsigned long ltimer = -1;
 static int mtask            = T_DOS;
+
+#ifndef __DJGPP__
 void pause(void)
 {
     switch(mtask)
@@ -285,6 +287,7 @@ void pause(void)
             break;
     }
 }
+#endif
 
 static unsigned long hsec_time(void)
 {
