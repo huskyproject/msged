@@ -24,7 +24,9 @@ char * skip_to_blank(char * str);
 void kill_trail_slash(char * str);
 void opening(char * cfgfile, char * areafile);
 void parse_tokens(char * str, char * tokens[], int num);
+#ifndef USE_FIDOCONFIG
 char * shell_expand(char * str); /* expands ~ to home dir etc. */
+#endif
 char * pathcvt(char *);
 
 #endif
