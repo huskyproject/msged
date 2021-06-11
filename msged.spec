@@ -5,7 +5,7 @@
 %global reltype C
 
 # release number for Release: header
-%global relnum 2
+%global relnum 3
 
 # on default static application binary is built but using
 # 'rpmbuild --without static' produces an application binary that uses
@@ -21,6 +21,14 @@
     %def_without debug
 %else
     %bcond_with debug
+%endif
+
+# if you use 'rpmbuild --with doc', then msged-doc package is produced
+# with msged.info, msged.html, msged.txt, msged.pdf
+%if "%_vendor" == "alt"
+    %def_without doc
+%else
+    %bcond_with doc
 %endif
 
 %global debug_package %nil
@@ -52,41 +60,72 @@ Release: %{vendor_prefix}%relnum%{vendor_suffix}
 %if "%_vendor" != "redhat"
 Group: %pkg_group
 %endif
-Summary: HTick - the Husky Project fileecho ticker
+Summary: Msged is the Husky Project message editor
 URL: https://github.com/huskyproject/%main_name/archive/v%ver_major.%ver_minor.%reldate.tar.gz
 License: Public domain
-BuildRequires: gcc ncurses ncurses-devel texinfo
-Requires: ncurses
+BuildRequires: gcc ncurses ncurses-devel
 %if %{with static}
-BuildRequires: huskylib-static >= 1.9, huskylib-static-devel >= 1.9
-BuildRequires: smapi-static >= 2.5, smapi-static-devel >= 1.9
+BuildRequires: huskylib-static-devel >= 1.9
+BuildRequires: smapi-static-devel >= 1.9
 BuildRequires: fidoconf-static-devel >= 1.9
 %else
-BuildRequires: huskylib >= 1.9, huskylib-devel >= 1.9
-BuildRequires: smapi >= 2.5, smapi-devel >= 1.9
+BuildRequires: huskylib-devel >= 1.9
+BuildRequires: smapi-devel >= 1.9
 BuildRequires: fidoconf-devel >= 1.9
-Requires: huskylib >= 1.9, smapi >= 2.5
 %endif
 Source: %main_name-%ver_major.%ver_minor.%reldate.tar.gz
 
 %description
-Msged is a FTN mail reader from the Husky Project
+Msged is the Husky Project message editor
 
 %prep
 %setup -q -n %main_name-%ver_major.%ver_minor.%reldate
 
+%if %{with doc}
+%package doc
+BuildArch: noarch
+%if "%_vendor" != "redhat"
+Group: %pkg_group
+%endif
+Summary: Documentation for %main_name
+%if "%_vendor" == "redhat"
+BuildRequires: texinfo texinfo-tex
+%else
+BuildRequires: texinfo texi2html texi2dvi
+%endif
+Provides: %main_name-doc = %version-%release
+%description doc
+%summary
+%endif
+
 %build
-%if %{with static}
-    %if %{with debug}
-        %make_build DEBUG=1
+%if %{with doc}
+    %if %{with static}
+        %if %{with debug}
+            %make_build DEBUG=1 all gen-doc
+        %else
+            %make_build all gen-doc
+        %endif
     %else
-        %make_build
+        %if %{with debug}
+            %make_build DYNLIBS=1 DEBUG=1 all gen-doc
+        %else
+            %make_build DYNLIBS=1 all gen-doc
+        %endif
     %endif
 %else
-    %if %{with debug}
-        %make_build DYNLIBS=1 DEBUG=1
+    %if %{with static}
+        %if %{with debug}
+            %make_build DEBUG=1 all
+        %else
+            %make_build all
+        %endif
     %else
-        %make_build DYNLIBS=1
+        %if %{with debug}
+            %make_build DYNLIBS=1 DEBUG=1 all
+        %else
+            %make_build DYNLIBS=1 all
+        %endif
     %endif
 %endif
 
@@ -96,17 +135,33 @@ Msged is a FTN mail reader from the Husky Project
 
 %install
 umask 022
-%if %{with static}
-    %if %{with debug}
-        %make_install DEBUG=1
+%if %{with doc}
+    %if %{with static}
+        %if %{with debug}
+            %make_install DEBUG=1 install-doc
+        %else
+            %make_install install-doc
+        %endif
     %else
-        %make_install
+        %if %{with debug}
+            %make_install DYNLIBS=1 DEBUG=1 install-doc
+        %else
+            %make_install DYNLIBS=1 install-doc
+        %endif
     %endif
 %else
-    %if %{with debug}
-        %make_install DYNLIBS=1 DEBUG=1
+    %if %{with static}
+        %if %{with debug}
+            %make_install DEBUG=1
+        %else
+            %make_install
+        %endif
     %else
-        %make_install DYNLIBS=1
+        %if %{with debug}
+            %make_install DYNLIBS=1 DEBUG=1
+        %else
+            %make_install DYNLIBS=1
+        %endif
     %endif
 %endif
 chmod -R a+rX,u+w,go-w %buildroot
@@ -116,7 +171,9 @@ chmod -R a+rX,u+w,go-w %buildroot
 %files
 %defattr(-,root,root)
 %_bindir/*
-%exclude %_infodir/dir
+
+%if %{with doc}
+%files doc
 %_infodir/*
 %dir %_datadir/%main_name
 %_datadir/%main_name/*
@@ -124,3 +181,7 @@ chmod -R a+rX,u+w,go-w %buildroot
 %my_docdir/sample.*
 %my_docdir/scheme.*
 %my_docdir/whatsnew.txt
+%my_docdir/*.html
+%my_docdir/*.txt
+%my_docdir/*.pdf
+%endif

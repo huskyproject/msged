@@ -54,67 +54,67 @@ maps: 	makemaps$(EXE) readmaps.437 readmaps.850 readmaps.866 readmaps.koi readma
 readmaps.437:
 	-echo "DO NOT WORRY ABOUT WARNINGS ABOUT no matching charset!"
 	./makemaps$(EXE) CP437 $(allmaps)
-	-$(RM) writmaps.437
-	-$(RM) readmaps.437
+	-$(RM) $(RMOPT) writmaps.437
+	-$(RM) $(RMOPT) readmaps.437
 	$(MV) writmaps.dat writmaps.437
 	$(MV) readmaps.dat readmaps.437
 
 readmaps.850:
 	./makemaps$(EXE) CP850 $(allmaps)
-	-$(RM) writmaps.850
-	-$(RM) readmaps.850
+	-$(RM) $(RMOPT) writmaps.850
+	-$(RM) $(RMOPT) readmaps.850
 	$(MV) writmaps.dat writmaps.850
 	$(MV) readmaps.dat readmaps.850
 
 readmaps.865:
 	./makemaps$(EXE) CP865 $(allmaps)
-	-$(RM) writmaps.865
-	-$(RM) readmaps.865
+	-$(RM) $(RMOPT) writmaps.865
+	-$(RM) $(RMOPT) readmaps.865
 	$(MV) writmaps.dat writmaps.865
 	$(MV) readmaps.dat readmaps.865
 
 readmaps.866:
 	./makemaps$(EXE) CP866 $(allmaps)
-	-$(RM) writmaps.866
-	-$(RM) readmaps.866
+	-$(RM) $(RMOPT) writmaps.866
+	-$(RM) $(RMOPT) readmaps.866
 	$(MV) writmaps.dat writmaps.866
 	$(MV) readmaps.dat readmaps.866
 
 readmaps.koi:
 	./makemaps$(EXE) KOI8-R $(allmaps)
-	-$(RM) writmaps.koi
-	-$(RM) readmaps.koi
+	-$(RM) $(RMOPT) writmaps.koi
+	-$(RM) $(RMOPT) readmaps.koi
 	$(MV) writmaps.dat writmaps.koi
 	$(MV) readmaps.dat readmaps.koi
 
 readmaps.ukr:
 	./makemaps$(EXE) CP1125 $(allmaps)
-	-$(RM) writmaps.ukr
-	-$(RM) readmaps.ukr
+	-$(RM) $(RMOPT) writmaps.ukr
+	-$(RM) $(RMOPT) readmaps.ukr
 	$(MV) writmaps.dat writmaps.ukr
 	$(MV) readmaps.dat readmaps.ukr
 
 readmaps.is1:
 	./makemaps$(EXE) LATIN-1 $(allmaps)
-	-$(RM) writmaps.is1
-	-$(RM) readmaps.is1
+	-$(RM) $(RMOPT) writmaps.is1
+	-$(RM) $(RMOPT) readmaps.is1
 	$(MV) writmaps.dat writmaps.is1
 	$(MV) readmaps.dat readmaps.is1
 
 readmaps.is5:
 	./makemaps$(EXE) ISO-5 $(allmaps)
-	-$(RM) writmaps.is5
-	-$(RM) readmaps.is5
+	-$(RM) $(RMOPT) writmaps.is5
+	-$(RM) $(RMOPT) readmaps.is5
 	$(MV) writmaps.dat writmaps.is5
 	$(MV) readmaps.dat readmaps.is5
 
 clean:
-	-$(RM) makemaps$(OBJ)
+	-$(RM) $(RMOPT) makemaps$(OBJ)
 
 distclean: clean
-	-$(RM) readmaps.*
-	-$(RM) writmaps.*
-	-$(RM) makemaps$(EXE)
+	-$(RM) $(RMOPT) readmaps.*
+	-$(RM) $(RMOPT) writmaps.*
+	-$(RM) $(RMOPT) makemaps$(EXE)
 
 install: maps
 	-$(MKDIR) $(MKDIROPT) $(DESTDIR)$(CFGDIR)
@@ -153,22 +153,22 @@ else
 endif
 
 uninstall:
-	-$(RM) $(DESTDIR)$(CFGDIR)$(DIRSEP)msged$(DIRSEP)readmaps.437
-	-$(RM) $(DESTDIR)$(CFGDIR)$(DIRSEP)msged$(DIRSEP)readmaps.850
-	-$(RM) $(DESTDIR)$(CFGDIR)$(DIRSEP)msged$(DIRSEP)readmaps.865
-	-$(RM) $(DESTDIR)$(CFGDIR)$(DIRSEP)msged$(DIRSEP)readmaps.866
-	-$(RM) $(DESTDIR)$(CFGDIR)$(DIRSEP)msged$(DIRSEP)readmaps.koi
-	-$(RM) $(DESTDIR)$(CFGDIR)$(DIRSEP)msged$(DIRSEP)readmaps.is1
-	-$(RM) $(DESTDIR)$(CFGDIR)$(DIRSEP)msged$(DIRSEP)readmaps.is5
-	-$(RM) $(DESTDIR)$(CFGDIR)$(DIRSEP)msged$(DIRSEP)readmaps.ukr
-	-$(RM) $(DESTDIR)$(CFGDIR)$(DIRSEP)msged$(DIRSEP)writmaps.437
-	-$(RM) $(DESTDIR)$(CFGDIR)$(DIRSEP)msged$(DIRSEP)writmaps.850
-	-$(RM) $(DESTDIR)$(CFGDIR)$(DIRSEP)msged$(DIRSEP)writmaps.865
-	-$(RM) $(DESTDIR)$(CFGDIR)$(DIRSEP)msged$(DIRSEP)writmaps.866
-	-$(RM) $(DESTDIR)$(CFGDIR)$(DIRSEP)msged$(DIRSEP)writmaps.koi
-	-$(RM) $(DESTDIR)$(CFGDIR)$(DIRSEP)msged$(DIRSEP)writmaps.is1
-	-$(RM) $(DESTDIR)$(CFGDIR)$(DIRSEP)msged$(DIRSEP)writmaps.is5
-	-$(RM) $(DESTDIR)$(CFGDIR)$(DIRSEP)msged$(DIRSEP)writmaps.ukr
-	-$(RM) $(DESTDIR)$(CFGDIR)$(DIRSEP)msged$(DIRSEP)readmaps.dat
-	-$(RM) $(DESTDIR)$(CFGDIR)$(DIRSEP)msged$(DIRSEP)writmaps.dat
+	-$(RM) $(RMOPT) $(DESTDIR)$(CFGDIR)$(DIRSEP)msged$(DIRSEP)readmaps.437
+	-$(RM) $(RMOPT) $(DESTDIR)$(CFGDIR)$(DIRSEP)msged$(DIRSEP)readmaps.850
+	-$(RM) $(RMOPT) $(DESTDIR)$(CFGDIR)$(DIRSEP)msged$(DIRSEP)readmaps.865
+	-$(RM) $(RMOPT) $(DESTDIR)$(CFGDIR)$(DIRSEP)msged$(DIRSEP)readmaps.866
+	-$(RM) $(RMOPT) $(DESTDIR)$(CFGDIR)$(DIRSEP)msged$(DIRSEP)readmaps.koi
+	-$(RM) $(RMOPT) $(DESTDIR)$(CFGDIR)$(DIRSEP)msged$(DIRSEP)readmaps.is1
+	-$(RM) $(RMOPT) $(DESTDIR)$(CFGDIR)$(DIRSEP)msged$(DIRSEP)readmaps.is5
+	-$(RM) $(RMOPT) $(DESTDIR)$(CFGDIR)$(DIRSEP)msged$(DIRSEP)readmaps.ukr
+	-$(RM) $(RMOPT) $(DESTDIR)$(CFGDIR)$(DIRSEP)msged$(DIRSEP)writmaps.437
+	-$(RM) $(RMOPT) $(DESTDIR)$(CFGDIR)$(DIRSEP)msged$(DIRSEP)writmaps.850
+	-$(RM) $(RMOPT) $(DESTDIR)$(CFGDIR)$(DIRSEP)msged$(DIRSEP)writmaps.865
+	-$(RM) $(RMOPT) $(DESTDIR)$(CFGDIR)$(DIRSEP)msged$(DIRSEP)writmaps.866
+	-$(RM) $(RMOPT) $(DESTDIR)$(CFGDIR)$(DIRSEP)msged$(DIRSEP)writmaps.koi
+	-$(RM) $(RMOPT) $(DESTDIR)$(CFGDIR)$(DIRSEP)msged$(DIRSEP)writmaps.is1
+	-$(RM) $(RMOPT) $(DESTDIR)$(CFGDIR)$(DIRSEP)msged$(DIRSEP)writmaps.is5
+	-$(RM) $(RMOPT) $(DESTDIR)$(CFGDIR)$(DIRSEP)msged$(DIRSEP)writmaps.ukr
+	-$(RM) $(RMOPT) $(DESTDIR)$(CFGDIR)$(DIRSEP)msged$(DIRSEP)readmaps.dat
+	-$(RM) $(RMOPT) $(DESTDIR)$(CFGDIR)$(DIRSEP)msged$(DIRSEP)writmaps.dat
 
