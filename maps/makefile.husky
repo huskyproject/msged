@@ -142,7 +142,7 @@ ifdef RPM_BUILD_ROOT
 	$(LN) $(LNOPT) readmaps.koi readmaps.dat ;\
 	$(LN) $(LNOPT) writmaps.koi writmaps.dat
 else
-	cd $(DESTDIR)$(CFGDIR) ;\
+	cd $(DESTDIR)$(CFGDIR)$(DIRSEP)msged ;\
 	$(LN) $(LNOPT) readmaps.is1 readmaps.dat ;\
 	$(LN) $(LNOPT) writmaps.is1 writmaps.dat
 endif
