@@ -12,9 +12,6 @@
 @c %**end of header
 
 @iftex
-@parindent=0pt
-@end iftex
-@iftex
 @afourpaper
 @end iftex
 
@@ -27,10 +24,12 @@
 @c{empty page to get the page numbering right}
 @end titlepage
 
+@ifinfo
 @dircategory Fidonet Software
 @direntry
-* Msged: (msged).               Msged is the message reader and editor.
+* Msged: (msged).           Msged is a Fidonet message reader and editor.
 @end direntry
+@end ifinfo
 
 @node Top
 @top @value{MSGED}
@@ -63,7 +62,7 @@ initially written by Jim Nutt and thereafter maintained by numerous people
 is being developed by Tobias Ernst. You can reach me at 2:2476/418 or via
 e-mail at tobi@@bland.fido.de.
 
-@value{MSGED} tries to support a vast number ooperating system platforms by
+@value{MSGED} tries to support a vast number operating system platforms by
 employing portable software design techniques. It is my policy to release
 executables and source code at the same time for all supported platforms,
 among them OS/2, Unix (Linux and FreeBSD as well as commercial Unix systems),
