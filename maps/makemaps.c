@@ -31,9 +31,10 @@ typedef struct _lookuptable
 
 typedef struct _readwritemap
 {
-    char           charset_name[9];
-    int            n_tables;
     LOOKUPTABLE   *tables;
+    int            n_tables;
+    char           charset_name[9];
+    char           filename[13];
 } READWRITEMAPS;
 
 
@@ -129,18 +130,19 @@ void init(char *charset_name)
 void usage(void)
 {
     printf ("Usage:\n\n");
-    printf ("        MAKEMAPS <charset-name> <chs-file> ...\n\n");
+    printf ("        MAKEMAPS <charset-name> <filename-ext> <chs-file> ...\n\n");
     printf ("Where:\n\n");
     printf ("        <charset-name> is the name of the charset this\n");
     printf ("                       mapping file is for.\n");
+    printf ("        <filename-ext> is the output filename extension.\n");
     printf ("        <chs-file>     is the name of a source file in\n");
     printf ("                       .chs format defining a translation\n");
     printf ("                       table. This parameter can and\n");
     printf ("                       should be repeated.\n\n");
     printf ("Example:\n\n");
-    printf ("         MAKEMAPS IBMPC IBM_ISO.CHS ISO_IBM.CHS IBM_ASC.CHS ASC_IBM.CHS\n\n");
+    printf ("         MAKEMAPS CP437 437 IBM_ISO.CHS ISO_IBM.CHS IBM_ASC.CHS ASC_IBM.CHS\n\n");
     printf ("On a UNIX-like shell with shell expansions, you can simply use:\n\n");
-    printf ("         ./makemaps LATIN-1 *.CHS *.chs\n");
+    printf ("         ./makemaps LATIN-1 is1 *.CHS *.chs\n");
 }
 
 
@@ -373,14 +375,14 @@ int process(char *filename)
                 if (!strcmp(ltable.from_charset, writmaps.charset_name))
                 {
                     maps = &writmaps;
-                    printf ("%s: Using for WRITMAPS.DAT.\n", filename);
+                    printf ("%s: Using for %s.\n", filename, writmaps.filename);
                 }
 		else
                 if ((!strcmp(ltable.to_charset, readmaps.charset_name)) ||
                    (!strcmp(ltable.to_charset, "ASCII")))
                 {
                     maps = &readmaps; /* read */
-                    printf ("%s: Using for READMAPS.DAT.\n", filename);
+                    printf ("%s: Using for %s.\n", filename, readmaps.filename);
                 }
                 else
                 {
@@ -528,19 +530,19 @@ int sort_writ(const void *p1, const void *p2)
 
 int save(void)
 {
-    FILE *fr = fopen("readmaps.dat","wb");
-    FILE *fw = fopen("writmaps.dat","wb");
+    FILE *fr = fopen(readmaps.filename,"wb");
+    FILE *fw = fopen(writmaps.filename,"wb");
     unsigned char header[12];
     int i;
 
     if (fr == NULL)
     {
-        fprintf (stderr, "Cannot write readmaps.dat.\n");
+        fprintf (stderr, "Cannot write %s.\n", readmaps.filename);
         goto erro;
     }
     if (fw == NULL)
     {
-        fprintf (stderr, "Cannot write writmaps.dat.\n");
+        fprintf (stderr, "Cannot write %s.\n", writmaps.filename);
         goto erro;
     }
 
@@ -596,8 +598,8 @@ erro:
             fclose(fr);
         }
     }
-    unlink("readmaps.dat");
-    unlink("writmaps.dat");
+    unlink(readmaps.filename);
+    unlink(writmaps.filename);
     return 0;
 }
 
@@ -605,7 +607,7 @@ int main(int argc, char **argv)
 {
     int i;
 
-    if (argc < 3)
+    if (argc < 4)
     {
         usage(); return 8;
     }
@@ -615,9 +617,19 @@ int main(int argc, char **argv)
                  "Error: Character set name is longer than 8 characters.\n");
         return 8;
     }
+    if (strlen(argv[2]) > 3)
+    {
+        fprintf (stderr,
+                 "Error: filename extension is longer than 3 characters.\n");
+        return 8;
+    }
 
     init(argv[1]);
-    for (i = 2; i < argc; i++)
+    strcpy(readmaps.filename, "readmaps.");
+    strcpy(writmaps.filename, "writmaps.");
+    strcpy(readmaps.filename + 9, argv[2]);
+    strcpy(writmaps.filename + 9, argv[2]);
+    for (i = 3; i < argc; i++)
     {
         if (!process(argv[i]))
         {

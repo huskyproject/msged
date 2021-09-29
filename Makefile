@@ -1,203 +1,225 @@
-# Makefile for the Husky build environment
+# msged/Makefile
+#
+# This file is part of msged, part of the Husky fidonet software project
+# Use with GNU make v.3.82 or later
+# Requires: husky enviroment
+#
 
-# include Husky-Makefile-Config
-ifeq ($(DEBIAN), 1)
-include debian/huskymak.cfg
-else ifdef RPM_BUILD_ROOT
-# RPM build requires all files to be in the source directory
-include huskymak.cfg
-else
-include ../huskymak.cfg
-endif
+# Version
+msged_g1:=$(GREP) -Po 'define\s+VERNUM\s+\"\K\d+\.\d+'
+msged_g2:=$(GREP) -Po 'define\s+VERPATCH\s+\"\K\.\d+'
+msged_g3:=$(GREP) -Po 'char\s+cvs_date\[\]\s*=\s*"\K\d+-\d+-\d+'
+msged_VERNUM   := $(shell $(msged_g1) $(msged_ROOTDIR)$(msged_H_DIR)version.h)
+msged_VERPATCH := $(shell $(msged_g2) $(msged_ROOTDIR)$(msged_H_DIR)version.h)
+msged_cvsdate  := $(shell $(msged_g3) $(msged_ROOTDIR)cvsdate.h)
+msged_reldate  := $(subst -,,$(msged_cvsdate))
+ 
+msged_VER      := $(msged_VERNUM).$(msged_reldate)
 
-ifeq ($(DEBUG), 1)
-  CFLAGS=$(WARNFLAGS) $(DEBCFLAGS) -I$(INCDIR)
-  LFLAGS=$(DEBLFLAGS)
-else
-  CFLAGS=$(WARNFLAGS) $(OPTCFLAGS) -I$(INCDIR)
-  LFLAGS=$(OPTLFLAGS)
-endif
+msged_LIBS     := $(fidoconf_TARGET_BLD) $(smapi_TARGET_BLD) $(huskylib_TARGET_BLD)
+msged_LIBS_DST := $(fidoconf_TARGET_DST) $(smapi_TARGET_DST) $(huskylib_TARGET_DST)
 
 ifndef MSGEDCFG
   MSGEDCFG=\"$(CFGDIR)/msged.cfg\"
 endif
 
-# adapt to new huskymak.cfg
+msged_DOCDIR_DST = $(DOCDIR_DST)msged-$(msged_VER)$(DIRSEP)
 
-ifeq ("$(OBJ)", "")
-  OBJ=$(_OBJ)
-endif
-ifeq ("$(EXE)", "")
-  EXE=$(_EXE)
-endif
+msged_CDEFS := $(CDEFS) -I$(fidoconf_ROOTDIR) \
+                        -I$(smapi_ROOTDIR) \
+                        -I$(huskylib_ROOTDIR) \
+                        -I$(msged_ROOTDIR)$(msged_H_DIR)
 
-CDEFS=-D$(OSTYPE) -DUSE_MSGAPI -DUSE_FIDOCONFIG -DUNAME=\"$(UNAME)\" \
-      $(ADDCDEFS) -DREADMAPSDAT=\"$(CFGDIR)/msged/readmaps.dat\" \
-      -DWRITMAPSDAT=\"$(CFGDIR)/msged/writmaps.dat\" \
-      -DDEFAULT_CONFIG_FILE=$(MSGEDCFG)
+msged_CDEFS+=-DUSE_MSGAPI -DUSE_FIDOCONFIG -DUNAME=\"$(UNAME)\" \
+             -DREADMAPSDAT=\"$(CFGDIR)$(DIRSEP)msged$(DIRSEP)readmaps.dat\" \
+             -DWRITMAPSDAT=\"$(CFGDIR)$(DIRSEP)msged$(DIRSEP)writmaps.dat\" \
+             -DDEFAULT_CONFIG_FILE=$(MSGEDCFG)
 
-ifeq ($(SHORTNAME), 1)
-  LIBS= -L$(LIBDIR) -lfidoconf -lsmapi -lhusky
-else
-  LIBS= -L$(LIBDIR) -lfidoconfig -lsmapi -lhusky
-endif
+msged_SRC := $(wildcard $(msged_SRCDIR)*$(_C))
 
-TARGET=	msged$(EXE)
 
 ifeq ($(OSTYPE), UNIX)
-  osobjs=	ansi$(OBJ) \
-		readtc$(OBJ)
-  ifneq ("$(TERMCAP)", "")
-    OSLIBS=-l$(TERMCAP)
-  endif
+    ifneq ("$(TERMCAP)", "")
+        msged_OSLIBS=-l$(TERMCAP)
+    endif
+    # remove what belongs to OS2
+    msged_SRC := $(msged_SRC:os2scr$(_C)=)
+    msged_SRC := $(msged_SRC:malloc16$(_C)=)
+    # remove what belongs to WINNT
+    msged_SRC := $(msged_SRC:winntscr$(_C)=)
 endif
 ifeq ($(OSTYPE), OS2)
-  osobjs=	os2scr$(OBJ) \
-		malloc16$(OBJ)
+    # remove what belongs to UNIX
+    msged_SRC := $(msged_SRC:ansi$(_C)=)
+    msged_SRC := $(msged_SRC:readtc$(_C)=)
+    # remove what belongs to  WINNT
+    msged_SRC := $(msged_SRC:winntscr$(_C)=)
 endif
 ifeq ($(OSTYPE), WINNT)
-  osobjs=	winntscr$(OBJ)
+    # remove what belongs to UNIX
+    msged_SRC := $(msged_SRC:ansi$(_C)=)
+    msged_SRC := $(msged_SRC:readtc$(_C)=)
+    # remove what belongs to OS2
+    msged_SRC := $(msged_SRC:os2scr$(_C)=)
+    msged_SRC := $(msged_SRC:malloc16$(_C)=)
 endif
 ifeq ($(OSTYPE), Cygwin)
-  osobjs= ansi$(OBJ) readtc$(OBJ)
-    OSLIBS=-ltermcap
+    ifneq ("$(TERMCAP)", )
+        msged_OSLIBS=-l$(TERMCAP)
+    endif
+    # remove what belongs to OS2
+    msged_SRC := $(msged_SRC:os2scr$(_C)=)
+    msged_SRC := $(msged_SRC:malloc16$(_C)=)
+    # remove what belongs to WINNT
+    msged_SRC := $(msged_SRC:winntscr$(_C)=)
 endif
+ifneq ($(OSTYPE), MSDOS)
+    msged_SRC := $(msged_SRC:dosasm$(_C)=)
+    msged_SRC := $(msged_SRC:dosmisc$(_C)=)
+endif
+# The source files to exclude
+msged_excl := ibmscrn$(_C) mouse4$(_C) pacific$(_C) rfind1st$(_C) sasc$(_C) \
+              vio$(_C)
+msged_excl := $(addprefix $(msged_SRCDIR),$(msged_excl))
+msged_SRC := $(filter-out $(msged_excl),$(msged_SRC))
 
-objs=   addr$(OBJ)     \
-	areas$(OBJ)    \
-	bmg$(OBJ)      \
-	charset$(OBJ)  \
-	config$(OBJ)   \
-	control$(OBJ)  \
-	curses$(OBJ)   \
-	date$(OBJ)     \
-	dialogs$(OBJ)  \
-	dirute$(OBJ)   \
-	dlgbox$(OBJ)   \
-	dlist$(OBJ)    \
-	echotoss$(OBJ) \
-	environ$(OBJ)  \
-	fconf$(OBJ)    \
-	fecfg145$(OBJ) \
-	fido$(OBJ)     \
-	filedlg$(OBJ)  \
-	flags$(OBJ)    \
-	freq$(OBJ)     \
-	gestr120$(OBJ) \
-	getopts$(OBJ)  \
-	group$(OBJ)    \
-	help$(OBJ)     \
-	helpcmp$(OBJ)  \
-	helpinfo$(OBJ) \
-	init$(OBJ)     \
-	keycode$(OBJ)  \
-	list$(OBJ)     \
-	maintmsg$(OBJ) \
-	makemsgn$(OBJ) \
-	memextra$(OBJ) \
-	menu$(OBJ)     \
-	misc$(OBJ)     \
-	mnu$(OBJ)      \
-	msg$(OBJ)      \
-	msged$(OBJ)    \
-	mxbt$(OBJ)     \
-	normalc$(OBJ)  \
-	nshow$(OBJ)    \
-	quick$(OBJ)    \
-	quote$(OBJ)    \
-	readmail$(OBJ) \
-	screen$(OBJ)   \
-	strextra$(OBJ) \
-	system$(OBJ)   \
-	template$(OBJ) \
-	textfile$(OBJ) \
-	timezone$(OBJ) \
-	userlist$(OBJ) \
-	vsev$(OBJ)     \
-	vsevops$(OBJ)  \
-	win$(OBJ)      \
-	wrap$(OBJ)
+msged_DEPS := $(addprefix $(msged_DEPDIR),$(notdir $(msged_SRC:$(_C)=$(_DEP))))
+
+# Exclude the source of a separate application
+msged_SRC := $(msged_SRC:testcons$(_C)=)
+msged_OBJS := $(addprefix $(msged_OBJDIR),$(notdir $(msged_SRC:$(_C)=$(_OBJ))))
+
+msged_TARGET     = msged$(_EXE)
+msged_TARGET_BLD = $(msged_BUILDDIR)$(msged_TARGET)
+msged_TARGET_DST = $(BINDIR_DST)$(msged_TARGET)
 
 
-ifeq ($(OSTYPE), UNIX)
-   all: $(TARGET) testcons do-maps msghelp.dat
+.PHONY: msged_all msged_install msged_clean msged_distclean msged_uninstall \
+        build_maps install_maps clean_maps distclean_maps uninstall_maps \
+        msged_depend msged_doc msged_doc_install msged_doc_uninstall \
+        msged_rmdir_DEP msged_rm_DEPS msged_clean_OBJ msged_main_distclean \
+        uninstall_msghelp uninstall_msged_DOCDIR_DST
+
+ifeq ($(DYNLIBS), 1)
+    ifeq ($(OSTYPE), UNIX)
+        msged_all: $(msged_TARGET_BLD) $(msged_BUILDDIR)testcons$(_EXE) msged_doc ;
+    else
+        msged_all: $(msged_TARGET_BLD) msged_doc ;
+    endif
 else
-   all: $(TARGET) do-maps msghelp.dat
-
+    ifeq ($(OSTYPE), UNIX)
+        msged_all: $(msged_BUILDDIR)msghelp.dat $(msged_BUILDDIR)testcons$(_EXE) \
+                   build_maps msged_doc ;
+    else
+        msged_all: $(msged_BUILDDIR)msghelp.dat build_maps msged_doc ;
+    endif
 endif
 
-do-maps:
-	(cd maps && $(MAKE) -f makefile.husky)
-	(cd doc && cd manual && $(MAKE) -f makefile.husky)
+ifneq ($(MAKECMDGOALS), depend)
+    include $(msged_MAPDIR)makefile.husky
+    include $(msged_DOCDIR)makefile.husky
+ifneq ($(MAKECMDGOALS), distclean)
+ifneq ($(MAKECMDGOALS), uninstall)
+    include $(msged_DEPS)
+endif
+endif
+endif
 
+ifneq ($(DYNLIBS), 1)
+$(msged_BUILDDIR)msghelp.dat: $(msged_SRCDIR)msghelp.src $(msged_TARGET_BLD)
+	$(msged_TARGET_BLD) -hc $(msged_SRCDIR)msghelp.src $@
+endif
 
-%$(OBJ): %.c
-	$(CC) $(CFLAGS) $(CDEFS) -c $*.c
+# Build application
+$(msged_TARGET_BLD): $(msged_OBJS) $(msged_LIBS) | do_not_run_make_as_root
+	$(CC) $(LFLAGS) $(EXENAMEFLAG) $@ $^ $(msged_OSLIBS)
 
-$(TARGET): $(objs) $(osobjs)
-	$(CC) $(LFLAGS) -o $(TARGET) $(objs) $(osobjs) $(LIBS) $(OSLIBS)
+# Compile .c files
+$(msged_OBJS): $(msged_OBJDIR)%$(_OBJ): $(msged_SRCDIR)%$(_C) | $(msged_OBJDIR)
+	$(CC) $(CFLAGS) $(msged_CDEFS) $(OBJNAMEFLAG) $(msged_OBJDIR)$*$(_OBJ) $(msged_SRCDIR)$*$(_C)
 
+$(msged_OBJDIR): | $(msged_BUILDDIR) do_not_run_make_as_root
+	[ -d $@ ] || $(MKDIR) $(MKDIROPT) $@
+
+# testcons
 ifeq ($(OSTYPE), UNIX)
-testcons: testcons$(OBJ)
-	$(CC) $(LFLAGS) -o testcons$(EXE) testcons$(OBJ) $(LIBS) $(OSLIBS)
+$(msged_BUILDDIR)testcons$(_EXE): $(msged_OBJDIR)testcons$(_OBJ) \
+    $(msged_LIBS) | do_not_run_make_as_root
+	$(CC) $(LFLAGS) $(EXENAMEFLAG) $@ $^ $(msged_OSLIBS)
+
+$(msged_OBJDIR)testcons$(_OBJ): $(msged_SRCDIR)testcons$(_C) | $(msged_OBJDIR)
+	$(CC) $(CFLAGS) $(msged_CDEFS) $(OBJNAMEFLAG) $@ $<
 endif
 
-msghelp.dat: msghelp.src
-	.$(DIRSEP)$(TARGET) -hc msghelp.src msghelp.dat
 
-clean:
-	-$(RM) $(RMOPT) *$(OBJ)
-	-$(RM) $(RMOPT) *~
-	(cd maps && $(MAKE) -f makefile.husky clean)
-	(cd doc && cd manual && $(MAKE) -f makefile.husky clean)
+# Install
+msged_install: $(msged_TARGET_DST) $(msged_DOCDIR_DST)msghelp.dat install_maps \
+               msged_doc_install ;
 
-distclean: clean
-	-$(RM) $(RMOPT) $(TARGET)
-	-$(RM) $(RMOPT) msghelp.dat
-	-$(RM) $(RMOPT) testcons$(EXE)
-	(cd maps && $(MAKE) -f makefile.husky distclean)
-	(cd doc && cd manual && $(MAKE) -f makefile.husky distclean)
+$(msged_TARGET_DST): $(msged_TARGET_BLD) | $(DESTDIR)$(BINDIR)
+	$(INSTALL) $(IBOPT) $< $(DESTDIR)$(BINDIR); \
+	$(TOUCH) "$@"
 
-ifeq ($(OSTYPE), UNIX)
-
-ifdef RPM_BUILD_ROOT
-install: $(TARGET) msghelp.dat
-	-$(MKDIR) $(MKDIROPT) $(DESTDIR)$(BINDIR)
-	$(INSTALL) $(IBOPT) $(TARGET) $(DESTDIR)$(BINDIR)
-	-$(MKDIR) $(MKDIROPT) $(DESTDIR)$(CFGDIR)
-	-$(MKDIR) $(MKDIROPT) $(DESTDIR)$(CFGDIR)/msged
-	$(INSTALL) $(IIOPT) msghelp.dat $(DESTDIR)$(CFGDIR)/msged
-	(cd maps && $(MAKE) -f makefile.husky install)
-	(cd doc && $(MAKE) -f makefile.husky install)
-	(cd doc && cd manual && $(MAKE) -f makefile.husky install)
+ifeq ($(DYNLIBS), 1)
+    $(msged_DOCDIR_DST)msghelp.dat: $(msged_SRCDIR)msghelp.src \
+        $(msged_TARGET_BLD) $(msged_LIBS_DST) | $(msged_DOCDIR_DST)
+			$(msged_TARGET_BLD) -hc $(msged_SRCDIR)msghelp.src $@; \
+			$(TOUCH) "$@"
 else
-install: $(TARGET) msghelp.dat testcons$(EXE)
-	-$(MKDIR) $(MKDIROPT) $(DESTDIR)$(BINDIR)
-	$(INSTALL) $(IBOPT) $(TARGET) $(DESTDIR)$(BINDIR)
-	-$(MKDIR) $(MKDIROPT) $(DESTDIR)$(CFGDIR)
-	$(INSTALL) $(IIOPT) msghelp.dat $(DESTDIR)$(CFGDIR)
-	(cd maps && $(MAKE) -f makefile.husky install)
-	(cd doc && cd manual && $(MAKE) -f makefile.husky install)
-	$(INSTALL) $(IBOPT) testcons$(EXE) $(DESTDIR)$(BINDIR)
+    $(msged_DOCDIR_DST)msghelp.dat: $(msged_BUILDDIR)msghelp.dat | \
+        $(msged_DOCDIR_DST)
+		$(INSTALL) $(IMOPT) $< $(msged_DOCDIR_DST); \
+		$(TOUCH) "$@"
 endif
 
-else
 
-install: $(TARGET) msghelp.dat
-	-$(MKDIR) $(MKDIROPT) $(DESTDIR)$(BINDIR)
-	$(INSTALL) $(IBOPT) $(TARGET) $(DESTDIR)$(BINDIR)
-	-$(MKDIR) $(MKDIROPT) $(DESTDIR)$(CFGDIR)
-	-$(MKDIR) $(MKDIROPT) $(DESTDIR)$(CFGDIR)/msged
-	$(INSTALL) $(IIOPT) msghelp.dat $(DESTDIR)$(CFGDIR)/msged
-	(cd maps && $(MAKE) -f makefile.husky install)
-	(cd doc && cd manual && $(MAKE) -f makefile.husky install)
+# Clean
+msged_clean: msged_clean_OBJ
+	-[ -d "$(msged_OBJDIR)" ] && $(RMDIR) $(msged_OBJDIR) || true
 
-endif
+msged_clean_OBJ: clean_maps msged_doc_clean
+	-$(RM) $(RMOPT) $(msged_OBJDIR)*
 
-uninstall:
-	-$(RM) $(RMOPT) $(DESTDIR)$(BINDIR)$(DIRSEP)$(TARGET)
-	-$(RM) $(RMOPT) $(DESTDIR)$(BINDIR)$(DIRSEP)testcons$(EXE) $(BINDIR)
-	-$(RM) $(RMOPT) $(DESTDIR)$(CFGDIR)$(DIRSEP)msghelp.dat
-	(cd maps && $(MAKE) -f makefile.husky uninstall)
-	(cd doc && cd manual && $(MAKE) -f makefile.husky uninstall)
 
+# Distclean
+msged_distclean: distclean_maps msged_doc_distclean msged_main_distclean msged_rmdir_DEP
+	-[ -d "$(msged_BUILDDIR)" ] && $(RMDIR) $(msged_BUILDDIR) || true
+
+msged_rmdir_DEP: msged_rm_DEPS
+	-[ -d "$(msged_DEPDIR)" ] && $(RMDIR) $(msged_DEPDIR) || true
+
+msged_rm_DEPS:
+	-$(RM) $(RMOPT) $(msged_DEPDIR)*
+
+msged_main_distclean: msged_clean
+	-$(RM) $(RMOPT) $(msged_TARGET_BLD)
+	-$(RM) $(RMOPT) $(msged_BUILDDIR)testcons$(_EXE)
+	-$(RM) $(RMOPT) $(msged_BUILDDIR)msghelp.dat
+
+
+# Uninstall
+msged_uninstall: uninstall_msged_DOCDIR_DST
+	-$(RM) $(RMOPT) $(msged_TARGET_DST)
+
+uninstall_msged_DOCDIR_DST: uninstall_msghelp uninstall_maps msged_doc_uninstall
+	-[ -d "$(msged_DOCDIR_DST)" ] && $(RMDIR) $(msged_DOCDIR_DST) || true
+
+uninstall_msghelp:
+	-$(RM) $(RMOPT) $(msged_DOCDIR_DST)msghelp.dat
+
+
+# Depend
+msged_depend: $(msged_DEPS) ;
+
+# Build a dependency makefile for every source file
+$(msged_DEPS): $(msged_DEPDIR)%$(_DEP): $(msged_SRCDIR)%.c | $(msged_DEPDIR)
+	@set -e; rm -f $@; \
+	$(CC) -MM $(msged_CFLAGS) $(msged_CDEFS) $< > $@.$$$$; \
+	sed 's,\($*\)$(_OBJ)[ :]*,$(msged_OBJDIR)\1$(_OBJ) $@ : ,g' < $@.$$$$ > $@; \
+	rm -f $@.$$$$
+
+$(msged_DEPDIR): | $(msged_BUILDDIR) do_not_run_depend_as_root
+	[ -d $@ ] || $(MKDIR) $(MKDIROPT) $@
+
+$(msged_BUILDDIR):
+	[ -d $@ ] || $(MKDIR) $(MKDIROPT) $@

@@ -1,23 +1,249 @@
-ifdef RPM_BUILD_ROOT
-# RPM build requires all files to be in the source directory
-include ../huskymak.cfg
+# Makefile for the Husky build environment
+# msged/doc/makefile.husky
 
-vernum = $(shell grep -Po '\#define\s+VERNUM\s+"\K\d+\.\d+' ../version.h)
-verpatch = $(shell grep -Po '\#define\s+VERPATCH\s+"\K\.\d+' ../version.h)
-version = $(vernum)$(verpatch)
-OURDOCDIR = msged-$(version)
+msged_samples = $(wildcard $(msged_DOCDIR)sample.*)
+msged_schemes = $(wildcard $(msged_DOCDIR)scheme.*)
+msged_whatsnew = $(msged_DOCDIR)whatsnew.txt
+msged_manual_dir = $(msged_DOCDIR)manual$(DIRSEP)
+msged_samples_DST = $(addprefix $(msged_DOCDIR_DST), $(notdir $(msged_samples)))
+msged_schemes_DST = $(addprefix $(msged_DOCDIR_DST), $(notdir $(msged_schemes)))
+msged_whatsnew_DST = $(msged_DOCDIR_DST)whatsnew.txt
 
-install:
-	-$(MKDIR) $(MKDIROPT) $(DESTDIR)$(DOCDIR)
-	-$(MKDIR) $(MKDIROPT) $(DESTDIR)$(DOCDIR)$(DIRSEP)$(OURDOCDIR)
-	$(INSTALL) $(IMOPT) sample.* $(DESTDIR)$(DOCDIR)$(DIRSEP)$(OURDOCDIR)
-	$(INSTALL) $(IMOPT) scheme.* $(DESTDIR)$(DOCDIR)$(DIRSEP)$(OURDOCDIR)
-	$(INSTALL) $(IMOPT) whatsnew.txt $(DESTDIR)$(DOCDIR)$(DIRSEP)$(OURDOCDIR)
+.PHONY: msged_info msged_html msged_txt msged_dvi msged_pdf
 
-uninstall:
-	-$(RM) $(DESTDIR)$(DOCDIR)$(DIRSEP)$(OURDOCDIR)$(DIRSEP)sample.*
-	-$(RM) $(DESTDIR)$(DOCDIR)$(DIRSEP)$(OURDOCDIR)$(DIRSEP)scheme.*
-	-$(RM) $(DESTDIR)$(DOCDIR)$(DIRSEP)$(OURDOCDIR)$(DIRSEP)whatsnew.txt
-	-$(RMDIR) $(DESTDIR)$(DOCDIR)$(DIRSEP)$(OURDOCDIR)
+ifdef DOCDIR
+    msged_doc: msged_info msged_html msged_txt msged_dvi msged_pdf ;
+else
+    msged_doc: msged_info ;
+endif
 
+ifdef INFODIR
+    msged_info: $(msged_BUILDDIR)msged.info.gz
+else
+    msged_info: ;
+endif
+
+ifeq ($(HTML), 1)
+    msged_html: $(msged_BUILDDIR)msged.html
+else
+    msged_html: ;
+endif
+
+ifeq ($(TXT), 1)
+    msged_txt: $(msged_BUILDDIR)msged.txt
+else
+    msged_txt: ;
+endif
+
+ifeq ($(DVI), 1)
+    msged_dvi: $(msged_BUILDDIR)msged.dvi
+else
+    msged_dvi: ;
+endif
+
+ifeq ($(PDF), 1)
+    msged_pdf: $(msged_BUILDDIR)msged.pdf
+else
+    msged_pdf: ;
+endif
+
+msged_DOCDIR_BLD=$(msged_BUILDDIR)doc$(DIRSEP)
+msged_TEXSRC=$(msged_manual_dir)msged.texi
+msged_TEXBLD=$(msged_DOCDIR_BLD)msged.texi
+
+$(msged_BUILDDIR)msged.info.gz: $(msged_BUILDDIR)msged.info
+	gzip -c $^ > $@
+
+$(msged_BUILDDIR)msged.info:  $(msged_TEXSRC)
+	-$(MAKEINFO) $(MINOSPLIT) "$<" $(MIOUT) $@
+
+$(msged_BUILDDIR)msged.html: $(msged_TEXSRC)
+	-LC_ALL=C $(MAKEINFO) $(MIHTML) $(MINOSPLIT) "$<" $(MIOUT) "$@"
+
+$(msged_BUILDDIR)msged.txt: $(msged_TEXSRC)
+	-LC_ALL=C $(MAKEINFO) $(MIPTEXT) $(MINOSPLIT) "$<" $(MIOUT) "$@"
+
+$(msged_BUILDDIR)msged.dvi: $(msged_TEXSRC)
+	-$(TEXI2DVI) "$<"
+
+$(msged_BUILDDIR)msged.pdf: $(msged_DOCDIR_BLD)msged.pdf
+	$(LN) $(LNHOPT) "$<" $(msged_BUILDDIR)
+
+$(msged_DOCDIR_BLD)msged.pdf: $(msged_TEXBLD)
+	-cd $(msged_DOCDIR_BLD); \
+	LC_ALL=C $(MAKEINFO) $(MIPDF) $(MINOSPLIT) msged.texi $(MIOUT) msged.pdf
+
+$(msged_TEXBLD): $(msged_TEXSRC) | $(msged_DOCDIR_BLD)
+	$(LN) $(LNHOPT) $^ $(msged_DOCDIR_BLD)
+
+$(msged_DOCDIR_BLD):
+	[ -d $(msged_BUILDDIR) ] || $(MKDIR) $(MKDIROPT) $(msged_BUILDDIR)
+	[ -d "$@" ] || $(MKDIR) $(MKDIROPT) "$@"
+
+
+
+# Install
+.PHONY: msged_manual_install
+
+
+ifdef DOCDIR
+    msged_doc_install: $(msged_samples_DST) $(msged_schemes_DST) \
+                       $(msged_whatsnew_DST) msged_manual_install ;
+else
+    msged_doc_install:  msged_manual_install ;
+endif
+
+$(msged_DOCDIR_DST)sample.cfg: $(msged_DOCDIR)sample.cfg | $(msged_DOCDIR_DST)
+	$(INSTALL) $(IMOPT) $^ $| && \
+	$(TOUCH) $@
+
+$(msged_DOCDIR_DST)sample.tpl: $(msged_DOCDIR)sample.tpl | $(msged_DOCDIR_DST)
+	$(INSTALL) $(IMOPT) $^ $| && \
+	$(TOUCH) $@
+
+$(msged_DOCDIR_DST)scheme.001: $(msged_DOCDIR)scheme.001 | $(msged_DOCDIR_DST)
+	$(INSTALL) $(IMOPT) $^ $| && \
+	$(TOUCH) $@
+
+$(msged_DOCDIR_DST)scheme.002: $(msged_DOCDIR)scheme.002 | $(msged_DOCDIR_DST)
+	$(INSTALL) $(IMOPT) $^ $| && \
+	$(TOUCH) $@
+
+$(msged_DOCDIR_DST)scheme.003: $(msged_DOCDIR)scheme.003 | $(msged_DOCDIR_DST)
+	$(INSTALL) $(IMOPT) $^ $| && \
+	$(TOUCH) $@
+
+$(msged_DOCDIR_DST)scheme.004: $(msged_DOCDIR)scheme.004 | $(msged_DOCDIR_DST)
+	$(INSTALL) $(IMOPT) $^ $| && \
+	$(TOUCH) $@
+
+$(msged_whatsnew_DST): $(msged_whatsnew) | $(msged_DOCDIR_DST)
+	$(INSTALL) $(IMOPT) $^ $| && \
+	$(TOUCH) $@
+
+.PHONY: msged_install_info msged_install_html msged_install_txt \
+        msged_install_dvi msged_install_pdf
+
+ifdef DOCDIR
+# See "all_info_install" in the root Makefile
+    msged_manual_install: all_info_install msged_install_html msged_install_txt \
+                          msged_install_dvi msged_install_pdf ;
+else
+    msged_manual_install: all_info_install ;
+endif
+
+ifeq ($(HTML), 1)
+    msged_install_html: $(DOCDIR_DST)msged.html ;
+
+    $(DOCDIR_DST)msged.html: \
+    $(msged_BUILDDIR)msged.html | $(DOCDIR_DST)
+		$(INSTALL) $(IMOPT) "$<" "$|"; \
+		$(TOUCH) "$@"
+else
+    msged_install_html: ;
+endif
+
+ifeq ($(TXT), 1)
+    msged_install_txt: $(DOCDIR_DST)msged.txt ;
+
+    $(DOCDIR_DST)msged.txt: \
+    $(msged_BUILDDIR)msged.txt | $(DOCDIR_DST)
+		$(INSTALL) $(IMOPT) "$<" "$|"; \
+		$(TOUCH) "$@"
+else
+    msged_install_txt: ;
+endif
+
+ifeq ($(DVI), 1)
+    msged_install_dvi: $(DOCDIR_DST)msged.dvi ;
+
+    $(DOCDIR_DST)msged.dvi: \
+    $(msged_BUILDDIR)msged.dvi | $(DOCDIR_DST)
+		$(INSTALL) $(IMOPT) "$<" "$|"; \
+		$(TOUCH) "$@"
+else
+    msged_install_dvi: ;
+endif
+
+ifeq ($(PDF), 1)
+    msged_install_pdf: $(DOCDIR_DST)msged.pdf ;
+
+    $(DOCDIR_DST)msged.pdf: \
+    $(msged_BUILDDIR)msged.pdf | $(DOCDIR_DST)
+		$(INSTALL) $(IMOPT) "$<" "$|"; \
+		$(TOUCH) "$@"
+else
+    msged_install_pdf: ;
+endif
+
+
+# Clean
+msged_doc_clean: msged_rmdir_DOC ;
+
+msged_rmdir_DOC: msged_clean_DOC
+	-[ -d "$(msged_DOCDIR_BLD)" ] && $(RMDIR) $(msged_DOCDIR_BLD) || true
+
+msged_clean_DOC:
+	-$(RM) $(RMOPT) $(msged_DOCDIR_BLD)msged.fns
+	-$(RM) $(RMOPT) $(msged_DOCDIR_BLD)msged.aux
+	-$(RM) $(RMOPT) $(msged_DOCDIR_BLD)msged.toc
+	-$(RM) $(RMOPT) $(msged_DOCDIR_BLD)msged.cp
+	-$(RM) $(RMOPT) $(msged_DOCDIR_BLD)msged.fn
+	-$(RM) $(RMOPT) $(msged_DOCDIR_BLD)msged.vr
+	-$(RM) $(RMOPT) $(msged_DOCDIR_BLD)msged.kr
+	-$(RM) $(RMOPT) $(msged_DOCDIR_BLD)msged.ke
+	-$(RM) $(RMOPT) $(msged_DOCDIR_BLD)msged.tp
+	-$(RM) $(RMOPT) $(msged_DOCDIR_BLD)msged.kes
+	-$(RM) $(RMOPT) $(msged_DOCDIR_BLD)msged.krs
+	-$(RM) $(RMOPT) $(msged_DOCDIR_BLD)msged.ky
+	-$(RM) $(RMOPT) $(msged_DOCDIR_BLD)msged.pg
+	-$(RM) $(RMOPT) $(msged_DOCDIR_BLD)msged.cps
+	-$(RM) $(RMOPT) $(msged_DOCDIR_BLD)*.log
+	-$(RM) $(RMOPT) $(msged_DOCDIR_BLD)msged.pdf
+	-$(RM) $(RMOPT) $(msged_TEXBLD)
+
+# Distclean
+msged_doc_distclean: msged_doc_clean
+	-$(RM) $(RMOPT) $(msged_BUILDDIR)msged.dvi
+	-$(RM) $(RMOPT) $(msged_BUILDDIR)msged.inf
+	-$(RM) $(RMOPT) $(msged_BUILDDIR)msged.html
+	-$(RM) $(RMOPT) $(msged_BUILDDIR)msged.ps
+	-$(RM) $(RMOPT) $(msged_BUILDDIR)msged.doc
+	-$(RM) $(RMOPT) $(msged_BUILDDIR)msged.txt
+	-$(RM) $(RMOPT) $(msged_BUILDDIR)msged.pdf
+	-$(RM) $(RMOPT) $(msged_BUILDDIR)msged.info*
+
+
+# Uninstall
+.PHONY: msged_docs_uninstall
+
+ifdef DOCDIR
+    msged_doc_uninstall: msged_info_uninstall msged_docs_uninstall
+		-$(RM) $(RMOPT) $(msged_samples_DST)
+		-$(RM) $(RMOPT) $(msged_schemes_DST)
+		-$(RM) $(RMOPT) $(msged_whatsnew_DST)
+else
+    msged_doc_uninstall: msged_info_uninstall ;
+endif
+
+ifdef INFODIR
+# See "all_info_uninstall" in the root Makefile
+    msged_info_uninstall: all_info_uninstall
+		$(RM) $(RMOPT) $(INFODIR_DST)msged.info.gz
+else
+    msged_info_uninstall: ;
+endif
+
+msged_docs_uninstall:
+ifeq ($(HTML), 1)
+	-$(RM) $(RMOPT) $(DOCDIR_DST)msged.html
+endif
+ifeq ($(TXT), 1)
+	-$(RM) $(RMOPT) $(DOCDIR_DST)msged.txt
+endif
+ifeq ($(DVI), 1)
+	-$(RM) $(RMOPT) $(DOCDIR_DST)msged.dvi
+endif
+ifeq ($(PDF), 1)
+	-$(RM) $(RMOPT) $(DOCDIR_DST)msged.pdf
 endif
