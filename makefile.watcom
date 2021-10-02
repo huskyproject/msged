@@ -39,7 +39,7 @@ OBJS=malloc16.obj os2scr.obj
 !endif
 
 !ifdef DEBUG
-CFLAGS+=-d2
+CFLAGS+= -d2
 !endif
 
 OBJS+= addr.obj     &
