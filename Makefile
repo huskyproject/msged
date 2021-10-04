@@ -209,6 +209,7 @@ uninstall_msghelp:
 
 
 # Depend
+ifeq ($(MAKECMDGOALS),depend)
 msged_depend: $(msged_DEPS) ;
 
 # Build a dependency makefile for every source file
@@ -220,6 +221,7 @@ $(msged_DEPS): $(msged_DEPDIR)%$(_DEP): $(msged_SRCDIR)%.c | $(msged_DEPDIR)
 
 $(msged_DEPDIR): | $(msged_BUILDDIR) do_not_run_depend_as_root
 	[ -d $@ ] || $(MKDIR) $(MKDIROPT) $@
+endif
 
 $(msged_BUILDDIR):
 	[ -d $@ ] || $(MKDIR) $(MKDIROPT) $@
