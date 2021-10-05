@@ -123,7 +123,7 @@ install_maps: $(msged_DOCDIR_DST)readmaps.dat \
 check_codepage:
 	@[ -n "$(current_readmaps)" ] || echo "Unknown CODEPAGE=$(CODEPAGE)"
 	@-[ -f "$(msged_OBJDIR)codepage" ] && \
-	[ `< $(msged_OBJDIR)codepage` = "$(CODEPAGE)" ] || \
+	[ "$$(cat $(msged_OBJDIR)codepage)" = "$(CODEPAGE)" ] || \
 	echo "$(CODEPAGE)" > "$(msged_OBJDIR)codepage"
 
 $(msged_DOCDIR_DST)readmaps.dat: $(readmaps_DST) | $(msged_OBJDIR)codepage
