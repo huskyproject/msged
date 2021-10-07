@@ -109,7 +109,7 @@ endif
 $(msged_OBJDIR)makemaps$(_EXE): $(msged_OBJDIR)makemaps$(_OBJ) $(huskylib_TARGET_BLD)
 	$(CC) $(LFLAGS) $(EXENAMEFLAG) $@ $^
 
-$(msged_OBJDIR)makemaps$(_OBJ): $(msged_MAPDIR)makemaps$(_C)
+$(msged_OBJDIR)makemaps$(_OBJ): $(msged_MAPDIR)makemaps$(_C) | $(msged_OBJDIR)
 	$(CC) $(CFLAGS) $(msged_CDEFS) $(OBJNAMEFLAG) $@ $<
 
 
