@@ -3836,12 +3836,9 @@ void show_debuginfo(int macro_count)
     TTclose();
 
     printf(
-        "\n"
-        "%-30s; %s%s\n"
-        "-------------------------------------------------------------------------------\n"
-        "\n",
-        versionStr, "; Mail Reader",
+        "\n%s;%s %s\n", versionStr, " Mail Reader",
         "Compiled on " __DATE__ " at " __TIME__
+        "\n-------------------------------------------------------------------------\n"
           );
 
     printf("Screen size       : %d columns, %d rows\n", maxx, maxy);

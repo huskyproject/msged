@@ -1926,9 +1926,19 @@ int CKey(int ch)
 void show_usage(void)
 {
     printf(
-        "%-30s%s; %s\n" "-------------------------------------------------------------------------------\n" "\n" "Usage: MSGED [options]\n" "\n" "-a<areafile>            Use <areafile> instead of SQUISH.CFG.\n" "-c<configfile>          Use <configfile> instead of MSGED.CFG.\n" "-I                      Display debug information at startup, then exit.\n" "-?                      Display this help.\n" "-h                      Display this help.\n" "-hc <source> <target>   Compile help file.\n" "-hi <source>            Decompile compiled help file.\n" "-k                      Display keyboard scan codes.\n",
-        versionStr, "; Mail Reader",
-        "Compiled on " __DATE__ " at " __TIME__);
+        "\n%s;%s %s\n", versionStr, " Mail Reader",
+        "Compiled on " __DATE__ " at " __TIME__
+        "\n-------------------------------------------------------------------------\n"
+        "\n" "Usage: MSGED [options]\n" "\n"
+        "-a<areafile>            Use <areafile> instead of SQUISH.CFG.\n"
+        "-c<configfile>          Use <configfile> instead of MSGED.CFG.\n"
+        "-I                      Display debug information at startup, then exit.\n"
+        "-?                      Display this help.\n"
+        "-h                      Display this help.\n"
+        "-hc <source> <target>   Compile help file.\n"
+        "-hi <source>            Decompile compiled help file.\n"
+        "-k                      Display keyboard scan codes.\n"
+         );
 }
 
 int cmd_dbginfo  = 0;
@@ -2165,6 +2175,9 @@ int main(int argc, char * argv[])
 
     optup = getopts(argc, argv, opttable);
 
+    versionStr = GenVersionStr("msged", msged_VER_MAJOR, msged_VER_MINOR,
+                               msged_VER_PATCH, msged_VER_BRANCH, cvs_date);
+
     if(cmd_keycode || cmd_helpcmp || cmd_helpinfo || cmd_usage)
     {
         if(cmd_usage)
@@ -2201,9 +2214,6 @@ int main(int argc, char * argv[])
 #ifdef USE_MSGAPI
     MsgApiInit();
 #endif
-
-    versionStr = GenVersionStr("msged", msged_VER_MAJOR, msged_VER_MINOR,
-                               msged_VER_PATCH, msged_VER_BRANCH, cvs_date);
 
     if(*cmd_cfgfnm && *cmd_areafnm)
     {
