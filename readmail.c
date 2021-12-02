@@ -1969,7 +1969,7 @@ int writemsg(msg * m)
 
         if(!SW->usetearlines || SW->usepid || CurArea.netmail)
         {
-            sprintf(text, "\01PID: %s %s\r", PROG, VERNUM VERPATCH);
+            sprintf(text, "\01PID: %s\r", versionStr);
             curr = InsertAfter(curr, text);
         }
 
@@ -2162,7 +2162,7 @@ int writemsg(msg * m)
             td = time(NULL);
             strftime(time_str, 80, "%a %b %d %Y at %H:%M UTC", gmtime(&td));
             sprintf(text,
-                    "\01Via " PROG " " VERNUM VERPATCH " %s, %s\r",
+                    "\01Via %s %s, %s\r", versionStr,
                     show_address(&from),
                     time_str);
             curr = InsertAfter(curr, text);

@@ -169,7 +169,7 @@ void DrawHeader(void)
     if(SW->statbar)
     {
         int l;
-        sprintf(line, " %s %s %c ", PROG, VERNUM VERPATCH, SC7);
+        sprintf(line, " %s %c ", versionStr, SC7);
         l = strlen(line) - 2;
         WndPutsn(0, maxy - 1, l, cm[CM_ITXT], line);
 
@@ -471,7 +471,7 @@ void ShowMsgHeader(msg * m)
     if(SW->statbar)
     {
         int l;
-        sprintf(line, " %s %s %c ", PROG, VERNUM VERPATCH, SC7);
+        sprintf(line, " %s %c ", versionStr, SC7);
         l = strlen(line);
         WndPutsn(0, maxy - 1, l - 2, cm[CM_ITXT], line);
 
@@ -518,11 +518,11 @@ void ShowMsgHeader(msg * m)
     else
     {
         int l = strlen(line);
-        WndPutsn((strlen(PROG) + strlen(VERNUM VERPATCH) + 6), maxy - 1, l - 1, cm[CM_ITXT], line);
+        WndPutsn((strlen(versionStr) + 6), maxy - 1, l - 1, cm[CM_ITXT], line);
 
         if(l - 1 < 18)
         {
-            WndPutsn((strlen(PROG) + strlen(VERNUM VERPATCH) + 6 + (l - 1)),
+            WndPutsn((strlen(versionStr) + 6 + (l - 1)),
                      maxy - 1,
                      18 - (l - 1),
                      cm[CM_ITXT] | F_ALTERNATE,

@@ -32,6 +32,7 @@
 #include "memextra.h"
 #include "strextra.h"
 #include "areas.h"
+#include "huskylib/huskylib.h"
 #include "version.h"
 #include "specch.h"
 #include "dosmisc.h"
@@ -70,12 +71,16 @@
 #ifndef randomize
 #define randomize() srand((unsigned)time(NULL))
 #endif
+
+#include "cvsdate.h"
+
 /* prototypes */
 static void highest(void);
 static void gotomsg(unsigned long i);
 static void pm_next_area(void);
 
 /* local/global variables */
+char * versionStr     = NULL;
 int scan              = 0;          /* set scan = 1 to scan for new mail at startup */
 static int endMain    = 0;
 static int errorlevel = 0;
@@ -1123,7 +1128,7 @@ static void scan_areas(int all)
     TTgetxy(&x, &y);
     a  = SW->area;
     ga = SW->grouparea;
-    l  = strlen(PROG) + strlen(VERNUM VERPATCH);
+    l  = strlen(versionStr);
 
     if(!SW->dmore)
     {
@@ -1180,7 +1185,7 @@ static void scan_areas(int all)
             }
             else
             {
-                line[79 - strlen(PROG) - strlen(VERNUM VERPATCH) - 16] = '\0';
+                line[79 - strlen(versionStr) - 16] = '\0';
                 WndPutsn(l + 6, maxy - 1, maxx - l - 7, cm[CM_ITXT], "Scanning:");
                 WndWriteStr(l + 16, maxy - 1, cm[CM_ITXT], line);
             }
@@ -1244,8 +1249,8 @@ static void scan_areas(int all)
         int l;
         sprintf(line, "%ld of %ld %c", CurArea.current, CurArea.messages, SC7);
         l = strlen(line);
-        WndPutsn((strlen(PROG) + strlen(VERNUM VERPATCH) + 6), maxy - 1, l - 1, cm[CM_ITXT], line);
-        WndPutsn((strlen(PROG) + strlen(VERNUM VERPATCH) + 6 + l - 1), maxy - 1, 18 - (l - 1),
+        WndPutsn((strlen(versionStr) + 6), maxy - 1, l - 1, cm[CM_ITXT], line);
+        WndPutsn((strlen(versionStr) + 6 + l - 1), maxy - 1, 18 - (l - 1),
                  cm[CM_ITXT] | F_ALTERNATE, line + l - 1);
     }
 
@@ -1921,8 +1926,8 @@ int CKey(int ch)
 void show_usage(void)
 {
     printf(
-        "%-30s; %s\n" "-------------------------------------------------------------------------------\n" "\n" "Usage: MSGED [options]\n" "\n" "-a<areafile>            Use <areafile> instead of SQUISH.CFG.\n" "-c<configfile>          Use <configfile> instead of MSGED.CFG.\n" "-I                      Display debug information at startup, then exit.\n" "-?                      Display this help.\n" "-h                      Display this help.\n" "-hc <source> <target>   Compile help file.\n" "-hi <source>            Decompile compiled help file.\n" "-k                      Display keyboard scan codes.\n",
-        PROG " " VERPROJECT " " VERNUM VERPATCH VERBRANCH "; Mail Reader",
+        "%-30s%s; %s\n" "-------------------------------------------------------------------------------\n" "\n" "Usage: MSGED [options]\n" "\n" "-a<areafile>            Use <areafile> instead of SQUISH.CFG.\n" "-c<configfile>          Use <configfile> instead of MSGED.CFG.\n" "-I                      Display debug information at startup, then exit.\n" "-?                      Display this help.\n" "-h                      Display this help.\n" "-hc <source> <target>   Compile help file.\n" "-hi <source>            Decompile compiled help file.\n" "-k                      Display keyboard scan codes.\n",
+        versionStr, "; Mail Reader",
         "Compiled on " __DATE__ " at " __TIME__);
 }
 
@@ -2196,6 +2201,9 @@ int main(int argc, char * argv[])
 #ifdef USE_MSGAPI
     MsgApiInit();
 #endif
+
+    versionStr = GenVersionStr("msged", msged_VER_MAJOR, msged_VER_MINOR,
+                               msged_VER_PATCH, msged_VER_BRANCH, cvs_date);
 
     if(*cmd_cfgfnm && *cmd_areafnm)
     {

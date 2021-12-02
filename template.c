@@ -20,12 +20,10 @@
 #include "template.h"
 #include "version.h"
 #include <huskylib/huskylib.h>
-
 #if defined (UNIX)
 #include <sys/utsname.h>
 #define HAVE_UNAME
 #endif
-
 
 #define TEXTLEN 250
 
@@ -71,9 +69,8 @@ void make_tearline(char * buf)
             struct utsname uts;
             uname(&uts);
             sprintf(buf,
-                    "--- %s %s (%s/%s (%s))",
-                    PROG,
-                    VERNUM VERPATCH,
+                    "--- %s (%s/%s (%s))",
+                    versionStr,
                     uts.sysname,
                     uts.release,
                     uts.machine);
@@ -81,7 +78,7 @@ void make_tearline(char * buf)
         else
 #endif
     {
-        sprintf(buf, "--- %s %s", PROG, VERNUM VERPATCH);
+        sprintf(buf, "--- %s", versionStr);
     }
 }
 

@@ -4,13 +4,13 @@
  *  Released to the public domain.
  */
 
-#ifndef __VERSION_H__
-#define __VERSION_H__
+#ifndef __MSGED_VERSION_H__
+#define __MSGED_VERSION_H__
 
-#define VERNUM "6.3"
-#define VERPATCH ".0"
-#define VERBRANCH "-current"
-#define VERPROJECT "TE"
+#define msged_VER_MAJOR  6
+#define msged_VER_MINOR  3
+#define msged_VER_PATCH  0
+#define msged_VER_BRANCH BRANCH_CURRENT
 
 #ifdef MSDOS
 #ifndef __FLAT__
@@ -50,4 +50,14 @@
 #define PROG "Msged"
 #endif
 
-#endif // ifndef __VERSION_H__
+extern char * GenVersionStr(const char * programname,
+                              unsigned major,
+                              unsigned minor,
+                              unsigned patchlevel,
+                              unsigned branch,
+                              const char * cvsdate);
+
+extern char * versionStr;
+extern char cvs_date[];
+
+#endif // ifndef __MSGED_VERSION_H__
