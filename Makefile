@@ -5,17 +5,6 @@
 # Requires: husky enviroment
 #
 
-# Version
-msged_g1:=$(GREP) -Po 'define\s+VERNUM\s+\"\K\d+\.\d+'
-msged_g2:=$(GREP) -Po 'define\s+VERPATCH\s+\"\K\.\d+'
-msged_g3:=$(GREP) -Po 'char\s+cvs_date\[\]\s*=\s*"\K\d+-\d+-\d+'
-msged_VERNUM   := $(shell $(msged_g1) $(msged_ROOTDIR)$(msged_H_DIR)version.h)
-msged_VERPATCH := $(shell $(msged_g2) $(msged_ROOTDIR)$(msged_H_DIR)version.h)
-msged_cvsdate  := $(shell $(msged_g3) $(msged_ROOTDIR)cvsdate.h)
-msged_reldate  := $(subst -,,$(msged_cvsdate))
- 
-msged_VER      := $(msged_VERNUM).$(msged_reldate)
-
 msged_LIBS     := $(fidoconf_TARGET_BLD) $(smapi_TARGET_BLD) $(huskylib_TARGET_BLD)
 msged_LIBS_DST := $(fidoconf_TARGET_DST) $(smapi_TARGET_DST) $(huskylib_TARGET_DST)
 
