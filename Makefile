@@ -83,7 +83,7 @@ msged_TARGET_BLD = $(msged_BUILDDIR)$(msged_TARGET)
 msged_TARGET_DST = $(BINDIR_DST)$(msged_TARGET)
 
 
-.PHONY: msged_all msged_install msged_clean msged_distclean msged_uninstall \
+.PHONY: msged_build msged_install msged_clean msged_distclean msged_uninstall \
         build_maps install_maps clean_maps distclean_maps uninstall_maps \
         msged_depend msged_doc msged_doc_install msged_doc_uninstall \
         msged_rmdir_DEP msged_rm_DEPS msged_clean_OBJ msged_main_distclean \
@@ -91,16 +91,16 @@ msged_TARGET_DST = $(BINDIR_DST)$(msged_TARGET)
 
 ifeq ($(DYNLIBS), 1)
     ifeq ($(OSTYPE), UNIX)
-        msged_all: $(msged_TARGET_BLD) $(msged_BUILDDIR)testcons$(_EXE) msged_doc ;
+        msged_build: $(msged_TARGET_BLD) $(msged_BUILDDIR)testcons$(_EXE) msged_doc ;
     else
-        msged_all: $(msged_TARGET_BLD) msged_doc ;
+        msged_build: $(msged_TARGET_BLD) msged_doc ;
     endif
 else
     ifeq ($(OSTYPE), UNIX)
-        msged_all: $(msged_BUILDDIR)msghelp.dat $(msged_BUILDDIR)testcons$(_EXE) \
+        msged_build: $(msged_BUILDDIR)msghelp.dat $(msged_BUILDDIR)testcons$(_EXE) \
                    build_maps msged_doc ;
     else
-        msged_all: $(msged_BUILDDIR)msghelp.dat build_maps msged_doc ;
+        msged_build: $(msged_BUILDDIR)msghelp.dat build_maps msged_doc ;
     endif
 endif
 
