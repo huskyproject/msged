@@ -38,72 +38,28 @@ else ifeq ($(CODEPAGE), ISO-5)
     current_writmaps = writmaps.is5
 endif
 
+# In function maps_build_rules
+# $1 is a pair of codepage names delimited by an underline like CP1125_ukr
+define maps_build_rules
+    $1_newpair = $$(subst _, ,$1)
+    $1_long    = $$(firstword $$($1_newpair))
+    $1_short   = $$(lastword $$($1_newpair))
+
+    $(msged_BUILDDIR)readmaps.$$($1_short): $(msged_BUILDDIR)writmaps.$$($1_short)
+		$(MV) $(msged_MAPDIR)readmaps.$$($1_short) $$@; $(TOUCH) $$@
+
+    $(msged_BUILDDIR)writmaps.$$($1_short): $(msged_OBJDIR)makemaps$(_EXE) $$(allchs_full)
+		-echo "DO NOT WORRY ABOUT WARNINGS ABOUT no matching charset!"
+		cd $(msged_MAPDIR) && ../../$$< $$($1_long) $$($1_short) $$(allchs)
+		$(MV) $(msged_MAPDIR)writmaps.$$($1_short) $$@; $(TOUCH) $$@
+endef
+
+CP_pairs := CP437_437 CP850_850 CP865_865 CP866_866 KOI8-R_koi CP1125_ukr LATIN-1_is1 ISO-5_is5
+
 ifneq ($(DYNLIBS), 1)
     build_maps: $(readmaps_BLD) ;
 
-    $(msged_BUILDDIR)readmaps.437: $(msged_BUILDDIR)writmaps.437
-		$(MV) $(msged_MAPDIR)readmaps.437 $@; $(TOUCH) $@
-
-    $(msged_BUILDDIR)writmaps.437: $(msged_OBJDIR)makemaps$(_EXE) $(allchs_full)
-		-echo "DO NOT WORRY ABOUT WARNINGS ABOUT no matching charset!"
-		cd $(msged_MAPDIR) && ..$(DIRSEP)..$(DIRSEP)$< CP437 437 $(allchs)
-		$(MV) $(msged_MAPDIR)writmaps.437 $@; $(TOUCH) $@
-
-    $(msged_BUILDDIR)readmaps.850: $(msged_BUILDDIR)writmaps.850
-		$(MV) $(msged_MAPDIR)readmaps.850 $@; $(TOUCH) $@
-
-    $(msged_BUILDDIR)writmaps.850: $(msged_OBJDIR)makemaps$(_EXE) $(allchs_full)
-		-echo "DO NOT WORRY ABOUT WARNINGS ABOUT no matching charset!"
-		cd $(msged_MAPDIR) && ..$(DIRSEP)..$(DIRSEP)$< CP850 850 $(allchs)
-		$(MV) $(msged_MAPDIR)writmaps.850 $@; $(TOUCH) $@
-
-    $(msged_BUILDDIR)readmaps.865: $(msged_BUILDDIR)writmaps.865
-		$(MV) $(msged_MAPDIR)readmaps.865 $@; $(TOUCH) $@
-
-    $(msged_BUILDDIR)writmaps.865: $(msged_OBJDIR)makemaps$(_EXE) $(allchs_full)
-		-echo "DO NOT WORRY ABOUT WARNINGS ABOUT no matching charset!"
-		cd $(msged_MAPDIR) && ..$(DIRSEP)..$(DIRSEP)$< CP865 865 $(allchs)
-		$(MV) $(msged_MAPDIR)writmaps.865 $@; $(TOUCH) $@
-
-    $(msged_BUILDDIR)readmaps.866: $(msged_BUILDDIR)writmaps.866
-		$(MV) $(msged_MAPDIR)readmaps.866 $@; $(TOUCH) $@
-
-    $(msged_BUILDDIR)writmaps.866: $(msged_OBJDIR)makemaps$(_EXE) $(allchs_full)
-		-echo "DO NOT WORRY ABOUT WARNINGS ABOUT no matching charset!"
-		cd $(msged_MAPDIR) && ..$(DIRSEP)..$(DIRSEP)$< CP866 866 $(allchs)
-		$(MV) $(msged_MAPDIR)writmaps.866 $@; $(TOUCH) $@
-
-    $(msged_BUILDDIR)readmaps.koi: $(msged_BUILDDIR)writmaps.koi
-		$(MV) $(msged_MAPDIR)readmaps.koi $@; $(TOUCH) $@
-
-    $(msged_BUILDDIR)writmaps.koi: $(msged_OBJDIR)makemaps$(_EXE) $(allchs_full)
-		-echo "DO NOT WORRY ABOUT WARNINGS ABOUT no matching charset!"
-		cd $(msged_MAPDIR) && ..$(DIRSEP)..$(DIRSEP)$< KOI8-R koi $(allchs)
-		$(MV) $(msged_MAPDIR)writmaps.koi $@; $(TOUCH) $@
-
-    $(msged_BUILDDIR)readmaps.ukr: $(msged_BUILDDIR)writmaps.ukr
-		$(MV) $(msged_MAPDIR)readmaps.ukr $@; $(TOUCH) $@
-
-    $(msged_BUILDDIR)writmaps.ukr: $(msged_OBJDIR)makemaps$(_EXE) $(allchs_full)
-		-echo "DO NOT WORRY ABOUT WARNINGS ABOUT no matching charset!"
-		cd $(msged_MAPDIR) && ..$(DIRSEP)..$(DIRSEP)$< CP1125 ukr $(allchs)
-		$(MV) $(msged_MAPDIR)writmaps.ukr $@; $(TOUCH) $@
-
-    $(msged_BUILDDIR)readmaps.is1: $(msged_BUILDDIR)writmaps.is1
-		$(MV) $(msged_MAPDIR)readmaps.is1 $@; $(TOUCH) $@
-
-    $(msged_BUILDDIR)writmaps.is1: $(msged_OBJDIR)makemaps$(_EXE) $(allchs_full)
-		-echo "DO NOT WORRY ABOUT WARNINGS ABOUT no matching charset!"
-		cd $(msged_MAPDIR) && ..$(DIRSEP)..$(DIRSEP)$< LATIN-1 is1 $(allchs)
-		$(MV) $(msged_MAPDIR)writmaps.is1 $@; $(TOUCH) $@
-
-    $(msged_BUILDDIR)readmaps.is5: $(msged_BUILDDIR)writmaps.is5
-		$(MV) $(msged_MAPDIR)readmaps.is5 $@; $(TOUCH) $@
-
-    $(msged_BUILDDIR)writmaps.is5: $(msged_OBJDIR)makemaps$(_EXE) $(allchs_full)
-		-echo "DO NOT WORRY ABOUT WARNINGS ABOUT no matching charset!"
-		cd $(msged_MAPDIR) && ..$(DIRSEP)..$(DIRSEP)$< ISO-5 is5 $(allchs)
-		$(MV) $(msged_MAPDIR)writmaps.is5 $@; $(TOUCH) $@
+    $(foreach pair,$(CP_pairs),$(eval $(call maps_build_rules,$(pair))))
 endif
 
 $(msged_OBJDIR)makemaps$(_EXE): $(msged_OBJDIR)makemaps$(_OBJ) $(huskylib_TARGET_BLD)
@@ -136,6 +92,29 @@ $(msged_DOCDIR_DST)writmaps.dat: $(writmaps_DST) | $(msged_OBJDIR)codepage
 	$(LN) $(LNHOPT) $(current_writmaps) writmaps.dat; \
 	$(TOUCH) writmaps.dat
 
+# In function maps_install_rules
+# $1 is a pair of codepage names delimited by an underline like CP1125_ukr
+define maps_install_rules
+    $1_newpair := $$(subst _, ,$1)
+    $1_long    := $$(firstword $$($1_newpair))
+    $1_short   := $$(lastword $$($1_newpair))
+
+    $(msged_DOCDIR_DST)readmaps.$$($1_short): $(msged_DOCDIR_DST)writmaps.$$($1_short)
+		$(MV) $(msged_MAPDIR)readmaps.$$($1_short) $$@; $(TOUCH) $$@
+
+    $(msged_DOCDIR_DST)writmaps.$$($1_short): $(msged_OBJDIR)makemaps$(_EXE) \
+        $(msged_LIBS_DST) $(allchs_full)
+		-echo "DO NOT WORRY ABOUT WARNINGS ABOUT no matching charset!"
+        ifneq ($(or $(RPM_BUILD_ROOT),$(findstring $(HOME),$(PREFIX))),)
+			cd $(msged_MAPDIR) && \
+			LD_LIBRARY_PATH=$(LIBDIR_DST) ../../$$< $$($1_long) $$($1_short) $$(allchs)
+        else
+			cd $(msged_MAPDIR) && \
+			../../$$< $$($1_long) $$($1_short) $$(allchs)
+        endif
+		$(MV) $(msged_MAPDIR)writmaps.$$($1_short) $$@; $(TOUCH) $$@
+endef
+
 # We generate maps during installation if DYNLIBS=1 because
 # when this is the case, the makemaps application needs access to the
 # libraries with which it was linked. It is easier to access them in
@@ -143,133 +122,7 @@ $(msged_DOCDIR_DST)writmaps.dat: $(writmaps_DST) | $(msged_OBJDIR)codepage
 # in one directory
 #
 ifeq ($(DYNLIBS), 1)
-    $(msged_DOCDIR_DST)readmaps.437: $(msged_DOCDIR_DST)writmaps.437
-		$(MV) $(msged_MAPDIR)readmaps.437 $@; $(TOUCH) $@
-
-    $(msged_DOCDIR_DST)writmaps.437: $(msged_OBJDIR)makemaps$(_EXE) \
-        $(msged_LIBS_DST) $(allchs_full)
-		-echo "DO NOT WORRY ABOUT WARNINGS ABOUT no matching charset!"
-    ifdef RPM_BUILD_ROOT
-		cd $(msged_MAPDIR) && \
-		LD_LIBRARY_PATH=$(LIBDIR_DST) \
-		..$(DIRSEP)..$(DIRSEP)$< CP437 437 $(allchs)
-    else
-		cd $(msged_MAPDIR) && \
-		..$(DIRSEP)..$(DIRSEP)$< CP437 437 $(allchs)
-    endif
-		$(MV) $(msged_MAPDIR)writmaps.437 $@; $(TOUCH) $@
-
-    $(msged_DOCDIR_DST)readmaps.850: $(msged_DOCDIR_DST)writmaps.850
-		$(MV) $(msged_MAPDIR)readmaps.850 $@; $(TOUCH) $@
-
-    $(msged_DOCDIR_DST)writmaps.850: $(msged_OBJDIR)makemaps$(_EXE) \
-        $(msged_LIBS_DST) $(allchs_full)
-		-echo "DO NOT WORRY ABOUT WARNINGS ABOUT no matching charset!"
-    ifdef RPM_BUILD_ROOT
-		cd $(msged_MAPDIR) && \
-		LD_LIBRARY_PATH=$(LIBDIR_DST) \
-		..$(DIRSEP)..$(DIRSEP)$< CP850 850 $(allchs)
-    else
-		cd $(msged_MAPDIR) && \
-		..$(DIRSEP)..$(DIRSEP)$< CP850 850 $(allchs)
-    endif
-		$(MV) $(msged_MAPDIR)writmaps.850 $@; $(TOUCH) $@
-
-    $(msged_DOCDIR_DST)readmaps.865: $(msged_DOCDIR_DST)writmaps.865
-		$(MV) $(msged_MAPDIR)readmaps.865 $@; $(TOUCH) $@
-
-    $(msged_DOCDIR_DST)writmaps.865: $(msged_OBJDIR)makemaps$(_EXE) \
-        $(msged_LIBS_DST) $(allchs_full)
-		-echo "DO NOT WORRY ABOUT WARNINGS ABOUT no matching charset!"
-    ifdef RPM_BUILD_ROOT
-		cd $(msged_MAPDIR) && \
-		LD_LIBRARY_PATH=$(LIBDIR_DST) \
-		..$(DIRSEP)..$(DIRSEP)$< CP865 865 $(allchs)
-    else
-		cd $(msged_MAPDIR) && \
-		..$(DIRSEP)..$(DIRSEP)$< CP865 865 $(allchs)
-    endif
-		$(MV) $(msged_MAPDIR)writmaps.865 $@; $(TOUCH) $@
-
-    $(msged_DOCDIR_DST)readmaps.866: $(msged_DOCDIR_DST)writmaps.866
-		$(MV) $(msged_MAPDIR)readmaps.866 $@; $(TOUCH) $@
-
-    $(msged_DOCDIR_DST)writmaps.866: $(msged_OBJDIR)makemaps$(_EXE) \
-        $(msged_LIBS_DST) $(allchs_full)
-		-echo "DO NOT WORRY ABOUT WARNINGS ABOUT no matching charset!"
-    ifdef RPM_BUILD_ROOT
-		cd $(msged_MAPDIR) && \
-		LD_LIBRARY_PATH=$(LIBDIR_DST) \
-		..$(DIRSEP)..$(DIRSEP)$< CP866 866 $(allchs)
-    else
-		cd $(msged_MAPDIR) && \
-		..$(DIRSEP)..$(DIRSEP)$< CP866 866 $(allchs)
-    endif
-		$(MV) $(msged_MAPDIR)writmaps.866 $@; $(TOUCH) $@
-
-    $(msged_DOCDIR_DST)readmaps.koi: $(msged_DOCDIR_DST)writmaps.koi
-		$(MV) $(msged_MAPDIR)readmaps.koi $@; $(TOUCH) $@
-
-    $(msged_DOCDIR_DST)writmaps.koi: $(msged_OBJDIR)makemaps$(_EXE) \
-        $(msged_LIBS_DST) $(allchs_full)
-		-echo "DO NOT WORRY ABOUT WARNINGS ABOUT no matching charset!"
-    ifdef RPM_BUILD_ROOT
-		cd $(msged_MAPDIR) && \
-		LD_LIBRARY_PATH=$(LIBDIR_DST) \
-		..$(DIRSEP)..$(DIRSEP)$< KOI8-R koi $(allchs)
-    else
-		cd $(msged_MAPDIR) && \
-		..$(DIRSEP)..$(DIRSEP)$< KOI8-R koi $(allchs)
-    endif
-		$(MV) $(msged_MAPDIR)writmaps.koi $@; $(TOUCH) $@
-
-    $(msged_DOCDIR_DST)readmaps.ukr: $(msged_DOCDIR_DST)writmaps.ukr
-		$(MV) $(msged_MAPDIR)readmaps.ukr $@; $(TOUCH) $@
-
-    $(msged_DOCDIR_DST)writmaps.ukr: $(msged_OBJDIR)makemaps$(_EXE) \
-        $(msged_LIBS_DST) $(allchs_full)
-		-echo "DO NOT WORRY ABOUT WARNINGS ABOUT no matching charset!"
-    ifdef RPM_BUILD_ROOT
-		cd $(msged_MAPDIR) && \
-		LD_LIBRARY_PATH=$(LIBDIR_DST) \
-		..$(DIRSEP)..$(DIRSEP)$< CP1125 ukr $(allchs)
-    else
-		cd $(msged_MAPDIR) && \
-		..$(DIRSEP)..$(DIRSEP)$< CP1125 ukr $(allchs)
-    endif
-		$(MV) $(msged_MAPDIR)writmaps.ukr $@; $(TOUCH) $@
-
-    $(msged_DOCDIR_DST)readmaps.is1: $(msged_DOCDIR_DST)writmaps.is1
-		$(MV) $(msged_MAPDIR)readmaps.is1 $@; $(TOUCH) $@
-
-    $(msged_DOCDIR_DST)writmaps.is1: $(msged_OBJDIR)makemaps$(_EXE) \
-        $(msged_LIBS_DST) $(allchs_full)
-		-echo "DO NOT WORRY ABOUT WARNINGS ABOUT no matching charset!"
-    ifdef RPM_BUILD_ROOT
-		cd $(msged_MAPDIR) && \
-		LD_LIBRARY_PATH=$(LIBDIR_DST) \
-		..$(DIRSEP)..$(DIRSEP)$< LATIN-1 is1 $(allchs)
-    else
-		cd $(msged_MAPDIR) && \
-		..$(DIRSEP)..$(DIRSEP)$< LATIN-1 is1 $(allchs)
-    endif
-		$(MV) $(msged_MAPDIR)writmaps.is1 $@; $(TOUCH) $@
-
-    $(msged_DOCDIR_DST)readmaps.is5: $(msged_DOCDIR_DST)writmaps.is5
-		$(MV) $(msged_MAPDIR)readmaps.is5 $@; $(TOUCH) $@
-
-    $(msged_DOCDIR_DST)writmaps.is5: $(msged_OBJDIR)makemaps$(_EXE) \
-        $(msged_LIBS_DST) $(allchs_full)
-		-echo "DO NOT WORRY ABOUT WARNINGS ABOUT no matching charset!"
-    ifdef RPM_BUILD_ROOT
-		cd $(msged_MAPDIR) && \
-		LD_LIBRARY_PATH=$(LIBDIR_DST) \
-		..$(DIRSEP)..$(DIRSEP)$< ISO-5 is5 $(allchs)
-    else
-		cd $(msged_MAPDIR) && \
-		..$(DIRSEP)..$(DIRSEP)$< ISO-5 is5 $(allchs)
-    endif
-		$(MV) $(msged_MAPDIR)writmaps.is5 $@; $(TOUCH) $@
+    $(foreach pair,$(CP_pairs),$(eval $(call maps_install_rules,$(pair))))
 else
     $(readmaps_DST): $(msged_DOCDIR_DST)readmaps.%: $(msged_BUILDDIR)readmaps.% | $(msged_DOCDIR_DST)
 		$(INSTALL) $(IMOPT) $< $| && \
