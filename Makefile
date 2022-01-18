@@ -26,6 +26,13 @@ msged_CDEFS+=-DUSE_MSGAPI -DUSE_FIDOCONFIG -DUNAME=\"$(UNAME)\" \
 
 msged_SRC := $(wildcard $(msged_SRCDIR)*$(_C))
 
+ifeq ($(DYNLIBS), 1)
+    ifneq ($(filter Linux FreeBSD,$(OSType)),)
+        LIBENV := LD_LIBRARY_PATH=$(LIBDIR_DST)
+    else ifeq ($(OSType), Darwin)
+        LIBENV := DYLD_LIBRARY_PATH=$(LIBDIR_DST)
+    endif
+endif
 
 ifeq ($(OSTYPE), UNIX)
     ifneq ("$(TERMCAP)", "")
@@ -153,7 +160,7 @@ ifeq ($(DYNLIBS), 1)
     $(msged_DOCDIR_DST)msghelp.dat: $(msged_SRCDIR)msghelp.src \
         $(msged_TARGET_BLD) $(msged_LIBS_DST) | $(msged_DOCDIR_DST)
     ifneq ($(or $(RPM_BUILD_ROOT),$(findstring $(HOME),$(PREFIX))),)
-		LD_LIBRARY_PATH=$(LIBDIR_DST) $(msged_TARGET_BLD) -hc $(msged_SRCDIR)msghelp.src $@; \
+		$(LIBENV) $(msged_TARGET_BLD) -hc $(msged_SRCDIR)msghelp.src $@; \
 		$(TOUCH) "$@"
     else
 		$(msged_TARGET_BLD) -hc $(msged_SRCDIR)msghelp.src $@; \

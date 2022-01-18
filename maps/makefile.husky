@@ -107,7 +107,7 @@ define maps_install_rules
 		-echo "DO NOT WORRY ABOUT WARNINGS ABOUT no matching charset!"
         ifneq ($(or $(RPM_BUILD_ROOT),$(findstring $(HOME),$(PREFIX))),)
 			cd $(msged_MAPDIR) && \
-			LD_LIBRARY_PATH=$(LIBDIR_DST) ../../$$< $$($1_long) $$($1_short) $$(allchs)
+			$(LIBENV) ../../$$< $$($1_long) $$($1_short) $$(allchs)
         else
 			cd $(msged_MAPDIR) && \
 			../../$$< $$($1_long) $$($1_short) $$(allchs)
