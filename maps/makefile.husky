@@ -114,7 +114,7 @@ $(msged_OBJDIR)makemaps$(_OBJ): $(msged_MAPDIR)makemaps$(_C) | $(msged_OBJDIR)
 
 
 
-.PHONY: check_codepage do_uninstall_maps
+.PHONY: check_codepage
 
 # Install
 install_maps: $(msged_DOCDIR_DST)readmaps.dat \
@@ -300,9 +300,3 @@ distclean_maps: clean_maps
 	-$(RM) $(RMOPT) $(msged_OBJDIR)codepage
 	-$(RM) $(RMOPT) $(msged_BUILDDIR)readmaps.*
 	-$(RM) $(RMOPT) $(msged_BUILDDIR)writmaps.*
-
-
-# Uninstall
-uninstall_maps:
-	-$(RM) $(RMOPT) $(msged_DOCDIR_DST)readmaps.*
-	-$(RM) $(RMOPT) $(msged_DOCDIR_DST)writmaps.*

@@ -84,10 +84,10 @@ msged_TARGET_DST = $(BINDIR_DST)$(msged_TARGET)
 
 
 .PHONY: msged_build msged_install msged_clean msged_distclean msged_uninstall \
-        build_maps install_maps clean_maps distclean_maps uninstall_maps \
-        msged_depend msged_doc msged_doc_install msged_doc_uninstall \
+        build_maps install_maps clean_maps distclean_maps \
+        msged_depend msged_doc msged_doc_install \
         msged_rmdir_DEP msged_rm_DEPS msged_clean_OBJ msged_main_distclean \
-        uninstall_msghelp uninstall_msged_DOCDIR_DST
+        uninstall_msged_DOCDIR_DST
 
 ifeq ($(DYNLIBS), 1)
     ifeq ($(OSTYPE), UNIX)
@@ -187,14 +187,11 @@ msged_main_distclean: msged_clean
 
 
 # Uninstall
-msged_uninstall: uninstall_msged_DOCDIR_DST
+msged_uninstall: uninstall_msged_DOCDIR_DST msged_doc_uninstall
 	-$(RM) $(RMOPT) $(msged_TARGET_DST)
 
-uninstall_msged_DOCDIR_DST: uninstall_msghelp uninstall_maps msged_doc_uninstall
-	-[ -d "$(msged_DOCDIR_DST)" ] && $(RMDIR) $(msged_DOCDIR_DST) || true
-
-uninstall_msghelp:
-	-$(RM) $(RMOPT) $(msged_DOCDIR_DST)msghelp.dat
+uninstall_msged_DOCDIR_DST:
+	-find $(DOCDIR_DST) -maxdepth 1 -type d -name 'msged-*' -exec rm -rf '{}' \; || true
 
 
 # Depend

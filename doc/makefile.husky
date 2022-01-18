@@ -215,19 +215,17 @@ msged_doc_distclean: msged_doc_clean
 
 
 # Uninstall
-.PHONY: msged_docs_uninstall
+.PHONY: msged_docs_uninstall msged_info_uninstall
 
 ifdef DOCDIR
-    msged_doc_uninstall: msged_info_uninstall msged_docs_uninstall
-		-$(RM) $(RMOPT) $(msged_samples_DST)
-		-$(RM) $(RMOPT) $(msged_schemes_DST)
-		-$(RM) $(RMOPT) $(msged_whatsnew_DST)
+    msged_doc_uninstall: msged_info_uninstall msged_docs_uninstall ;
 else
     msged_doc_uninstall: msged_info_uninstall ;
 endif
 
 ifdef INFODIR
-# See "all_info_uninstall" in the root Makefile
+# See "all_info_uninstall" in the root Makefile where
+# `install-info --remove` is used
     msged_info_uninstall: all_info_uninstall
 		$(RM) $(RMOPT) $(INFODIR_DST)msged.info.gz
 else
@@ -235,15 +233,7 @@ else
 endif
 
 msged_docs_uninstall:
-ifeq ($(HTML), 1)
 	-$(RM) $(RMOPT) $(DOCDIR_DST)msged.html
-endif
-ifeq ($(TXT), 1)
 	-$(RM) $(RMOPT) $(DOCDIR_DST)msged.txt
-endif
-ifeq ($(DVI), 1)
 	-$(RM) $(RMOPT) $(DOCDIR_DST)msged.dvi
-endif
-ifeq ($(PDF), 1)
 	-$(RM) $(RMOPT) $(DOCDIR_DST)msged.pdf
-endif
