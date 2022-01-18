@@ -107,11 +107,11 @@ endif
 ifneq ($(MAKECMDGOALS), depend)
     include $(msged_MAPDIR)makefile.husky
     include $(msged_DOCDIR)makefile.husky
-ifneq ($(MAKECMDGOALS), distclean)
-ifneq ($(MAKECMDGOALS), uninstall)
-    include $(msged_DEPS)
-endif
-endif
+    ifneq ($(MAKECMDGOALS), distclean)
+        ifneq ($(MAKECMDGOALS), uninstall)
+            include $(msged_DEPS)
+        endif
+    endif
 endif
 
 ifneq ($(DYNLIBS), 1)
