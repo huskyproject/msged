@@ -152,8 +152,13 @@ $(msged_TARGET_DST): $(msged_TARGET_BLD) | $(DESTDIR)$(BINDIR)
 ifeq ($(DYNLIBS), 1)
     $(msged_DOCDIR_DST)msghelp.dat: $(msged_SRCDIR)msghelp.src \
         $(msged_TARGET_BLD) $(msged_LIBS_DST) | $(msged_DOCDIR_DST)
-			$(msged_TARGET_BLD) -hc $(msged_SRCDIR)msghelp.src $@; \
-			$(TOUCH) "$@"
+    ifneq ($(or $(RPM_BUILD_ROOT),$(findstring $(HOME),$(PREFIX))),)
+		LD_LIBRARY_PATH=$(LIBDIR_DST) $(msged_TARGET_BLD) -hc $(msged_SRCDIR)msghelp.src $@; \
+		$(TOUCH) "$@"
+    else
+		$(msged_TARGET_BLD) -hc $(msged_SRCDIR)msghelp.src $@; \
+		$(TOUCH) "$@"
+    endif
 else
     $(msged_DOCDIR_DST)msghelp.dat: $(msged_BUILDDIR)msghelp.dat | \
         $(msged_DOCDIR_DST)
