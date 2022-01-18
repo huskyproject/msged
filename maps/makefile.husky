@@ -136,6 +136,12 @@ $(msged_DOCDIR_DST)writmaps.dat: $(writmaps_DST) | $(msged_OBJDIR)codepage
 	$(LN) $(LNHOPT) $(current_writmaps) writmaps.dat; \
 	$(TOUCH) writmaps.dat
 
+# We generate maps during installation if DYNLIBS=1 because
+# when this is the case, the makemaps application needs access to the
+# libraries with which it was linked. It is easier to access them in
+# different operating systems when the libraries are already installed
+# in one directory
+#
 ifeq ($(DYNLIBS), 1)
     $(msged_DOCDIR_DST)readmaps.437: $(msged_DOCDIR_DST)writmaps.437
 		$(MV) $(msged_MAPDIR)readmaps.437 $@; $(TOUCH) $@
