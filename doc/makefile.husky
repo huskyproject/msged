@@ -63,8 +63,11 @@ $(msged_BUILDDIR)msged.html: $(msged_TEXSRC)
 $(msged_BUILDDIR)msged.txt: $(msged_TEXSRC)
 	-LC_ALL=C $(MAKEINFO) $(MIPTEXT) $(MINOSPLIT) "$<" $(MIOUT) "$@"
 
-$(msged_BUILDDIR)msged.dvi: $(msged_TEXSRC)
-	-$(TEXI2DVI) "$<"
+$(msged_BUILDDIR)msged.dvi: $(msged_DOCDIR_BLD)msged.dvi
+	$(LN) $(LNHOPT) "$<" $(msged_BUILDDIR)
+
+$(msged_DOCDIR_BLD)msged.dvi: $(msged_TEXSRC)
+	-cd $(msged_DOCDIR_BLD); $(TEXI2DVI) ../../../"$<"
 
 $(msged_BUILDDIR)msged.pdf: $(msged_DOCDIR_BLD)msged.pdf
 	$(LN) $(LNHOPT) "$<" $(msged_BUILDDIR)
@@ -199,6 +202,7 @@ msged_clean_DOC:
 	-$(RM) $(RMOPT) $(msged_DOCDIR_BLD)msged.pg
 	-$(RM) $(RMOPT) $(msged_DOCDIR_BLD)msged.cps
 	-$(RM) $(RMOPT) $(msged_DOCDIR_BLD)*.log
+	-$(RM) $(RMOPT) $(msged_DOCDIR_BLD)msged.dvi
 	-$(RM) $(RMOPT) $(msged_DOCDIR_BLD)msged.pdf
 	-$(RM) $(RMOPT) $(msged_TEXBLD)
 
