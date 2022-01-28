@@ -164,11 +164,11 @@ static int mykbhit(int block)
             BOOL fShift, fAlt, fCtrl;
             vk = irBuffer.Event.KeyEvent.wVirtualKeyCode;
             vs = irBuffer.Event.KeyEvent.wVirtualScanCode;
-#ifdef __MINGW32__
+/* #ifdef __MINGW32__
             uc = irBuffer.Event.KeyEvent.AsciiChar;
-#else
+#else */
             uc = irBuffer.Event.KeyEvent.uChar.AsciiChar;
-#endif
+/* #endif */
             fShift = (irBuffer.Event.KeyEvent.dwControlKeyState & (SHIFT_PRESSED));
             fAlt   =
                 (irBuffer.Event.KeyEvent.dwControlKeyState &
