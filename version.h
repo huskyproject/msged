@@ -50,14 +50,27 @@
 #define PROG "Msged"
 #endif
 
-extern char * GenVersionStr(const char * programname,
+#ifdef USE_FIDOCONFIG
+#include "huskylib/huskyext.h"
+#endif
+
+#ifdef USE_FIDOCONFIG
+HUSKYEXT
+#endif
+char * GenVersionStr(const char * programname,
                               unsigned major,
                               unsigned minor,
                               unsigned patchlevel,
                               unsigned branch,
                               const char * cvsdate);
 
-extern char * versionStr;
-extern char cvs_date[];
+#ifdef USE_FIDOCONFIG
+HUSKYEXT
+#endif
+char * versionStr;
+#ifdef USE_FIDOCONFIG
+HUSKYEXT
+#endif
+char cvs_date[];
 
 #endif // ifndef __MSGED_VERSION_H__

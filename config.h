@@ -10,6 +10,10 @@
 #ifndef __CONFIG_H__
 #define __CONFIG_H__
 
+#ifdef USE_FIDOCONFIG
+#include "huskylib/huskyext.h"
+#endif
+
 struct colorverb
 {
     char * name;
@@ -24,6 +28,9 @@ char * skip_to_blank(char * str);
 void kill_trail_slash(char * str);
 void opening(char * cfgfile, char * areafile);
 void parse_tokens(char * str, char * tokens[], int num);
+#ifdef USE_FIDOCONFIG
+HUSKYEXT
+#endif
 char * shell_expand(char * str); /* expands ~ to home dir etc. */
 char * pathcvt(char *);
 
