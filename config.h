@@ -23,6 +23,9 @@ struct colorverb
 char * makeareadesc(char *, char *);
 char * strip_geese_feet(char * s);
 char * striplwhite(char * str);
+#ifdef USE_FIDOCONFIG
+HUSKYEXT
+#endif
 char * striptwhite(char * str);
 char * skip_to_blank(char * str);
 void kill_trail_slash(char * str);

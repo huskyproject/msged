@@ -7,6 +7,10 @@
 #ifndef __MPROTOS_H__
 #define __MPROTOS_H__
 
+#ifdef USE_FIDOCONFIG
+#include "huskylib/huskyext.h"
+#endif
+
 void cleanup(char * msg, ...);
 void mygetcwd(char * buf, int len);
 msg * readmsg(unsigned long n);
@@ -42,6 +46,9 @@ void change(void);
 char * show_address(FIDO_ADDRESS * a);
 char * show_4d(FIDO_ADDRESS * a);
 char * striplwhite(char * s);
+#ifdef USE_FIDOCONFIG
+HUSKYEXT
+#endif
 char * striptwhite(char * s);
 void clearmsg(msg * m);
 int setcwd(char * path);
