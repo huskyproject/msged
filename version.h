@@ -64,13 +64,7 @@ char * GenVersionStr(const char * programname,
                               unsigned branch,
                               const char * cvsdate);
 
-#ifdef USE_FIDOCONFIG
-HUSKYEXT
-#endif
 char * versionStr;
-#ifdef USE_FIDOCONFIG
-HUSKYEXT
-#endif
 char cvs_date[];
 
 #endif // ifndef __MSGED_VERSION_H__
