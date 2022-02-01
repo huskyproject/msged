@@ -64,7 +64,7 @@ char * GenVersionStr(const char * programname,
                               unsigned branch,
                               const char * cvsdate);
 
-char * versionStr;
-char cvs_date[];
+extern char * versionStr;
+extern char cvs_date[];
 
 #endif // ifndef __MSGED_VERSION_H__
