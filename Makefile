@@ -214,7 +214,7 @@ msged_depend: $(msged_DEPS) ;
 $(msged_DEPS): $(msged_DEPDIR)%$(_DEP): $(msged_SRCDIR)%.c | $(msged_DEPDIR)
 	@set -e; rm -f $@; \
 	$(CC) -MM $(msged_CFLAGS) $(msged_CDEFS) $< > $@.$$$$; \
-	sed 's,\($*\)$(_OBJ)[ :]*,$(msged_OBJDIR)\1$(_OBJ) $@ : ,g' < $@.$$$$ > $@; \
+	sed 's,\($*\)$(__OBJ)[ :]*,$(msged_OBJDIR)\1$(_OBJ) $@ : ,g' < $@.$$$$ > $@; \
 	rm -f $@.$$$$
 
 $(msged_DEPDIR): | $(msged_BUILDDIR) do_not_run_depend_as_root
