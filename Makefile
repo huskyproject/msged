@@ -24,8 +24,6 @@ msged_CDEFS+=-DUSE_MSGAPI -DUSE_FIDOCONFIG -DUNAME=\"$(UNAME)\" \
              -DWRITMAPSDAT=\"$(CFGDIR)$(DIRSEP)msged$(DIRSEP)writmaps.dat\" \
              -DDEFAULT_CONFIG_FILE=$(MSGEDCFG)
 
-msged_SRC := $(wildcard $(msged_SRCDIR)*$(_C))
-
 ifeq ($(DYNLIBS), 1)
     ifneq ($(filter Linux FreeBSD,$(OSType)),)
         LIBENV := LD_LIBRARY_PATH=$(LIBDIR_DST)
@@ -33,6 +31,8 @@ ifeq ($(DYNLIBS), 1)
         LIBENV := DYLD_LIBRARY_PATH=$(LIBDIR_DST)
     endif
 endif
+
+msged_SRC := $(msged_ALL_SRC)
 
 ifeq ($(OSTYPE), UNIX)
     ifneq ("$(TERMCAP)", "")
@@ -51,7 +51,7 @@ ifeq ($(OSTYPE), OS2)
     # remove what belongs to  WINNT
     msged_SRC := $(msged_SRC:winntscr$(_C)=)
 endif
-ifeq ($(OSTYPE), WINNT)
+ifneq ($(findstring MINGW,$(OSTYPE)),)
     # remove what belongs to UNIX
     msged_SRC := $(msged_SRC:ansi$(_C)=)
     msged_SRC := $(msged_SRC:readtc$(_C)=)
@@ -204,22 +204,3 @@ msged_uninstall: uninstall_msged_DOCDIR_DST msged_doc_uninstall
 
 uninstall_msged_DOCDIR_DST:
 	-find $(DOCDIR_DST) -maxdepth 1 -type d -name 'msged-*' -exec rm -rf '{}' \; || true
-
-
-# Depend
-ifeq ($(MAKECMDGOALS),depend)
-msged_depend: $(msged_DEPS) ;
-
-# Build a dependency makefile for every source file
-$(msged_DEPS): $(msged_DEPDIR)%$(_DEP): $(msged_SRCDIR)%.c | $(msged_DEPDIR)
-	@set -e; rm -f $@; \
-	$(CC) -MM $(msged_CFLAGS) $(msged_CDEFS) $< > $@.$$$$; \
-	sed 's,\($*\)$(__OBJ)[ :]*,$(msged_OBJDIR)\1$(_OBJ) $@ : ,g' < $@.$$$$ > $@; \
-	rm -f $@.$$$$
-
-$(msged_DEPDIR): | $(msged_BUILDDIR) do_not_run_depend_as_root
-	[ -d $@ ] || $(MKDIR) $(MKDIROPT) $@
-endif
-
-$(msged_BUILDDIR):
-	[ -d $@ ] || $(MKDIR) $(MKDIROPT) $@
