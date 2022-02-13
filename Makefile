@@ -33,52 +33,6 @@ ifeq ($(DYNLIBS), 1)
 endif
 
 msged_SRC := $(msged_ALL_SRC)
-
-ifeq ($(OSTYPE), UNIX)
-    ifneq ("$(TERMCAP)", "")
-        msged_OSLIBS=-l$(TERMCAP)
-    endif
-    # remove what belongs to OS2
-    msged_SRC := $(msged_SRC:os2scr$(_C)=)
-    msged_SRC := $(msged_SRC:malloc16$(_C)=)
-    # remove what belongs to WINNT
-    msged_SRC := $(msged_SRC:winntscr$(_C)=)
-endif
-ifeq ($(OSTYPE), OS2)
-    # remove what belongs to UNIX
-    msged_SRC := $(msged_SRC:ansi$(_C)=)
-    msged_SRC := $(msged_SRC:readtc$(_C)=)
-    # remove what belongs to  WINNT
-    msged_SRC := $(msged_SRC:winntscr$(_C)=)
-endif
-ifneq ($(findstring MINGW,$(OSTYPE)),)
-    # remove what belongs to UNIX
-    msged_SRC := $(msged_SRC:ansi$(_C)=)
-    msged_SRC := $(msged_SRC:readtc$(_C)=)
-    # remove what belongs to OS2
-    msged_SRC := $(msged_SRC:os2scr$(_C)=)
-    msged_SRC := $(msged_SRC:malloc16$(_C)=)
-endif
-ifeq ($(OSTYPE), Cygwin)
-    ifneq ("$(TERMCAP)", )
-        msged_OSLIBS=-l$(TERMCAP)
-    endif
-    # remove what belongs to OS2
-    msged_SRC := $(msged_SRC:os2scr$(_C)=)
-    msged_SRC := $(msged_SRC:malloc16$(_C)=)
-    # remove what belongs to WINNT
-    msged_SRC := $(msged_SRC:winntscr$(_C)=)
-endif
-ifneq ($(OSTYPE), MSDOS)
-    msged_SRC := $(msged_SRC:dosasm$(_C)=)
-    msged_SRC := $(msged_SRC:dosmisc$(_C)=)
-endif
-# The source files to exclude
-msged_excl := ibmscrn$(_C) mouse4$(_C) pacific$(_C) rfind1st$(_C) sasc$(_C) \
-              vio$(_C)
-msged_excl := $(addprefix $(msged_SRCDIR),$(msged_excl))
-msged_SRC := $(filter-out $(msged_excl),$(msged_SRC))
-
 msged_DEPS := $(addprefix $(msged_DEPDIR),$(notdir $(msged_SRC:$(_C)=$(_DEP))))
 
 # Exclude the source of a separate application
