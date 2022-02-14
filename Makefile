@@ -25,9 +25,9 @@ msged_CDEFS+=-DUSE_MSGAPI -DUSE_FIDOCONFIG -DUNAME=\"$(UNAME)\" \
              -DDEFAULT_CONFIG_FILE=$(MSGEDCFG)
 
 ifeq ($(DYNLIBS), 1)
-    ifneq ($(filter Linux FreeBSD,$(OSType)),)
+    ifneq ($(filter Linux FreeBSD,$(ostyp)),)
         LIBENV := LD_LIBRARY_PATH=$(LIBDIR_DST)
-    else ifeq ($(OSType), Darwin)
+    else ifeq ($(ostyp), Darwin)
         LIBENV := DYLD_LIBRARY_PATH=$(LIBDIR_DST)
     endif
 endif
