@@ -113,7 +113,7 @@ void makefreq(void)
     char * desc;
     int k = 0;                  /* UMSGID msgnum */
     int o = 0;                  /* old UMSGID msgnullm */
-    unsigned long length;       /* length in bytes of the message */
+    /* unsigned long length; */ /* length in bytes of the message */
     unsigned long now = 0L;     /* UMSGID msgnum */
     int i, l = 0, y, oy, pos, old_pos, Msg;
     int max = maxy - 9, maxn = maxy - 9, redraw, starty, done = 0;
@@ -592,11 +592,11 @@ void makefreq(void)
             }
 
             l2     = m->text;
-            length = 0L;
+            /* length = 0L; */
 
             while(l2)
             {
-                length += strlen(l2->text);
+                /* length += strlen(l2->text); */
                 l2      = l2->next;
             }
             txt[0] = '\0';
