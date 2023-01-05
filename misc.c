@@ -439,12 +439,12 @@ void hex_dump(void)
             if(x % 16 == 0)
             {
                 memset(prtln, ' ', sizeof prtln);
-                sprintf(prtln, "%0.6lX   ", x);
+                sprintf(prtln, "%.6lX   ", x);
                 pos1 = 8;
                 pos2 = 45;
             }
 
-            sprintf(prtln + pos1, "%0.2X", c);
+            sprintf(prtln + pos1, "%.2X", c);
 
             if(isprint(c))
             {
