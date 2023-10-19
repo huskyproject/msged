@@ -18,7 +18,7 @@ else
 endif
 
 ifdef INFODIR
-    msged_info: $(msged_BUILDDIR)msged.info.gz
+    msged_info: $(msged_BUILDDIR)msged.info$(_COMPR)
 else
     msged_info: ;
 endif
@@ -51,8 +51,10 @@ msged_DOCDIR_BLD=$(msged_BUILDDIR)doc$(DIRSEP)
 msged_TEXSRC=$(msged_manual_dir)msged.texi
 msged_TEXBLD=$(msged_DOCDIR_BLD)msged.texi
 
-$(msged_BUILDDIR)msged.info.gz: $(msged_BUILDDIR)msged.info
-	gzip -c $^ > $@
+ifdef COMPRESS
+    $(msged_BUILDDIR)msged.info$(_COMPR): $(msged_BUILDDIR)msged.info
+		$(COMPRESS) -c $< > $@
+endif
 
 $(msged_BUILDDIR)msged.info:  $(msged_TEXSRC)
 	-$(MAKEINFO) $(MINOSPLIT) "$<" $(MIOUT) $@
@@ -231,7 +233,7 @@ ifdef INFODIR
 # See "all_info_uninstall" in the root Makefile where
 # `install-info --remove` is used
     msged_info_uninstall: all_info_uninstall
-		$(RM) $(RMOPT) $(INFODIR_DST)msged.info.gz
+		$(RM) $(RMOPT) $(INFODIR_DST)msged.info$(_COMPR)
 else
     msged_info_uninstall: ;
 endif
